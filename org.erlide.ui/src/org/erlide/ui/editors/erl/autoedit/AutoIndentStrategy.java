@@ -79,7 +79,9 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
         final int lineLength = d.getLineLength(lineN);
         final String oldLine = d.get(offset, lineLength + lineOffset - offset);
         try {
-            final int tabw = getTabWidthFromPreferences();
+            final int indentw = getIndentWidthFromPreferences();
+            final int tabw = EditorsUI.getPreferenceStore().getInt(
+                    AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 
             final Map<String, String> prefs = new TreeMap<String, String>();
             IndentationPreferencePage.addKeysAndPrefs(prefs);
@@ -87,7 +89,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
             final boolean useTabs = getUseTabsFromPreferences();
             final IndentResult res = ErlangEngine.getInstance()
                     .getService(IndentService.class)
-                    .indentLine(oldLine, txt, c.text, tabw, useTabs, prefs);
+                    .indentLine(oldLine, txt, c.text, indentw, tabw, useTabs, prefs);
 
             if (res.isAddNewLine()) {
                 c.text += "\n";
@@ -99,15 +101,15 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
         }
     }
 
+    /**
+     * @return
+     */
     public static int getIndentWidthFromPreferences() {
-        final int tabw = ErlideUIPlugin.getDefault().getPreferenceStore()
-                .getInt(ErlangEditor.EDITOR_INDENT_WIDTH);
-        return tabw;
-    }
-
-    public static int getTabWidthFromPreferences() {
-        final int tabw = EditorsUI.getPreferenceStore().getInt(
-                AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
+        int tabw = ErlideUIPlugin.getDefault().getPreferenceStore()
+                .getInt(ErlangEditor.EDITOR_INDENTATION_WIDTH);
+        if (tabw == 0) {
+            tabw = 4;
+        }
         return tabw;
     }
 

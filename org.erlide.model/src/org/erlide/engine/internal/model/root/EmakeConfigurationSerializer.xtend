@@ -7,8 +7,8 @@ import org.eclipse.core.runtime.Path
 import org.erlide.engine.ErlangEngine
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.erlide.engine.model.root.ProjectConfigurationSerializer
-import org.erlide.util.erlang.Bindings
 import org.erlide.util.erlang.ErlUtils
+import org.erlide.util.erlang.OtpBindings
 
 class EmakeConfigurationSerializer implements ProjectConfigurationSerializer {
 
@@ -59,7 +59,7 @@ class EmakeConfigurationSerializer implements ProjectConfigurationSerializer {
     result
   }
 
-  def void parseOption(Bindings b, ErlangProjectProperties result) {
+  def void parseOption(OtpBindings b, ErlangProjectProperties result) {
     switch b.getAtom("Tag") {
       case "i": {
         val List<IPath> incs = new ArrayList(result.includeDirs)

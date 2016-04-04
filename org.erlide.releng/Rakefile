@@ -77,3 +77,7 @@ task :make_github_release, [:file, :description, :tools_dir] do |t, args|
 
 end
 
+desc "build help from erlide.github.io"
+task :build_help do
+  system "bash -c 'chmod u+x org.erlide.help/gen_eclipse_help.sh' && bash -c 'org.erlide.help/gen_eclipse_help.sh'"
+end

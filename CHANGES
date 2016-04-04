@@ -1,3 +1,15 @@
+List of user visible changes between 0.30.1 and 0.31.0 (20160404)
+
+334684b indentation: add 'indent width' parameter
+95efd68 move help content to erlide.github.io
+3a1b354 #260 - disable invalid runtimes
+5ea151a move tracing and cover plugins to erlide core; erlang code to kernel
+76e235f move all erlang sources to an own repository; keep only beams here
+d4800e6 update jinterface to 1.6.1
+c331a22 add handly to targets
+d2637f4 update xtend libs to 2.9.1
+19e347d #246 - runtime version numbers may use _ as delimiter
+
 List of user visible changes between 0.30.0 and 0.30.1 (20160316)
 
 44e0f4a Merge hotfix 0.29.14

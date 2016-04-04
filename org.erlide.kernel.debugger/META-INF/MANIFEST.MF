@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Kernel Erlang Debugger functionality
+Bundle-Name: Erlide debugger
 Bundle-SymbolicName: org.erlide.kernel.debugger;singleton:=true
-Bundle-Version: 0.24.7.qualifier
-Bundle-Vendor: Erlide project
-Require-Bundle: org.erlide.core,
- org.erlide.kernel.common
+Bundle-Version: 0.102.0.qualifier
+Bundle-Vendor: erlide.org project
+Require-Bundle: org.erlide.kernel;bundle-version="0.101.0",
+ org.erlide.runtime;bundle-version="0.24.13"

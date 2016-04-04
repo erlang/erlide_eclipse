@@ -31,9 +31,9 @@ import org.erlide.backend.internal.BackendActivator;
 import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.ErlangFunctionCall;
-import org.erlide.util.erlang.Bindings;
+import org.erlide.util.erlang.OtpBindings;
 import org.erlide.util.erlang.ErlUtils;
-import org.erlide.util.erlang.TermParserException;
+import org.erlide.util.erlang.OtpParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -208,7 +208,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
             return;
         }
         OtpErlangObject savedStackTrace = null;
-        // BindingsImpl b = ErlUtils.match("{ST, F:l, }", stackAndBindings);
+        // OtpBindings b = ErlUtils.match("{ST, F:l, }", stackAndBindings);
         // System.out.println("STACK=" + stackAndBindings);
         OtpErlangObject el0 = stackAndBindings.elementAt(0);
         if (el0 instanceof OtpErlangTuple) {
@@ -226,7 +226,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
     private void addStackTrace(final OtpErlangTuple savedStackTrace) {
         try {
-            final Bindings bind = ErlUtils.match("{saved_stacktrace, _,STrace}",
+            final OtpBindings bind = ErlUtils.match("{saved_stacktrace, _,STrace}",
                     savedStackTrace);
             if (bind != null) {
                 final Collection<OtpErlangObject> trace = bind.getList("STrace");
@@ -244,7 +244,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
                     }
                 }
             }
-        } catch (final TermParserException e1) {
+        } catch (final OtpParserException e1) {
             // ignore
             ErlLogger.error(e1);
         } catch (final OtpErlangException e1) {

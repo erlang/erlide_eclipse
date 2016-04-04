@@ -43,7 +43,7 @@ public class DebugTraceEvent {
     // evaluated (ie at all, not only in a clause)
     // extra:
     // {Val} % on return
-    // {_, _, BindingsImpl} % otherwise
+    // {_, _, OtpBindings} % otherwise
 
     public OtpErlangTuple getTuple() {
         return event;

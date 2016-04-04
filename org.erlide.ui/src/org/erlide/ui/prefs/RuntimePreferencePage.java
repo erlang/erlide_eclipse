@@ -76,12 +76,11 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.SWTUtil;
 
 /**
- * A preference page that displays installed runtimes in a table. Runtimes can
- * be added, removed, edited, and searched for.
+ * A preference page that displays installed runtimes in a table. Runtimes can be added,
+ * removed, edited, and searched for.
  * <p>
- * It implements ISelectionProvider - it sends selection change events when the
- * checked runtime in the table changes, or when the "use default" button check
- * state changes.
+ * It implements ISelectionProvider - it sends selection change events when the checked
+ * runtime in the table changes, or when the "use default" button check state changes.
  * </p>
  */
 public class RuntimePreferencePage extends PreferencePage implements
@@ -243,9 +242,9 @@ public class RuntimePreferencePage extends PreferencePage implements
     /**
      * Correctly resizes the table so no phantom columns appear
      */
-    protected void configureTableResizing(final Composite parent,
-            final Composite buttons, final Table table, final TableColumn column1,
-            final TableColumn column2, final TableColumn column3) {
+    protected void configureTableResizing(final Composite parent, final Composite buttons,
+            final Table table, final TableColumn column1, final TableColumn column2,
+            final TableColumn column3) {
         parent.addControlListener(new ControlAdapter() {
 
             @Override
@@ -401,8 +400,8 @@ public class RuntimePreferencePage extends PreferencePage implements
         if (vm == null) {
             return;
         }
-        final RuntimeInfo vm1 = new RuntimeInfo.Builder(vm).withName(
-                vm.getName() + "_copy").build();
+        final RuntimeInfo vm1 = new RuntimeInfo.Builder(vm)
+                .withName(vm.getName() + "_copy").build();
         final AddRuntimeDialog dialog = new AddRuntimeDialog(this, getShell(), vm1);
         dialog.setTitle(RuntimePreferenceMessages.edit_title);
         if (dialog.open() != Window.OK) {
@@ -486,15 +485,15 @@ public class RuntimePreferencePage extends PreferencePage implements
     }
 
     /**
-     * Persist table settings into the give dialog store, prefixed with the
-     * given key.
+     * Persist table settings into the give dialog store, prefixed with the given key.
      *
      * @param settings
      *            dialog store
      * @param qualifier
      *            key qualifier
      */
-    public void saveColumnSettings(final IDialogSettings settings, final String qualifier) {
+    public void saveColumnSettings(final IDialogSettings settings,
+            final String qualifier) {
         for (int i = 0; i < 2; i++) {
             // persist the first 2 column weights
             settings.put(qualifier + ".column" + i, getColumnWeight(i)); //$NON-NLS-1$
@@ -602,11 +601,11 @@ public class RuntimePreferencePage extends PreferencePage implements
         composite.setLayout(gridLayout);
 
         final Label erlideLabel = new Label(composite, SWT.NONE);
-        erlideLabel
-                .setToolTipText("The erlide runtime is used for IDE purposes, not for running project code. "
+        erlideLabel.setToolTipText(
+                "The erlide runtime is used for IDE purposes, not for running project code. "
                         + "It is the most recent stable version that is installed.");
-        final String erlideName = erlideRuntime == null ? "none" : erlideRuntime
-                .getName();
+        final String erlideName = erlideRuntime == null ? "none"
+                : erlideRuntime.getName();
         erlideLabel
                 .setText(RuntimePreferenceMessages.RuntimePreferencePage_erlideLabel_text
                         + erlideName);
@@ -620,8 +619,8 @@ public class RuntimePreferencePage extends PreferencePage implements
         tableLabel.setLayoutData(data);
         tableLabel.setFont(font);
 
-        final Table table = new Table(parent, SWT.CHECK | SWT.BORDER | SWT.MULTI
-                | SWT.FULL_SELECTION);
+        final Table table = new Table(parent,
+                SWT.CHECK | SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
         table.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
@@ -854,8 +853,8 @@ public class RuntimePreferencePage extends PreferencePage implements
     /**
      * Label provider for installed runtimes table.
      */
-    static class RuntimeLabelProvider extends LabelProvider implements
-            ITableLabelProvider {
+    static class RuntimeLabelProvider extends LabelProvider
+            implements ITableLabelProvider {
 
         /**
          * @see ITableLabelProvider#getColumnText(Object, int)
@@ -868,7 +867,11 @@ public class RuntimePreferencePage extends PreferencePage implements
                 case 0:
                     return vm.getName();
                 case 1:
-                    return vm.getOtpHome();
+                    String otpHome = vm.getOtpHome();
+                    if (!vm.isValid()) {
+                        otpHome += " [INVALID]";
+                    }
+                    return otpHome;
                 case 2:
                     return vm.getVersion().toString();
                 }

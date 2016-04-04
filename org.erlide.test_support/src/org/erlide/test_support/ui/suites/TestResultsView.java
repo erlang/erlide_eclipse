@@ -23,9 +23,9 @@ import org.erlide.test_support.ui.suites.TestCaseData.FailStackItem;
 import org.erlide.ui.util.DisplayUtils;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.erlang.Bindings;
 import org.erlide.util.erlang.ErlUtils;
-import org.erlide.util.erlang.TermParserException;
+import org.erlide.util.erlang.OtpBindings;
+import org.erlide.util.erlang.OtpParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -125,7 +125,7 @@ public class TestResultsView extends ViewPart {
                     handleEvent(msg);
                     treeViewer.refresh();
                     control.update();
-                } catch (final TermParserException e) {
+                } catch (final OtpParserException e) {
                     ErlLogger.error(e);
                 } catch (final OtpErlangException e) {
                     ErlLogger.error(e);
@@ -135,8 +135,8 @@ public class TestResultsView extends ViewPart {
         });
     }
 
-    private void handleEvent(final OtpErlangObject msg) throws TermParserException,
-            OtpErlangException {
+    private void handleEvent(final OtpErlangObject msg)
+            throws OtpParserException, OtpErlangException {
         final OtpErlangTuple tuple = (OtpErlangTuple) msg;
         final String tag = ((OtpErlangAtom) tuple.elementAt(0)).atomValue();
         final OtpErlangObject value = tuple.elementAt(1);
@@ -146,26 +146,24 @@ public class TestResultsView extends ViewPart {
             // value = {Dir, Suite, Case}
             label.setText("Started: " + formatTitle(value)
                     + ". Compiling files, please wait...");
-            treeViewer.getTree().setCursor(
-                    treeViewer.getTree().getShell().getDisplay()
-                            .getSystemCursor(SWT.CURSOR_WAIT));
+            treeViewer.getTree().setCursor(treeViewer.getTree().getShell().getDisplay()
+                    .getSystemCursor(SWT.CURSOR_WAIT));
         } else if ("start_failed".equals(tag)) {
             // value = ?
         } else if ("log_started".equals(tag)) {
             // value = Dir
-            treeViewer.getTree().setCursor(
-                    treeViewer.getTree().getShell().getDisplay()
-                            .getSystemCursor(SWT.CURSOR_ARROW));
+            treeViewer.getTree().setCursor(treeViewer.getTree().getShell().getDisplay()
+                    .getSystemCursor(SWT.CURSOR_ARROW));
         } else if ("start".equals(tag)) {
             // value = {Module, Function}
-            final Bindings bindings = ErlUtils.match("{M:a,F:a}", value);
+            final OtpBindings bindings = ErlUtils.match("{M:a,F:a}", value);
             final String mod = bindings.getAtom("M");
             final String fun = bindings.getAtom("F");
             test = findCase(mod, fun);
             test.setRunning();
         } else if ("result".equals(tag)) {
             // value = {Module, Function, Result}
-            final Bindings bindings = ErlUtils.match("{M:a,F:a,R}", value);
+            final OtpBindings bindings = ErlUtils.match("{M:a,F:a,R}", value);
             final String mod = bindings.getAtom("M");
             final String fun = bindings.getAtom("F");
             final OtpErlangObject result = bindings.get("R");
@@ -181,7 +179,7 @@ public class TestResultsView extends ViewPart {
             }
         } else if ("fail".equals(tag)) {
             // value = {{Module, Function}, [Locations], Reason
-            final Bindings bindings = ErlUtils.match("{{M:a,F:a},L,R}", value);
+            final OtpBindings bindings = ErlUtils.match("{{M:a,F:a},L,R}", value);
             final String mod = bindings.getAtom("M");
             final String fun = bindings.getAtom("F");
             final Collection<OtpErlangObject> locations = bindings.getList("L");
@@ -190,7 +188,7 @@ public class TestResultsView extends ViewPart {
             test.setFailed(reason, locations);
         } else if ("skip".equals(tag)) {
             // value = {Module, Function, Comment
-            final Bindings bindings = ErlUtils.match("{M:a,F:a,C}", value);
+            final OtpBindings bindings = ErlUtils.match("{M:a,F:a,C}", value);
             final String mod = bindings.getAtom("M");
             final String fun = bindings.getAtom("F");
             final OtpErlangObject reason = bindings.get("C");
@@ -198,7 +196,7 @@ public class TestResultsView extends ViewPart {
             test.setSkipped(reason);
         } else if ("done".equals(tag)) {
             // value = Module, Log, {Successful,Failed,Skipped}, [Results]}
-            final Bindings bindings = ErlUtils.match("{M,L,{S:i,F:i,K:i},R}", value);
+            final OtpBindings bindings = ErlUtils.match("{M,L,{S:i,F:i,K:i},R}", value);
             final int successful = bindings.getInt("S");
             final int failed = bindings.getInt("F");
             final int skipped = bindings.getInt("K");
@@ -210,14 +208,14 @@ public class TestResultsView extends ViewPart {
 
     private String formatTitle(final OtpErlangObject value) {
         try {
-            final Bindings b = ErlUtils.match("{D,S,C}", value);
+            final OtpBindings b = ErlUtils.match("{D,S,C}", value);
             final String suite = b.getAtom("S");
             final String tcase = b.getAtom("C");
             if (tcase.length() == 0) {
                 return "suite " + suite;
             }
             return "suite " + suite + "; case " + tcase;
-        } catch (final TermParserException e) {
+        } catch (final OtpParserException e) {
         } catch (final OtpErlangException e) {
         }
         return value.toString();

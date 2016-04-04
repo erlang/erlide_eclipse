@@ -57,7 +57,7 @@ import org.erlide.util.IDisposable;
 import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.SignatureException;
-import org.erlide.util.erlang.TermParserException;
+import org.erlide.util.erlang.OtpParserException;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -68,8 +68,8 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
-public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarget,
-        IErlangDebugNode, IDisposable {
+public class ErlangDebugTarget extends ErlangDebugElement
+        implements IDebugTarget, IErlangDebugNode, IDisposable {
 
     private static final OtpErlangAtom PARENT_ATOM = new OtpErlangAtom("parent");
 
@@ -280,7 +280,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
     }
 
     @Override
-    public void breakpointRemoved(final IBreakpoint breakpoint, final IMarkerDelta delta) {
+    public void breakpointRemoved(final IBreakpoint breakpoint,
+            final IMarkerDelta delta) {
         try {
             ErlLogger.debug("breakpointRemoved " + breakpoint.getMarker().toString()
                     + breakpoint.getMarker().getAttribute(IMarker.LINE_NUMBER));
@@ -293,7 +294,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
     }
 
     @Override
-    public void breakpointChanged(final IBreakpoint breakpoint, final IMarkerDelta delta) {
+    public void breakpointChanged(final IBreakpoint breakpoint,
+            final IMarkerDelta delta) {
         if (supportsBreakpoint(breakpoint)) {
             try {
                 if (breakpoint.isEnabled()
@@ -484,7 +486,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
         try {
             return (OtpErlangList) ErlUtils.format("[{ebin_dir, ~s}, {src_dirs, ~ls}]",
                     ebin, srcs);
-        } catch (final TermParserException e) {
+        } catch (final OtpParserException e) {
             ErlLogger.warn(e);
         } catch (final SignatureException e) {
             ErlLogger.warn(e);
@@ -500,7 +502,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
         for (final String module : debuggerModules) {
             final String ver = backend.getRuntime().getVersion().asMajor().toString()
                     .toLowerCase();
-            final String bundleName = "org.erlide.kernel.debugger.otp." + ver;
+            final String bundleName = "org.erlide.kernel.debugger." + ver;
             OtpErlangBinary b = getDebuggerBeam(module, bundleName);
             if (b == null) {
                 b = getDebuggerBeam(module, "org.erlide.kernel.debugger");
@@ -525,23 +527,25 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
     /**
      * Get a named beam-file as a binary from the debugger plug-in bundle
      */
-    private OtpErlangBinary getDebuggerBeam(final String module, final String bundleName) {
+    private OtpErlangBinary getDebuggerBeam(final String module,
+            final String bundleName) {
         final String beamname = module + ".beam";
         final Bundle bundle = Platform.getBundle(bundleName);
 
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        final IConfigurationElement[] els = reg.getConfigurationElementsFor(
-                BackendActivator.PLUGIN_ID, "codepath");
+        final IConfigurationElement[] els = reg
+                .getConfigurationElementsFor(BackendActivator.PLUGIN_ID, "codepath");
 
         for (final IConfigurationElement el : els) {
             final IContributor c = el.getContributor();
             final String name = c.getName();
-            if (name.equals(bundle.getSymbolicName()) && "beam_dir".equals(el.getName())) {
+            if (name.equals(bundle.getSymbolicName())
+                    && "beam_dir".equals(el.getName())) {
                 final String dirPath = el.getAttribute("path");
                 final Enumeration<String> e = bundle.getEntryPaths(dirPath);
                 if (e == null) {
-                    ErlLogger.error("* !!! error loading plugin "
-                            + bundle.getSymbolicName());
+                    ErlLogger.error(
+                            "* !!! error loading plugin " + bundle.getSymbolicName());
                     return null;
                 }
                 while (e.hasMoreElements()) {
@@ -589,7 +593,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
         final String ver = backend.getRuntime().getVersion().asMajor().toString()
                 .toLowerCase();
         final Bundle debugger_otp = Platform
-                .getBundle("org.erlide.kernel.debugger.otp." + ver);
+                .getBundle("org.erlide.kernel.debugger." + ver);
         if (debugger_otp == null) {
             ErlLogger.warn("debugger %s bundle was not found...", ver);
             return dbg_modules;

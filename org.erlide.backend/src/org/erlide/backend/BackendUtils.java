@@ -63,12 +63,12 @@ public class BackendUtils {
 
     public static IConfigurationElement[] getCodepathConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(BackendActivator.PLUGIN_ID, "codepath");
+        return reg.getConfigurationElementsFor("org.erlide.runtime", "codepath");
     }
 
     public static IExtensionPoint getCodepathExtension() {
         final IExtensionRegistry reg = Platform.getExtensionRegistry();
-        return reg.getExtensionPoint(BackendActivator.PLUGIN_ID, "codepath");
+        return reg.getExtensionPoint("org.erlide.runtime", "codepath");
     }
 
     public static boolean isAccessibleDir(final IOtpRpc backend, final String localDir) {

@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.erlide.backend" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.erlide.backend" id="codepath" name="codepath"/>
+      </appinfo>
+      <documentation>
+         A plugin can contribute Erlang code by specifying here the directories where the beam files are to be found. The paths are relative to the plugin root and erlIDE can load beam code even from inside jar archives.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="otp_version" minOccurs="0" maxOccurs="1"/>
+            <element ref="beam_dir" minOccurs="1" maxOccurs="unbounded"/>
+            <element ref="init" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="beam_dir">
+      <complexType>
+         <attribute name="path" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Specifies the relative path inside the plugin&apos;s bundle of the directory containing .beam files
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="context" use="required">
+            <annotation>
+               <documentation>
+                  Specifies in which context the code is to be loaded.
+&lt;ul&gt;
+&lt;li&gt;&quot;common&quot;: all contexts, generic utilities. &lt;/li&gt;
+&lt;li&gt; &quot;ide&quot;: for general ide use (includeing builder). &lt;/li&gt;
+&lt;li&gt;&quot;debugger&quot;: debugging facilities, load on execution backends in debug mode.&lt;/li&gt;
+&lt;/ul&gt;
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="common">
+                  </enumeration>
+                  <enumeration value="ide">
+                  </enumeration>
+                  <enumeration value="debugger">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="otp_version">
+            <annotation>
+               <documentation>
+
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="R16">
+                  </enumeration>
+                  <enumeration value="17">
+                  </enumeration>
+                  <enumeration value="18">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="init">
+      <annotation>
+         <documentation>
+            Describes the calll to be made to initialize this plugin. The attributes specify a function that takes no arguments.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="module" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the module
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="function" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the function
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="otp_version">
+      <annotation>
+         <documentation>
+            Describe which OTP version was used to compile the code in this bundle.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="value" use="required">
+            <annotation>
+               <documentation>
+
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="R16">
+                  </enumeration>
+                  <enumeration value="17">
+                  </enumeration>
+                  <enumeration value="18">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         [Enter the first release in which this extension point appears.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         [Enter extension point usage example here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         [Enter API information here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         [Enter information about supplied implementation of this extension point.]
+      </documentation>
+   </annotation>
+
+
+</schema>

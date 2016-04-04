@@ -194,7 +194,7 @@ public class RuntimeVersionTest {
 
     @Test
     public void compare_11b() {
-        final RuntimeVersion test1 = RuntimeVersion.Serializer.parse("R15B");
+        final RuntimeVersion test1 = RuntimeVersion.Serializer.parse("R16B");
         final RuntimeVersion test2 = RuntimeVersion.Serializer.parse("R14");
         assertThat(test1.isCompatible(test2), is(true));
     }
@@ -202,15 +202,8 @@ public class RuntimeVersionTest {
     @Test
     public void compare_11c() {
         final RuntimeVersion test1 = RuntimeVersion.Serializer.parse("R14");
-        final RuntimeVersion test2 = RuntimeVersion.Serializer.parse("R15B");
+        final RuntimeVersion test2 = RuntimeVersion.Serializer.parse("R16B");
         assertThat(test1.isCompatible(test2), is(false));
     }
 
-    // @Test
-    // public void compare_10b() {
-    // final RuntimeVersion test1 =
-    // RuntimeVersion.Serializer.parse("17.0.0-alpha");
-    // final RuntimeVersion test2 = RuntimeVersion.Serializer.parse("17.0.0");
-    // assertThat(test1.compareTo(test2), is(lessThan(0)));
-    // }
 }

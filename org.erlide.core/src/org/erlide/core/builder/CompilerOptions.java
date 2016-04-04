@@ -17,7 +17,7 @@ import org.erlide.core.builder.CompilerOption.WarningOption;
 import org.erlide.engine.util.PreferencesHelper;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpErlang;
-import org.erlide.util.erlang.TermParserException;
+import org.erlide.util.erlang.OtpParserException;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -169,7 +169,7 @@ public class CompilerOptions {
                         if (val != null) {
                             result.addAll(Lists.newArrayList(val.elements()));
                         }
-                    } catch (final TermParserException e) {
+                    } catch (final OtpParserException e) {
                         ErlLogger.warn(e);
                     }
                 }

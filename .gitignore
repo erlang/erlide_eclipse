@@ -4,6 +4,7 @@ deps
 *.beam
 *.plt
 erl_crash.dump
+target/
 
 .vagrant
 *.class
@@ -47,3 +48,5 @@ junit.xml
 
 *.pmd
 *.xtendbin
+.gradle
+build

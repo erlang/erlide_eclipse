@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dialyzer Ui
 Bundle-SymbolicName: org.erlide.dialyzer.ui;singleton:=true
-Bundle-Version: 0.24.12.qualifier
+Bundle-Version: 0.24.13.qualifier
 Bundle-Activator: org.erlide.dialyzer.ui.Activator
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.ui,
@@ -17,7 +17,7 @@ Require-Bundle: org.eclipse.ui,
  org.erlide.runtime,
  org.erlide.libs,
  org.erlide.util,
- org.erlide.kernel.tools;bundle-version="0.29.8"
+ org.erlide.kernel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.dialyzer.ui;x-internal:=true,

@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OTP debugger code
+Bundle-SymbolicName: org.erlide.kernel.debugger.otp;singleton:=true
+Bundle-Version: 4.1.0.qualifier
+Bundle-Vendor: erlide.org

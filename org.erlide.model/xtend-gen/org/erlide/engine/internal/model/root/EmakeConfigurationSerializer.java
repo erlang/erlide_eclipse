@@ -16,8 +16,8 @@ import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfigurationSerializer;
 import org.erlide.engine.services.parsing.SimpleParserService;
-import org.erlide.util.erlang.Bindings;
 import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.OtpBindings;
 
 @SuppressWarnings("all")
 public class EmakeConfigurationSerializer implements ProjectConfigurationSerializer {
@@ -45,7 +45,7 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
         @Override
         public void apply(final OtpErlangObject erl_opts) {
           try {
-            final Bindings bindings = ErlUtils.match("{Src,Opts}", erl_opts);
+            final OtpBindings bindings = ErlUtils.match("{Src,Opts}", erl_opts);
             if ((bindings != null)) {
               final String src = bindings.getAtom("Src");
               String _xifexpression = null;
@@ -68,7 +68,7 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
                   @Override
                   public void apply(final OtpErlangObject opt) {
                     try {
-                      final Bindings b = ErlUtils.match("{Tag,Arg}", opt);
+                      final OtpBindings b = ErlUtils.match("{Tag,Arg}", opt);
                       if ((b != null)) {
                         EmakeConfigurationSerializer.this.parseOption(b, result);
                       }
@@ -91,7 +91,7 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
     return _xblockexpression;
   }
   
-  public void parseOption(final Bindings b, final ErlangProjectProperties result) {
+  public void parseOption(final OtpBindings b, final ErlangProjectProperties result) {
     try {
       String _atom = b.getAtom("Tag");
       boolean _matched = false;
