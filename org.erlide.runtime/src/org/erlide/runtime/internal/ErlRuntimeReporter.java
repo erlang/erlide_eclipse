@@ -75,7 +75,7 @@ public class ErlRuntimeReporter {
                             + ". Please report the problem so that we can fix it.\n"
                             + (SystemConfiguration
                                     .hasFeatureEnabled("erlide.ericsson.user") ? ""
-                                            : "http://www.assembla.com/spaces/erlide/support/tickets")
+                                            : "https://github.com/erlide/erlide/issues")
                     : "";
             MessageReporter.showError(
                     msg + "\n\n"
