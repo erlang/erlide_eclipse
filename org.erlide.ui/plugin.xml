@@ -427,9 +427,15 @@
       </command> -->
       <command
             categoryId="org.erlide.ui.erlangCategory"
-            description="Clear Cache"
+            description="Clear cache"
             id="org.erlide.ui.actions.clearCache"
-            name="Clear Cache">
+            name="Clear cache">
+      </command>
+      <command
+            categoryId="org.erlide.ui.erlangCategory"
+            description="Clear all caches"
+            id="org.erlide.ui.actions.clearAllCaches"
+            name="Clear all caches">
       </command>
       <command
             categoryId="org.erlide.ui.erlangCategory"
@@ -901,12 +907,6 @@
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+M3+K">
-      </key>
-      <key
-            commandId="org.erlide.ui.actions.clearCache"
-            contextId="org.erlide.ui.erlangEditorScope"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+R">
       </key>
       <key
             commandId="org.erlide.ui.actions.callhierarchy"
