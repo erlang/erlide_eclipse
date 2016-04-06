@@ -13,8 +13,8 @@ package org.erlide.ui.editors.erl;
 
 /**
  * <p>
- * The {@link IErlangEditorActionDefinitionIds} class provides a set of
- * constants linking back to the actions defined in <code>plugin.xml</code>.
+ * The {@link IErlangEditorActionDefinitionIds} class provides a set of constants linking
+ * back to the actions defined in <code>plugin.xml</code>.
  * </p>
  *
  * @author Vlad Dumitrescu
@@ -27,6 +27,7 @@ public class IErlangEditorActionDefinitionIds {
     public static final String SHOW_OUTLINE = "org.erlide.ui.actions.show.outline";
     public static final String TEST = "org.erlide.ui.actions.test";
     public static final String CLEAR_CACHE = "org.erlide.ui.actions.clearCache";
+    public static final String CLEAR_ALL_CACHES = "org.erlide.ui.actions.clearAllCaches";
     public static final String OPEN = "org.erlide.ui.actions.open";
     public static final String COMPILE = "org.erlide.ui.actions.compile";
     public static final String CALLHIERARCHY = "org.erlide.ui.actions.callhierarchy";
