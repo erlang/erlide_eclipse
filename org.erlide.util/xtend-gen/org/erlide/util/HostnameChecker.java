@@ -134,12 +134,22 @@ public class HostnameChecker {
     boolean _xblockexpression = false;
     {
       this.notifyDeprecatedUsage();
+      final ErlangHostnameRetriever retriever = new ErlangHostnameRetriever(otpHome);
       String _hostsFileName = this.getHostsFileName();
       final boolean loaded = this.loadErlideHosts(_hostsFileName);
       if (loaded) {
-        return true;
+        boolean _or = false;
+        boolean _canConnect = retriever.canConnect(this.shortName, false);
+        if (_canConnect) {
+          _or = true;
+        } else {
+          boolean _canConnect_1 = retriever.canConnect(this.longName, true);
+          _or = _canConnect_1;
+        }
+        if (_or) {
+          return true;
+        }
       }
-      final ErlangHostnameRetriever retriever = new ErlangHostnameRetriever(otpHome);
       final Function0<String> _function = new Function0<String>() {
         @Override
         public String apply() {
@@ -335,12 +345,12 @@ public class HostnameChecker {
             this.schedule(500);
           } else {
             StringConcatenation _builder = new StringConcatenation();
-            _builder.append("You use the system properties erlide.long.name or erlide.short.name to set the host names to be used by both Erlang and Java.");
+            _builder.append("Deprecation notice: the system properties erlide.long.name or erlide.short.name to set the host names to be used by both Erlang and Java.");
             _builder.newLine();
             _builder.newLine();
-            _builder.append("The new way to do that is to edit ~/.erlide.hosts and change the values there if they aren\'t correct. ");
+            _builder.append("The new way to do that is to edit ~/.erlide.hosts and change the values there if they aren\'t correct.");
             _builder.newLine();
-            _builder.append("Remove the use of the system properties.");
+            _builder.append("Please remove the use of the system properties.");
             MessageReporter.showInfo(_builder.toString());
           }
           return Status.OK_STATUS;
