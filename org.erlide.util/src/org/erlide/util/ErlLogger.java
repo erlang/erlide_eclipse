@@ -22,13 +22,16 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+
 public class ErlLogger {
 
     private static final ErlSimpleFormatter SIMPLE_FORMATTER = new ErlSimpleFormatter();
     private static final ErlLogger INSTANCE = new ErlLogger();
 
     private Logger logger;
-    private String logDir;
+    private String logFile;
     private ConsoleHandler consoleHandler = null;
     private FileHandler fileHandler = null;
 
@@ -40,14 +43,15 @@ public class ErlLogger {
         logger = null;
     }
 
-    public final void setLogDir(final String dir) {
+    public final void setLogFile(final String file) {
         logger.removeHandler(fileHandler);
-        logDir = dir == null ? "./" : dir;
-        addFileHandler(SIMPLE_FORMATTER);
+        final IPath wroot = ResourcesPlugin.getWorkspace().getRoot().getLocation();
+        logFile = file == null ? wroot.append("erlide.log").toPortableString() : file;
+        addFileHandler(logFile, SIMPLE_FORMATTER);
     }
 
-    public String getLogLocation() {
-        return logDir + "/erlide.log";
+    public String getLogFile() {
+        return logFile;
     }
 
     public void log(final Level kind, final String fmt, final Object... o) {
@@ -143,9 +147,10 @@ public class ErlLogger {
         logger.addHandler(consoleHandler);
     }
 
-    private void addFileHandler(final ErlSimpleFormatter formatter) {
+    private void addFileHandler(final String fileName,
+            final ErlSimpleFormatter formatter) {
         try {
-            fileHandler = new FileHandler(getLogLocation());
+            fileHandler = new FileHandler(fileName);
             fileHandler.setFormatter(formatter);
             fileHandler.setLevel(java.util.logging.Level.FINEST);
             logger.addHandler(fileHandler);

@@ -1,10 +1,13 @@
 package org.erlide.core;
 
+import java.io.File;
 import java.util.logging.Level;
 
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
@@ -15,12 +18,12 @@ public class ErlangCoreLogger {
     private final Plugin plugin;
     private final ErlLogger logger;
 
-    public ErlangCoreLogger(final Plugin plugin, final String logDir) {
+    public ErlangCoreLogger(final Plugin plugin) {
         this.plugin = plugin;
         logger = ErlLogger.getInstance();
-        final String dir = getLogDir(logDir);
-        log(Level.INFO, "Erlide log is in " + dir);
-        logger.setLogDir(dir);
+        final String logFile = getLogFile();
+        log(Level.INFO, "Erlide log is in " + logFile);
+        logger.setLogFile(logFile);
     }
 
     public void debug(final String message) {
@@ -41,9 +44,8 @@ public class ErlangCoreLogger {
 
     public void log(final Level lvl, final String status) {
         logger.log(lvl, status);
-        plugin.getLog().log(
-                new Status(getSeverityFromLevel(lvl), plugin.getBundle()
-                        .getSymbolicName(), status));
+        plugin.getLog().log(new Status(getSeverityFromLevel(lvl),
+                plugin.getBundle().getSymbolicName(), status));
     }
 
     public void log(final String msg, final Throwable thr) {
@@ -73,18 +75,20 @@ public class ErlangCoreLogger {
         log(multi);
     }
 
-    public static String getLogDir(final String logDir) {
+    public static String getLogFile() {
         final IPreferencesService service = Platform.getPreferencesService();
-        final String key = "erlide_log_directory";
         final String pluginId = ErlangCore.PLUGIN_ID;
-        final String s = service.getString(pluginId, key, logDir, null);
-        String dir;
-        if (s != null) {
-            dir = s;
+        final String file = service.getString(pluginId, "log_file", "erlide.log", null);
+        final IPath path = new Path(file);
+        String location;
+        if (!path.isAbsolute()) {
+            final IPath wroot = ResourcesPlugin.getWorkspace().getRoot().getLocation();
+            location = wroot.append(file).toPortableString();
         } else {
-            dir = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
+            location = file;
         }
-        return dir;
+        new File(location).getParentFile().mkdirs();
+        return location;
     }
 
     private static Level getLevelFromSeverity(final int severity) {

@@ -34,7 +34,7 @@ public final class LogUtil {
 
     public static String fetchErlideLog() {
         final StringBuffer result = new StringBuffer();
-        final File log = new File(ErlLogger.getInstance().getLogLocation());
+        final File log = new File(ErlLogger.getInstance().getLogFile());
         try {
             final BufferedReader reader = new BufferedReader(new InputStreamReader(
                     new FileInputStream(log), "UTF-8"));

@@ -77,12 +77,11 @@ public class ErlangPlugin extends Plugin {
                 .traceSession(workspaceRoot.getLocation().toPortableString());
 
         final IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-        final String logDir = workspaceRoot.getLocation().toPortableString();
         final ErlangDebugOptionsManager erlangDebugOptionsManager = new ErlangDebugOptionsManager();
 
         ErlideEventBus.register(new ConsoleMessageReporter());
 
-        core = new ErlangCore(this, workspace, extensionRegistry, logDir,
+        core = new ErlangCore(this, workspace, extensionRegistry,
                 erlangDebugOptionsManager);
         core.start();
 
