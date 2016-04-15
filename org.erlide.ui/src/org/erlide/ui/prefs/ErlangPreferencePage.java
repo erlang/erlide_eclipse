@@ -73,6 +73,9 @@ public class ErlangPreferencePage extends PreferencePage implements
 
         final Link updateLink = new Link(composite, SWT.NONE);
         updateLink.setText(PreferenceMessages.ErlangPreferencePage_4);
+
+        final Link issuesLink = new Link(composite, SWT.NONE);
+        issuesLink.setText(PreferenceMessages.ErlangPreferencePage_5);
         new Label(panel, SWT.NONE);
 
         final Button reportButton = new Button(panel, SWT.NONE);

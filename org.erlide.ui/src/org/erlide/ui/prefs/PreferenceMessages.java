@@ -43,6 +43,7 @@ public final class PreferenceMessages {
     public static String ErlangPreferencePage_2;
     public static String ErlangPreferencePage_3;
     public static String ErlangPreferencePage_4;
+    public static String ErlangPreferencePage_5;
 
     static {
         NLS.initializeMessages(BUNDLE_NAME, PreferenceMessages.class);
