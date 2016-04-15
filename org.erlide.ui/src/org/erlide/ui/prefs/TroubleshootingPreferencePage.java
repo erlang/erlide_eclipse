@@ -96,7 +96,10 @@ public class TroubleshootingPreferencePage extends PreferencePage
         gd_lblNewLabel.widthHint = 479;
         lblNewLabel.setLayoutData(gd_lblNewLabel);
         lblNewLabel.setText(
-                "Erlide can't connect to the backend if the network (host names) is not configured properly.\r\n\r\nUsually it is enough to add the names under \"from Erlang\" to /etc/hosts (or similar).\r\n\r\nYou can also try to edit the values in ~/.erlide.hosts (here or directly in the file).  Green color on the fields means that the value works.\r\n\r\nWARNING! Wrong values may make erlide unusable! Delete ~/.erlide.hosts to force redetection.");
+                "Erlide can't connect to the backend if the network (host names) is not configured properly.\n\n"
+                        + "Usually it is enough to add the names under \"from Erlang\" to /etc/hosts (or similar).\n\n"
+                        + "You can also try to edit the values in ~/.erlide.hosts (here or directly in the file).  Green color on the fields means that the value works.\n\n"
+                        + "WARNING! Wrong values may make erlide unusable! Delete ~/.erlide.hosts to force redetection.");
 
         final Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(4, false));
@@ -224,8 +227,7 @@ public class TroubleshootingPreferencePage extends PreferencePage
                 Program.launch(link.getToolTipText());
             }
         });
-        link.setToolTipText(
-                "https://github.com/erlide/erlide/wiki/Troubleshooting\retriever\n");
+        link.setToolTipText("https://github.com/erlide/erlide/wiki/Troubleshooting");
         link.setText("<a>More detailed troubleshooting information</a>");
 
         updateHostNames();

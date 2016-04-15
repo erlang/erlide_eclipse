@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.Platform
 import org.eclipse.core.runtime.Status
 import org.eclipse.core.runtime.jobs.Job
-import org.erlide.util.ErlangHostnameRetriever
 import org.osgi.framework.Bundle
 
 class HostnameChecker {
@@ -85,6 +84,11 @@ class HostnameChecker {
 
         val ErlangHostnameRetriever retriever = new ErlangHostnameRetriever(otpHome)
 
+        val loadProperties = getErlideHostsFromProperties()
+        if(loadProperties) {
+            // if user uses this, we assume he knows best and don't check connectivity here
+            return true
+        }
         val loaded = loadErlideHosts(hostsFileName)
         if (loaded) {
             if (retriever.canConnect(shortName, false) || retriever.canConnect(longName, true))
@@ -108,8 +112,13 @@ class HostnameChecker {
         shortName = findFirstValue(shortValues)[it !== null && retriever.canConnect(it, false)]
 
         ErlLogger.debug("Detected:: '%s' && '%s'", shortName, longName)
-        saveErlideHosts(longName, shortName)
-        true
+        return canUseLongNames || canUseShortNames
+    }
+
+    def getErlideHostsFromProperties() {
+        shortName = System.getProperty("erlide.host.short")
+        longName = System.getProperty("erlide.host.long")
+        return canUseLongNames || canUseShortNames
     }
 
     def List<List<()=>String>> getAllHostNameValues(String otpHome) {
@@ -213,7 +222,7 @@ class HostnameChecker {
         }
     }
 
-    def private getHostsFileName() {
-        '''«System.getProperty("user.home")»/.erlide.hosts'''.toString
+    def private String getHostsFileName() {
+        '''«System.getProperty("user.home")»/.erlide.hosts'''
     }
 }
