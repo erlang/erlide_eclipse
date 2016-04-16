@@ -223,7 +223,7 @@ public class TroubleshootingPreferencePage extends PreferencePage
         link.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                // TODO open eclise help instead
+                // TODO open eclipse help instead
                 Program.launch(link.getToolTipText());
             }
         });
