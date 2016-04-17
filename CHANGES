@@ -1,3 +1,11 @@
+List of user visible changes between 0.31.0 and 0.32.0 (20160414)
+
+f065b88 #261 - search installed runtimes in $PATH too
+e1424fb append RpcMonitor stats to erlide.log instead of a separate file
+db786e5 make location of erlide log configurable
+454e9a0 output only warnings and errors in the console
+f8c4860 #263 - Add action to clear all model caches
+
 List of user visible changes between 0.30.1 and 0.31.0 (20160404)
 
 334684b indentation: add 'indent width' parameter

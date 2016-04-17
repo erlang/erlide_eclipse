@@ -2,6 +2,7 @@ package org.erlide.runtime.rpc;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
@@ -170,7 +171,7 @@ public class RpcMonitor {
 
     public static void dump(final String fileName, final int n, final boolean full) {
         try {
-            final PrintStream os = new PrintStream(fileName);
+            final PrintStream os = new PrintStream(new FileOutputStream(fileName, true));
             try {
                 dump(os, n, full);
             } finally {
@@ -183,13 +184,15 @@ public class RpcMonitor {
 
     public static synchronized void dump(final PrintStream out, final int n,
             final boolean full) {
+        final String delim = "--------------------------------------------------------------";
+
+        out.println("\n" + delim);
         out.format("*** RpcMonitor statistics%n - %d calls%n", callCount);
         if (DISABLED) {
             out.println(
                     "\nRpcMonitor was not enabled.\n\nUse -Derlide.rpcmonitor to enable it.");
             return;
         }
-        final String delim = "----------------------------------------------------------------------------------------";
         out.println(delim);
         out.println();
         out.format("Slowest %d calls%n", slowest.size());

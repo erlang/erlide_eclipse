@@ -8,8 +8,6 @@
  *******************************************************************************/
 package org.erlide.core;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.logging.Level;
 
 import org.eclipse.core.resources.ISaveContext;
@@ -48,14 +46,14 @@ public final class ErlangCore {
     private final ErlangCoreLogger logger;
 
     public ErlangCore(final Plugin plugin, final IWorkspace workspace,
-            final IExtensionRegistry extensionRegistry, final String logDir,
+            final IExtensionRegistry extensionRegistry,
             final ErlangDebugOptionsManager erlangDebugOptionsManager) {
         this.plugin = plugin;
         this.workspace = workspace;
         this.extensionRegistry = extensionRegistry;
         this.erlangDebugOptionsManager = erlangDebugOptionsManager;
         featureVersion = "?";
-        logger = new ErlangCoreLogger(plugin, logDir);
+        logger = new ErlangCoreLogger(plugin);
     }
 
     public void start() throws CoreException {
@@ -91,10 +89,9 @@ public final class ErlangCore {
         final String location = ResourcesPlugin.getWorkspace().getRoot().getLocation()
                 .toPortableString();
 
-        final String dateNow = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-
         RpcMonitor.cleanupOldLogs(location, "rpc_monitor");
-        RpcMonitor.dump(location + "/rpc_monitor-" + dateNow + ".dump");
+        ErlLogger.getInstance().dispose();
+        RpcMonitor.dump(ErlLogger.getInstance().getLogFile());
     }
 
     public IWorkspace getWorkspace() {
@@ -128,8 +125,8 @@ public final class ErlangCore {
                 @Override
                 public void saving(final ISaveContext context1) throws CoreException {
                     try {
-                        InstanceScope.INSTANCE.getNode(
-                                plugin.getBundle().getSymbolicName()).flush();
+                        InstanceScope.INSTANCE
+                                .getNode(plugin.getBundle().getSymbolicName()).flush();
                     } catch (final BackingStoreException e) {
                         // ignore
                     }
@@ -157,8 +154,8 @@ public final class ErlangCore {
         }
         final String globalTraceValue = Platform
                 .getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION);
-        final String value = Platform.getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION + "/"
-                + traceOption);
+        final String value = Platform
+                .getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION + "/" + traceOption);
         if ("true".equalsIgnoreCase(globalTraceValue) && "true".equalsIgnoreCase(value)) {
             return true;
         }

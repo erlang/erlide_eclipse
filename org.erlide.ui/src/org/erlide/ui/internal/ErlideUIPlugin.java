@@ -13,7 +13,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
@@ -44,9 +43,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -68,8 +64,7 @@ import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.UIMessageReporter;
 import org.erlide.ui.console.ErlConsoleManager;
-import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.ui.editors.erl.actions.ClearCacheAction;
+import org.erlide.ui.editors.erl.actions.ClearAllCachesAction;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.perspectives.ErlangPerspective;
 import org.erlide.ui.prefs.HighlightStyle;
@@ -88,8 +83,6 @@ import org.erlide.util.ErlideEventBus;
 import org.erlide.util.HostnameChecker;
 import org.erlide.util.SystemConfiguration;
 import org.osgi.framework.BundleContext;
-
-import com.google.common.collect.Lists;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -239,39 +232,15 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             protected IStatus run(final IProgressMonitor monitor) {
                 ErlLogger.info("*** Automatically cleaning caches ***");
                 try {
-                    try {
-                        final List<IEditorReference> editorRefs = getWorkbenchEditorReferences();
-                        for (final IEditorReference editorRef : editorRefs) {
-                            final IEditorPart editor = editorRef.getEditor(false);
-                            if (editor instanceof ErlangEditor) {
-                                final ErlangEditor erlangEditor = (ErlangEditor) editor;
-                                ClearCacheAction.resetCacheForEditor(erlangEditor);
-                            }
-                        }
-                    } catch (final Exception e) {
-                        // ignore
-                    }
+                    ClearAllCachesAction.clearAllCaches();
                 } finally {
                     schedule(TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS));
                 }
                 return Status.OK_STATUS;
             }
 
-            public List<IEditorReference> getWorkbenchEditorReferences() {
-                final IWorkbench workbench = PlatformUI.getWorkbench();
-                final IWorkbenchPage[] pages = workbench.getActiveWorkbenchWindow()
-                        .getPages();
-                final List<IEditorReference> editorRefs = Lists.newArrayList();
-                for (final IWorkbenchPage page : pages) {
-                    for (final IEditorReference ref : page.getEditorReferences()) {
-                        editorRefs.add(ref);
-                    }
-                }
-                return editorRefs;
-            }
-
         };
-        cacheCleanerJob.setPriority(Job.SHORT);
+        cacheCleanerJob.setPriority(Job.DECORATE);
         cacheCleanerJob.setSystem(true);
         cacheCleanerJob.schedule(getTimeToMidnight());
     }

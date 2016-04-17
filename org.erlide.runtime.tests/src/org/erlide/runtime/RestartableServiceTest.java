@@ -199,10 +199,13 @@ public class RestartableServiceTest {
         dummy.triggerCrash();
         Thread.sleep(100);
         service.stopAsync().awaitTerminated();
+        Thread.sleep(100);
 
-        Assert.assertThat(events, Matchers.contains("starting", "running", "starting",
-                "running", "starting", "running", "stopping RUNNING",
-                "terminated STOPPING"));
+        System.out.println(events);
+        Assert.assertThat(events,
+                Matchers.contains("starting", "running", "starting", "running",
+                        "starting", "running", "stopping RUNNING",
+                        "terminated STOPPING"));
     }
 
 }

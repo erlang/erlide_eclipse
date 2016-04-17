@@ -3,8 +3,6 @@ package org.erlide.runtime.runtimeinfo
 import com.google.common.collect.Lists
 import java.io.File
 import java.io.IOException
-import java.util.ArrayList
-import java.util.Arrays
 import java.util.Collection
 import java.util.List
 import java.util.Set
@@ -12,23 +10,23 @@ import org.erlide.util.SystemConfiguration
 
 class RuntimeFinder {
 
+    val static locations = #["c:/program files", "c:/program files (x86)", "c:/programs", "c:/", "c:/apps", "/usr",
+        "/usr/lib", "/usr/lib64", "/usr/local", "/usr/local/lib", "/Library/Frameworks/erlang/Versions"]
+
     def static Collection<RuntimeInfo> guessRuntimeLocations() {
         val List<RuntimeInfo> result = newArrayList()
         val homeDir = SystemConfiguration.instance.homeDir
-        val String[] locations = #["c:/program files", "c:/program files (x86)",
-            "c:/programs", "c:/", "c:/apps", "/usr", "/usr/lib", "/usr/lib64",
-            "/usr/local", "/usr/local/lib", "/Library/Frameworks/erlang/Versions",
-            homeDir]
-        val Set<String> locs = newHashSet(Arrays.asList(locations))
+        val syspath = System.getenv("PATH").split(File.pathSeparator)
+        val Set<String> locs = newHashSet(syspath + locations)
+        locs.add(homeDir)
         val envRuntime = System.getProperty("erlide.runtime")
-        if(envRuntime!==null)locs.add(envRuntime)
+        if(envRuntime !== null) locs.add(envRuntime)
         locs.addAll(getKerlLocations())
-        
+
         for (String loc : locs) {
             val roots = findRuntime(loc)
             for (File root : roots) {
-                val RuntimeInfo rt = new RuntimeInfo.Builder().withName(root.name).
-                    withHomeDir(root.path).build()
+                val RuntimeInfo rt = new RuntimeInfo.Builder().withName(root.name).withHomeDir(root.path).build()
                 result.add(rt)
             }
         }
@@ -37,8 +35,7 @@ class RuntimeFinder {
 
     def static Collection<String> getKerlLocations() {
         val List<String> result = Lists.newArrayList()
-        val ProcessBuilder builder = new ProcessBuilder(
-            Lists.newArrayList("kerl", "list", "installations"))
+        val ProcessBuilder builder = new ProcessBuilder(#["kerl", "list", "installations"])
         try {
             val Process process = builder.start()
             val StringBuilder line = new StringBuilder()
@@ -64,7 +61,7 @@ class RuntimeFinder {
     }
 
     def private static Collection<File> findRuntime(String loc) {
-        val Collection<File> result = new ArrayList<File>()
+        val Collection<File> result = newArrayList()
         if (loc === null) {
             return result
         }
@@ -85,4 +82,3 @@ class RuntimeFinder {
     }
 
 }
-    

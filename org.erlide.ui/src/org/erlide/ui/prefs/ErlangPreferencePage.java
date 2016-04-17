@@ -18,6 +18,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -31,8 +32,8 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.wb.swt.ResourceManager;
 import org.erlide.core.ErlangPlugin;
 
-public class ErlangPreferencePage extends PreferencePage implements
-        IWorkbenchPreferencePage {
+public class ErlangPreferencePage extends PreferencePage
+        implements IWorkbenchPreferencePage {
     private Text txtLocalErlangNodes;
 
     public ErlangPreferencePage() {
@@ -70,9 +71,34 @@ public class ErlangPreferencePage extends PreferencePage implements
 
         final Link erlideorgLink = new Link(composite, SWT.NONE);
         erlideorgLink.setText(PreferenceMessages.ErlangPreferencePage_3);
+        erlideorgLink.setToolTipText(PreferenceMessages.ErlangPreferencePage_3a);
+        erlideorgLink.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                Program.launch(erlideorgLink.getToolTipText());
+            }
+        });
 
         final Link updateLink = new Link(composite, SWT.NONE);
         updateLink.setText(PreferenceMessages.ErlangPreferencePage_4);
+        updateLink.setToolTipText(PreferenceMessages.ErlangPreferencePage_4a);
+        updateLink.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                Program.launch(updateLink.getToolTipText());
+            }
+        });
+
+        final Link issuesLink = new Link(composite, SWT.NONE);
+        issuesLink.setText(PreferenceMessages.ErlangPreferencePage_5);
+        issuesLink.setToolTipText(PreferenceMessages.ErlangPreferencePage_5a);
+        issuesLink.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                Program.launch(issuesLink.getToolTipText());
+            }
+        });
+
         new Label(panel, SWT.NONE);
 
         final Button reportButton = new Button(panel, SWT.NONE);
@@ -87,8 +113,8 @@ public class ErlangPreferencePage extends PreferencePage implements
         new Label(panel, SWT.NONE);
 
         txtLocalErlangNodes = new Text(panel, SWT.BORDER | SWT.READ_ONLY | SWT.MULTI);
-        txtLocalErlangNodes
-                .setText("This machine supports local Erlang nodes with only short names \nbecause of its hostname configuration. \n\nTo enable long names locally, make sure that the machine \nhas a proper FQDN on the network. ");
+        txtLocalErlangNodes.setText(
+                "This machine supports local Erlang nodes with only short names \nbecause of its hostname configuration. \n\nTo enable long names locally, make sure that the machine \nhas a proper FQDN on the network. ");
         final GridData gd_txtLocalErlangNodes = new GridData(SWT.FILL, SWT.CENTER, true,
                 false, 1, 1);
         gd_txtLocalErlangNodes.widthHint = 339;

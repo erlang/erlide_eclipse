@@ -131,100 +131,133 @@ public class HostnameChecker {
    * Start erlang nodes and find out how they resolve the long/short host names.
    */
   public boolean detectHostNames(final String otpHome) {
-    boolean _xblockexpression = false;
-    {
-      this.notifyDeprecatedUsage();
-      String _hostsFileName = this.getHostsFileName();
-      final boolean loaded = this.loadErlideHosts(_hostsFileName);
-      if (loaded) {
+    this.notifyDeprecatedUsage();
+    final ErlangHostnameRetriever retriever = new ErlangHostnameRetriever(otpHome);
+    final boolean loadProperties = this.getErlideHostsFromProperties();
+    if (loadProperties) {
+      return true;
+    }
+    String _hostsFileName = this.getHostsFileName();
+    final boolean loaded = this.loadErlideHosts(_hostsFileName);
+    if (loaded) {
+      boolean _or = false;
+      boolean _canConnect = retriever.canConnect(this.shortName, false);
+      if (_canConnect) {
+        _or = true;
+      } else {
+        boolean _canConnect_1 = retriever.canConnect(this.longName, true);
+        _or = _canConnect_1;
+      }
+      if (_or) {
         return true;
       }
-      final ErlangHostnameRetriever retriever = new ErlangHostnameRetriever(otpHome);
-      final Function0<String> _function = new Function0<String>() {
-        @Override
-        public String apply() {
-          return HostnameChecker.this.longName;
-        }
-      };
-      final Function0<String> _function_1 = new Function0<String>() {
-        @Override
-        public String apply() {
-          return retriever.getErlangHostName(true);
-        }
-      };
-      final Function0<String> _function_2 = new Function0<String>() {
-        @Override
-        public String apply() {
-          return HostnameChecker.this.getJavaLongHostName();
-        }
-      };
-      final Function0<String> _function_3 = new Function0<String>() {
-        @Override
-        public String apply() {
-          return HostnameChecker.longNameFallback;
-        }
-      };
-      final Iterable<Function0<? extends String>> longValues = Collections.<Function0<? extends String>>unmodifiableList(CollectionLiterals.<Function0<? extends String>>newArrayList(_function, _function_1, _function_2, _function_3));
-      final Function1<String, Boolean> _function_4 = new Function1<String, Boolean>() {
-        @Override
-        public Boolean apply(final String it) {
-          boolean _and = false;
-          if (!(it != null)) {
-            _and = false;
-          } else {
-            boolean _canConnect = retriever.canConnect(it, true);
-            _and = _canConnect;
-          }
-          return Boolean.valueOf(_and);
-        }
-      };
-      String _findFirstValue = this.findFirstValue(longValues, _function_4);
-      this.longName = _findFirstValue;
-      final Function0<String> _function_5 = new Function0<String>() {
-        @Override
-        public String apply() {
-          return HostnameChecker.this.shortName;
-        }
-      };
-      final Function0<String> _function_6 = new Function0<String>() {
-        @Override
-        public String apply() {
-          return retriever.getErlangHostName(false);
-        }
-      };
-      final Function0<String> _function_7 = new Function0<String>() {
-        @Override
-        public String apply() {
-          return HostnameChecker.this.getJavaShortHostName();
-        }
-      };
-      final Function0<String> _function_8 = new Function0<String>() {
-        @Override
-        public String apply() {
-          return HostnameChecker.shortNameFallback;
-        }
-      };
-      final Iterable<Function0<? extends String>> shortValues = Collections.<Function0<? extends String>>unmodifiableList(CollectionLiterals.<Function0<? extends String>>newArrayList(_function_5, _function_6, _function_7, _function_8));
-      final Function1<String, Boolean> _function_9 = new Function1<String, Boolean>() {
-        @Override
-        public Boolean apply(final String it) {
-          boolean _and = false;
-          if (!(it != null)) {
-            _and = false;
-          } else {
-            boolean _canConnect = retriever.canConnect(it, false);
-            _and = _canConnect;
-          }
-          return Boolean.valueOf(_and);
-        }
-      };
-      String _findFirstValue_1 = this.findFirstValue(shortValues, _function_9);
-      this.shortName = _findFirstValue_1;
-      ErlLogger.debug("Detected:: \'%s\' && \'%s\'", this.shortName, this.longName);
-      this.saveErlideHosts(this.longName, this.shortName);
-      _xblockexpression = true;
     }
-    return _xblockexpression;
+    final Function0<String> _function = new Function0<String>() {
+      @Override
+      public String apply() {
+        return HostnameChecker.this.longName;
+      }
+    };
+    final Function0<String> _function_1 = new Function0<String>() {
+      @Override
+      public String apply() {
+        return retriever.getErlangHostName(true);
+      }
+    };
+    final Function0<String> _function_2 = new Function0<String>() {
+      @Override
+      public String apply() {
+        return HostnameChecker.this.getJavaLongHostName();
+      }
+    };
+    final Function0<String> _function_3 = new Function0<String>() {
+      @Override
+      public String apply() {
+        return HostnameChecker.longNameFallback;
+      }
+    };
+    final Iterable<Function0<? extends String>> longValues = Collections.<Function0<? extends String>>unmodifiableList(CollectionLiterals.<Function0<? extends String>>newArrayList(_function, _function_1, _function_2, _function_3));
+    final Function1<String, Boolean> _function_4 = new Function1<String, Boolean>() {
+      @Override
+      public Boolean apply(final String it) {
+        boolean _and = false;
+        if (!(it != null)) {
+          _and = false;
+        } else {
+          boolean _canConnect = retriever.canConnect(it, true);
+          _and = _canConnect;
+        }
+        return Boolean.valueOf(_and);
+      }
+    };
+    String _findFirstValue = this.findFirstValue(longValues, _function_4);
+    this.longName = _findFirstValue;
+    final Function0<String> _function_5 = new Function0<String>() {
+      @Override
+      public String apply() {
+        return HostnameChecker.this.shortName;
+      }
+    };
+    final Function0<String> _function_6 = new Function0<String>() {
+      @Override
+      public String apply() {
+        return retriever.getErlangHostName(false);
+      }
+    };
+    final Function0<String> _function_7 = new Function0<String>() {
+      @Override
+      public String apply() {
+        return HostnameChecker.this.getJavaShortHostName();
+      }
+    };
+    final Function0<String> _function_8 = new Function0<String>() {
+      @Override
+      public String apply() {
+        return HostnameChecker.shortNameFallback;
+      }
+    };
+    final Iterable<Function0<? extends String>> shortValues = Collections.<Function0<? extends String>>unmodifiableList(CollectionLiterals.<Function0<? extends String>>newArrayList(_function_5, _function_6, _function_7, _function_8));
+    final Function1<String, Boolean> _function_9 = new Function1<String, Boolean>() {
+      @Override
+      public Boolean apply(final String it) {
+        boolean _and = false;
+        if (!(it != null)) {
+          _and = false;
+        } else {
+          boolean _canConnect = retriever.canConnect(it, false);
+          _and = _canConnect;
+        }
+        return Boolean.valueOf(_and);
+      }
+    };
+    String _findFirstValue_1 = this.findFirstValue(shortValues, _function_9);
+    this.shortName = _findFirstValue_1;
+    ErlLogger.debug("Detected:: \'%s\' && \'%s\'", this.shortName, this.longName);
+    boolean _or_1 = false;
+    boolean _canUseLongNames = this.canUseLongNames();
+    if (_canUseLongNames) {
+      _or_1 = true;
+    } else {
+      boolean _canUseShortNames = this.canUseShortNames();
+      _or_1 = _canUseShortNames;
+    }
+    return _or_1;
+  }
+  
+  public boolean getErlideHostsFromProperties() {
+    String _property = System.getProperty("erlide.host.short");
+    this.shortName = _property;
+    String _property_1 = System.getProperty("erlide.host.long");
+    this.longName = _property_1;
+    boolean _or = false;
+    boolean _canUseLongNames = this.canUseLongNames();
+    if (_canUseLongNames) {
+      _or = true;
+    } else {
+      boolean _canUseShortNames = this.canUseShortNames();
+      _or = _canUseShortNames;
+    }
+    return _or;
   }
   
   public List<List<Function0<? extends String>>> getAllHostNameValues(final String otpHome) {
@@ -335,12 +368,12 @@ public class HostnameChecker {
             this.schedule(500);
           } else {
             StringConcatenation _builder = new StringConcatenation();
-            _builder.append("You use the system properties erlide.long.name or erlide.short.name to set the host names to be used by both Erlang and Java.");
+            _builder.append("Deprecation notice: the system properties erlide.long.name or erlide.short.name to set the host names to be used by both Erlang and Java.");
             _builder.newLine();
             _builder.newLine();
-            _builder.append("The new way to do that is to edit ~/.erlide.hosts and change the values there if they aren\'t correct. ");
+            _builder.append("The new way to do that is to edit ~/.erlide.hosts and change the values there if they aren\'t correct.");
             _builder.newLine();
-            _builder.append("Remove the use of the system properties.");
+            _builder.append("Please remove the use of the system properties.");
             MessageReporter.showInfo(_builder.toString());
           }
           return Status.OK_STATUS;

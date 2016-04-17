@@ -27,11 +27,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -41,13 +39,13 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.jdt.annotation.NonNull;
+import org.erlide.backend.BackendUtils;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.debug.BeamUtil;
 import org.erlide.backend.debug.DebuggerEventDaemon;
 import org.erlide.backend.debug.ErlangLineBreakpoint;
 import org.erlide.backend.debug.ErlideDebug;
 import org.erlide.backend.debug.IErlangDebugNode;
-import org.erlide.backend.internal.BackendActivator;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.root.ErlangProjectProperties;
@@ -56,8 +54,8 @@ import org.erlide.util.ErlLogger;
 import org.erlide.util.IDisposable;
 import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.OtpErlang;
-import org.erlide.util.erlang.SignatureException;
 import org.erlide.util.erlang.OtpParserException;
+import org.erlide.util.erlang.SignatureException;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -499,11 +497,10 @@ public class ErlangDebugTarget extends ErlangDebugElement
 
         final List<OtpErlangTuple> modules = new ArrayList<OtpErlangTuple>(
                 debuggerModules.size());
+        final String ver = backend.getRuntime().getVersion().asMajor().toString()
+                .toLowerCase();
         for (final String module : debuggerModules) {
-            final String ver = backend.getRuntime().getVersion().asMajor().toString()
-                    .toLowerCase();
-            final String bundleName = "org.erlide.kernel.debugger." + ver;
-            OtpErlangBinary b = getDebuggerBeam(module, bundleName);
+            OtpErlangBinary b = getDebuggerBeam(module, "org.erlide.kernel.debugger.otp");
             if (b == null) {
                 b = getDebuggerBeam(module, "org.erlide.kernel.debugger");
             }
@@ -513,7 +510,7 @@ public class ErlangDebugTarget extends ErlangDebugElement
                         filename, b);
                 modules.add(t);
             } else {
-                ErlLogger.warn("Could not find debugger module %s", module);
+                ErlLogger.warn("Could not find debugger module %s (%s)", module, ver);
             }
         }
         ErlideDebug.distributeDebuggerCode(backend.getOtpRpc(), modules);
@@ -532,10 +529,8 @@ public class ErlangDebugTarget extends ErlangDebugElement
         final String beamname = module + ".beam";
         final Bundle bundle = Platform.getBundle(bundleName);
 
-        final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        final IConfigurationElement[] els = reg
-                .getConfigurationElementsFor(BackendActivator.PLUGIN_ID, "codepath");
-
+        final IConfigurationElement[] els = BackendUtils
+                .getCodepathConfigurationElements();
         for (final IConfigurationElement el : els) {
             final IContributor c = el.getContributor();
             final String name = c.getName();
@@ -588,26 +583,30 @@ public class ErlangDebugTarget extends ErlangDebugElement
             ErlLogger.warn("debugger bundle was not found...");
             return new ArrayList<String>();
         }
-        final List<String> dbg_modules = getModulesFromBundle(debugger);
+        final List<String> dbg_modules = getModulesFromBundle(debugger, null);
 
-        final String ver = backend.getRuntime().getVersion().asMajor().toString()
-                .toLowerCase();
-        final Bundle debugger_otp = Platform
-                .getBundle("org.erlide.kernel.debugger." + ver);
+        final Bundle debugger_otp = Platform.getBundle("org.erlide.kernel.debugger.otp");
         if (debugger_otp == null) {
-            ErlLogger.warn("debugger %s bundle was not found...", ver);
+            ErlLogger.error("debugger bundle was not found!");
             return dbg_modules;
         }
-        final List<String> dbg_otp_modules = getModulesFromBundle(debugger_otp);
+        final String ver = backend.getRuntime().getVersion().asMajor().toString()
+                .toLowerCase();
+        final List<String> dbg_otp_modules = getModulesFromBundle(debugger_otp, ver);
 
         dbg_modules.addAll(dbg_otp_modules);
         return dbg_modules;
     }
 
-    private List<String> getModulesFromBundle(final Bundle bundle) {
+    private List<String> getModulesFromBundle(final Bundle bundle, final String ver) {
         final List<String> modules = Lists.newArrayList();
+        final String path = ver == null ? "/debugger" : "/debugger/" + ver;
         @SuppressWarnings("rawtypes")
-        final Enumeration beams = bundle.findEntries("/ebin", "*.beam", false);
+        final Enumeration beams = bundle.findEntries(path, "*.beam", false);
+        if (beams == null) {
+            ErlLogger.error("No beams found in %s!", bundle);
+            return modules;
+        }
         while (beams.hasMoreElements()) {
             final URL beam = (URL) beams.nextElement();
             modules.add(new Path(beam.getPath()).removeFileExtension().lastSegment());
