@@ -104,7 +104,13 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
             public Path apply(final OtpErlangObject it) {
               Path _xblockexpression = null;
               {
-                final String s = ((OtpErlangString) it).stringValue();
+                String _xifexpression = null;
+                if ((it instanceof OtpErlangString)) {
+                  _xifexpression = ((OtpErlangString)it).stringValue();
+                } else {
+                  _xifexpression = it.toString();
+                }
+                final String s = _xifexpression;
                 _xblockexpression = new Path(s);
               }
               return _xblockexpression;

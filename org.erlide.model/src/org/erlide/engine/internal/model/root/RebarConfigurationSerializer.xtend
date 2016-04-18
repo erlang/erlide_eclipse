@@ -18,18 +18,18 @@ class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
         null
 
     // TODO we need to keep the original parsed config and only replace changed parts!
-    //        // TODO compiler options
-    //        '''
-    //            %% coding: utf-8
-    //            {require_min_otp_vsn, "«info.runtimeVersion»"}.
-    //            {erl_opts,
-    //                [
-    //                 debug_info,
-    //                 «FOR inc: info.includeDirs SEPARATOR ','»{i, "«inc»"},«ENDFOR»
-    //                 {src_dirs, [«FOR src: info.sourceDirs SEPARATOR ','»«src.toPortableString»«ENDFOR»]}
-    //                ]}.
+    // // TODO compiler options
+    // '''
+    // %% coding: utf-8
+    // {require_min_otp_vsn, "«info.runtimeVersion»"}.
+    // {erl_opts,
+    // [
+    // debug_info,
+    // «FOR inc: info.includeDirs SEPARATOR ','»{i, "«inc»"},«ENDFOR»
+    // {src_dirs, [«FOR src: info.sourceDirs SEPARATOR ','»«src.toPortableString»«ENDFOR»]}
+    // ]}.
     //
-    //        '''
+    // '''
     }
 
     override decodeConfig(String config) {
@@ -37,7 +37,7 @@ class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
         result.setOutputDir(new Path("ebin"))
 
         val content = ErlangEngine.instance.simpleParserService.parse(config)
-        if (content.empty) return result
+        if(content.empty) return result
 
         content.forEach [ erl_opts |
             val bindings = ErlUtils.match("{erl_opts,Opts}", erl_opts)
@@ -70,9 +70,12 @@ class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
             case "src_dirs": {
                 result.setSourceDirs(
                     b.getList("Arg").map [
-                        val s = (it as OtpErlangString).stringValue
-                        new Path(s)
-                    ])
+                    val s = if (it instanceof OtpErlangString)
+                            it.stringValue
+                        else
+                            it.toString
+                    new Path(s)
+                ])
             }
         }
     }
