@@ -78,7 +78,10 @@ public class ErlangCoreLogger {
     public static String getLogFile() {
         final IPreferencesService service = Platform.getPreferencesService();
         final String pluginId = ErlangCore.PLUGIN_ID;
-        final String file = service.getString(pluginId, "log_file", "erlide.log", null);
+        String file = System.getProperty("erlide.log_file");
+        if (file == null) {
+            file = service.getString(pluginId, "log_file", "erlide.log", null);
+        }
         final IPath path = new Path(file);
         String location;
         if (!path.isAbsolute()) {
