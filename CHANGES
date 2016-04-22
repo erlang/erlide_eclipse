@@ -1,3 +1,7 @@
+List of user visible changes between 0.32.0 and 0.32.1 (20160422)
+
+1287de8 configure erlide log via system property
+
 List of user visible changes between 0.31.0 and 0.32.0 (20160414)
 
 f065b88 #261 - search installed runtimes in $PATH too
