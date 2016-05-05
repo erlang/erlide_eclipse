@@ -2,7 +2,7 @@
 
 [![GitHub version](https://badge.fury.io/gh/erlide%2Ferlide.svg)](https://badge.fury.io/gh/erlide%2Ferlide)
 
-Documentation may be found at [the project site](http://erlide.org/erlide.html). 
+Documentation may be found at [the project site](http://erlide.org/articles/index.html). 
 Everyone can submit documentation changes via push requests, look for the "Edit me on 
 Github" link on each page.
 
