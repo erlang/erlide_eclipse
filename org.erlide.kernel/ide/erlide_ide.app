@@ -1,5 +1,5 @@
 {application,erlide_ide,
-             [{vsn,"0.101.0"},
+             [{vsn,"0.101.1"},
               {erlide_context,ide},
               {registered,[]},
               {applications,[kernel,stdlib,erlide_common]},

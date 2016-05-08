@@ -14,7 +14,7 @@ CMD=$1
 
 echo "Base version: $BASE"
 
-CRT=$(git branch | grep '*' | cut -d ' ' -f 2)
+CRT=$(git rev-parse --abbrev-ref HEAD)
 PROJECTS=$(git log --name-only $BASE..$CRT --oneline | cut -d ' ' -f 1 | grep org.erlide | cut -f 1 -d '/' | sort | uniq)
 
 function inc_version {
