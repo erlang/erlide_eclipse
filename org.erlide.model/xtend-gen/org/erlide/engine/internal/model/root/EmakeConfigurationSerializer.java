@@ -95,20 +95,18 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
     try {
       String _atom = b.getAtom("Tag");
       boolean _matched = false;
-      if (!_matched) {
-        if (Objects.equal(_atom, "i")) {
-          _matched=true;
-          Collection<IPath> _includeDirs = result.getIncludeDirs();
-          final List<IPath> incs = new ArrayList<IPath>(_includeDirs);
-          String _string = b.getString("Arg");
-          final Path inc = new Path(_string);
-          boolean _contains = incs.contains(inc);
-          boolean _not = (!_contains);
-          if (_not) {
-            incs.add(inc);
-          }
-          result.setIncludeDirs(incs);
+      if (Objects.equal(_atom, "i")) {
+        _matched=true;
+        Collection<IPath> _includeDirs = result.getIncludeDirs();
+        final List<IPath> incs = new ArrayList<IPath>(_includeDirs);
+        String _string = b.getString("Arg");
+        final Path inc = new Path(_string);
+        boolean _contains = incs.contains(inc);
+        boolean _not = (!_contains);
+        if (_not) {
+          incs.add(inc);
         }
+        result.setIncludeDirs(incs);
       }
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);

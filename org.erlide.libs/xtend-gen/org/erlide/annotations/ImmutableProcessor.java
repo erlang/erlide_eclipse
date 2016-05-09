@@ -10,7 +10,6 @@ import org.eclipse.xtend.lib.macro.declaration.MutableClassDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableConstructorDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableFieldDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableMethodDeclaration;
-import org.eclipse.xtend.lib.macro.declaration.Type;
 import org.eclipse.xtend.lib.macro.declaration.TypeReference;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Extension;
@@ -218,25 +217,14 @@ public class ImmutableProcessor extends AbstractClassProcessor {
       public void apply(final MutableFieldDeclaration field) {
         final TypeReference fieldType = field.getType();
         String _xifexpression = null;
-        boolean _or = false;
-        TypeReference _primitiveBoolean = context.getPrimitiveBoolean();
-        boolean _equals = Objects.equal(fieldType, _primitiveBoolean);
-        if (_equals) {
-          _or = true;
-        } else {
-          Type _type = fieldType.getType();
-          String _simpleName = _type.getSimpleName();
-          boolean _equals_1 = Objects.equal(_simpleName, "Boolean");
-          _or = _equals_1;
-        }
-        if (_or) {
+        if ((Objects.equal(fieldType, context.getPrimitiveBoolean()) || Objects.equal(fieldType.getType().getSimpleName(), "Boolean"))) {
           _xifexpression = "is";
         } else {
           _xifexpression = "get";
         }
         final String prefix = _xifexpression;
-        String _simpleName_1 = field.getSimpleName();
-        String _firstUpper = StringExtensions.toFirstUpper(_simpleName_1);
+        String _simpleName = field.getSimpleName();
+        String _firstUpper = StringExtensions.toFirstUpper(_simpleName);
         String _plus = (prefix + _firstUpper);
         final Procedure1<MutableMethodDeclaration> _function = new Procedure1<MutableMethodDeclaration>() {
           @Override

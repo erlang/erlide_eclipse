@@ -152,15 +152,8 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                           it.setData(builder);
                           it.addSelectionListener(builderListener);
                           it.setSelection((builder == BuilderTool.INTERNAL));
-                          boolean _and = false;
-                          boolean _hasFeatureEnabled = SystemConfiguration.hasFeatureEnabled("erlide.newbuilders");
-                          boolean _not = (!_hasFeatureEnabled);
-                          if (!_not) {
-                            _and = false;
-                          } else {
-                            _and = (builder != BuilderTool.INTERNAL);
-                          }
-                          if (_and) {
+                          if (((!SystemConfiguration.hasFeatureEnabled("erlide.newbuilders")) && 
+                            (builder != BuilderTool.INTERNAL))) {
                             it.setEnabled(false);
                           }
                         }
@@ -171,15 +164,8 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                         public void apply(final Label it) {
                           String _description = ErlangProjectBuilderPage.this.getDescription(builder);
                           it.setText(_description);
-                          boolean _and = false;
-                          boolean _hasFeatureEnabled = SystemConfiguration.hasFeatureEnabled("erlide.newbuilders");
-                          boolean _not = (!_hasFeatureEnabled);
-                          if (!_not) {
-                            _and = false;
-                          } else {
-                            _and = (builder != BuilderTool.INTERNAL);
-                          }
-                          if (_and) {
+                          if (((!SystemConfiguration.hasFeatureEnabled("erlide.newbuilders")) && 
+                            (builder != BuilderTool.INTERNAL))) {
                             it.setEnabled(false);
                           }
                         }
@@ -233,15 +219,8 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                           it.setData(config);
                           it.addSelectionListener(configListener);
                           it.setSelection((config == ProjectConfigType.INTERNAL));
-                          boolean _and = false;
-                          boolean _hasFeatureEnabled = SystemConfiguration.hasFeatureEnabled("erlide.newbuilders");
-                          boolean _not = (!_hasFeatureEnabled);
-                          if (!_not) {
-                            _and = false;
-                          } else {
-                            _and = (config != ProjectConfigType.INTERNAL);
-                          }
-                          if (_and) {
+                          if (((!SystemConfiguration.hasFeatureEnabled("erlide.newbuilders")) && 
+                            (config != ProjectConfigType.INTERNAL))) {
                             it.setEnabled(false);
                           }
                         }

@@ -42,15 +42,7 @@ public class QuickFix implements IMarkerResolution2 {
   
   @Override
   public void run(final IMarker marker) {
-    boolean _and = false;
-    if (!(marker != null)) {
-      _and = false;
-    } else {
-      boolean _exists = marker.exists();
-      boolean _not = (!_exists);
-      _and = _not;
-    }
-    if (_and) {
+    if (((marker != null) && (!marker.exists()))) {
       return;
     }
     this.executor.run(marker, this);

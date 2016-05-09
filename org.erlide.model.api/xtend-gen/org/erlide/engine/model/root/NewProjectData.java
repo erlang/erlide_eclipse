@@ -107,15 +107,7 @@ public class NewProjectData extends ErlangProjectProperties {
           String _portableString = this.location.toPortableString();
           final File directory = new File(_portableString);
           String _xifexpression_1 = null;
-          boolean _and = false;
-          boolean _isDirectory = directory.isDirectory();
-          if (!_isDirectory) {
-            _and = false;
-          } else {
-            boolean _exists = directory.exists();
-            _and = _exists;
-          }
-          if (_and) {
+          if ((directory.isDirectory() && directory.exists())) {
             String _xblockexpression_2 = null;
             {
               final IProjectConfigurator persister = this.factory.getConfig(this.configType, directory);

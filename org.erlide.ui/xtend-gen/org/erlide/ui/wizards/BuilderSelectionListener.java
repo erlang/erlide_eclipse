@@ -42,43 +42,21 @@ public class BuilderSelectionListener implements SelectionListener {
       this.page.selectConfig(_head);
     }
     this.page.setMessage(null);
-    boolean _or = false;
-    BuilderTool _builder_1 = this.info.getBuilder();
-    String _osCommand = _builder_1.getOsCommand();
-    boolean _tripleEquals = (_osCommand == null);
-    if (_tripleEquals) {
-      _or = true;
-    } else {
-      BuilderTool _builder_2 = this.info.getBuilder();
-      String _osCommand_1 = _builder_2.getOsCommand();
-      String _toolLocation = ToolExecutor.getToolLocation(_osCommand_1);
-      boolean _tripleNotEquals = (_toolLocation != null);
-      _or = _tripleNotEquals;
-    }
-    final boolean toolExists = _or;
+    final boolean toolExists = ((this.info.getBuilder().getOsCommand() == null) || 
+      (ToolExecutor.getToolLocation(this.info.getBuilder().getOsCommand()) != null));
     if ((!toolExists)) {
-      StringConcatenation _builder_3 = new StringConcatenation();
-      _builder_3.append("The tool \'");
-      BuilderTool _builder_4 = this.info.getBuilder();
-      String _osCommand_2 = _builder_4.getOsCommand();
-      _builder_3.append(_osCommand_2, "");
-      _builder_3.append("\' can\'t be found on your system\'s $PATH");
-      this.page.setMessage(_builder_3.toString(), 
+      StringConcatenation _builder_1 = new StringConcatenation();
+      _builder_1.append("The tool \'");
+      BuilderTool _builder_2 = this.info.getBuilder();
+      String _osCommand = _builder_2.getOsCommand();
+      _builder_1.append(_osCommand, "");
+      _builder_1.append("\' can\'t be found on your system\'s $PATH");
+      this.page.setMessage(_builder_1.toString(), 
         DialogPage.WARNING);
     }
-    boolean _or_1 = false;
-    BuilderTool _builder_5 = this.info.getBuilder();
-    boolean _equals = Objects.equal(_builder_5, BuilderTool.MAKE);
-    if (_equals) {
-      _or_1 = true;
-    } else {
-      BuilderTool _builder_6 = this.info.getBuilder();
-      boolean _equals_1 = Objects.equal(_builder_6, BuilderTool.INTERNAL);
-      _or_1 = _equals_1;
-    }
-    this.page.configComposite.setVisible(_or_1);
-    BuilderTool _builder_7 = this.info.getBuilder();
-    boolean _equals_2 = Objects.equal(_builder_7, BuilderTool.MAKE);
-    this.page.makeConfigComposite.setVisible(_equals_2);
+    this.page.configComposite.setVisible((Objects.equal(this.info.getBuilder(), BuilderTool.MAKE) || Objects.equal(this.info.getBuilder(), BuilderTool.INTERNAL)));
+    BuilderTool _builder_3 = this.info.getBuilder();
+    boolean _equals = Objects.equal(_builder_3, BuilderTool.MAKE);
+    this.page.makeConfigComposite.setVisible(_equals);
   }
 }

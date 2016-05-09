@@ -42,15 +42,7 @@ public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
   
   private boolean projectExists() {
     final IPath loc = this.info.getLocation();
-    boolean _or = false;
-    if ((loc == null)) {
-      _or = true;
-    } else {
-      String _name = this.info.getName();
-      boolean _isEmpty = _name.isEmpty();
-      _or = _isEmpty;
-    }
-    if (_or) {
+    if (((loc == null) || this.info.getName().isEmpty())) {
       return false;
     }
     final File dir = loc.toFile();
