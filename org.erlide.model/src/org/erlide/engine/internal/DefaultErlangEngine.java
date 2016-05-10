@@ -17,7 +17,6 @@ import org.erlide.engine.internal.model.root.ProjectConfiguratorFactory;
 import org.erlide.engine.internal.services.cleanup.ErlTidyCleanupProvider;
 import org.erlide.engine.internal.services.codeassist.ErlideContextAssist;
 import org.erlide.engine.internal.services.edoc.ErlideEdocExport;
-import org.erlide.engine.internal.services.importer.ErlideImport;
 import org.erlide.engine.internal.services.parsing.ErlParser;
 import org.erlide.engine.internal.services.parsing.ErlideParser;
 import org.erlide.engine.internal.services.parsing.ErlideScanner;
@@ -38,7 +37,6 @@ import org.erlide.engine.services.SystemInfoService;
 import org.erlide.engine.services.cleanup.CleanupProvider;
 import org.erlide.engine.services.codeassist.ContextAssistService;
 import org.erlide.engine.services.edoc.EdocExportService;
-import org.erlide.engine.services.importer.ImportService;
 import org.erlide.engine.services.parsing.NullScannerService;
 import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.services.parsing.ScannerProviderService;
@@ -87,8 +85,8 @@ public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension 
             }
             return (T) constructor.newInstance(initargs);
         } catch (final Exception e) {
-            throw new InjectionException("Could not instantiate service "
-                    + type.getName(), e);
+            throw new InjectionException(
+                    "Could not instantiate service " + type.getName(), e);
         }
     }
 
@@ -171,8 +169,7 @@ public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension 
 
     /**
      * <p>
-     * Construct a {@link CleanUpProvider} appropriate for a particular
-     * IResource.
+     * Construct a {@link CleanUpProvider} appropriate for a particular IResource.
      * </p>
      */
     @Override
@@ -188,11 +185,6 @@ public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension 
     @Override
     public ScannerProviderService getScannerProviderService() {
         return new ScannerProvider(backend);
-    }
-
-    @Override
-    public ImportService getImportService() {
-        return new ErlideImport(backend);
     }
 
     @Override

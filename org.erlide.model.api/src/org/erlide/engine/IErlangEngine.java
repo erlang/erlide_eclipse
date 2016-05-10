@@ -7,7 +7,6 @@ import org.erlide.engine.services.GenericService;
 import org.erlide.engine.services.cleanup.CleanupProvider;
 import org.erlide.engine.services.codeassist.ContextAssistService;
 import org.erlide.engine.services.edoc.EdocExportService;
-import org.erlide.engine.services.importer.ImportService;
 import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.services.parsing.ScannerProviderService;
 import org.erlide.engine.services.parsing.SimpleParserService;
@@ -41,8 +40,6 @@ public interface IErlangEngine {
     ParserService getParserService();
 
     ScannerProviderService getScannerProviderService();
-
-    ImportService getImportService();
 
     EdocExportService getEdocExportService();
 
