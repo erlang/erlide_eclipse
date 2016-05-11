@@ -59,6 +59,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
             return 2;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public int compare(final Viewer viewer, final Object e1, final Object e2) {
             final int cat1 = category(e1);
@@ -93,7 +94,8 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 
     // private final EditorOpener fEditorOpener = new EditorOpener();
 
-    private static final String[] SHOW_IN_TARGETS = new String[] { IPageLayout.ID_PROJECT_EXPLORER };
+    private static final String[] SHOW_IN_TARGETS = new String[] {
+            IPageLayout.ID_PROJECT_EXPLORER };
     private static final IShowInTargetList SHOW_IN_TARGET_LIST = new IShowInTargetList() {
         @Override
         @SuppressWarnings("synthetic-access")
@@ -139,8 +141,9 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
     protected void configureTableViewer(final TableViewer viewer) {
         viewer.setUseHashlookup(true);
         viewer.setLabelProvider(new DecoratingStyledCellLabelProvider(
-                getInnerLabelProvider(), PlatformUI.getWorkbench().getDecoratorManager()
-                        .getLabelDecorator(), null));
+                getInnerLabelProvider(),
+                PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator(),
+                null));
         viewer.setContentProvider(new ErlangSearchTableContentProvider(this));
         viewer.setComparator(new DecoratorIgnoringViewerSorter(getInnerLabelProvider()));
         fContentProvider = (IErlSearchContentProvider) viewer.getContentProvider();
@@ -161,7 +164,8 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
         innerLabelProvider = new SearchResultLabelProvider(this,
                 SearchResultLabelProvider.SHOW_LABEL, true);
         viewer.setLabelProvider(new DecoratingStyledCellLabelProvider(innerLabelProvider,
-                PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator(), null));
+                PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator(),
+                null));
         viewer.setContentProvider(new ErlangSearchTreeContentProvider(viewer, this));
         viewer.setComparator(new DecoratorIgnoringViewerSorter(innerLabelProvider));
         fContentProvider = (IErlSearchContentProvider) viewer.getContentProvider();
@@ -217,8 +221,8 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
     protected void fillContextMenu(final IMenuManager mgr) {
         super.fillContextMenu(mgr);
         addSortActions(mgr);
-        fActionGroup.setContext(new ActionContext(getSite().getSelectionProvider()
-                .getSelection()));
+        fActionGroup.setContext(
+                new ActionContext(getSite().getSelectionProvider().getSelection()));
         fActionGroup.fillContextMenu(mgr);
     }
 
@@ -336,8 +340,8 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
                 final int fileCount = getInput().getElements().length;
                 if (itemCount < fileCount) {
                     final String format = "{0} (showing {1} of {2} files)";
-                    return MessageFormat.format(format, label,
-                            Integer.valueOf(itemCount), Integer.valueOf(fileCount));
+                    return MessageFormat.format(format, label, Integer.valueOf(itemCount),
+                            Integer.valueOf(fileCount));
                 }
             }
         }

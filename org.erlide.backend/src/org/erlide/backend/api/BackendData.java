@@ -53,6 +53,7 @@ public final class BackendData extends RuntimeData {
     private Collection<IProject> projects;
     private CodeContext context = CodeContext.COMMON;
 
+    @SuppressWarnings("unchecked")
     public BackendData(@NonNull final RuntimeInfo info,
             @NonNull final ILaunchConfiguration config, final String mode,
             final boolean toBeManaged) {

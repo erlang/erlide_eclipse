@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.views.eval;
 
@@ -114,7 +113,8 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
                         // ErlLogger.debug(str);
                         final BackendEvalResult r = EvalHelper.eval(backend,
                                 "lists:flatten(io_lib:format(\"~p\", [" + item.getText(1)
-                                        + "])).", null);
+                                        + "])).",
+                                null);
                         if (r.isOk()) {
                             str = ErlUtils.asString(r.getValue());
                         } else {
@@ -123,10 +123,10 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
                         info = new SourceViewerInformationControl(t.getShell(),
                                 SWT.ON_TOP | SWT.TOOL | SWT.RESIZE, SWT.MULTI | SWT.WRAP,
                                 PreferenceConstants.EDITOR_TEXT_FONT, null);
-                        info.setForegroundColor(t.getDisplay().getSystemColor(
-                                SWT.COLOR_INFO_FOREGROUND));
-                        info.setBackgroundColor(t.getDisplay().getSystemColor(
-                                SWT.COLOR_INFO_BACKGROUND));
+                        info.setForegroundColor(
+                                t.getDisplay().getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+                        info.setBackgroundColor(
+                                t.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
                         info.setInformation(str);
 
                         final Rectangle rect = item.getBounds(1);
@@ -180,11 +180,10 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
     }
 
     /*
-     * The content provider class is responsible for providing objects to the
-     * view. It can wrap existing objects in adapters or simply return objects
-     * as-is. These objects may be sensitive to the current input of the view,
-     * or ignore it and always show the same content (like Task List, for
-     * example).
+     * The content provider class is responsible for providing objects to the view. It can
+     * wrap existing objects in adapters or simply return objects as-is. These objects may
+     * be sensitive to the current input of the view, or ignore it and always show the
+     * same content (like Task List, for example).
      */
     static class ViewContentProvider implements IStructuredContentProvider {
 
@@ -257,14 +256,13 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
     }
 
     /**
-     * This is a callback that will allow us to create the viewer and initialize
-     * it.
+     * This is a callback that will allow us to create the viewer and initialize it.
      */
     @Override
     public void createPartControl(final Composite parent) {
         label = new Label(parent, SWT.NULL);
-        final Table t = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.FULL_SELECTION
-                | SWT.CHECK);
+        final Table t = new Table(parent,
+                SWT.SINGLE | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.CHECK);
         viewer = new CheckboxTableViewer(t);
 
         final GridData labelLData = new GridData();
@@ -411,7 +409,8 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
         }
 
         @Override
-        public void modify(final Object element, final String property, final Object value) {
+        public void modify(final Object element, final String property,
+                final Object value) {
             LiveExpr el;
             // get around bug in TableEditorImpl
             if (element instanceof TableItem) {
@@ -477,8 +476,8 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
         };
         refreshAction.setText("Refresh");
         refreshAction.setToolTipText("Refresh expressions");
-        refreshAction.setImageDescriptor(ErlideUIPlugin.getDefault().getImageDescriptor(
-                ErlideUIConstants.IMG_REFRESH));
+        refreshAction.setImageDescriptor(ErlideUIPlugin.getDefault()
+                .getImageDescriptor(ErlideUIConstants.IMG_REFRESH));
 
         fAddAction = new Action() {
 
@@ -521,8 +520,8 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
     }
 
     void showMessage(final String message) {
-        MessageDialog.openInformation(viewer.getControl().getShell(),
-                "Process list view", message);
+        MessageDialog.openInformation(viewer.getControl().getShell(), "Process list view",
+                message);
     }
 
     /**
@@ -567,6 +566,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
 
     public void delExpr() {
         final IStructuredSelection sel = (IStructuredSelection) viewer.getSelection();
+        @SuppressWarnings("unchecked")
         final Iterator<LiveExpr> iter = sel.iterator();
         while (iter.hasNext()) {
             exprs.remove(iter.next());

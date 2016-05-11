@@ -11,6 +11,8 @@ import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.eclipse.xtext.xbase.lib.Pure;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IProjectConfigurator;
@@ -38,8 +40,10 @@ public class NewProjectData extends ErlangProjectProperties {
   
   private final IProjectConfiguratorFactory factory;
   
-  public NewProjectData(final IProjectConfiguratorFactory factory) {
-    this.factory = factory;
+  public NewProjectData() {
+    IErlangEngine _instance = ErlangEngine.getInstance();
+    IProjectConfiguratorFactory _projectConfiguratorFactory = _instance.getProjectConfiguratorFactory();
+    this.factory = _projectConfiguratorFactory;
   }
   
   @Override

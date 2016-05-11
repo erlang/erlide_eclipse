@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Eric Merritt and others. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Eric Merritt
- *     Vlad Dumitrescu
+ * Contributors: Eric Merritt Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.wizards;
 
@@ -36,7 +34,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.dialogs.WizardNewProjectReferencePage;
 import org.eclipse.ui.ide.undo.WorkspaceUndoUtil;
 import org.eclipse.ui.part.ISetSelectionTarget;
-import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.NewProjectData;
@@ -76,26 +73,25 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
     public void addPages() {
         try {
             super.addPages();
-            info = new NewProjectData(ErlangEngine.getInstance()
-                    .getProjectConfiguratorFactory());
+            info = new NewProjectData();
             info.copyFrom(ErlangProjectProperties.DEFAULT);
 
             buildPages = Maps.newEnumMap(ProjectConfigType.class);
 
             mainPage = new ErlangNewProjectCreationPage("mainPage", info);
-            mainPage.setTitle(ErlideUIPlugin
-                    .getResourceString("wizards.titles.newproject"));
-            mainPage.setDescription(ErlideUIPlugin
-                    .getResourceString("wizards.descs.newproject"));
-            mainPage.setImageDescriptor(ErlideUIPlugin.getDefault().getImageDescriptor(
-                    ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
+            mainPage.setTitle(
+                    ErlideUIPlugin.getResourceString("wizards.titles.newproject"));
+            mainPage.setDescription(
+                    ErlideUIPlugin.getResourceString("wizards.descs.newproject"));
+            mainPage.setImageDescriptor(ErlideUIPlugin.getDefault()
+                    .getImageDescriptor(ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
             addPage(mainPage);
 
             builderPage = new ErlangProjectBuilderPage("builderPage", info);
-            builderPage.setTitle(ErlideUIPlugin
-                    .getResourceString("wizards.titles.builderprefs"));
-            builderPage.setDescription(ErlideUIPlugin
-                    .getResourceString("wizards.descs.builderprefs"));
+            builderPage.setTitle(
+                    ErlideUIPlugin.getResourceString("wizards.titles.builderprefs"));
+            builderPage.setDescription(
+                    ErlideUIPlugin.getResourceString("wizards.descs.builderprefs"));
             builderPage.setImageDescriptor(ErlideUIPlugin.getDefault()
                     .getImageDescriptor(ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
             addPage(builderPage);
@@ -211,8 +207,8 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
     }
 
     /**
-     * Selects and reveals the newly added resource in all parts of the active
-     * workbench window's active page.
+     * Selects and reveals the newly added resource in all parts of the active workbench
+     * window's active page.
      *
      * @see ISetSelectionTarget
      */
@@ -221,12 +217,12 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
     }
 
     /**
-     * Attempts to select and reveal the specified resource in all parts within
-     * the supplied workbench window's active page.
+     * Attempts to select and reveal the specified resource in all parts within the
+     * supplied workbench window's active page.
      * <p>
      * Checks all parts in the active page to see if they implement
-     * <code>ISetSelectionTarget</code>, either directly or as an adapter. If
-     * so, tells the part to select and reveal the specified resource.
+     * <code>ISetSelectionTarget</code>, either directly or as an adapter. If so, tells
+     * the part to select and reveal the specified resource.
      * </p>
      *
      * @param resource

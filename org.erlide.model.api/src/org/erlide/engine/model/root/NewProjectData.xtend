@@ -8,6 +8,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.runtime.api.RuntimeCore
 import org.erlide.runtime.runtimeinfo.RuntimeInfo
+import org.erlide.engine.ErlangEngine
 
 @Accessors
 class NewProjectData extends ErlangProjectProperties {
@@ -23,8 +24,8 @@ class NewProjectData extends ErlangProjectProperties {
 
     val IProjectConfiguratorFactory factory
 
-    new(IProjectConfiguratorFactory factory) {
-        this.factory = factory
+    new() {
+        this.factory = ErlangEngine.instance.projectConfiguratorFactory
     }
 
     override String toString() {

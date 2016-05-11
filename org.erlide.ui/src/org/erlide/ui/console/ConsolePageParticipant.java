@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2007 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.console;
 
@@ -71,7 +69,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
     private IConsoleView fView;
 
     private EOFHandler fEOFHandler;
-    private final static String fContextId = "org.eclipse.debug.ui.console"; //$NON-NLS-1$;
+    private final static String fContextId = "org.eclipse.debug.ui.console"; //$NON-NLS-1$ ;
     private IContextActivation fActivatedContext;
     private IHandlerActivation fActivatedHandler;
 
@@ -159,7 +157,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
     }
 
     @Override
-    public Object getAdapter(final Class required) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
         if (IShowInSource.class.equals(required)) {
             return this;
         }
@@ -186,13 +184,13 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
         final IDebugTarget target = (IDebugTarget) process.getAdapter(IDebugTarget.class);
         ISelection selection = null;
         if (target == null) {
-            selection = new TreeSelection(new TreePath(new Object[] {
-                    DebugPlugin.getDefault().getLaunchManager(), process.getLaunch(),
-                    process }));
+            selection = new TreeSelection(new TreePath(
+                    new Object[] { DebugPlugin.getDefault().getLaunchManager(),
+                            process.getLaunch(), process }));
         } else {
-            selection = new TreeSelection(new TreePath(new Object[] {
-                    DebugPlugin.getDefault().getLaunchManager(), target.getLaunch(),
-                    target }));
+            selection = new TreeSelection(new TreePath(
+                    new Object[] { DebugPlugin.getDefault().getLaunchManager(),
+                            target.getLaunch(), target }));
         }
         return new ShowInContext(null, selection);
     }
@@ -234,8 +232,8 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
         final IContextService contextService = (IContextService) site
                 .getService(IContextService.class);
         fActivatedContext = contextService.activateContext(fContextId);
-        fActivatedHandler = handlerService.activateHandler(
-                "org.eclipse.debug.ui.commands.eof", fEOFHandler); //$NON-NLS-1$
+        fActivatedHandler = handlerService
+                .activateHandler("org.eclipse.debug.ui.commands.eof", fEOFHandler); //$NON-NLS-1$
     }
 
     @Override

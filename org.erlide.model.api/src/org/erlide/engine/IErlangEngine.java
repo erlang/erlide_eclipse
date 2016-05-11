@@ -53,9 +53,11 @@ public interface IErlangEngine {
 
     ModelSearcherService getModelSearcherService();
 
-    IProjectConfiguratorFactory getProjectConfiguratorFactory();
-
     // TODO
     GenericService getGenericService();
+
+    // INTERNAL use
+
+    IProjectConfiguratorFactory getProjectConfiguratorFactory();
 
 }

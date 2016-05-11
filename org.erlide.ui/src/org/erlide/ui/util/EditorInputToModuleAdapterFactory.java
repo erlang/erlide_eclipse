@@ -11,7 +11,8 @@ public class EditorInputToModuleAdapterFactory implements IAdapterFactory {
     private static final Class[] ADAPTER_LIST = new Class[] { IErlElement.class };
 
     @Override
-    public Object getAdapter(final Object adaptableObject, final Class adapterType) {
+    public Object getAdapter(final Object adaptableObject,
+            @SuppressWarnings("rawtypes") final Class adapterType) {
         if (adapterType == IErlElement.class && adaptableObject instanceof IEditorInput) {
             try {
                 return ErlModelUtils.getModule((IEditorInput) adaptableObject);
@@ -21,6 +22,7 @@ public class EditorInputToModuleAdapterFactory implements IAdapterFactory {
         return null;
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public Class[] getAdapterList() {
         return ADAPTER_LIST;

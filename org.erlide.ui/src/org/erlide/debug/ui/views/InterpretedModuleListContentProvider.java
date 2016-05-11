@@ -26,6 +26,7 @@ public class InterpretedModuleListContentProvider extends ModuleListContentProvi
         if (newInput instanceof ILaunchConfiguration) {
             final ILaunchConfiguration launchConfiguration = (ILaunchConfiguration) newInput;
             try {
+                @SuppressWarnings("unchecked")
                 final List<String> interpret = launchConfiguration.getAttribute(
                         ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES,
                         new ArrayList<String>());
