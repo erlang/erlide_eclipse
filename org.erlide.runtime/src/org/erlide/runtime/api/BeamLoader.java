@@ -3,6 +3,7 @@ package org.erlide.runtime.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

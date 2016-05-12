@@ -3,7 +3,7 @@ package org.erlide.tracing.core.mvc.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.tracing.core.TraceBackend;
 import org.erlide.tracing.core.mvc.model.TracedNode;

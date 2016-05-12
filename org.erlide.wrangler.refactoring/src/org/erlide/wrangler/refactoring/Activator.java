@@ -13,7 +13,7 @@ package org.erlide.wrangler.refactoring;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.erlide.engine.util.OtpRpcFactory;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.BundleContext;

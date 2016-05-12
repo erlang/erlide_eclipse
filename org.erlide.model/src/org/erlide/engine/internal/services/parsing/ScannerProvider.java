@@ -2,7 +2,7 @@ package org.erlide.engine.internal.services.parsing;
 
 import org.erlide.engine.services.parsing.ScannerProviderService;
 import org.erlide.engine.services.parsing.ScannerService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 
 public class ScannerProvider implements ScannerProviderService {
 

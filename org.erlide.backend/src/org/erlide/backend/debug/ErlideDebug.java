@@ -9,7 +9,7 @@ import org.eclipse.debug.core.DebugException;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.internal.BackendActivator;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.util.ErlLogger;

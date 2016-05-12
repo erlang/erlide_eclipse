@@ -37,7 +37,7 @@ import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.IOtpNodeProxy;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.util.ErlLogger;

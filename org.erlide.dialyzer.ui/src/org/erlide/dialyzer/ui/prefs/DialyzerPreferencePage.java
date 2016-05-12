@@ -68,7 +68,7 @@ import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.prefs.ProjectSelectionDialog;
 import org.erlide.util.ErlLogger;

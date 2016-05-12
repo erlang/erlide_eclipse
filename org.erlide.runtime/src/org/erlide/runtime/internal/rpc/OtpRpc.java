@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;

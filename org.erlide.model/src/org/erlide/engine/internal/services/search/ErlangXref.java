@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.model.erlang.FunctionRef;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.XrefService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpBindings;

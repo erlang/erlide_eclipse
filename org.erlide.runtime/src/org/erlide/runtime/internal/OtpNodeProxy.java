@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime;
+package org.erlide.runtime.internal;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,16 +19,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.erlide.runtime.api.IOtpNodeProxy;
-import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangLogEventHandler;
 import org.erlide.runtime.events.LogEventHandler;
-import org.erlide.runtime.internal.ErlRuntimeReporter;
-import org.erlide.runtime.internal.EventParser;
 import org.erlide.runtime.internal.LocalNodeCreator;
 import org.erlide.runtime.internal.rpc.OtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
+import org.erlide.runtime.service.CooldownRestartPolicy;
+import org.erlide.runtime.service.NeverRestartPolicy;
+import org.erlide.runtime.service.RestartableService;
+import org.erlide.runtime.service.ServiceRestartPolicy;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 import org.erlide.util.services.Provider;

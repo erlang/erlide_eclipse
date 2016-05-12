@@ -1,10 +1,4 @@
-package org.erlide.runtime.api;
-
-import org.erlide.runtime.rpc.IRpcCallback;
-import org.erlide.runtime.rpc.RpcFuture;
-import org.erlide.runtime.rpc.IRpcResultCallback;
-import org.erlide.runtime.rpc.RpcException;
-import org.erlide.runtime.rpc.RpcResult;
+package org.erlide.runtime.rpc;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;

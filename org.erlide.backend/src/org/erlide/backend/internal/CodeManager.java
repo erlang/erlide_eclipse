@@ -20,7 +20,7 @@ import org.erlide.backend.api.ICodeBundle;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.backend.debug.BeamUtil;
 import org.erlide.runtime.api.BeamLoader;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 

@@ -35,7 +35,7 @@ import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelUtilService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.TypeConverter;
 

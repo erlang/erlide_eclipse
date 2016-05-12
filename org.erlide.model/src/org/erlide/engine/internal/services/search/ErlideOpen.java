@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.model.SourcePathUtils;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.services.search.OpenService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;

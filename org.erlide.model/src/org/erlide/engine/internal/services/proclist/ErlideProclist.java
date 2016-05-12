@@ -1,7 +1,7 @@
 package org.erlide.engine.internal.services.proclist;
 
 import org.erlide.engine.services.proclist.ProclistService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

@@ -1,4 +1,4 @@
-package org.erlide.runtime.api;
+package org.erlide.engine.services.parsing;
 
 public class ParserException extends Exception {
 

@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.erlide.engine.services.text.IndentResult;
 import org.erlide.engine.services.text.IndentService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

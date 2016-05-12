@@ -45,7 +45,7 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.codeassist.RecordCompletion;
 import org.erlide.engine.services.search.ModelFindService;
 import org.erlide.engine.services.search.OtpDocService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.information.HoverUtil;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;

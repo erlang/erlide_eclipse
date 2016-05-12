@@ -21,7 +21,7 @@ import org.erlide.backend.debug.ErlideDebug;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.core.ErlangCore;
 import org.erlide.runtime.api.ErlDebugFlags;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.ErlLogger;
 

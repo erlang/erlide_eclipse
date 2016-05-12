@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.resources.IResource;
 import org.erlide.engine.services.cleanup.CleanupProvider;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcFuture;
 
 /**

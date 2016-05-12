@@ -6,7 +6,7 @@ import java.util.List;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.services.search.OtpDocService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.ErlangFunctionCall;

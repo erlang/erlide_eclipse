@@ -1,7 +1,7 @@
 package org.erlide.engine.internal;
 
 import org.erlide.engine.services.SystemInfoService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.util.erlang.ErlUtils;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

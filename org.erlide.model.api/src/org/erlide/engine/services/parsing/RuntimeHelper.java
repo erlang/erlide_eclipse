@@ -1,7 +1,6 @@
 package org.erlide.engine.services.parsing;
 
-import org.erlide.runtime.api.IOtpRpc;
-import org.erlide.runtime.api.ParserException;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;

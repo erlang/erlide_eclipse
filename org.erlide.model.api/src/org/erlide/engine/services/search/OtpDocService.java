@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.erlide.engine.services.ErlangService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.util.ErlangFunctionCall;
 
 import com.ericsson.otp.erlang.OtpErlangList;

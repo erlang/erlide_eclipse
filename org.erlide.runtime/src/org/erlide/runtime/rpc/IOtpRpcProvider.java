@@ -1,4 +1,4 @@
-package org.erlide.runtime.api;
+package org.erlide.runtime.rpc;
 
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 

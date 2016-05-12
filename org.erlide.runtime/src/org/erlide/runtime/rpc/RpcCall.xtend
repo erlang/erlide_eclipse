@@ -1,9 +1,8 @@
-package org.erlide.runtime.api
+package org.erlide.runtime.rpc
 
 import com.ericsson.otp.erlang.OtpErlangObject
 import java.util.concurrent.Callable
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.erlide.runtime.rpc.IRpcCallback
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
 
 @Accessors

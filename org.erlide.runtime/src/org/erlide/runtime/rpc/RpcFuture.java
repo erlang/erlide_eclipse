@@ -14,7 +14,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.internal.rpc.OtpRpc;
 import org.erlide.util.ErlLogger;
 

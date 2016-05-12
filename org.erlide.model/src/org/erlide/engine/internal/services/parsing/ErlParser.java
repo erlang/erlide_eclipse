@@ -43,7 +43,7 @@ import org.erlide.engine.model.erlang.ISourceReference;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.services.parsing.RuntimeHelper;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 

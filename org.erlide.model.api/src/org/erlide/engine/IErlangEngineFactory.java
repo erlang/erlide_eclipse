@@ -1,6 +1,6 @@
 package org.erlide.engine;
 
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 
 public interface IErlangEngineFactory {
 

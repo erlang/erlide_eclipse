@@ -4,7 +4,7 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.services.search.ErlSearchScope;
 import org.erlide.engine.services.search.ErlangSearchPattern;
 import org.erlide.engine.services.search.SearchServerService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.Util;

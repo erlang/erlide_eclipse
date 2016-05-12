@@ -46,7 +46,7 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.services.search.OtpDocService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.ui.actions.OpenUtils;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;

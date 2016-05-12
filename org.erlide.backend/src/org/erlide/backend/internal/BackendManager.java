@@ -41,7 +41,7 @@ import org.erlide.backend.api.IProjectCodeLoader;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;

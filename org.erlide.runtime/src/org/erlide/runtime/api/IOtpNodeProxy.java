@@ -12,6 +12,7 @@ package org.erlide.runtime.api;
 
 import java.util.concurrent.Executor;
 
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.IDisposable;
 

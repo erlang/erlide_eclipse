@@ -20,7 +20,7 @@ import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelFindService;
 import org.erlide.engine.services.search.OpenService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.util.StringUtils;
 
 import com.ericsson.otp.erlang.OtpErlangLong;

@@ -13,7 +13,7 @@ import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.engine.services.parsing.InternalScanner;
 import org.erlide.engine.services.parsing.ScannerException;
 import org.erlide.engine.services.parsing.SimpleScannerService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.util.ErlLogger;

@@ -24,7 +24,7 @@ import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.runtime.rpc.RpcTimeoutException;

@@ -21,7 +21,7 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.services.search.OpenService.ExternalTreeEntry;
 import org.erlide.engine.util.OtpRpcFactory;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.collect.Maps;

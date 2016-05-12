@@ -1,4 +1,4 @@
-package org.erlide.runtime;
+package org.erlide.runtime.service;
 
 import java.util.Map;
 import java.util.Map.Entry;

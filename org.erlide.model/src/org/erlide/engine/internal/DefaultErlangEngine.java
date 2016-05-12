@@ -52,7 +52,7 @@ import org.erlide.engine.services.search.SearchServerService;
 import org.erlide.engine.services.search.XrefService;
 import org.erlide.engine.services.text.IndentService;
 import org.erlide.engine.util.OtpRpcFactory;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;

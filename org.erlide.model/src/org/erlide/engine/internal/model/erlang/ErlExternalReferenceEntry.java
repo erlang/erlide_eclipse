@@ -17,7 +17,7 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.OtpRpcFactory;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 
 import com.google.common.collect.Lists;
 

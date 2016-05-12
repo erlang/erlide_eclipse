@@ -3,8 +3,8 @@ package org.erlide.backend.internal;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
-import org.erlide.runtime.api.IOtpRpc;
-import org.erlide.runtime.api.IOtpRpcProvider;
+import org.erlide.runtime.rpc.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpcProvider;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 

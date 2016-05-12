@@ -2,6 +2,10 @@ package org.erlide.runtime;
 
 import java.util.List;
 
+import org.erlide.runtime.service.AlwaysRestartPolicy;
+import org.erlide.runtime.service.CooldownRestartPolicy;
+import org.erlide.runtime.service.NeverRestartPolicy;
+import org.erlide.runtime.service.RestartableService;
 import org.erlide.util.services.Provider;
 import org.hamcrest.Matchers;
 import org.junit.After;

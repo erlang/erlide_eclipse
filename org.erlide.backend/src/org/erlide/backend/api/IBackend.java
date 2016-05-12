@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.runtime.api.IOtpNodeProxy;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.IDisposable;
 

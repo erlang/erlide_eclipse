@@ -1,4 +1,4 @@
-package org.erlide.runtime;
+package org.erlide.runtime.service;
 
 public class AlwaysRestartPolicy extends ServiceRestartPolicy {
 

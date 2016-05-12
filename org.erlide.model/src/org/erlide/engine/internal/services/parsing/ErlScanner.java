@@ -12,7 +12,7 @@ package org.erlide.engine.internal.services.parsing;
 
 import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.engine.services.parsing.ScannerService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 
 /**
  * Erlang syntax scanner

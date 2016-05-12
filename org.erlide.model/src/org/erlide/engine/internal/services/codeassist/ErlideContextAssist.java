@@ -6,7 +6,7 @@ import java.util.TreeSet;
 
 import org.erlide.engine.services.codeassist.ContextAssistService;
 import org.erlide.engine.services.codeassist.RecordCompletion;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;

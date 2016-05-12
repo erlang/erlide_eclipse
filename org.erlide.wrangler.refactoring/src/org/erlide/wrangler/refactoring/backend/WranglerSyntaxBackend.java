@@ -11,7 +11,7 @@
 package org.erlide.wrangler.refactoring.backend;
 
 import org.eclipse.core.resources.IFile;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.SyntaxInfo.Type;
