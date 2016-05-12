@@ -18,8 +18,8 @@ import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfigurationSerializer;
 import org.erlide.engine.services.parsing.SimpleParserService;
-import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.OtpBindings;
+import org.erlide.util.erlang.OtpErlang;
 
 @SuppressWarnings("all")
 public class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
@@ -46,7 +46,7 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
         @Override
         public void apply(final OtpErlangObject erl_opts) {
           try {
-            final OtpBindings bindings = ErlUtils.match("{erl_opts,Opts}", erl_opts);
+            final OtpBindings bindings = OtpErlang.match("{erl_opts,Opts}", erl_opts);
             if ((bindings != null)) {
               final Collection<OtpErlangObject> opts = bindings.getList("Opts");
               if ((opts != null)) {
@@ -54,7 +54,7 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
                   @Override
                   public void apply(final OtpErlangObject opt) {
                     try {
-                      final OtpBindings b = ErlUtils.match("{Tag,Arg}", opt);
+                      final OtpBindings b = OtpErlang.match("{Tag,Arg}", opt);
                       if ((b != null)) {
                         RebarConfigurationSerializer.this.parseOption(result, b);
                       }

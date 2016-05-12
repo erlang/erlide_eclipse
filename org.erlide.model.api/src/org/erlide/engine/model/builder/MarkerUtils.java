@@ -24,7 +24,7 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ResourceUtil;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
-import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.OtpErlang;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -142,7 +142,7 @@ public final class MarkerUtils {
         } catch (final OtpErlangRangeException e) {
         }
 
-        final String msg = ErlUtils.asString(data.elementAt(2)).replaceAll("[\n\r]", " ");
+        final String msg = OtpErlang.asString(data.elementAt(2)).replaceAll("[\n\r]", " ");
         final IMarker marker = createMarker(res, fileName, msg, line, sev,
                 PROBLEM_MARKER);
         if (marker != null) {
@@ -158,7 +158,7 @@ public final class MarkerUtils {
         final Map<String, List<OtpErlangTuple>> result = Maps.newHashMap();
         for (final OtpErlangObject msg : messages) {
             final OtpErlangTuple tuple = (OtpErlangTuple) msg;
-            final String fileName = ErlUtils.asString(tuple.elementAt(1));
+            final String fileName = OtpErlang.asString(tuple.elementAt(1));
             addMessage(result, fileName, tuple);
         }
         return result;

@@ -15,7 +15,7 @@ import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 import org.erlide.util.erlang.OtpBindings;
-import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.OtpParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -320,7 +320,7 @@ public class ErlideDebug {
             final OtpErlangObject res = backend.call(ERLIDE_DEBUG, "set_variable_value",
                     "ssix", name, value, stackFrameNo + 1, meta);
             try {
-                final OtpBindings bind = ErlUtils.match("{eval_rsp, {'EXIT', Val}}", res);
+                final OtpBindings bind = OtpErlang.match("{eval_rsp, {'EXIT', Val}}", res);
                 if (bind == null) {
                     return null;
                 }

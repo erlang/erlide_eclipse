@@ -12,7 +12,7 @@ import java.util.regex.Pattern
 import org.eclipse.xtend.lib.annotations.Data
 import org.erlide.util.ErlLogger
 import org.erlide.util.Util
-import org.erlide.util.erlang.ErlUtils
+import org.erlide.util.erlang.OtpErlang
 
 class ErlProblems {
 
@@ -30,7 +30,7 @@ class ErlProblems {
         try {
             val src = Util.getInputStreamAsString(input, Charsets.ISO_8859_1.name)
             try {
-                val source0 = ErlUtils.parse(src)
+                val source0 = OtpErlang.parse(src)
                 val source = source0 as OtpErlangList
                 for (OtpErlangObject item0 : source.elements()) {
                     val item = item0 as OtpErlangTuple

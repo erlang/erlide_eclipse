@@ -15,6 +15,7 @@ Export-Package: org.erlide.runtime,
  org.erlide.runtime.internal.rpc;x-internal:=true,
  org.erlide.runtime.rpc,
  org.erlide.runtime.runtimeinfo,
+ org.erlide.runtime.service,
  org.erlide.runtime.shell
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.runtime

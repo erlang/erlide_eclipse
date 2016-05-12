@@ -32,7 +32,7 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.OtpErlang;
 import org.erlide.wrangler.refactoring.backend.RefactoringState;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage.GenFunReturnParameterName;
@@ -477,7 +477,7 @@ public class RefactoringHandler extends AbstractHandler {
                     for (int i = 0; i < reslist.arity(); ++i) {
                         final OtpErlangTuple restuple = (OtpErlangTuple) reslist
                                 .elementAt(i);
-                        final String formattedString = formatWarningString(ErlUtils
+                        final String formattedString = formatWarningString(OtpErlang
                                 .asString(restuple.elementAt(1)));
                         WarningViewManager.addWarningMessage(formattedString);
                     }

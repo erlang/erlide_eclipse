@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpBindings;
-import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.OtpParserException;
 
@@ -89,8 +88,8 @@ public class TestCaseData {
         public FailStackItem getFirstStackItem() {
             if (items.isEmpty()) {
                 try {
-                    return new FailStackItem(OtpErlang.getTermParser().parse(
-                            "{unknown,unknown,0}"));
+                    return new FailStackItem(
+                            OtpErlang.getTermParser().parse("{unknown,unknown,0}"));
                 } catch (final OtpParserException e) {
                     // ignored
                 }
@@ -113,7 +112,7 @@ public class TestCaseData {
         @Override
         public String toString() {
             try {
-                final OtpBindings b = ErlUtils.match("{M:a, F:a, A}", item);
+                final OtpBindings b = OtpErlang.match("{M:a, F:a, A}", item);
                 m = b.getQuotedAtom("M");
                 f = b.getQuotedAtom("F");
                 a = b.get("A");
@@ -181,7 +180,7 @@ public class TestCaseData {
     private FailReason parseReason(final OtpErlangObject reason) {
         OtpBindings b;
         try {
-            b = ErlUtils.match("{Cause, Stack}", reason);
+            b = OtpErlang.match("{Cause, Stack}", reason);
             if (b == null) {
                 return new FailReason("internal error: " + reason.toString(), NO_STACK);
             }

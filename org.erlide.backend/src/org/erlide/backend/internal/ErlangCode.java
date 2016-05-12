@@ -4,7 +4,7 @@ import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpBindings;
-import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.OtpErlang;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -81,7 +81,7 @@ public final class ErlangCode {
         try {
             final OtpErlangObject r = backend.call(CODE, "ensure_loaded", "a",
                     "funny_module_name_that_nobody_would_use");
-            final OtpBindings b = ErlUtils.match("{error, What}", r);
+            final OtpBindings b = OtpErlang.match("{error, What}", r);
             if (b.getAtom("What").equals("embedded")) {
                 return true;
             }

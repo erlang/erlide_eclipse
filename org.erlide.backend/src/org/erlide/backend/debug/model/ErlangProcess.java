@@ -32,7 +32,7 @@ import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.ErlangFunctionCall;
 import org.erlide.util.erlang.OtpBindings;
-import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.OtpParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -208,7 +208,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
             return;
         }
         OtpErlangObject savedStackTrace = null;
-        // OtpBindings b = ErlUtils.match("{ST, F:l, }", stackAndBindings);
+        // OtpBindings b = OtpErlang.match("{ST, F:l, }", stackAndBindings);
         // System.out.println("STACK=" + stackAndBindings);
         OtpErlangObject el0 = stackAndBindings.elementAt(0);
         if (el0 instanceof OtpErlangTuple) {
@@ -226,7 +226,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
     private void addStackTrace(final OtpErlangTuple savedStackTrace) {
         try {
-            final OtpBindings bind = ErlUtils.match("{saved_stacktrace, _,STrace}",
+            final OtpBindings bind = OtpErlang.match("{saved_stacktrace, _,STrace}",
                     savedStackTrace);
             if (bind != null) {
                 final Collection<OtpErlangObject> trace = bind.getList("STrace");

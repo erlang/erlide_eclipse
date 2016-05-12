@@ -66,7 +66,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.DisplayUtils;
 import org.erlide.ui.views.SourceViewerInformationControl;
-import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.OtpErlang;
 
 /**
  * @author Vlad Dumitrescu
@@ -116,7 +116,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
                                         + "])).",
                                 null);
                         if (r.isOk()) {
-                            str = ErlUtils.asString(r.getValue());
+                            str = OtpErlang.asString(r.getValue());
                         } else {
                             str = r.getErrorReason().toString();
                         }

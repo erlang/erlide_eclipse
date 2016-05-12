@@ -18,7 +18,7 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.OtpRpcFactory;
 import org.erlide.runtime.rpc.IOtpRpc;
-import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.OtpErlang;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -89,7 +89,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
             final OtpErlangTuple t = (OtpErlangTuple) o;
             final String lib = ((OtpErlangString) t.elementAt(0)).stringValue();
             final OtpErlangList dirs = (OtpErlangList) t.elementAt(1);
-            final String group = ErlUtils.asString(t.elementAt(2));
+            final String group = OtpErlang.asString(t.elementAt(2));
 
             final ErlExternalReferenceEntry extLib = new ErlExternalReferenceEntry(this,
                     getLibName(lib), lib, true, false);

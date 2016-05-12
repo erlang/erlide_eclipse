@@ -16,8 +16,8 @@ import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfigurationSerializer;
 import org.erlide.engine.services.parsing.SimpleParserService;
-import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.OtpBindings;
+import org.erlide.util.erlang.OtpErlang;
 
 @SuppressWarnings("all")
 public class EmakeConfigurationSerializer implements ProjectConfigurationSerializer {
@@ -45,7 +45,7 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
         @Override
         public void apply(final OtpErlangObject erl_opts) {
           try {
-            final OtpBindings bindings = ErlUtils.match("{Src,Opts}", erl_opts);
+            final OtpBindings bindings = OtpErlang.match("{Src,Opts}", erl_opts);
             if ((bindings != null)) {
               final String src = bindings.getAtom("Src");
               String _xifexpression = null;
@@ -68,7 +68,7 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
                   @Override
                   public void apply(final OtpErlangObject opt) {
                     try {
-                      final OtpBindings b = ErlUtils.match("{Tag,Arg}", opt);
+                      final OtpBindings b = OtpErlang.match("{Tag,Arg}", opt);
                       if ((b != null)) {
                         EmakeConfigurationSerializer.this.parseOption(b, result);
                       }

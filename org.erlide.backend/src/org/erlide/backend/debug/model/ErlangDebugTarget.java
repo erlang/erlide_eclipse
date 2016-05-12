@@ -52,7 +52,6 @@ import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.runtime.api.ErlDebugFlags;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.IDisposable;
-import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.OtpParserException;
 import org.erlide.util.erlang.SignatureException;
@@ -482,7 +481,7 @@ public class ErlangDebugTarget extends ErlangDebugElement
         final String ebin = properties.getOutputDir().toPortableString();
         final Collection<IPath> srcs = properties.getSourceDirs();
         try {
-            return (OtpErlangList) ErlUtils.format("[{ebin_dir, ~s}, {src_dirs, ~ls}]",
+            return (OtpErlangList) OtpErlang.format("[{ebin_dir, ~s}, {src_dirs, ~ls}]",
                     ebin, srcs);
         } catch (final OtpParserException e) {
             ErlLogger.warn(e);

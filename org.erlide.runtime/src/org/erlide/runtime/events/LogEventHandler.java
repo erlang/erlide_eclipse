@@ -2,7 +2,7 @@ package org.erlide.runtime.events;
 
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpBindings;
-import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.OtpErlang;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -21,10 +21,10 @@ public class LogEventHandler extends ErlangEventHandler {
         }
         final OtpErlangObject data = event.getEvent();
         try {
-            final OtpBindings b = ErlUtils.match("{K:a,M}", data);
+            final OtpBindings b = OtpErlang.match("{K:a,M}", data);
             final String kind = ((OtpErlangAtom) b.get("K")).atomValue();
             final OtpErlangObject amsg = b.get("M");
-            ErlLogger.debug("%s: %s", kind, ErlUtils.asString(amsg));
+            ErlLogger.debug("%s: %s", kind, OtpErlang.asString(amsg));
         } catch (final Exception e) {
             ErlLogger.error("erroneous log msg: %s", data);
         }

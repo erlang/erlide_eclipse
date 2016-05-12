@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available
- * at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.runtime.internal;
 
@@ -14,7 +12,6 @@ import java.util.Collection;
 
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpBindings;
-import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.OtpParserException;
 
@@ -56,8 +53,8 @@ public class IOServer implements Runnable {
                 msg = mbox.receive(3000);
                 if (msg != null) {
 
-                    ErlLogger.debug("IOS " + Thread.currentThread().getName() + " : "
-                            + msg);
+                    ErlLogger.debug(
+                            "IOS " + Thread.currentThread().getName() + " : " + msg);
 
                     if (msg instanceof OtpErlangTuple) {
                         handleMessage(msg);
@@ -84,8 +81,8 @@ public class IOServer implements Runnable {
             final OtpErlangObject replyAs = tuple.elementAt(2);
             final OtpErlangTuple request = (OtpErlangTuple) tuple.elementAt(3);
             final OtpErlangObject reply = processRequest(from, request);
-            final OtpErlangTuple replyMsg = OtpErlang.mkTuple(new OtpErlangAtom(
-                    "io_reply"), replyAs, reply);
+            final OtpErlangTuple replyMsg = OtpErlang
+                    .mkTuple(new OtpErlangAtom("io_reply"), replyAs, reply);
             mbox.send(from, replyMsg);
         } else {
             ErlLogger.warn("IOServer: unknown message " + msg);
@@ -106,19 +103,19 @@ public class IOServer implements Runnable {
                 final OtpErlangTuple request = (OtpErlangTuple) arequest;
                 final String tag = ((OtpErlangAtom) request.elementAt(0)).atomValue();
                 if ("put_chars".equals(tag)) {
-                    b = ErlUtils.match("{put_chars, Chars}", request);
+                    b = OtpErlang.match("{put_chars, Chars}", request);
                     if (b != null) {
                         return callback.putChars(from, IOEncoding.latin1, b.get("Chars"));
                     }
 
-                    b = ErlUtils.match("{put_chars, Enc:a, Chars}", request);
+                    b = OtpErlang.match("{put_chars, Enc:a, Chars}", request);
                     if (b != null) {
                         final String enc = b.getAtom("Enc");
                         return callback.putChars(from, IOEncoding.valueOf(enc),
                                 b.get("Chars"));
                     }
 
-                    b = ErlUtils.match("{put_chars, M:a, F:a, A}", request);
+                    b = OtpErlang.match("{put_chars, M:a, F:a, A}", request);
                     if (b != null) {
                         final String m = b.getAtom("M");
                         final String f = b.getAtom("F");
@@ -126,7 +123,7 @@ public class IOServer implements Runnable {
                         return callback.putChars(from, IOEncoding.latin1, m, f, a);
                     }
 
-                    b = ErlUtils.match("{put_chars, Enc:a, M:a, F:a, A}", request);
+                    b = OtpErlang.match("{put_chars, Enc:a, M:a, F:a, A}", request);
                     if (b != null) {
                         final String enc = b.getAtom("Enc");
                         final String m = b.getAtom("M");
@@ -136,48 +133,48 @@ public class IOServer implements Runnable {
                     }
                     return error;
                 } else if ("get_until".equals(tag)) {
-                    b = ErlUtils.match("{get_until, Prompt}", request);
+                    b = OtpErlang.match("{get_until, Prompt}", request);
                     if (b != null) {
                         return callback.getUntil(IOEncoding.latin1, b.get("Prompt"));
                     }
-                    b = ErlUtils.match("{get_until, Prompt, N:i}", request);
+                    b = OtpErlang.match("{get_until, Prompt, N:i}", request);
                     if (b != null) {
                         final long n = b.getLong("N");
                         return callback.getUntil(IOEncoding.latin1, b.get("Prompt"), n);
                     }
-                    b = ErlUtils.match("{get_until, Enc:a, Prompt}", request);
+                    b = OtpErlang.match("{get_until, Enc:a, Prompt}", request);
                     if (b != null) {
                         final String enc = b.getAtom("Enc");
-                        return callback
-                                .getUntil(IOEncoding.valueOf(enc), b.get("Prompt"));
+                        return callback.getUntil(IOEncoding.valueOf(enc),
+                                b.get("Prompt"));
                     }
-                    b = ErlUtils.match("{get_until, Enc:a, Prompt, N:i}", request);
+                    b = OtpErlang.match("{get_until, Enc:a, Prompt, N:i}", request);
                     if (b != null) {
                         final String enc = b.getAtom("Enc");
                         final long n = b.getLong("N");
-                        return callback.getUntil(IOEncoding.valueOf(enc),
-                                b.get("Prompt"), n);
+                        return callback.getUntil(IOEncoding.valueOf(enc), b.get("Prompt"),
+                                n);
                     }
-                    b = ErlUtils.match("{get_until, Prompt, M:a, F:a, A}", request);
+                    b = OtpErlang.match("{get_until, Prompt, M:a, F:a, A}", request);
                     if (b != null) {
                         final String m = b.getAtom("M");
                         final String f = b.getAtom("F");
                         final Collection<OtpErlangObject> a = b.getList("A");
-                        return callback.getUntil(IOEncoding.latin1, b.get("Prompt"), m,
-                                f, a);
+                        return callback.getUntil(IOEncoding.latin1, b.get("Prompt"), m, f,
+                                a);
                     }
-                    b = ErlUtils.match("{get_until, Enc: a, Prompt, M:a, F:a, A}",
+                    b = OtpErlang.match("{get_until, Enc: a, Prompt, M:a, F:a, A}",
                             request);
                     if (b != null) {
                         final String enc = b.getAtom("Enc");
                         final String m = b.getAtom("M");
                         final String f = b.getAtom("F");
                         final Collection<OtpErlangObject> a = b.getList("A");
-                        return callback.getUntil(IOEncoding.valueOf(enc),
-                                b.get("Prompt"), m, f, a);
+                        return callback.getUntil(IOEncoding.valueOf(enc), b.get("Prompt"),
+                                m, f, a);
                     }
                 } else if ("requests".equals(tag)) {
-                    b = ErlUtils.match("{requests, Reqs:lx}", request);
+                    b = OtpErlang.match("{requests, Reqs:lx}", request);
                     if (b != null) {
                         final Collection<OtpErlangObject> reqs = b.getList("Reqs");
                         OtpErlangObject val = null;
@@ -190,7 +187,7 @@ public class IOServer implements Runnable {
                         return val == null ? error : val;
                     }
                 } else if ("setopts".equals(tag)) {
-                    b = ErlUtils.match("{setopts, Opts:lx}", request);
+                    b = OtpErlang.match("{setopts, Opts:lx}", request);
                     if (b != null) {
                         final Collection<OtpErlangObject> opts = b.getList("Opts");
                         return callback.setOpts(opts);

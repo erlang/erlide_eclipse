@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangBinary;
+import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
@@ -94,12 +97,94 @@ public class OtpErlang {
     }
 
     public static OtpBindings match(final OtpErlangObject pattern,
+            final OtpErlangObject term) {
+        return match(pattern, term, new OtpBindings());
+    }
+
+    /**
+     * Match two Erlang terms.
+     * <p>
+     * Patterns have an extended syntax:
+     * <ul>
+     * <li>Variables can have a type signature attached, like for example
+     * <code>Var:i</code>. Its meaning is that the type of the value must match too.</li>
+     * <li>The tail of a list can only be a variable.</li>
+     * </ul>
+     * <p>
+     * The returned value is null if there was any mismatch, otherwise it is a map of
+     * variable names to matched values. <br>
+     *
+     */
+    public static OtpBindings match(final OtpErlangObject pattern,
             final OtpErlangObject term, final OtpBindings bindings) {
-        final OtpBindings newBindings = ErlUtils.match(pattern, term, bindings);
-        if (newBindings != null) {
+        if (pattern == null && term == null) {
+            return bindings;
+        }
+        if (pattern == null || term == null) {
+            return null;
+        }
+        if (pattern instanceof OtpPatternVariable) {
+            final OtpPatternVariable var = (OtpPatternVariable) pattern;
+            if (!TypeConverter.doesMatchSignature(term, var.getSignature())) {
+                return null;
+            }
+            if (var.getName().equals("_")) {
+                return bindings;
+            }
+            final OtpBindings result = new OtpBindings(bindings);
+            final OtpErlangObject old = bindings.get(var.getName());
+            if (old == null) {
+                // no previous binding
+                result.put(var.getName(), term);
+                return result;
+            }
+            return old.equals(term) ? result : null;
+        }
+        if (!pattern.getClass().equals(term.getClass())) {
+            return null;
+        }
+
+        if (pattern instanceof OtpErlangList) {
+            return matchList(pattern, term, bindings);
+        } else if (pattern instanceof OtpErlangTuple) {
+            return matchTuple(((OtpErlangTuple) pattern).elements(),
+                    ((OtpErlangTuple) term).elements(), bindings);
+        } else if (pattern.equals(term)) {
             return bindings;
         }
         return null;
+    }
+
+    private static OtpBindings matchList(final OtpErlangObject pattern,
+            final OtpErlangObject term, final OtpBindings bindings) {
+        final OtpErlangList lpattern = (OtpErlangList) pattern;
+        final OtpErlangList lterm = (OtpErlangList) term;
+        final int patternArity = lpattern.arity();
+        final int termArity = lterm.arity();
+        if (patternArity > termArity) {
+            return null;
+        }
+        if (patternArity < termArity && lpattern.isProper()) {
+            return null;
+        }
+        if (patternArity == termArity && lpattern.isProper() != lterm.isProper()) {
+            return null;
+        }
+        OtpBindings rez = bindings;
+        for (int i = 0; i < patternArity; i++) {
+            rez = match(lpattern.elementAt(i), lterm.elementAt(i), rez);
+            if (rez == null) {
+                return null;
+            }
+        }
+        if (patternArity == termArity) {
+            rez = match(lpattern.getLastTail(), lterm.getLastTail(), rez);
+            return rez;
+        }
+        if (lpattern.getLastTail() instanceof OtpPatternVariable) {
+            return match(lpattern.getLastTail(), lterm.getNthTail(patternArity), rez);
+        }
+        return match(lpattern.getLastTail(), lterm.getLastTail(), rez);
     }
 
     private static OtpErlangObject fill(final OtpErlangObject template,
@@ -134,6 +219,46 @@ public class OtpErlang {
             return TypeConverter.java2erlang(ret, sign);
         } else {
             return template;
+        }
+    }
+
+    private static OtpBindings matchTuple(final OtpErlangObject[] patterns,
+            final OtpErlangObject[] terms, final OtpBindings bindings) {
+        if (patterns.length != terms.length) {
+            return null;
+        }
+        OtpBindings result = new OtpBindings(bindings);
+        for (int i = 0; i < patterns.length; i++) {
+            result = match(patterns[i], terms[i], result);
+            if (result == null) {
+                return null;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * This is useful if a value can be anything, but we need to see it as a string (but
+     * without any quotes if it really is a string).
+     *
+     * @param target
+     * @return
+     */
+    public static String asString(final OtpErlangObject target) {
+        if (target instanceof OtpErlangAtom) {
+            return ((OtpErlangAtom) target).atomValue();
+        } else if (target instanceof OtpErlangString) {
+            return ((OtpErlangString) target).stringValue();
+        } else if (target instanceof OtpErlangBinary) {
+            return new String(((OtpErlangBinary) target).binaryValue());
+        } else if (target instanceof OtpErlangList) {
+            try {
+                return ((OtpErlangList) target).stringValue();
+            } catch (final OtpErlangException e) {
+                return target.toString();
+            }
+        } else {
+            return target.toString();
         }
     }
 
