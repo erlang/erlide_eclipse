@@ -28,9 +28,9 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 

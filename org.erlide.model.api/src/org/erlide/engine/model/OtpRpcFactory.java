@@ -1,4 +1,4 @@
-package org.erlide.engine.util;
+package org.erlide.engine.model;
 
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.rpc.IOtpRpc;

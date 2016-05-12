@@ -33,7 +33,7 @@ import org.erlide.cover.ui.launch.helpers.ProjectElement;
 import org.erlide.cover.ui.launch.helpers.ProjectLabelProvider;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 import org.erlide.util.ErlLogger;

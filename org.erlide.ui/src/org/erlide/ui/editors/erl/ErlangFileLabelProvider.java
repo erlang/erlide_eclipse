@@ -5,7 +5,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.navigator.IDescriptionProvider;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.navigator.NavigatorProblemsDecorator;

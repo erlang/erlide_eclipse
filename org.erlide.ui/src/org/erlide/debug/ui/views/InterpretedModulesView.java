@@ -33,7 +33,7 @@ import org.erlide.backend.debug.model.ErlangDebugElement;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.runtime.api.ErlDebugFlags;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.util.ErlLogger;

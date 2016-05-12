@@ -52,7 +52,7 @@ import org.erlide.core.builder.CompilerOption.PathsOption;
 import org.erlide.core.builder.CompilerOptions;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;

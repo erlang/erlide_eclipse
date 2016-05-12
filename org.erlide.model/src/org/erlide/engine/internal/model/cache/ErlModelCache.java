@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.IErlModelChangeListener;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.root.IErlModelChangeListener;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenService.ExternalTreeEntry;
 import org.erlide.util.IDisposable;

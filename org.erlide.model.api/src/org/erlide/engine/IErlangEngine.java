@@ -1,6 +1,6 @@
 package org.erlide.engine;
 
-import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IProjectConfiguratorFactory;
 import org.erlide.engine.services.ErlangService;
 import org.erlide.engine.services.GenericService;

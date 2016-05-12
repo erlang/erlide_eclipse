@@ -14,7 +14,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
-import org.erlide.core.internal.builder.BuildNotifier;
+import org.erlide.core.builder.BuildNotifier;
 import org.erlide.core.internal.builder.ErlangBuilder;
 import org.erlide.core.internal.builder.ErlangBuilder.BuildKind;
 import org.erlide.core.internal.builder.ErlangBuilderFactory;

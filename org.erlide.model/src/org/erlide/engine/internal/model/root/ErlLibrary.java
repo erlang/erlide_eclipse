@@ -3,9 +3,9 @@ package org.erlide.engine.internal.model.root;
 import java.util.Collection;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IParent;
-import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlLibrary;
 import org.erlide.engine.model.root.IErlProject;
 

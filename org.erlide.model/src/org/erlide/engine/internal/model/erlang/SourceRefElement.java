@@ -12,14 +12,15 @@ package org.erlide.engine.internal.model.erlang;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.engine.internal.model.SourceRange;
 import org.erlide.engine.internal.model.root.ErlElement;
 import org.erlide.engine.internal.model.root.Openable;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.ISourceRange;
 import org.erlide.engine.model.erlang.ISourceReference;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IOpenable;
 
 import com.google.common.base.Objects;
 

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.engine.internal.model.erlang;
+package org.erlide.engine.internal.model;
 
 import org.erlide.engine.model.erlang.ISourceRange;
 

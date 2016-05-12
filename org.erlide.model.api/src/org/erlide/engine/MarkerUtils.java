@@ -1,4 +1,4 @@
-package org.erlide.engine.model.builder;
+package org.erlide.engine;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -15,11 +15,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.xtext.xbase.lib.Pair;
-import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.builder.ErlProblems;
+import org.erlide.engine.model.builder.ProblemData;
 import org.erlide.engine.model.erlang.IErlFunction;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ISourceRange;
 import org.erlide.engine.model.root.IErlElementLocator;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ResourceUtil;
 import org.erlide.util.ErlLogger;

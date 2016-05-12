@@ -56,7 +56,7 @@
       </adapter>
    </factory>
    <factory
-         adaptableType="org.erlide.engine.model.erlang.IErlModule"
+         adaptableType="org.erlide.engine.model.root.IErlModule"
          class="org.erlide.test_support.ui.ErlElementAdapterFactory">
       <adapter
             type="org.eclipse.debug.ui.actions.ILaunchable">

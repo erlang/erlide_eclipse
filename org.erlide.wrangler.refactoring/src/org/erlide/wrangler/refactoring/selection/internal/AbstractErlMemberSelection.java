@@ -15,7 +15,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.engine.model.root.ErlElementKind;
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 
 /**

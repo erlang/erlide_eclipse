@@ -4,9 +4,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.FunctionRef;
 import org.erlide.engine.model.erlang.IErlFunction;
-import org.erlide.engine.model.erlang.IErlModule;
 
 // TODO extract this as a service
 public interface IErlElementLocator {

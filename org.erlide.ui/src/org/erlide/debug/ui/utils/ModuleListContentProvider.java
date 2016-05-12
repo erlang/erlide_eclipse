@@ -3,7 +3,7 @@ package org.erlide.debug.ui.utils;
 import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 
 import com.google.common.collect.Lists;
 

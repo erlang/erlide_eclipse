@@ -7,7 +7,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.erlide.engine.util.OtpRpcFactory;
+import org.erlide.engine.model.OtpRpcFactory;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.tracing.core.Constants;
 import org.erlide.tracing.core.mvc.model.MatchSpec;

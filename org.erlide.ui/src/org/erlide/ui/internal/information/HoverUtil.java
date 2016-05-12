@@ -7,9 +7,9 @@ import java.util.Collection;
 
 import org.eclipse.swt.browser.LocationEvent;
 import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.IErlComment;
 import org.erlide.engine.model.erlang.IErlTypespec;
-import org.erlide.engine.model.root.IErlElement;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.ErlangFunctionCall;

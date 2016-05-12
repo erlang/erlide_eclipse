@@ -8,9 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.engine.model;
+package org.erlide.engine.model.root;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.engine.model.ErlModelException;
 
 /**
  * Common protocol for Erlang elements that must be opened before they can be

@@ -1,4 +1,4 @@
-package org.erlide.engine.model.root;
+package org.erlide.engine.model;
 
 public enum ErlElementKind {
     //@formatter:off

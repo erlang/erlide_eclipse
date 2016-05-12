@@ -8,7 +8,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.ui.launch.DebugTab;
 
 public class InterpretHandler extends AbstractHandler {

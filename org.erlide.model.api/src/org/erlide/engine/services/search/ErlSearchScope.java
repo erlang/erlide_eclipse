@@ -3,7 +3,7 @@ package org.erlide.engine.services.search;
 import java.util.Collection;
 import java.util.Set;
 
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 
 import com.google.common.collect.Sets;
 

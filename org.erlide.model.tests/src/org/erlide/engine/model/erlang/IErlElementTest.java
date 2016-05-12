@@ -14,13 +14,14 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.root.ErlProject;
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
-import org.erlide.engine.model.root.IErlElement.AcceptFlags;
+import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.IErlElementVisitor;
+import org.erlide.engine.model.IErlElement.AcceptFlags;
 import org.erlide.engine.model.root.IErlElementLocator;
-import org.erlide.engine.model.root.IErlElementVisitor;
 import org.erlide.engine.model.root.IErlExternal;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.Test;
 
@@ -285,7 +286,7 @@ public class IErlElementTest extends ErlModelTestBase {
 
     // void clearCaches();
     /**
-     * @see org.erlide.engine.model.root.IErlElement#clearCaches()
+     * @see org.erlide.engine.model.IErlElement#clearCaches()
      */
     // TODO check more than source dir cache
     @Test

@@ -1,4 +1,4 @@
-package org.erlide.engine.model.root
+package org.erlide.engine
 
 import com.google.common.base.Objects
 import java.io.File
@@ -6,9 +6,13 @@ import java.util.Map
 import org.eclipse.core.runtime.IPath
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.erlide.engine.model.builder.BuilderTool
+import org.erlide.engine.model.root.ErlangProjectProperties
+import org.erlide.engine.model.root.IProjectConfigurator
+import org.erlide.engine.model.root.IProjectConfiguratorFactory
+import org.erlide.engine.model.root.ProjectConfigType
+import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.api.RuntimeCore
 import org.erlide.runtime.runtimeinfo.RuntimeInfo
-import org.erlide.engine.ErlangEngine
 
 @Accessors
 class NewProjectData extends ErlangProjectProperties {

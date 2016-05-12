@@ -22,7 +22,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolutionGenerator;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
-import org.erlide.engine.model.builder.MarkerUtils;
+import org.erlide.engine.MarkerUtils;
 import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;

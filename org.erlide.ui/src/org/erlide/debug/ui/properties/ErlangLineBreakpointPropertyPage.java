@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.backend.debug.IErlangBreakpoint;
 import org.erlide.debug.ui.utils.BreakpointUtils;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.util.ErlLogger;
 

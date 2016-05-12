@@ -1,6 +1,6 @@
 package org.erlide.ui.wizards;
 
-import org.erlide.engine.model.root.NewProjectData;
+import org.erlide.engine.NewProjectData;
 import org.erlide.engine.model.root.ProjectConfigType;
 
 public class RebarProjectPreferencesWizardPage extends ProjectPreferencesWizardPage {

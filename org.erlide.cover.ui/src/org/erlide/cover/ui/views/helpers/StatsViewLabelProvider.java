@@ -16,7 +16,7 @@ import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.ObjectType;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 import org.erlide.util.ErlLogger;
 

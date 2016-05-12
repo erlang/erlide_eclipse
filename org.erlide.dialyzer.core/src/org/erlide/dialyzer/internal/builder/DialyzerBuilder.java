@@ -17,8 +17,8 @@ import org.erlide.dialyzer.builder.DialyzerPreferences;
 import org.erlide.dialyzer.builder.DialyzerUtils;
 import org.erlide.dialyzer.builder.DialyzerUtils.DialyzerErrorException;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElementLocator;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.util.ErlLogger;
 

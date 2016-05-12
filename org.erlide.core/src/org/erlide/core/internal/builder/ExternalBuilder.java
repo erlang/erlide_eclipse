@@ -7,12 +7,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.builder.BuildNotifier;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.executor.ProgressCallback;
 import org.erlide.core.executor.ToolExecutor;
 import org.erlide.core.executor.ToolExecutor.ToolResults;
+import org.erlide.engine.MarkerUtils;
 import org.erlide.engine.model.builder.BuilderTool;
-import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.util.ErlLogger;
 

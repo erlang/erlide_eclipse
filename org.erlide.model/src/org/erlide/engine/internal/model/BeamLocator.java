@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.IBeamLocator;
+import org.erlide.engine.model.root.IBeamLocator;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;

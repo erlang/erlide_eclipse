@@ -19,7 +19,7 @@ import org.erlide.core.builder.BuildResource;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.CompilerOptions;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;

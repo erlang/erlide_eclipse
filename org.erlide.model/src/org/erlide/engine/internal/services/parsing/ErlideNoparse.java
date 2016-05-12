@@ -1,9 +1,9 @@
 package org.erlide.engine.internal.services.parsing;
 
 import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.IErlFunction;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;

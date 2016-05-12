@@ -1,7 +1,8 @@
-package org.erlide.engine.model;
+package org.erlide.engine.model.root;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.services.ErlangService;
 
 public interface IBeamLocator extends ErlangService {

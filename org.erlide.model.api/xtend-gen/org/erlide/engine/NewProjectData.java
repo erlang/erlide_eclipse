@@ -1,4 +1,4 @@
-package org.erlide.engine.model.root;
+package org.erlide.engine;
 
 import com.google.common.base.Objects;
 import java.io.File;

@@ -17,13 +17,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.util.ModelConfig;
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.ErlModelStatus;
 import org.erlide.engine.model.ErlModelStatusConstants;
-import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IOpenable;
 import org.erlide.util.ErlLogger;
 
 /**

@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.services.search.ErlSearchScope;
 import org.erlide.engine.services.search.LimitTo;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;

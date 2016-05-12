@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
 
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**

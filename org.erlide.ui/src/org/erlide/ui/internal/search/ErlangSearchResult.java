@@ -15,7 +15,7 @@ import org.eclipse.search.ui.text.Match;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.services.search.LimitTo;
 import org.erlide.engine.util.ResourceUtil;
 import org.erlide.ui.ErlideImage;

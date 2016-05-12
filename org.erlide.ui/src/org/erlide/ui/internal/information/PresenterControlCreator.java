@@ -25,7 +25,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.actions.OpenUtils;

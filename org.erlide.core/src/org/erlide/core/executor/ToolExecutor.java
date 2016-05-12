@@ -15,7 +15,7 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
-import org.erlide.core.internal.builder.BuildNotifier;
+import org.erlide.core.builder.BuildNotifier;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 

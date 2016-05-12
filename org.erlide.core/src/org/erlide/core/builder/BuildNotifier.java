@@ -1,27 +1,23 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *     Vlad Dumitrescu
+ * Contributors: IBM Corporation - initial API and implementation Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.internal.builder;
+package org.erlide.core.builder;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.core.builder.BuilderHelper;
 import org.erlide.util.ErlLogger;
 
 public class BuildNotifier {
 
-    protected IProgressMonitor monitor;
+    public IProgressMonitor monitor;
     protected boolean cancelling;
     protected float percentComplete;
     protected float progressPerCompilationUnit;
@@ -79,8 +75,7 @@ public class BuildNotifier {
     }
 
     /**
-     * Notification while within a compile that a unit has finished being
-     * compiled.
+     * Notification while within a compile that a unit has finished being compiled.
      */
     public void compiled(final IResource unit) {
         final String message = NLS.bind(BuilderMessages.build_compiling,
@@ -103,16 +98,14 @@ public class BuildNotifier {
     }
 
     /**
-     * Sets the cancelling flag, which indicates we are in the middle of being
-     * cancelled.
+     * Sets the cancelling flag, which indicates we are in the middle of being cancelled.
      */
     public void setCancelling(final boolean cancelling) {
         this.cancelling = cancelling;
     }
 
     /**
-     * Sets the amount of progress to report for compiling each compilation
-     * unit.
+     * Sets the amount of progress to report for compiling each compilation unit.
      */
     public void setProgressPerCompilationUnit(final float progress) {
         progressPerCompilationUnit = progress;
@@ -137,8 +130,8 @@ public class BuildNotifier {
                     monitor.worked(work - workDone);
                 }
                 if (BuilderHelper.isDebugging()) {
-                    ErlLogger.debug(java.text.NumberFormat.getPercentInstance().format(
-                            percentComplete));
+                    ErlLogger.debug(java.text.NumberFormat.getPercentInstance()
+                            .format(percentComplete));
                 }
                 workDone = work;
             }

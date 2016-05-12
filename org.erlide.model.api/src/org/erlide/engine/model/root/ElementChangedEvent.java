@@ -8,11 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.engine.model;
+package org.erlide.engine.model.root;
 
 import java.util.EventObject;
-
-import org.erlide.engine.model.root.IErlElementDelta;
 
 /**
  * An element changed event describes a change to the structure or contents of a

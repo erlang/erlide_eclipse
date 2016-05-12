@@ -1,6 +1,4 @@
-package org.erlide.engine.model.root;
-
-import org.erlide.engine.model.ErlModelException;
+package org.erlide.engine.model;
 
 /**
  * Interface for visitors in the erlang model tree

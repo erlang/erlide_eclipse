@@ -4,8 +4,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.text.quickassist.IQuickAssistInvocationContext;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
 
 public class MarkerQuickFixExecutor extends QuickFixExecutor {
 

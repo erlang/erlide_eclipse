@@ -8,7 +8,7 @@ import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.core.Activator;
 import org.erlide.cover.core.Logger;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.util.ErlLogger;
 
 /**

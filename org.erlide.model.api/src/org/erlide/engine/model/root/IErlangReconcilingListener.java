@@ -8,10 +8,9 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.engine.model.erlang;
+package org.erlide.engine.model.root;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.engine.model.root.ISourceUnit;
 
 public interface IErlangReconcilingListener {
 

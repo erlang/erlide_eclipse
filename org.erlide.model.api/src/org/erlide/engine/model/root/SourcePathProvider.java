@@ -1,4 +1,4 @@
-package org.erlide.engine.model;
+package org.erlide.engine.model.root;
 
 import java.util.Collection;
 

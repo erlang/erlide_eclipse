@@ -9,10 +9,10 @@
  *******************************************************************************/
 package org.erlide.engine.internal.model.erlang;
 
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlTypespec;
-import org.erlide.engine.model.root.ErlElementKind;
 
 /**
  *
@@ -38,7 +38,7 @@ public class ErlTypespec extends ErlMember implements IErlTypespec {
     }
 
     /**
-     * @see org.erlide.engine.model.root.IErlElement#getKind()
+     * @see org.erlide.engine.model.IErlElement#getKind()
      */
     @Override
     public ErlElementKind getKind() {

@@ -10,12 +10,10 @@
  *     IBM Corporation - added J2SE 1.5 support
  *     Vlad Dumitrescu
  * *******************************************************************************/
-package org.erlide.engine.model.erlang;
+package org.erlide.engine.model.root;
 
-import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
-import org.erlide.engine.model.root.IErlElement;
-import org.erlide.engine.model.root.ISourceUnit;
 
 /**
  * Represents an entire Erlang compilation unit (<code>.erl</code> or

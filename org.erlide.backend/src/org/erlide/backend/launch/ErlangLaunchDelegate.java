@@ -24,7 +24,7 @@ import org.erlide.backend.api.ErlRuntimeAttributes;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.IBeamLocator;
+import org.erlide.engine.model.root.IBeamLocator;
 import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;

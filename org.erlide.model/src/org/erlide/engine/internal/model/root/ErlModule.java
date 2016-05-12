@@ -6,7 +6,7 @@
  *
  * Contributors: Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.engine.internal.model.erlang;
+package org.erlide.engine.internal.model.root;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,10 +26,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.internal.model.root.Openable;
+import org.erlide.engine.internal.model.SourceRange;
 import org.erlide.engine.internal.util.ModelConfig;
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.ErlangIncludeFile;
@@ -39,15 +40,14 @@ import org.erlide.engine.model.erlang.IErlExport;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlImport;
 import org.erlide.engine.model.erlang.IErlMember;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.IErlPreprocessorDef;
 import org.erlide.engine.model.erlang.IErlTypespec;
 import org.erlide.engine.model.erlang.ISourceRange;
 import org.erlide.engine.model.erlang.ISourceReference;
 import org.erlide.engine.model.erlang.SourceKind;
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlFolder;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ISourceUnit;
 import org.erlide.engine.services.parsing.ParserService;

@@ -8,8 +8,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.navigator.ILinkHelper;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.util.ErlModelUtils;
 

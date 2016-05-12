@@ -39,7 +39,7 @@ import org.erlide.backend.api.ICodeBundle;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.backend.api.IProjectCodeLoader;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;

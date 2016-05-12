@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.erlide.engine.model.root.NewProjectData;
+import org.erlide.engine.NewProjectData;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.util.PreferencesUtils;
 import org.erlide.util.SystemConfiguration;
@@ -131,7 +131,8 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
         return search(ext, file, new ArrayList<String>());
     }
 
-    private List<String> search(final String ext, final File file, final List<String> list) {
+    private List<String> search(final String ext, final File file,
+            final List<String> list) {
         if (file.isFile()) {
             final IPath path = new Path(file.getPath());
             if (path.getFileExtension() != null && path.getFileExtension().equals(ext)) {

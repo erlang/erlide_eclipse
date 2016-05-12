@@ -27,12 +27,12 @@ import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.cache.ErlModelCache;
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.IErlElementVisitor;
 import org.erlide.engine.model.IParent;
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
-import org.erlide.engine.model.root.IErlElementVisitor;
+import org.erlide.engine.model.root.IOpenable;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;

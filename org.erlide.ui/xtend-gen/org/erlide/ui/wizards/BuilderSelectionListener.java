@@ -8,8 +8,8 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.erlide.core.executor.ToolExecutor;
+import org.erlide.engine.NewProjectData;
 import org.erlide.engine.model.builder.BuilderTool;
-import org.erlide.engine.model.root.NewProjectData;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.ui.wizards.ErlangProjectBuilderPage;
 

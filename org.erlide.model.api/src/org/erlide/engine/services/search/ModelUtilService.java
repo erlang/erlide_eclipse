@@ -5,13 +5,13 @@ import java.util.List;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.IErlPreprocessorDef;
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

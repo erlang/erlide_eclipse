@@ -3,11 +3,11 @@
  */
 package org.erlide.engine.internal.model.erlang;
 
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlComment;
 import org.erlide.engine.model.erlang.ISourceRange;
-import org.erlide.engine.model.root.ErlElementKind;
 
 /**
  * @author jakob
@@ -28,7 +28,7 @@ public class ErlComment extends ErlMember implements IErlComment {
     }
 
     /**
-     * @see org.erlide.engine.model.root.IErlElement#getKind()
+     * @see org.erlide.engine.model.IErlElement#getKind()
      */
     @Override
     public ErlElementKind getKind() {

@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.nullValue;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.IProblemChangedListener;
 

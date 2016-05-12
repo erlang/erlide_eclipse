@@ -59,7 +59,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.backend.debug.BackendEvalResult;
 import org.erlide.backend.debug.EvalHelper;
-import org.erlide.engine.util.OtpRpcFactory;
+import org.erlide.engine.model.OtpRpcFactory;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;

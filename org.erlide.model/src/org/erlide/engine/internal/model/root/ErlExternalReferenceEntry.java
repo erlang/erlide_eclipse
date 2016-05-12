@@ -1,4 +1,4 @@
-package org.erlide.engine.internal.model.erlang;
+package org.erlide.engine.internal.model.root;
 
 import java.util.List;
 
@@ -7,16 +7,15 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.internal.model.root.Openable;
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IParent;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.ErlElementKind;
+import org.erlide.engine.model.OtpRpcFactory;
 import org.erlide.engine.model.root.IErlExternal;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
-import org.erlide.engine.util.OtpRpcFactory;
 import org.erlide.runtime.rpc.IOtpRpc;
 
 import com.google.common.collect.Lists;

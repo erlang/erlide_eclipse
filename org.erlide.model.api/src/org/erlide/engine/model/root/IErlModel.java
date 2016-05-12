@@ -8,18 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.engine.model;
+package org.erlide.engine.model.root;
 
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
-import org.erlide.engine.model.root.IErlElementDelta;
-import org.erlide.engine.model.root.IErlElementLocator;
-import org.erlide.engine.model.root.IErlLibrary;
-import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.IParent;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.base.Predicate;

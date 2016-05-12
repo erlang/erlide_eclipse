@@ -3,7 +3,7 @@ package org.erlide.ui.wizards;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.xtext.xbase.lib.InputOutput;
-import org.erlide.engine.model.root.NewProjectData;
+import org.erlide.engine.NewProjectData;
 import org.erlide.engine.model.root.ProjectConfigType;
 
 @SuppressWarnings("all")
