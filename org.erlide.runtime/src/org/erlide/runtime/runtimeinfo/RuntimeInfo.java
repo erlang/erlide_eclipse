@@ -37,6 +37,7 @@ public final class RuntimeInfo {
 
     private RuntimeVersion version = null;
 
+    @NonNull
     public static final RuntimeInfo NO_RUNTIME_INFO = new RuntimeInfo("");
 
     public static class Builder {

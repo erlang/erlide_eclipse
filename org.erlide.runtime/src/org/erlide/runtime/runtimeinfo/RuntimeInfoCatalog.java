@@ -23,7 +23,7 @@ import com.google.common.collect.Maps;
 
 public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
 
-    public RuntimeInfo erlideRuntime;
+    public @NonNull RuntimeInfo erlideRuntime;
     public final Map<String, RuntimeInfo> runtimes;
     public String defaultRuntimeName;
 
@@ -53,10 +53,12 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
         if (defaultRuntimeName == null) {
             setDefaultRuntimes();
         }
-        erlideRuntime = runtimes
+        final RuntimeInfo rt = runtimes
                 .get(ideRuntime != null ? ideRuntime : defaultRuntimeName);
-        if (erlideRuntime == null) {
+        if (rt == null) {
             erlideRuntime = getDefaultRuntime();
+        } else {
+            erlideRuntime = rt;
         }
         Assert.isNotNull(erlideRuntime);
     }
@@ -93,7 +95,8 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
         runtimes.remove(name);
         if (!runtimes.isEmpty()) {
             if (erlideRuntime.getName().equals(name)) {
-                erlideRuntime = runtimes.values().iterator().next();
+                final RuntimeInfo rt = runtimes.values().iterator().next();
+                erlideRuntime = rt == null ? RuntimeInfo.NO_RUNTIME_INFO : rt;
             }
             if (defaultRuntimeName.equals(name)) {
                 defaultRuntimeName = runtimes.keySet().iterator().next();
@@ -116,7 +119,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
 
     private synchronized void setErlideRuntime(final @NonNull RuntimeInfo runtime) {
         final RuntimeInfo old = erlideRuntime;
-        if (old == null || !old.equals(runtime)) {
+        if (!old.equals(runtime)) {
             erlideRuntime = runtime;
             // this creates infinite recursion!
             // BackendManagerImpl.getDefault().getIdeBackend().stop();
@@ -212,9 +215,6 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
                     setErlideRuntime(info);
                     break;
                 }
-            }
-            if (erlideRuntime == null) {
-                setErlideRuntime(getDefaultRuntime());
             }
         }
     }
