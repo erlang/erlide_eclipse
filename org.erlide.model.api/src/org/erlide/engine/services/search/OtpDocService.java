@@ -12,15 +12,14 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public interface OtpDocService extends ErlangService {
 
-    OtpErlangObject getProposalsWithDoc(IOtpRpc b, String mod, String prefix,
-            String stateDir);
+    OtpErlangObject getProposalsWithDoc(IOtpRpc b, String mod, String prefix);
 
     OtpErlangObject getModules(IOtpRpc b, String prefix, List<String> projectModules,
             boolean includes);
 
-    OtpErlangObject getOtpDoc(IOtpRpc b, ErlangFunctionCall functionCall, String stateDir);
+    OtpErlangObject getOtpDoc(IOtpRpc b, ErlangFunctionCall functionCall);
 
-    OtpErlangObject getOtpDoc(IOtpRpc b, int offset, String stateDir, String module,
+    OtpErlangObject getOtpDoc(IOtpRpc b, int offset, String module,
             Collection<OtpErlangObject> imports, String externalModules,
             OtpErlangList pathVars);
 

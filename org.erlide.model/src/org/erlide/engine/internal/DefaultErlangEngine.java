@@ -15,6 +15,7 @@ import org.erlide.engine.internal.model.erlang.ModelFindUtil;
 import org.erlide.engine.internal.model.erlang.ModelInternalUtils;
 import org.erlide.engine.internal.model.root.ProjectConfiguratorFactory;
 import org.erlide.engine.internal.services.cleanup.ErlTidyCleanupProvider;
+import org.erlide.engine.internal.services.codeassist.ErlangCompletionService;
 import org.erlide.engine.internal.services.codeassist.ErlideContextAssist;
 import org.erlide.engine.internal.services.edoc.ErlideEdocExport;
 import org.erlide.engine.internal.services.parsing.ErlParser;
@@ -31,11 +32,14 @@ import org.erlide.engine.internal.services.text.ErlideIndent;
 import org.erlide.engine.model.OtpRpcFactory;
 import org.erlide.engine.model.root.IBeamLocator;
 import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IProjectConfiguratorFactory;
 import org.erlide.engine.services.ErlangService;
 import org.erlide.engine.services.GenericService;
 import org.erlide.engine.services.SystemInfoService;
 import org.erlide.engine.services.cleanup.CleanupProvider;
+import org.erlide.engine.services.codeassist.CompletionService;
 import org.erlide.engine.services.codeassist.ContextAssistService;
 import org.erlide.engine.services.edoc.EdocExportService;
 import org.erlide.engine.services.parsing.NullScannerService;
@@ -218,6 +222,12 @@ public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension 
     @Override
     public IProjectConfiguratorFactory getProjectConfiguratorFactory() {
         return ProjectConfiguratorFactory.getDefault();
+    }
+
+    @Override
+    public CompletionService getCompletionService(IErlProject project, IErlModule module,
+            String elementBefore) {
+        return new ErlangCompletionService(project, module, elementBefore);
     }
 
     @Override

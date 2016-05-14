@@ -1,10 +1,13 @@
 package org.erlide.engine;
 
 import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IProjectConfiguratorFactory;
 import org.erlide.engine.services.ErlangService;
 import org.erlide.engine.services.GenericService;
 import org.erlide.engine.services.cleanup.CleanupProvider;
+import org.erlide.engine.services.codeassist.CompletionService;
 import org.erlide.engine.services.codeassist.ContextAssistService;
 import org.erlide.engine.services.edoc.EdocExportService;
 import org.erlide.engine.services.parsing.ParserService;
@@ -52,6 +55,9 @@ public interface IErlangEngine {
     ModelFindService getModelFindService();
 
     ModelSearcherService getModelSearcherService();
+
+    CompletionService getCompletionService(IErlProject project, IErlModule module,
+            String elementBefore);
 
     // TODO
     GenericService getGenericService();

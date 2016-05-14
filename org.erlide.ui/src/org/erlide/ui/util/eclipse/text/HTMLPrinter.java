@@ -265,6 +265,9 @@ public final class HTMLPrinter {
     }
 
     public static String asHtml(final String string) {
+        if (string == null) {
+            return null;
+        }
         final StringBuffer sb = new StringBuffer(string);
         if (sb.length() > 0) {
             insertPageProlog(sb, 0, fgStyleSheet);

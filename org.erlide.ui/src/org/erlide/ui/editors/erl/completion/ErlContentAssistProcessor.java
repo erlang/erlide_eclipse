@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl.completion;
 
-import java.util.EnumSet;
-
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
@@ -21,8 +19,6 @@ import org.eclipse.ui.services.IDisposable;
 import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.prefs.plugin.CodeAssistPreferences;
-
-import com.ericsson.otp.erlang.OtpErlangAtom;
 
 public class ErlContentAssistProcessor extends AbstractErlContentAssistProcessor
         implements IDisposable {
@@ -42,23 +38,6 @@ public class ErlContentAssistProcessor extends AbstractErlContentAssistProcessor
     @Override
     public char[] getCompletionProposalAutoActivationCharacters() {
         return fCompletionProposalAutoActivationCharacters;
-    }
-
-    @Override
-    protected EnumSet<Kinds> filterFlags(final EnumSet<Kinds> flags) {
-        return flags;
-    }
-
-    @Override
-    protected String quoted(final String string, final Kinds kind) {
-        if (kind == Kinds.INCLUDES || kind == Kinds.INCLUDE_LIBS) {
-            return "\"" + string + "\"";
-        }
-        if (kind == Kinds.MODULES) {
-            final String string1 = string.substring(0, string.length() - 1);
-            return new OtpErlangAtom(string1).toString() + ":";
-        }
-        return string;
     }
 
     public void setToPrefs() {

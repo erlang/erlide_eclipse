@@ -10,7 +10,6 @@ import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
-import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControlInput;
 import org.erlide.ui.views.EdocView;
@@ -55,8 +54,8 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                 final OpenResult or = (OpenResult) inputElement;
                 moduleName = or.getName();
             }
-            final ErlangFunctionCall functionCall = HoverUtil.eventToErlangFunctionCall(
-                    moduleName, event);
+            final ErlangFunctionCall functionCall = HoverUtil
+                    .eventToErlangFunctionCall(moduleName, event);
             if (functionCall != null) {
                 final IErlProject project = ErlangEngine.getInstance()
                         .getModelUtilService().getProject(editor.getModule());
@@ -65,11 +64,8 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                 }
                 final IOtpRpc backend = BackendCore.getBuildBackend(project);
 
-                final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
-                        .toString();
                 final OtpErlangTuple otpDoc = (OtpErlangTuple) ErlangEngine.getInstance()
-                        .getService(OtpDocService.class)
-                        .getOtpDoc(backend, functionCall, stateDir);
+                        .getService(OtpDocService.class).getOtpDoc(backend, functionCall);
                 if (Util.isOk(otpDoc)) {
                     final String docStr = Util.stringValue(otpDoc.elementAt(1));
                     final StringBuffer result = new StringBuffer(docStr);
@@ -83,8 +79,8 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                         final String html = HoverUtil.getHTMLAndReplaceJSLinks(result);
                         final Object element = new OpenResult(otpDoc.elementAt(2));
                         input = new ErlBrowserInformationControlInput(input, editor,
-                                element, html, 20, HoverUtil.getDocumentationURL(docPath,
-                                        anchor));
+                                element, html, 20,
+                                HoverUtil.getDocumentationURL(docPath, anchor));
                     }
                 }
             }
