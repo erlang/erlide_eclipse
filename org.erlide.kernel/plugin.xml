@@ -5,6 +5,12 @@
          point="org.erlide.runtime.codepath">
 
      <beam_dir
+            path="ide"
+            context="ide"
+            otp_version="18">
+      </beam_dir>
+
+     <beam_dir
             path="common"
             context="common"
             otp_version="R16">
@@ -29,15 +35,15 @@
       </beam_dir>
 
      <beam_dir
-            path="debugger/r16"
+            path="debugger/19"
             context="debugger"
-            otp_version="R16">
+            otp_version="19">
       </beam_dir>
 
      <beam_dir
-            path="ide"
-            context="ide"
-            otp_version="18">
+            path="debugger/r16"
+            context="debugger"
+            otp_version="R16">
       </beam_dir>
 
 ​   </extension>
