@@ -143,7 +143,16 @@ public final class MarkerUtils {
         } catch (final OtpErlangRangeException e) {
         }
 
-        final String msg = OtpErlang.asString(data.elementAt(2)).replaceAll("[\n\r]", " ");
+        String msg = OtpErlang.asString(data.elementAt(2)).replaceAll("[\n\r]", " ");
+        if (msg.startsWith("-warning(")) {
+            msg = msg.substring("-warning(".length(), msg.length() - 2);
+        }
+        if (msg.startsWith("-error(")) {
+            msg = msg.substring("-error(".length(), msg.length() - 2);
+        }
+        if (msg.startsWith("\"")) {
+            msg = msg.substring(1, msg.length() - 1);
+        }
         final IMarker marker = createMarker(res, fileName, msg, line, sev,
                 PROBLEM_MARKER);
         if (marker != null) {
