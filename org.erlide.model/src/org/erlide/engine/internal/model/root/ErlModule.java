@@ -101,10 +101,10 @@ public class ErlModule extends Openable implements IErlModule {
         scannerName = createScannerName();
         comments = Lists.newArrayList();
         if (ModelConfig.verbose) {
-            final IErlElement element = (IErlElement) parent;
-            final String parentName = element.getName();
-            ErlLogger.debug(
-                    "...creating " + parentName + "/" + getName() + " " + moduleKind);
+            // final IErlElement element = (IErlElement) parent;
+            // final String parentName = element.getName();
+            // ErlLogger.debug(
+            // "...creating " + parentName + "/" + getName() + " " + moduleKind);
         }
     }
 
