@@ -40,7 +40,8 @@ public class ErlScanner implements ScannerService {
     }
 
     @Override
-    public void replaceText(final int offset, final int removeLength, final String newText) {
+    public void replaceText(final int offset, final int removeLength,
+            final String newText) {
         scanner.replaceText(name, offset, removeLength, newText);
     }
 

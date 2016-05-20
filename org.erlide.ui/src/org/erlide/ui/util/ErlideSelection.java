@@ -123,7 +123,8 @@ public class ErlideSelection {
      *            this is the offset of the end of the selection
      */
     public void setSelection(final int absoluteStart, final int absoluteEnd) {
-        textSelection = new TextSelection(doc, absoluteStart, absoluteEnd - absoluteStart);
+        textSelection = new TextSelection(doc, absoluteStart,
+                absoluteEnd - absoluteStart);
     }
 
     /**
@@ -144,8 +145,8 @@ public class ErlideSelection {
         final IRegion endLine = getEndLine();
         final IRegion startLine = getStartLine();
 
-        textSelection = new TextSelection(doc, startLine.getOffset(), endLine.getOffset()
-                + endLine.getLength() - startLine.getOffset());
+        textSelection = new TextSelection(doc, startLine.getOffset(),
+                endLine.getOffset() + endLine.getLength() - startLine.getOffset());
     }
 
     protected static void beep(final Exception e) {
@@ -378,8 +379,7 @@ public class ErlideSelection {
         final int lineOfOffset = getDoc().getLineOfOffset(getAbsoluteCursorOffset());
         final IRegion lineInformation = getDoc().getLineInformation(lineOfOffset);
 
-        final String lineToCursor = getDoc().get(
-                getAbsoluteCursorOffset(),
+        final String lineToCursor = getDoc().get(getAbsoluteCursorOffset(),
                 lineInformation.getOffset() + lineInformation.getLength()
                         - getAbsoluteCursorOffset());
         return lineToCursor;
@@ -660,7 +660,8 @@ public class ErlideSelection {
     /**
      * Checks if the activationToken ends with some char from cs.
      */
-    public static boolean endsWithSomeChar(final char[] cs, final String activationToken) {
+    public static boolean endsWithSomeChar(final char[] cs,
+            final String activationToken) {
         for (int i = 0; i < cs.length; i++) {
             if (activationToken.endsWith(cs[i] + "")) {
                 return true;
@@ -880,8 +881,8 @@ public class ErlideSelection {
      * @return
      * @throws BadLocationException
      */
-    public static int getFirstCharRelativeLinePosition(final IDocument doc, final int line)
-            throws BadLocationException {
+    public static int getFirstCharRelativeLinePosition(final IDocument doc,
+            final int line) throws BadLocationException {
         IRegion region;
         region = doc.getLineInformation(line);
         return getFirstCharRelativePosition(doc, region);

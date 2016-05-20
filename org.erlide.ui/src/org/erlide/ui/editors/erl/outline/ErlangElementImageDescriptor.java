@@ -155,8 +155,8 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
         ImageData data = descriptor.getImageData();
         if (data == null) {
             data = DEFAULT_IMAGE_DATA;
-            ErlideUIPlugin
-                    .logErrorMessage("Image data not available: " + descriptor.toString()); //$NON-NLS-1$
+            ErlideUIPlugin.logErrorMessage(
+                    "Image data not available: " + descriptor.toString()); //$NON-NLS-1$
         }
         return data;
     }

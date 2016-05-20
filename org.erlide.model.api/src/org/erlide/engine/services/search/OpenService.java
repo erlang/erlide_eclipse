@@ -36,7 +36,7 @@ public interface OpenService extends ErlangService {
         private final boolean isModule;
 
         public ExternalTreeEntry(final String parentPath, final String path,
-        // final String name,
+                // final String name,
                 final boolean isModule) {
             super();
             this.parentPath = parentPath;

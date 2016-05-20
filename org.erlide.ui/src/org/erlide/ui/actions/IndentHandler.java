@@ -33,8 +33,8 @@ public class IndentHandler extends ErlangAbstractHandler {
 
     @Override
     protected void doAction(final ISelection sel, final ITextEditor textEditor) {
-        final IDocument document = textEditor.getDocumentProvider().getDocument(
-                textEditor.getEditorInput());
+        final IDocument document = textEditor.getDocumentProvider()
+                .getDocument(textEditor.getEditorInput());
         final ITextSelection selection = extendSelectionToWholeLines(document,
                 (ITextSelection) sel);
         final ITextSelection getSelection = getTextSelection(document, selection,
@@ -98,11 +98,11 @@ public class IndentHandler extends ErlangAbstractHandler {
             final String text, final boolean template, final String prefix)
             throws RpcException {
 
-        final IndentService indentService = ErlangEngine.getInstance().getService(
-                IndentService.class);
+        final IndentService indentService = ErlangEngine.getInstance()
+                .getService(IndentService.class);
 
-        final int tabw = EditorsUI.getPreferenceStore().getInt(
-                AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
+        final int tabw = EditorsUI.getPreferenceStore()
+                .getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
         final int indentw = AutoIndentStrategy.getIndentWidthFromPreferences();
         final Map<String, String> prefs = new TreeMap<String, String>();
         IndentationPreferencePage.addKeysAndPrefs(prefs);

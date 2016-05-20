@@ -39,8 +39,8 @@ import org.erlide.ui.util.eclipse.text.BrowserInput;
 import org.erlide.ui.views.EdocView;
 import org.erlide.util.ErlLogger;
 
-public final class PresenterControlCreator extends
-        AbstractReusableInformationControlCreator {
+public final class PresenterControlCreator
+        extends AbstractReusableInformationControlCreator {
 
     /**
      * Action to go back to the previous input in the hover control.
@@ -53,8 +53,8 @@ public final class PresenterControlCreator extends
             setText("Previous");
             final ISharedImages images = PlatformUI.getWorkbench().getSharedImages();
             setImageDescriptor(images.getImageDescriptor(ISharedImages.IMG_TOOL_BACK));
-            setDisabledImageDescriptor(images
-                    .getImageDescriptor(ISharedImages.IMG_TOOL_BACK_DISABLED));
+            setDisabledImageDescriptor(
+                    images.getImageDescriptor(ISharedImages.IMG_TOOL_BACK_DISABLED));
 
             update();
         }
@@ -93,8 +93,8 @@ public final class PresenterControlCreator extends
             setText("Next");
             final ISharedImages images = PlatformUI.getWorkbench().getSharedImages();
             setImageDescriptor(images.getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD));
-            setDisabledImageDescriptor(images
-                    .getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD_DISABLED));
+            setDisabledImageDescriptor(
+                    images.getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD_DISABLED));
 
             update();
         }
@@ -112,8 +112,8 @@ public final class PresenterControlCreator extends
             final BrowserInformationControlInput current = fInfoControl.getInput();
 
             if (current != null && current.getNext() != null) {
-                setToolTipText(String.format("Go to next %s", current.getNext()
-                        .getInputName()));
+                setToolTipText(
+                        String.format("Go to next %s", current.getNext().getInputName()));
                 setEnabled(true);
             } else {
                 setToolTipText("");
@@ -143,8 +143,8 @@ public final class PresenterControlCreator extends
             fInfoControl.notifyDelayedInputChange(null);
             fInfoControl.dispose();
             try {
-                final EdocView view = (EdocView) ErlideUIPlugin.getActivePage().showView(
-                        EdocView.ID);
+                final EdocView view = (EdocView) ErlideUIPlugin.getActivePage()
+                        .showView(EdocView.ID);
                 // TODO view.setInput(infoInput);
                 view.setText(input.getHtml());
             } catch (final PartInitException e) {
@@ -263,8 +263,8 @@ public final class PresenterControlCreator extends
                         } else if (newInput instanceof BrowserInformationControlInput) {
                             final BrowserInformationControlInput input = (BrowserInformationControlInput) newInput;
                             final Object inputElement = input.getInputElement();
-                            selectionProvider.setSelection(new StructuredSelection(
-                                    inputElement));
+                            selectionProvider
+                                    .setSelection(new StructuredSelection(inputElement));
                             final boolean hasInputElement = inputElement != null;
                             showInEdocViewAction.setEnabled(hasInputElement);
                             openDeclarationAction.setEnabled(hasInputElement);
@@ -282,6 +282,7 @@ public final class PresenterControlCreator extends
             return control;
         }
         return new DefaultInformationControl(parent,
-                EditorsUI.getTooltipAffordanceString(), new ErlInformationPresenter(true));
+                EditorsUI.getTooltipAffordanceString(),
+                new ErlInformationPresenter(true));
     }
 }

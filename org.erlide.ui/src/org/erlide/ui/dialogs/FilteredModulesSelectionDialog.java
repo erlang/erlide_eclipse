@@ -185,9 +185,8 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
             memento.save(writer);
             settings.put(WORKINGS_SET_SETTINGS, writer.getBuffer().toString());
         } catch (final IOException e) {
-            StatusManager.getManager().handle(
-                    new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, IStatus.ERROR,
-                            "", e)); //$NON-NLS-1$
+            StatusManager.getManager().handle(new Status(IStatus.ERROR,
+                    ErlideUIPlugin.PLUGIN_ID, IStatus.ERROR, "", e)); //$NON-NLS-1$
             // don't do anything. Simply don't store the settings
         }
     }
@@ -199,13 +198,12 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
         final String setting = settings.get(WORKINGS_SET_SETTINGS);
         if (setting != null) {
             try {
-                final IMemento memento = XMLMemento.createReadRoot(new StringReader(
-                        setting));
+                final IMemento memento = XMLMemento
+                        .createReadRoot(new StringReader(setting));
                 workingSetFilterActionGroup.restoreState(memento);
             } catch (final WorkbenchException e) {
-                StatusManager.getManager().handle(
-                        new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
-                                IStatus.ERROR, "", e)); //$NON-NLS-1$
+                StatusManager.getManager().handle(new Status(IStatus.ERROR,
+                        ErlideUIPlugin.PLUGIN_ID, IStatus.ERROR, "", e)); //$NON-NLS-1$
                 // don't do anything. Simply don't restore the settings
             }
         }
@@ -230,9 +228,8 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
                             IWorkingSet workingSet = (IWorkingSet) event.getNewValue();
 
-                            if (workingSet != null
-                                    && !(workingSet.isAggregateWorkingSet() && workingSet
-                                            .isEmpty())) {
+                            if (workingSet != null && !(workingSet.isAggregateWorkingSet()
+                                    && workingSet.isEmpty())) {
                                 workingSetFilter.setWorkingSet(workingSet);
                                 setSubtitle(workingSet.getLabel());
                             } else {
@@ -331,8 +328,8 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
             if (collator instanceof RuleBasedCollator) {
                 final RuleBasedCollator rbc = (RuleBasedCollator) collator;
                 final String rules = rbc.getRules();
-                final String newRules = rules.replaceFirst("<\'.\'<", "<").replaceFirst(
-                        "<\'_\'<", "<\'.\'<\'_\'<");
+                final String newRules = rules.replaceFirst("<\'.\'<", "<")
+                        .replaceFirst("<\'_\'<", "<\'.\'<\'_\'<");
                 try {
                     fCollator = new RuleBasedCollator(newRules);
                 } catch (final ParseException e) {
@@ -344,10 +341,10 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
                 @Override
                 public int compare(final Object o1, final Object o2) {
-                    final String s1 = o1 instanceof IResource ? ((IResource) o1)
-                            .getName() : (String) o1;
-                    final String s2 = o2 instanceof IResource ? ((IResource) o2)
-                            .getName() : (String) o2;
+                    final String s1 = o1 instanceof IResource ? ((IResource) o1).getName()
+                            : (String) o1;
+                    final String s2 = o2 instanceof IResource ? ((IResource) o2).getName()
+                            : (String) o2;
 
                     if (s1.startsWith(patternText)) {
                         return -1;
@@ -524,7 +521,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
                 final IContainer my_container = resource.getParent();
                 if (validPaths.contains(my_container.getFullPath())
                         || !extraLocations.isEmpty()
-                        && extraLocations.contains(my_container.getLocation())) {
+                                && extraLocations.contains(my_container.getLocation())) {
                     proxyContentProvider.add(resource, moduleFilter);
                 }
             }
@@ -569,8 +566,8 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
         private void addFilePathsFromFile(final IProject project,
                 final IPathVariableManager pvm, final IResource fres) {
-            final List<String> lines = PreferencesUtils.readFile(fres.getLocation()
-                    .toString());
+            final List<String> lines = PreferencesUtils
+                    .readFile(fres.getLocation().toString());
             for (final String pref : lines) {
 
                 String path;
@@ -589,12 +586,13 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
             final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                     .getErlangProject(project);
             if (erlProject != null) {
-                validPaths.addAll(getFullPaths(project, erlProject.getProperties()
-                        .getIncludeDirs()));
-                validPaths.addAll(getFullPaths(project, erlProject.getProperties()
-                        .getSourceDirs()));
+                validPaths.addAll(getFullPaths(project,
+                        erlProject.getProperties().getIncludeDirs()));
+                validPaths.addAll(getFullPaths(project,
+                        erlProject.getProperties().getSourceDirs()));
                 final Collection<IPath> extras = Lists.newArrayList();
-                for (final IPath p : SourcePathUtils.getExtraSourcePathsForModel(project)) {
+                for (final IPath p : SourcePathUtils
+                        .getExtraSourcePathsForModel(project)) {
                     extras.add(p);
                 }
                 validPaths.addAll(getFullPaths(project, extras));

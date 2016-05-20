@@ -33,7 +33,8 @@ public class KeyBindingHelper {
      *         request.
      */
     public static KeySequence getContentAssistProposalBinding() {
-        return getCommandKeyBinding(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
+        return getCommandKeyBinding(
+                ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
     }
 
     /**
@@ -62,7 +63,8 @@ public class KeyBindingHelper {
      * @return true if the given key event can trigger the passed command (and
      *         false otherwise).
      */
-    public static boolean matchesKeybinding(final KeyEvent event, final String commandId) {
+    public static boolean matchesKeybinding(final KeyEvent event,
+            final String commandId) {
         final IBindingService bindingSvc = (IBindingService) PlatformUI.getWorkbench()
                 .getAdapter(IBindingService.class);
         final TriggerSequence[] activeBindingsFor = bindingSvc

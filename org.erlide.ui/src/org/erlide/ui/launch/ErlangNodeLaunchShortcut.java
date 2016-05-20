@@ -143,7 +143,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
 
     private ILaunchConfiguration getLaunchConfiguration(
             final Collection<IErlProject> projects, final String mode)
-                    throws CoreException {
+            throws CoreException {
         final ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
         final List<String> projectNames = getProjectNames(projects);
         String name = ListsUtils.packList(projectNames, "_");

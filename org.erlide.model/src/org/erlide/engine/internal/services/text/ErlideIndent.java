@@ -50,8 +50,8 @@ public class ErlideIndent implements IndentService {
             final boolean useTabs, final Map<String, String> prefs)
             throws RpcException, OtpErlangRangeException {
         // ErlLogger.debug("indentLine '%s'", txt);
-        final OtpErlangObject o = backend.call("erlide_indent", "indent_line",
-                "sssiiox", txt, oldLine, insertedText, indentw, tabw, useTabs,
+        final OtpErlangObject o = backend.call("erlide_indent", "indent_line", "sssiiox",
+                txt, oldLine, insertedText, indentw, tabw, useTabs,
                 fixIndentPrefs(prefs));
         return new IndentResult(o);
     }
@@ -59,23 +59,21 @@ public class ErlideIndent implements IndentService {
     @Override
     @SuppressWarnings("boxing")
     public OtpErlangObject indentLines(final int offset, final int length,
-            final String text, final int indentw, final int tabw,
-            final boolean useTabs, final Map<String, String> prefs)
-            throws RpcException {
-        final OtpErlangObject o = backend.call(40000, "erlide_indent",
-                "indent_lines", "siiiiolx", text, offset, length, indentw,
-                tabw, useTabs, fixIndentPrefs(prefs));
+            final String text, final int indentw, final int tabw, final boolean useTabs,
+            final Map<String, String> prefs) throws RpcException {
+        final OtpErlangObject o = backend.call(40000, "erlide_indent", "indent_lines",
+                "siiiiolx", text, offset, length, indentw, tabw, useTabs,
+                fixIndentPrefs(prefs));
         return o;
     }
 
     @Override
-    public OtpErlangObject templateIndentLines(final String prefix,
-            final String text, final int indentw, final int tabw,
-            final boolean useTabs, final Map<String, String> prefs)
-            throws RpcException {
+    public OtpErlangObject templateIndentLines(final String prefix, final String text,
+            final int indentw, final int tabw, final boolean useTabs,
+            final Map<String, String> prefs) throws RpcException {
         final OtpErlangObject o = backend.call(20000, "erlide_indent",
-                "template_indent_lines", "ssiiolx", prefix, text, indentw,
-                tabw, useTabs, fixIndentPrefs(prefs));
+                "template_indent_lines", "ssiiolx", prefix, text, indentw, tabw, useTabs,
+                fixIndentPrefs(prefs));
         return o;
     }
 

@@ -55,8 +55,8 @@ public class Range implements IRange {
      *             if the given tuple is not well formed
      */
     public Range(final OtpErlangTuple position) throws OtpErlangRangeException {
-        this((OtpErlangTuple) position.elementAt(0), (OtpErlangTuple) position
-                .elementAt(1));
+        this((OtpErlangTuple) position.elementAt(0),
+                (OtpErlangTuple) position.elementAt(1));
     }
 
     /**
@@ -73,8 +73,8 @@ public class Range implements IRange {
             throws OtpErlangRangeException {
         this(((OtpErlangLong) startPos.elementAt(0)).intValue(),
                 ((OtpErlangLong) startPos.elementAt(1)).intValue(),
-                ((OtpErlangLong) endPos.elementAt(0)).intValue(), ((OtpErlangLong) endPos
-                        .elementAt(1)).intValue());
+                ((OtpErlangLong) endPos.elementAt(0)).intValue(),
+                ((OtpErlangLong) endPos.elementAt(1)).intValue());
     }
 
     @Override
@@ -109,8 +109,8 @@ public class Range implements IRange {
 
     @Override
     public String toString() {
-        return "{" + getStartLine() + "," + getStartCol() + "}" + "-" + "{"
-                + getEndLine() + "," + getEndCol() + "}";
+        return "{" + getStartLine() + "," + getStartCol() + "}" + "-" + "{" + getEndLine()
+                + "," + getEndCol() + "}";
     }
 
     @Override

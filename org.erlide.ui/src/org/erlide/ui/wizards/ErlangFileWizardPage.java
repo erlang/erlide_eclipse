@@ -85,11 +85,8 @@ public class ErlangFileWizardPage extends WizardPage {
         setDescription("This wizard creates a new erlang source file.");
         fSelection = selection;
 
-        moduleTemplates = ErlideUIPlugin
-                .getDefault()
-                .getTemplateStore()
-                .getTemplates(
-                        ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
+        moduleTemplates = ErlideUIPlugin.getDefault().getTemplateStore().getTemplates(
+                ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
         fModifyListener = new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
@@ -151,7 +148,8 @@ public class ErlangFileWizardPage extends WizardPage {
         lblskeleton.setText("&Skeleton:");
 
         skeleton = new Combo(filePanel, SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY);
-        final GridData gd_skeleton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+        final GridData gd_skeleton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1,
+                1);
         gd_skeleton.widthHint = 139;
         skeleton.setLayoutData(gd_skeleton);
         // skeleton.add("None");
@@ -311,9 +309,7 @@ public class ErlangFileWizardPage extends WizardPage {
 
     private TemplateContextType getContextType() {
         if (fContextType == null) {
-            fContextType = ErlideUIPlugin
-                    .getDefault()
-                    .getContextTypeRegistry()
+            fContextType = ErlideUIPlugin.getDefault().getContextTypeRegistry()
                     .getContextType(
                             ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
         }
@@ -334,8 +330,8 @@ public class ErlangFileWizardPage extends WizardPage {
         TemplateBuffer tb = null;
         try {
             final DocumentTemplateContext context = new DocumentTemplateContext(
-                    contextType, new Document(template.getPattern()), 0, template
-                            .getPattern().length());
+                    contextType, new Document(template.getPattern()), 0,
+                    template.getPattern().length());
             tb = context.evaluate(template);
         } catch (final BadLocationException e) {
             ErlLogger.warn(e);

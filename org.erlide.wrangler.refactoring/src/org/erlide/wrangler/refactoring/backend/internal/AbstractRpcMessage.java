@@ -49,7 +49,8 @@ public abstract class AbstractRpcMessage implements IRpcMessage {
 
         } catch (final Exception e) {
             ErlLogger.error(e);
-            setUnsuccessful("Internal error occured during the refactoring.\nPlease report it!");
+            setUnsuccessful(
+                    "Internal error occured during the refactoring.\nPlease report it!");
         }
     }
 

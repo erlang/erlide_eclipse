@@ -24,7 +24,7 @@ public final class Property<T> {
      * @param name
      *            the name of the property (not <code>null</code>)
      */
-    public Property(String name) {
+    public Property(final String name) {
         if (name == null) {
             throw new IllegalArgumentException();
         }

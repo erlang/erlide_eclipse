@@ -50,8 +50,8 @@ public class CallHierarchyAction extends Action {
         if (module == null) {
             return;
         }
-        final IErlElement el = editor.getElementAt(
-                editor.getViewer().getSelectedRange().x, false);
+        final IErlElement el = editor
+                .getElementAt(editor.getViewer().getSelectedRange().x, false);
         IErlFunction f = null;
         if (el instanceof IErlFunction) {
             f = (IErlFunction) el;
@@ -71,7 +71,8 @@ public class CallHierarchyAction extends Action {
         final IWorkbenchWindow dw = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         final IWorkbenchPage page = dw.getActivePage();
 
-        final AsyncCaller<CallHierarchyView> ac = new AsyncCaller<CallHierarchyView>(100) {
+        final AsyncCaller<CallHierarchyView> ac = new AsyncCaller<CallHierarchyView>(
+                100) {
 
             @Override
             protected CallHierarchyView prepare() {
@@ -80,9 +81,8 @@ public class CallHierarchyAction extends Action {
                     final CallHierarchyView cvh = (CallHierarchyView) p
                             .getAdapter(CallHierarchyView.class);
 
-                    cvh.setMessage("<searching... project "
-                            + ErlangEngine.getInstance().getModelUtilService()
-                                    .getProject(module).getName() + ">");
+                    cvh.setMessage("<searching... project " + ErlangEngine.getInstance()
+                            .getModelUtilService().getProject(module).getName() + ">");
                     return cvh;
                 } catch (final PartInitException e) {
                     ErlLogger.error("could not open Call hierarchy view: ",
@@ -93,8 +93,8 @@ public class CallHierarchyAction extends Action {
 
             @Override
             protected RpcFuture call() throws BackendException {
-                final RpcFuture result = xrefService.addProject(ErlangEngine
-                        .getInstance().getModelUtilService().getProject(module));
+                final RpcFuture result = xrefService.addProject(ErlangEngine.getInstance()
+                        .getModelUtilService().getProject(module));
                 return result;
             }
 
@@ -103,8 +103,8 @@ public class CallHierarchyAction extends Action {
                     final RpcFuture result) {
                 page.activate(context);
                 try {
-                    context.setRoot(ErlangEngine.getInstance().getModel()
-                            .findFunction(ref));
+                    context.setRoot(
+                            ErlangEngine.getInstance().getModel().findFunction(ref));
                 } catch (final ErlModelException e) {
                     ErlLogger.error(e);
                 }

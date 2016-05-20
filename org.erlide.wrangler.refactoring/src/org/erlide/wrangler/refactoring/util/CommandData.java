@@ -39,9 +39,8 @@ public class CommandData {
         }
 
         for (final OtpErlangObject arg : args) {
-            if (arg instanceof OtpErlangTuple
-                    && ((OtpErlangTuple) arg).elementAt(0).equals(
-                            new OtpErlangAtom("prompt"))) {
+            if (arg instanceof OtpErlangTuple && ((OtpErlangTuple) arg).elementAt(0)
+                    .equals(new OtpErlangAtom("prompt"))) {
                 argsTmp.add(new OtpErlangList(userInput));
                 // TODO make it so that it adds input only once, check repeat
                 // interactive

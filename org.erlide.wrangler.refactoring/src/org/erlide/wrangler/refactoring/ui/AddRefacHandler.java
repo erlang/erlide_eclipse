@@ -44,9 +44,10 @@ public class AddRefacHandler extends AbstractHandler {
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
 
-        final InputDialog dialog = new InputDialog(PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getShell(), "Add user-defined refactoring",
-                "Please type callback module name!", "", new IInputValidator() {
+        final InputDialog dialog = new InputDialog(
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                "Add user-defined refactoring", "Please type callback module name!", "",
+                new IInputValidator() {
 
                     public IValidator internalV = new ModuleNameValidator();
 
@@ -84,16 +85,17 @@ public class AddRefacHandler extends AbstractHandler {
             UserRefactoringsManager.getInstance().addMyComposite(callbackModule);
         }
 
-        MessageDialog.openInformation(PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getShell(), "Add user-defined refactoring",
-                "Success!");
+        MessageDialog.openInformation(
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                "Add user-defined refactoring", "Success!");
 
         return null;
     }
 
     private void showErrorMesg(final String mesg) {
-        MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                .getShell(), "Add user-defined refactoring  - error", mesg);
+        MessageDialog.openError(
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                "Add user-defined refactoring  - error", mesg);
     }
 
     // check if the refactoring is elementary or composite
@@ -116,7 +118,8 @@ public class AddRefacHandler extends AbstractHandler {
                         || attr.getName().equals("behavior")) {
                     if (attr.getValue().toString().contains("gen_refac")) {
                         return RefacType.ELEMENTARY;
-                    } else if (attr.getValue().toString().contains("gen_composite_refac")) {
+                    } else if (attr.getValue().toString()
+                            .contains("gen_composite_refac")) {
                         return RefacType.COMPOSITE;
                     }
                 }
@@ -153,16 +156,14 @@ public class AddRefacHandler extends AbstractHandler {
         String path;
 
         try {
-            if (ErlangEngine.getInstance().getModel().findModule(callbackModule) == null) {
+            if (ErlangEngine.getInstance().getModel()
+                    .findModule(callbackModule) == null) {
                 return null;
             }
 
-            final IErlProject project = ErlangEngine
-                    .getInstance()
-                    .getModelUtilService()
-                    .getProject(
-                            ErlangEngine.getInstance().getModel()
-                                    .findModule(callbackModule));
+            final IErlProject project = ErlangEngine.getInstance().getModelUtilService()
+                    .getProject(ErlangEngine.getInstance().getModel()
+                            .findModule(callbackModule));
             path = project.getWorkspaceProject().getLocation()
                     .append(project.getProperties().getOutputDir())
                     .append(callbackModule + ".beam").toOSString();

@@ -58,8 +58,8 @@ public class ErlMergeViewer extends TextMergeViewer {
             };
             fPreferenceStore.addPropertyChangeListener(fPreferenceChangeListener);
 
-            fUseSystemColors = fPreferenceStore
-                    .getBoolean(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT);
+            fUseSystemColors = fPreferenceStore.getBoolean(
+                    AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT);
             if (!fUseSystemColors) {
                 final RGB bg = createColor(fPreferenceStore,
                         AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND);
@@ -95,8 +95,8 @@ public class ErlMergeViewer extends TextMergeViewer {
         } else if (key
                 .equals(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT)) {
 
-            fUseSystemColors = fPreferenceStore
-                    .getBoolean(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT);
+            fUseSystemColors = fPreferenceStore.getBoolean(
+                    AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT);
             if (fUseSystemColors) {
                 setBackgroundColor(null);
                 setForegroundColor(null);

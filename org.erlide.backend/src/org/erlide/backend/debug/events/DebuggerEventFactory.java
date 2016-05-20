@@ -53,7 +53,8 @@ public class DebuggerEventFactory {
         return parseMeta(b.getPid("Meta"), b.get("Event"));
     }
 
-    private static MetaEvent parseMeta(final OtpErlangPid pid, final OtpErlangObject event) {
+    private static MetaEvent parseMeta(final OtpErlangPid pid,
+            final OtpErlangObject event) {
         try {
             OtpBindings b = OtpErlang.match("{break_at, Mod:a, Line:i, Crt}", event);
             if (b != null) {

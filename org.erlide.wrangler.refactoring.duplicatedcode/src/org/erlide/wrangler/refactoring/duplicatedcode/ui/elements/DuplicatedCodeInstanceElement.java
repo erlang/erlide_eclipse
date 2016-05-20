@@ -56,8 +56,8 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
         try {
             startOffset = WranglerUtils.calculateOffsetFromPosition(startLine,
                     startColumn, doc);
-            endOffset = WranglerUtils
-                    .calculateOffsetFromPosition(endLine, endColumn, doc);
+            endOffset = WranglerUtils.calculateOffsetFromPosition(endLine, endColumn,
+                    doc);
             codePartString = WranglerUtils.getTextSegment(startOffset, endOffset, doc);
         } catch (final BadLocationException e) {
             ErlLogger.error(e);

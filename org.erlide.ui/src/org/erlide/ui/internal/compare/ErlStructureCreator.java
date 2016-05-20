@@ -152,8 +152,8 @@ public class ErlStructureCreator extends StructureCreator {
         return null;
     }
 
-    private ErlNode recursiveMakeErlNodes(final IErlElement element,
-            final ErlNode parent, final IDocument doc) throws ErlModelException {
+    private ErlNode recursiveMakeErlNodes(final IErlElement element, final ErlNode parent,
+            final IDocument doc) throws ErlModelException {
         final ErlNode n = ErlNode.createErlNode(parent, element, doc);
         if (element instanceof IOpenable) {
             final IOpenable o = (IOpenable) element;
@@ -231,8 +231,7 @@ public class ErlStructureCreator extends StructureCreator {
 
     @Override
     protected IStructureComparator createStructureComparator(final Object element,
-            final IDocument document0,
-            final ISharedDocumentAdapter sharedDocumentAdapter,
+            final IDocument document0, final ISharedDocumentAdapter sharedDocumentAdapter,
             final IProgressMonitor monitor) throws CoreException {
         IErlModule module = null;
         final IErlModel model = ErlangEngine.getInstance().getModel();

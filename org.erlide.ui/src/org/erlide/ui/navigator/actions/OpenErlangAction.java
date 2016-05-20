@@ -90,13 +90,13 @@ public class OpenErlangAction extends Action {
                             treeViewer.setExpandedState(selectedElement, !expanded);
                         }
                     } else {
-                        final IEditorPart part = EditorUtility.openInEditor(
-                                selectedElement, true);
+                        final IEditorPart part = EditorUtility
+                                .openInEditor(selectedElement, true);
                         EditorUtility.revealInEditor(part, selectedElement);
                     }
                 } else if (!selectedClosedProjects.isEmpty()) {
-                    openResourceAction.selectionChanged((IStructuredSelection) provider
-                            .getSelection());
+                    openResourceAction.selectionChanged(
+                            (IStructuredSelection) provider.getSelection());
                     openResourceAction.run();
                 }
             } catch (final PartInitException e) {

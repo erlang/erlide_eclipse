@@ -72,16 +72,17 @@ public class TraceEditor extends TextEditor {
                 .getAnnotationModel(getEditorInput());
 
         final ITextSelection pos = (ITextSelection) getSelectionProvider().getSelection();
-        final MarkCallLocation location = new MarkCallLocation(getSourceViewer()
-                .getDocument(), pos.getStartLine());
+        final MarkCallLocation location = new MarkCallLocation(
+                getSourceViewer().getDocument(), pos.getStartLine());
 
-        final Position position = new Position(location.getOffset(), location.getLength());
+        final Position position = new Position(location.getOffset(),
+                location.getLength());
         final String description = location.getDescription();
 
         final Annotation oldAnnotation = callMatchingLine;
         if (position.getOffset() != 0) {
-            callMatchingLine = new Annotation("org.erlide.test_support.trace.call",
-                    false, description);
+            callMatchingLine = new Annotation("org.erlide.test_support.trace.call", false,
+                    description);
         } else {
             callMatchingLine = null;
         }

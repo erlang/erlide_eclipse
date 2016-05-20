@@ -42,8 +42,8 @@ public class ErlangBreakpointPropertiesAction implements IObjectActionDelegate {
                     }
                 };
             }
-            final PropertyDialogAction propertyAction = new PropertyDialogAction(
-                    provider, new ISelectionProvider() {
+            final PropertyDialogAction propertyAction = new PropertyDialogAction(provider,
+                    new ISelectionProvider() {
                         @Override
                         public void addSelectionChangedListener(
                                 final ISelectionChangedListener listener) {

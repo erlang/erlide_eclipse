@@ -84,8 +84,8 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         String name;
         if (record != null) {
             try {
-                final IErlRecordField recordField = (IErlRecordField) record
-                        .getChildren().get(offset);
+                final IErlRecordField recordField = (IErlRecordField) record.getChildren()
+                        .get(offset);
                 name = recordField.getFieldName();
             } catch (final ErlModelException e) {
                 name = varName + ":" + offset;
@@ -116,9 +116,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
                 final ErlangDebugTarget target = getErlangDebugTarget();
                 IErlPreprocessorDef pd;
                 try {
-                    pd = ErlangEngine
-                            .getInstance()
-                            .getModelFindService()
+                    pd = ErlangEngine.getInstance().getModelFindService()
                             .findPreprocessorDef(getErlProjects(target.getProjects()),
                                     moduleName, a.atomValue(), ErlElementKind.RECORD_DEF);
                     if (pd instanceof IErlRecordDef) {

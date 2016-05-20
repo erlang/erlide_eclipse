@@ -52,9 +52,9 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
     }
 
     protected int getEndCol() {
-        return WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
-                .getOffset() + member.getSourceRange().getLength(), getEndLine() - 1,
-                document);
+        return WranglerUtils.calculateColumnFromOffset(
+                member.getSourceRange().getOffset() + member.getSourceRange().getLength(),
+                getEndLine() - 1, document);
     }
 
     protected int getEndLine() {
@@ -67,8 +67,8 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
     }
 
     protected int getStartCol() {
-        return WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
-                .getOffset(), getStartLine() - 1, document);
+        return WranglerUtils.calculateColumnFromOffset(
+                member.getSourceRange().getOffset(), getStartLine() - 1, document);
 
     }
 

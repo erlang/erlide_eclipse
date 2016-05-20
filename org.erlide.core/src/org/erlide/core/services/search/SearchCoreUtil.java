@@ -17,9 +17,9 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.IErlElement.AcceptFlags;
 import org.erlide.engine.model.IErlElementVisitor;
 import org.erlide.engine.model.IParent;
-import org.erlide.engine.model.IErlElement.AcceptFlags;
 import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlModel;
@@ -150,7 +150,8 @@ public class SearchCoreUtil {
         }
         final Set<String> externalModulePaths = new HashSet<String>();
         for (final IErlProject project : erlangProjects) {
-            addExternalModules(project, result, externalModulePaths, addExternals, addOtp);
+            addExternalModules(project, result, externalModulePaths, addExternals,
+                    addOtp);
         }
         return result;
     }

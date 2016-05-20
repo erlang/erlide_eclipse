@@ -26,47 +26,47 @@ package org.fishwife.jrugged;
  * normal operation.
  * <p/>
  * Sample usage:
- * 
+ *
  * <pre>
  * public class Service implements Initializable, Monitorable {
- * 
+ *
  *     // This status flag is set in afterInit() by the background
  *     // Initializer thread and must be volatile to ensure proper
  *     // cross thread state change notification
  *     private volatile Status status = Status.INIT;
- * 
+ *
  *     public Service() {
  *         // Allow the service/object to construct completely to avoid
  *         // potential memory, or incomplete object initializations
  *         // then call serviceInitialize() on this object
  *     }
- * 
+ *
  *     public void serviceInitialize() {
  *         new Initializer(this).initialize();
  *     }
- * 
+ *
  *     public void tryInit() throws Exception {
  *         // attempt an initialization here ...
  *     }
- * 
+ *
  *     public void afterInit() {
  *         status = Status.UP;
  *     }
- * 
+ *
  *     public Status getStatus() {
  *         return status;
  *     }
- * 
+ *
  *     public void aUsefulMethod(String arg1, int arg2) {
  *       // Always make sure the service is ready for use.
  *       if (status != Status.UP) {
  *          throw new IllegalStateException(&quot;Not yet initialized&quot;);
  *       }
- * 
+ *
  *       ... // Do something interesting now.
  *    }
  * }
- * 
+ *
  * </pre>
  */
 public class Initializer implements Runnable {

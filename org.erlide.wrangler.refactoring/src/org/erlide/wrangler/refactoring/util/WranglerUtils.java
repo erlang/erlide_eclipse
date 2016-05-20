@@ -447,7 +447,8 @@ public final class WranglerUtils {
     public static IFile getFileFromPath(final IPath path) {
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         final IFile[] files = // root.findFilesForLocation(path);
-        root.findFilesForLocationURI(org.eclipse.core.filesystem.URIUtil.toURI(path));
+                root.findFilesForLocationURI(
+                        org.eclipse.core.filesystem.URIUtil.toURI(path));
 
         if (files.length > 0) {
             return files[0];// else

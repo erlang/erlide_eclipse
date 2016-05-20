@@ -23,8 +23,8 @@ import org.erlide.test_support.ui.suites.TestCaseData.FailStackItem;
 import org.erlide.ui.util.DisplayUtils;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.OtpBindings;
+import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.OtpParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

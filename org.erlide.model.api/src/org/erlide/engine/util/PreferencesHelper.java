@@ -24,16 +24,18 @@ public final class PreferencesHelper {
 
     public static PreferencesHelper getHelper(final String qualifier,
             final IProject project) {
-        return new PreferencesHelper(qualifier, new IScopeContext[] {
-                new ProjectScope(project), InstanceScope.INSTANCE,
-                ConfigurationScope.INSTANCE, DefaultScope.INSTANCE }, new ProjectScope(
-                project));
+        return new PreferencesHelper(qualifier,
+                new IScopeContext[] { new ProjectScope(project), InstanceScope.INSTANCE,
+                        ConfigurationScope.INSTANCE, DefaultScope.INSTANCE },
+                new ProjectScope(project));
     }
 
     public static PreferencesHelper getHelper(final String qualifier) {
         final IScopeContext instanceScope = InstanceScope.INSTANCE;
-        return new PreferencesHelper(qualifier, new IScopeContext[] { instanceScope,
-                ConfigurationScope.INSTANCE, DefaultScope.INSTANCE }, instanceScope);
+        return new PreferencesHelper(
+                qualifier, new IScopeContext[] { instanceScope,
+                        ConfigurationScope.INSTANCE, DefaultScope.INSTANCE },
+                instanceScope);
     }
 
     private PreferencesHelper(final String qualifier, final IScopeContext[] loadContexts,

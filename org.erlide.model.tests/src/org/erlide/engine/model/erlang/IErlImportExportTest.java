@@ -41,8 +41,8 @@ public class IErlImportExportTest extends ErlModelTestBase {
     public void hasFunction() throws Exception {
         assertTrue(import1.hasFunction(new ErlangFunction("reverse", 1)));
         assertTrue(import1.hasFunction(new ErlangFunction("reverse", 2)));
-        assertTrue(import1.hasFunction(new ErlangFunction("reverse",
-                ErlangFunction.ANY_ARITY)));
+        assertTrue(import1
+                .hasFunction(new ErlangFunction("reverse", ErlangFunction.ANY_ARITY)));
         assertFalse(import1.hasFunction(new ErlangFunction("reverse", 3)));
         assertTrue(export.hasFunction(new ErlangFunction("f", 0)));
         assertTrue(export.hasFunction(new ErlangFunction("f", ErlangFunction.ANY_ARITY)));

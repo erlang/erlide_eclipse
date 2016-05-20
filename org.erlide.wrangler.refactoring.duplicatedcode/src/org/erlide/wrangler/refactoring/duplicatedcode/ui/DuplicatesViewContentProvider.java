@@ -19,8 +19,8 @@ import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.ResultTreeRoot
  * @author Gyorgy Orosz
  *
  */
-public class DuplicatesViewContentProvider implements ITreeContentProvider,
-IDuplicatedCodeResultDisplayer {
+public class DuplicatesViewContentProvider
+        implements ITreeContentProvider, IDuplicatedCodeResultDisplayer {
 
     private final DuplicatesView duplicatedCodeView;
 
@@ -32,7 +32,8 @@ IDuplicatedCodeResultDisplayer {
     private ResultTreeRoot invisibleRoot;
 
     @Override
-    public void inputChanged(final Viewer v, final Object oldInput, final Object newInput) {
+    public void inputChanged(final Viewer v, final Object oldInput,
+            final Object newInput) {
     }
 
     @Override

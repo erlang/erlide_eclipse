@@ -157,8 +157,8 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
                     changedFiles = message.getRefactoringChangeset();
                     status = new RefactoringStatus();
                 } else {
-                    status = RefactoringStatus.createFatalErrorStatus(message
-                            .getMessageString());
+                    status = RefactoringStatus
+                            .createFatalErrorStatus(message.getMessageString());
                 }
             }
 

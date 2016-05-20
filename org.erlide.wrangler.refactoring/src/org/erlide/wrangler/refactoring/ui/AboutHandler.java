@@ -23,7 +23,8 @@ public class AboutHandler extends AbstractHandler {
             super(parentShell);
         }
 
-        public MyMessageDialog(final Shell shell, final String title, final String message) {
+        public MyMessageDialog(final Shell shell, final String title,
+                final String message) {
             super(shell);
             this.title = title;
             this.message = message;
@@ -47,8 +48,8 @@ public class AboutHandler extends AbstractHandler {
             final Composite composite = (Composite) super.createDialogArea(parent);
 
             final Link url1 = new Link(composite, SWT.BORDER);
-            url1.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                    | GridData.HORIZONTAL_ALIGN_FILL));
+            url1.setLayoutData(new GridData(
+                    GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 
             url1.setText(message);
 

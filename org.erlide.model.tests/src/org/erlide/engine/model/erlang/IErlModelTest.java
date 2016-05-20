@@ -52,8 +52,8 @@ public class IErlModelTest extends ErlModelTestBase {
     @After
     @Override
     public void tearDown() throws Exception {
-        ResourcesPlugin.getWorkspace().getPathVariableManager()
-                .setURIValue(PV, (URI) null);
+        ResourcesPlugin.getWorkspace().getPathVariableManager().setURIValue(PV,
+                (URI) null);
         super.tearDown();
     }
 
@@ -90,10 +90,10 @@ public class IErlModelTest extends ErlModelTestBase {
     public void findElement() throws Exception {
         final IProject workspaceProject = project.getWorkspaceProject();
         final IErlElement findElement = model.findElement(workspaceProject);
-        final IErlElement findElement2 = model.findElement(module
-                .getCorrespondingResource());
-        final IErlElement findElement3 = model.findElement(workspaceProject
-                .getFolder("no_way"));
+        final IErlElement findElement2 = model
+                .findElement(module.getCorrespondingResource());
+        final IErlElement findElement3 = model
+                .findElement(workspaceProject.getFolder("no_way"));
         final IErlElement findElement4 = model.findElement(workspaceProject.getParent());
         final IErlElement parent = (IErlElement) module.getParent();
         final IFolder folder = (IFolder) parent.getResource();
@@ -290,8 +290,8 @@ public class IErlModelTest extends ErlModelTestBase {
             final IErlModule z3 = model.findIncludeFromModule(module, zz, null,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IProjectDescription description = workspaceProject.getDescription();
-            description.setReferencedProjects(new IProject[] { project1
-                    .getWorkspaceProject() });
+            description.setReferencedProjects(
+                    new IProject[] { project1.getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
             myProject.open(null);
             final IErlModule z4 = model.findIncludeFromModule(module, zz, null,
@@ -358,8 +358,8 @@ public class IErlModelTest extends ErlModelTestBase {
             externalModuleFile = ErlideTestUtils.createTmpFile(xxErl, "-module(xx).\n");
             final String externalModulePath = externalModuleFile.getAbsolutePath();
             externalsFile = ErlideTestUtils.createTmpFile(XX_ERLIDEX, externalModulePath);
-            ((ErlProject) aProject).setExternalModulesFile(externalsFile
-                    .getAbsolutePath());
+            ((ErlProject) aProject)
+                    .setExternalModulesFile(externalsFile.getAbsolutePath());
             final IErlModule aModule = ErlideTestUtils.createModule(aProject, "yy.erl",
                     "-module(yy).\n");
             final IErlProject project1 = projects[1];
@@ -396,8 +396,8 @@ public class IErlModelTest extends ErlModelTestBase {
             final IErlModule z3 = model.findModuleFromProject(aProject, zz, null,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IProjectDescription description = workspaceProject.getDescription();
-            description.setReferencedProjects(new IProject[] { project1
-                    .getWorkspaceProject() });
+            description.setReferencedProjects(
+                    new IProject[] { project1.getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
             aProject.open(null);
             final IErlModule z4 = model.findModuleFromProject(aProject, zz, null,
@@ -458,8 +458,8 @@ public class IErlModelTest extends ErlModelTestBase {
             externalModuleFile = ErlideTestUtils.createTmpFile(zzErl, xxxContents);
             final String externalModulePath = externalModuleFile.getAbsolutePath();
             externalsFile = ErlideTestUtils.createTmpFile(XX_ERLIDEX, externalModulePath);
-            ((ErlProject) aProject).setExternalModulesFile(externalsFile
-                    .getAbsolutePath());
+            ((ErlProject) aProject)
+                    .setExternalModulesFile(externalsFile.getAbsolutePath());
             final IErlProject project1 = projects[1];
             final IErlModule referencedModule = ErlideTestUtils.createModule(project1,
                     zzErl, xxxContents);
@@ -474,8 +474,8 @@ public class IErlModelTest extends ErlModelTestBase {
             final IErlModule zz3 = model.findModuleFromProject(aProject, zz, null,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IProjectDescription description = workspaceProject.getDescription();
-            description.setReferencedProjects(new IProject[] { project1
-                    .getWorkspaceProject() });
+            description.setReferencedProjects(
+                    new IProject[] { project1.getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
             aProject.open(null);
             final IErlModule zz4 = model.findModuleFromProject(aProject, zz, null,
@@ -568,8 +568,8 @@ public class IErlModelTest extends ErlModelTestBase {
             final IErlModule z3 = model.findIncludeFromProject(aProject, zz, null,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IProjectDescription description = workspaceProject.getDescription();
-            description.setReferencedProjects(new IProject[] { project1
-                    .getWorkspaceProject() });
+            description.setReferencedProjects(
+                    new IProject[] { project1.getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
             aProject.open(null);
             final IErlModule z4 = model.findIncludeFromProject(aProject, zz, null,
@@ -642,8 +642,8 @@ public class IErlModelTest extends ErlModelTestBase {
             final IErlModule x3 = model.findIncludeFromProject(aProject, xx, null,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IProjectDescription description = workspaceProject.getDescription();
-            description.setReferencedProjects(new IProject[] { project1
-                    .getWorkspaceProject() });
+            description.setReferencedProjects(
+                    new IProject[] { project1.getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
             aProject.open(null);
             final IErlModule x4 = model.findIncludeFromProject(aProject, xx, null,

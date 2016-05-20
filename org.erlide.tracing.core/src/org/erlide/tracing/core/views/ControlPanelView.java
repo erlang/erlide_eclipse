@@ -137,8 +137,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                 }
             }
         };
-        startStopAction.setImageDescriptor(DebugUITools
-                .getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
+        startStopAction.setImageDescriptor(
+                DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
         startStopAction.setToolTipText(START_LABEL);
         getViewSite().getActionBars().getToolBarManager().add(startStopAction);
     }
@@ -184,8 +184,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                     .getShell();
             new ProgressMonitorDialog(shell).run(true, false, task);
-            startStopAction.setImageDescriptor(DebugUITools
-                    .getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
+            startStopAction.setImageDescriptor(
+                    DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
             startStopAction.setToolTipText(START_LABEL);
             startStopAction.setEnabled(true);
             TracingStatusHandler.handleStatus(status);
@@ -351,8 +351,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                 + ProcessFlag.values().length];
         editors[ProcessColumn.SELECTED.ordinal()] = new CheckboxCellEditor(table);
         for (final ProcessFlag flag : ProcessFlag.values()) {
-            editors[ProcessColumn.values().length + flag.ordinal()] = new CheckboxCellEditor(
-                    table);
+            editors[ProcessColumn.values().length
+                    + flag.ordinal()] = new CheckboxCellEditor(table);
         }
         processesTableViewer.setCellEditors(editors);
         processesTableViewer
@@ -495,8 +495,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                     if (!ConfigurationManager.saveTPConfig(patternsConfigName)) {
                         final MessageBox messageBox = new MessageBox(parent.getShell(),
                                 SWT.ICON_ERROR | SWT.OK);
-                        messageBox.setMessage("Unable to save configuration: "
-                                + patternsConfigName);
+                        messageBox.setMessage(
+                                "Unable to save configuration: " + patternsConfigName);
                         messageBox.setText("Error");
                         messageBox.open();
                     }
@@ -513,10 +513,10 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 final String[] configurations = ConfigurationManager.getTPConfigs();
-                final Set<String> existingNames = new HashSet<String>(Arrays
-                        .asList(configurations));
-                final InputDialog dialog = new ConfigurationSaveAsDialog(parent
-                        .getShell(), "Save trace pattern configuration",
+                final Set<String> existingNames = new HashSet<String>(
+                        Arrays.asList(configurations));
+                final InputDialog dialog = new ConfigurationSaveAsDialog(
+                        parent.getShell(), "Save trace pattern configuration",
                         "Enter name for configuration:", patternsConfigName,
                         existingNames);
 
@@ -527,8 +527,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                     } else {
                         final MessageBox messageBox = new MessageBox(parent.getShell(),
                                 SWT.ICON_ERROR | SWT.OK);
-                        messageBox.setMessage("Unable to save configuration: "
-                                + dialog.getValue());
+                        messageBox.setMessage(
+                                "Unable to save configuration: " + dialog.getValue());
                         messageBox.setText("Error");
                         messageBox.open();
                     }
@@ -581,8 +581,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         editors[TracePatternColumn.ARITY.ordinal()] = new TextCellEditor(table);
         editors[TracePatternColumn.MATCH_SPEC.ordinal()] = new MatchSpecCellEditor(table);
         functionsTableViewer.setCellEditors(editors);
-        functionsTableViewer.setCellModifier(new TracePatternCellModifier(
-                functionsTableViewer));
+        functionsTableViewer
+                .setCellModifier(new TracePatternCellModifier(functionsTableViewer));
     }
 
     // "Nodes" tab methods
@@ -725,8 +725,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                     if (!ConfigurationManager.saveNodesConfig(nodesConfigName)) {
                         final MessageBox messageBox = new MessageBox(parent.getShell(),
                                 SWT.ICON_ERROR | SWT.OK);
-                        messageBox.setMessage("Unable to save configuration: "
-                                + nodesConfigName);
+                        messageBox.setMessage(
+                                "Unable to save configuration: " + nodesConfigName);
                         messageBox.setText("Error");
                         messageBox.open();
                     }
@@ -743,10 +743,10 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 final String[] configurations = ConfigurationManager.getNodesConfig();
-                final Set<String> existingNames = new HashSet<String>(Arrays
-                        .asList(configurations));
-                final InputDialog dialog = new ConfigurationSaveAsDialog(parent
-                        .getShell(), "Save nodes configuration",
+                final Set<String> existingNames = new HashSet<String>(
+                        Arrays.asList(configurations));
+                final InputDialog dialog = new ConfigurationSaveAsDialog(
+                        parent.getShell(), "Save nodes configuration",
                         "Enter name for configuration:", nodesConfigName, existingNames);
 
                 if (dialog.open() == Window.OK) {
@@ -756,8 +756,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                     } else {
                         final MessageBox messageBox = new MessageBox(parent.getShell(),
                                 SWT.ICON_ERROR | SWT.OK);
-                        messageBox.setMessage("Unable to save configuration: "
-                                + dialog.getValue());
+                        messageBox.setMessage(
+                                "Unable to save configuration: " + dialog.getValue());
                         messageBox.setText("Error");
                         messageBox.open();
                     }
@@ -819,9 +819,9 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         DisplayUtils.asyncExec(new Runnable() {
             @Override
             public void run() {
-                startStopAction.setImageDescriptor(PlatformUI.getWorkbench()
-                        .getSharedImages()
-                        .getImageDescriptor(ISharedImages.IMG_ELCL_STOP));
+                startStopAction
+                        .setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
+                                .getImageDescriptor(ISharedImages.IMG_ELCL_STOP));
                 startStopAction.setToolTipText(STOP_LABEL);
             }
         });

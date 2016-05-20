@@ -61,8 +61,8 @@ public class DialyzerUtils {
 
     public static void doDialyze(final IProgressMonitor monitor,
             final Set<IErlModule> modules, final Set<IErlProject> projects,
-            final IBackend backend) throws InvocationTargetException,
-            DialyzerErrorException {
+            final IBackend backend)
+            throws InvocationTargetException, DialyzerErrorException {
         if (backend == null) {
             ErlLogger.warn("Trying to dialyze with null backend");
             return;
@@ -100,8 +100,8 @@ public class DialyzerUtils {
                 }
                 // check backend down
                 if (!backend.isRunning()) {
-                    throw new BackendException("Dialyzer: backend " + backend.getName()
-                            + " is down");
+                    throw new BackendException(
+                            "Dialyzer: backend " + backend.getName() + " is down");
                 }
 
                 OtpErlangObject r = null;
@@ -137,8 +137,8 @@ public class DialyzerUtils {
                 throw new DialyzerErrorException(s);
             }
         } else {
-            throw new DialyzerErrorException("Unknown Dialyzer message: "
-                    + Util.ioListToString(o, MAX_MSG_LEN));
+            throw new DialyzerErrorException(
+                    "Unknown Dialyzer message: " + Util.ioListToString(o, MAX_MSG_LEN));
         }
     }
 
@@ -167,8 +167,8 @@ public class DialyzerUtils {
             final IErlProject erlProject = ErlangEngine.getInstance()
                     .getModelUtilService().getProject(m);
             final IProject project = erlProject.getWorkspaceProject();
-            final IFolder ebin = project.getFolder(erlProject.getProperties()
-                    .getOutputDir());
+            final IFolder ebin = project
+                    .getFolder(erlProject.getProperties().getOutputDir());
             if (SourceKind.hasErlExtension(name)) {
                 if (fromSource) {
                     final IResource resource = m.getResource();

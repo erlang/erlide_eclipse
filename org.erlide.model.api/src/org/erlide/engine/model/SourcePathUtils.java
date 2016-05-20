@@ -32,7 +32,8 @@ public class SourcePathUtils {
         });
     }
 
-    public static Collection<IPath> getExtraSourcePathsForExecution(final IProject project) {
+    public static Collection<IPath> getExtraSourcePathsForExecution(
+            final IProject project) {
         return getExtraSourcePathsGeneric(project, new SPPMethod() {
             @Override
             public Collection<IPath> call(final IProject myProject) {

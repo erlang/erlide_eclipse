@@ -25,7 +25,8 @@ public class ItemBrowser {
     private final SelectionDialog dialog;
     private char type;
 
-    public ItemBrowser(final Composite comp, final int style, final SelectionDialog dial) {
+    public ItemBrowser(final Composite comp, final int style,
+            final SelectionDialog dial) {
 
         final GridData gd = new GridData(SWT.FILL, SWT.CENTER, false, false);
         gd.widthHint = 500;

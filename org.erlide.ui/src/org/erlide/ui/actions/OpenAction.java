@@ -125,11 +125,8 @@ public class OpenAction extends SelectionDispatchAction {
                 final String scannerName = editor.getScannerName();
                 module = editor.getModule();
                 project = editor.getProject();
-                openResult = ErlangEngine
-                        .getInstance()
-                        .getService(OpenService.class)
-                        .open(scannerName,
-                                offset,
+                openResult = ErlangEngine.getInstance().getService(OpenService.class)
+                        .open(scannerName, offset,
                                 ErlangEngine.getInstance().getModelUtilService()
                                         .getImportsAsList(module),
                                 project.getProperties().getExternalModules(),
@@ -142,8 +139,8 @@ public class OpenAction extends SelectionDispatchAction {
                         .getDocument(textEditor.getEditorInput()).get();
                 openResult = ErlangEngine.getInstance().getService(OpenService.class)
                         .openText(text, offset);
-                final IFile file = (IFile) textEditor.getEditorInput().getAdapter(
-                        IFile.class);
+                final IFile file = (IFile) textEditor.getEditorInput()
+                        .getAdapter(IFile.class);
                 if (file != null) {
                     final IProject p = file.getProject();
                     if (p != null) {

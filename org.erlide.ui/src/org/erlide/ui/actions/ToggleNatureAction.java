@@ -71,8 +71,8 @@ public class ToggleNatureAction implements IObjectActionDelegate {
                     // Remove the nature
                     final String[] newNatures = new String[natures.length - 1];
                     System.arraycopy(natures, 0, newNatures, 0, i);
-                    System.arraycopy(natures, i + 1, newNatures, i, natures.length - i
-                            - 1);
+                    System.arraycopy(natures, i + 1, newNatures, i,
+                            natures.length - i - 1);
                     description.setNatureIds(newNatures);
                     project.setDescription(description, null);
 

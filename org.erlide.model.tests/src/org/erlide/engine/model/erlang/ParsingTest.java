@@ -72,8 +72,8 @@ public class ParsingTest {
         final String sourceContent = "[inline,{hipe,[{regalloc,linear_scan}]}]";
         final String source = "-compile(" + sourceContent + ").";
         assertTrue(parse(source));
-        final IErlElement attribute = TestingSupport.createErlAttribute(module,
-                "compile", null, sourceContent, 0, 50);
+        final IErlElement attribute = TestingSupport.createErlAttribute(module, "compile",
+                null, sourceContent, 0, 50);
         final List<IErlElement> expected = new ArrayList<IErlElement>(1);
         expected.add(attribute);
         final Collection<IErlElement> actual = module.getChildren();

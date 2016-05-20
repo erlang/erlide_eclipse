@@ -81,8 +81,9 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             GlobalParameters.setSelection(PlatformUI.getWorkbench()
                     .getActiveWorkbenchWindow().getActivePage().getSelection());
         } catch (final WranglerException e) {
-            MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                    .getShell(), "Error", e.getMessage());
+            MessageDialog.openError(
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                    "Error", e.getMessage());
             return null;
         }
 
@@ -97,8 +98,8 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
         } else if (actionId
                 .equals("org.erlide.wrangler.refactoring.codeinspection.dependencies")) {
             handleDepenenciesCall(wranglerSelection, shell);
-        } else if (actionId
-                .equals("org.erlide.wrangler.refactoring.codeinspection.nontailrecursive")) {
+        } else if (actionId.equals(
+                "org.erlide.wrangler.refactoring.codeinspection.nontailrecursive")) {
             handleNonTailRecursiveCall(wranglerSelection, shell);
         } else if (actionId
                 .equals("org.erlide.wrangler.refactoring.codeinspection.notflush")) {
@@ -154,8 +155,8 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
                 }
                 // show result
                 if (!elements.isEmpty()) {
-                    CodeInspectionViewsManager.showErlElements("Long functions",
-                            elements, LONG_FUNCTIONS);
+                    CodeInspectionViewsManager.showErlElements("Long functions", elements,
+                            LONG_FUNCTIONS);
                 } else {
                     MessageDialog.openInformation(shell, "No result",
                             "Could not found any function which is longer, than "
@@ -200,8 +201,9 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
                 }
                 // show result
                 if (!elements.isEmpty()) {
-                    CodeInspectionViewsManager.showErlElements("Nested " + type
-                            + " expressions", elements, NESTED_EXPRESSIONS + type);
+                    CodeInspectionViewsManager.showErlElements(
+                            "Nested " + type + " expressions", elements,
+                            NESTED_EXPRESSIONS + type);
                 } else {
                     MessageDialog.openInformation(shell, "No result",
                             "Could not found any " + nestedVal + " levels nested " + type
@@ -233,10 +235,10 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
                         GlobalParameters.getTabWidth());
             } else {
                 function = inFile;
-                result = WranglerBackendManager.getRefactoringBackend()
-                        .callInspection(function, "sxi", wranglerSelection.getFilePath(),
-                                wranglerSelection.getSearchPath(),
-                                GlobalParameters.getTabWidth());
+                result = WranglerBackendManager.getRefactoringBackend().callInspection(
+                        function, "sxi", wranglerSelection.getFilePath(),
+                        wranglerSelection.getSearchPath(),
+                        GlobalParameters.getTabWidth());
             }
 
             final ArrayList<IErlElement> elements = processFunctionResult(shell, result);
@@ -297,10 +299,10 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             RpcResult res = null;
             if (!answer) {
                 function = inFile;
-                res = WranglerBackendManager.getRefactoringBackend()
-                        .callInspection(function, "sxi", wranglerSelection.getFilePath(),
-                                wranglerSelection.getSearchPath(),
-                                GlobalParameters.getTabWidth());
+                res = WranglerBackendManager.getRefactoringBackend().callInspection(
+                        function, "sxi", wranglerSelection.getFilePath(),
+                        wranglerSelection.getSearchPath(),
+                        GlobalParameters.getTabWidth());
             } else {
                 function = inProject;
                 res = WranglerBackendManager.getRefactoringBackend().callInspection(
@@ -371,18 +373,15 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
 
             if (!modules1.isEmpty()) {
                 CodeInspectionViewsManager.showErlElements(
-                        "Modules which depends on "
-                                + wranglerSelection.getErlElement()
-                                        .getAncestorOfKind(ErlElementKind.MODULE)
-                                        .getName(), modules1, DEPENECIES_1_VIEW_ID);
+                        "Modules which depends on " + wranglerSelection.getErlElement()
+                                .getAncestorOfKind(ErlElementKind.MODULE).getName(),
+                        modules1, DEPENECIES_1_VIEW_ID);
             }
             if (!modules2.isEmpty()) {
-                CodeInspectionViewsManager.showErlElements(
-                        "Modules, on which "
-                                + wranglerSelection.getErlElement()
-                                        .getAncestorOfKind(ErlElementKind.MODULE)
-                                        .getName() + " depends", modules2,
-                        DEPENECIES_2_VIEW_ID);
+                CodeInspectionViewsManager.showErlElements("Modules, on which "
+                        + wranglerSelection.getErlElement()
+                                .getAncestorOfKind(ErlElementKind.MODULE).getName()
+                        + " depends", modules2, DEPENECIES_2_VIEW_ID);
             } else {
                 MessageDialog.openInformation(shell, "No result",
                         "There is no large module with the specified parameter!");
@@ -432,10 +431,10 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             return;
         }
         final int lines = Integer.parseInt(dialog.getValue());
-        final RpcResult res = WranglerBackendManager
-                .getRefactoringBackend()
+        final RpcResult res = WranglerBackendManager.getRefactoringBackend()
                 .callInspection("large_modules_eclipse", "ixi", lines,
-                        wranglerSelection.getSearchPath(), GlobalParameters.getTabWidth());
+                        wranglerSelection.getSearchPath(),
+                        GlobalParameters.getTabWidth());
 
         ArrayList<IErlElement> modules = new ArrayList<IErlElement>();
         try {

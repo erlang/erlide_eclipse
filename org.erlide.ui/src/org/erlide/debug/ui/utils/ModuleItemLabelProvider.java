@@ -16,8 +16,8 @@ import org.erlide.engine.model.IErlElement;
  * resource full path for duplicates. It uses the Platform UI label decorator
  * for providing extra resource info.
  */
-public class ModuleItemLabelProvider extends LabelProvider implements
-        ILabelProviderListener, IStyledLabelProvider {
+public class ModuleItemLabelProvider extends LabelProvider
+        implements ILabelProviderListener, IStyledLabelProvider {
 
     // Need to keep our own list of listeners
     protected final ListenerList listeners = new ListenerList();

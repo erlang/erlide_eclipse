@@ -12,8 +12,8 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.erlide.backend.debug.model.ErlangStackFrame;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
-public class DebugTraceDebugModelPresentation extends LabelProvider implements
-        IDebugModelPresentation {
+public class DebugTraceDebugModelPresentation extends LabelProvider
+        implements IDebugModelPresentation {
 
     public static final String ID = "org.erlide.debug.trace.model";
 
@@ -46,8 +46,8 @@ public class DebugTraceDebugModelPresentation extends LabelProvider implements
             return new FileEditorInput((IFile) element);
         }
         if (element instanceof ILineBreakpoint) {
-            return new FileEditorInput((IFile) ((ILineBreakpoint) element).getMarker()
-                    .getResource());
+            return new FileEditorInput(
+                    (IFile) ((ILineBreakpoint) element).getMarker().getResource());
         }
         return null;
     }

@@ -92,11 +92,11 @@ public class MatchSpecCellEditor extends DialogCellEditor {
                     builder.append(errorTuple.elementAt(0)).append(": ");
                     final OtpErlangList errorList = (OtpErlangList) errorTuple
                             .elementAt(2);
-                    builder.append(((OtpErlangString) errorList.elementAt(0))
-                            .stringValue());
+                    builder.append(
+                            ((OtpErlangString) errorList.elementAt(0)).stringValue());
                     if (errorList.elementAt(1) instanceof OtpErlangString) {
-                        builder.append(((OtpErlangString) errorList.elementAt(1))
-                                .stringValue());
+                        builder.append(
+                                ((OtpErlangString) errorList.elementAt(1)).stringValue());
                     }
                     return builder.toString();
                 } else if (errorType.atomValue().equals("not_fun")) {

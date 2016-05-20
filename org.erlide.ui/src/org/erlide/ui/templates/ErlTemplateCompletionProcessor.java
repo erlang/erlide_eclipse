@@ -82,7 +82,8 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
     }
 
     @Override
-    protected TemplateContext createContext(final ITextViewer viewer, final IRegion region) {
+    protected TemplateContext createContext(final ITextViewer viewer,
+            final IRegion region) {
         final TemplateContextType contextType = getContextType(viewer, region);
         if (contextType instanceof ErlangTemplateContextType) {
             final IDocument document = viewer.getDocument();

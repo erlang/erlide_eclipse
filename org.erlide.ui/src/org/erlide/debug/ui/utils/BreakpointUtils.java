@@ -11,8 +11,8 @@ public class BreakpointUtils {
 
     public static IErlElement getElement(final ILineBreakpoint breakpoint) {
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final IErlElement element = model.findElement(breakpoint.getMarker()
-                .getResource());
+        final IErlElement element = model
+                .findElement(breakpoint.getMarker().getResource());
         if (element instanceof IErlModule) {
             final IErlModule m = (IErlModule) element;
             try {

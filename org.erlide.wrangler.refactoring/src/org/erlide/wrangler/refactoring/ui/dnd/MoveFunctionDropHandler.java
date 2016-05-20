@@ -94,8 +94,8 @@ public class MoveFunctionDropHandler implements INavigatorDropHandler {
 
         final MoveFunctionRefactoring refactoring = new MoveFunctionRefactoring();
         refactoring.setUserInput(moduleName);
-        final RefactoringWizard wizard = new DefaultWranglerRefactoringWizard(
-                refactoring, RefactoringWizard.DIALOG_BASED_USER_INTERFACE,
+        final RefactoringWizard wizard = new DefaultWranglerRefactoringWizard(refactoring,
+                RefactoringWizard.DIALOG_BASED_USER_INTERFACE,
                 new ArrayList<WranglerPage>());
 
         final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();

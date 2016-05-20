@@ -42,8 +42,8 @@ import com.google.common.collect.Lists;
  *
  * @see IErlElement
  */
-public abstract class ErlElement extends PlatformObject implements IErlElement, IParent,
-        Cloneable {
+public abstract class ErlElement extends PlatformObject
+        implements IErlElement, IParent, Cloneable {
 
     /**
      * This element's parent, or <code>null</code> if this element does not have

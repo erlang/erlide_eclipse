@@ -44,8 +44,8 @@ import org.erlide.util.ErlLogger;
  *
  * @author jakob
  */
-public class InterpretedModulesView extends AbstractDebugView implements
-        IDebugEventSetListener, IDebugContextListener {
+public class InterpretedModulesView extends AbstractDebugView
+        implements IDebugEventSetListener, IDebugContextListener {
 
     ListViewer listViewer;
     InterpretedModuleListContentProvider contentProvider;
@@ -90,14 +90,14 @@ public class InterpretedModulesView extends AbstractDebugView implements
                 ErlLogger.debug("no debug target found for " + selection);
                 return;
             }
-            final ILaunchConfiguration launchConfiguration = erlangDebugTarget
-                    .getLaunch().getLaunchConfiguration();
+            final ILaunchConfiguration launchConfiguration = erlangDebugTarget.getLaunch()
+                    .getLaunchConfiguration();
             setViewerInput(launchConfiguration);
             try {
-                final EnumSet<ErlDebugFlags> debugFlags = ErlDebugFlags
-                        .makeSet(launchConfiguration.getAttribute(
-                                ErlRuntimeAttributes.DEBUG_FLAGS,
-                                ErlDebugFlags.getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS)));
+                final EnumSet<ErlDebugFlags> debugFlags = ErlDebugFlags.makeSet(
+                        launchConfiguration.getAttribute(ErlRuntimeAttributes.DEBUG_FLAGS,
+                                ErlDebugFlags
+                                        .getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS)));
                 distributed = debugFlags.contains(ErlDebugFlags.DISTRIBUTED_DEBUG);
             } catch (final CoreException e1) {
                 distributed = false;
@@ -118,8 +118,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
     public void handleDebugEvents(final DebugEvent[] events) {
         boolean changed = false;
         for (final DebugEvent debugEvent : events) {
-            if (debugEvent.getKind() == DebugEvent.MODEL_SPECIFIC
-                    && debugEvent.getDetail() == ErlangDebugTarget.INTERPRETED_MODULES_CHANGED) {
+            if (debugEvent.getKind() == DebugEvent.MODEL_SPECIFIC && debugEvent
+                    .getDetail() == ErlangDebugTarget.INTERPRETED_MODULES_CHANGED) {
                 changed = true;
                 break;
             }
@@ -215,7 +215,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
                 .getProject(module).getWorkspaceProject();
         final boolean interpret = checked;
 
-        if (erlangDebugTarget.getInterpretedModules().contains(moduleWoExtension) != interpret) {
+        if (erlangDebugTarget.getInterpretedModules()
+                .contains(moduleWoExtension) != interpret) {
             // FIXME this isn't correct!!!
             erlangDebugTarget.interpret(project, moduleWoExtension, distributed,
                     interpret);

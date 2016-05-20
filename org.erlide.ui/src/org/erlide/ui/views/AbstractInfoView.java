@@ -39,8 +39,8 @@ import org.erlide.ui.internal.ErlideUIPlugin;
  *
  * @since 3.0
  */
-abstract public class AbstractInfoView extends ViewPart implements ISelectionListener,
-        IMenuListener {
+abstract public class AbstractInfoView extends ViewPart
+        implements ISelectionListener, IMenuListener {
 
     /*
      * @see IPartListener2
@@ -161,8 +161,8 @@ abstract public class AbstractInfoView extends ViewPart implements ISelectionLis
         createContextMenu();
         createActions();
         fillActionBars(getViewSite().getActionBars());
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(getControl(), getHelpContextId());
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(),
+                getHelpContextId());
     }
 
     /**
@@ -421,9 +421,9 @@ abstract public class AbstractInfoView extends ViewPart implements ISelectionLis
                 // selection);
                 final Object info = getInfoForSelection(part, selection);
 
-                if (info == null
-                        || info instanceof ErlBrowserInformationControlInput
-                        && ((ErlBrowserInformationControlInput) info).getHtml().length() == 0) {
+                if (info == null || info instanceof ErlBrowserInformationControlInput
+                        && ((ErlBrowserInformationControlInput) info).getHtml()
+                                .length() == 0) {
                     return;
                 }
                 final Shell shell = getSite().getShell();

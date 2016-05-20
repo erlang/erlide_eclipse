@@ -27,8 +27,8 @@ import org.erlide.ui.dialogs.OpenModuleDialog;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.util.ErlLogger;
 
-public final class OpenModuleHandler extends Action implements IHandler,
-        IWorkbenchWindowActionDelegate {
+public final class OpenModuleHandler extends Action
+        implements IHandler, IWorkbenchWindowActionDelegate {
 
     /**
      * The identifier of the parameter storing the file path.
@@ -46,8 +46,8 @@ public final class OpenModuleHandler extends Action implements IHandler,
      */
     public OpenModuleHandler() {
         super();
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(this, IErlangHelpContextIds.OPEN_MODULE_ACTION);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+                IErlangHelpContextIds.OPEN_MODULE_ACTION);
     }
 
     @Override

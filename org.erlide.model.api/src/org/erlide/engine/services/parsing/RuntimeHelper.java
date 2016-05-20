@@ -47,8 +47,8 @@ public class RuntimeHelper {
             r1 = target.call("erlide_backend", "parse_string", "s", string);
         } catch (final Exception e) {
             ErlLogger.error(e);
-            throw new ParserException("Could not parse string \"" + string + "\": "
-                    + e.getMessage());
+            throw new ParserException(
+                    "Could not parse string \"" + string + "\": " + e.getMessage());
         }
         final OtpErlangTuple t1 = (OtpErlangTuple) r1;
         if (Util.isOk(t1)) {

@@ -54,7 +54,8 @@ public class EksportReports extends Action {
     }
 
     // saves reports as a tree
-    private void treeSave(final ICoverageObject obj, final String path, final String lPath) {
+    private void treeSave(final ICoverageObject obj, final String path,
+            final String lPath) {
 
         final String pathIn = obj.getHtmlPath();
         final String pathOut = new StringBuffer(path).append(File.separator)

@@ -47,8 +47,8 @@ import org.eclipse.ui.IWorkbenchSite;
  *
  * @since 2.0
  */
-public abstract class SelectionDispatchAction extends Action implements
-        ISelectionChangedListener {
+public abstract class SelectionDispatchAction extends Action
+        implements ISelectionChangedListener {
 
     private final IWorkbenchSite fSite;
     private ISelectionProvider fSpecialSelectionProvider;

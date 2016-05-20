@@ -22,10 +22,9 @@ public class ExitAtEvent extends MetaEvent {
     private final OtpErlangList bindings;
     private final OtpErlangList stackFrames;
 
-    public ExitAtEvent(final OtpErlangPid metaPid,
-            final OtpErlangObject otpErlangObject2,
-            final OtpErlangObject otpErlangObject3,
-            final OtpErlangObject otpErlangObject, final OtpErlangPid pid2) {
+    public ExitAtEvent(final OtpErlangPid metaPid, final OtpErlangObject otpErlangObject2,
+            final OtpErlangObject otpErlangObject3, final OtpErlangObject otpErlangObject,
+            final OtpErlangPid pid2) {
         this(metaPid, otpErlangObject2, otpErlangObject3, otpErlangObject, pid2, null,
                 null);
     }

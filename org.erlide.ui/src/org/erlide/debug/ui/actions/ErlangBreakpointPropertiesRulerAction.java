@@ -37,28 +37,28 @@ public class ErlangBreakpointPropertiesRulerAction extends RulerBreakpointAction
     @Override
     public void run() {
         if (getBreakpoint() != null) {
-            final PropertyDialogAction action = new PropertyDialogAction(getEditor()
-                    .getEditorSite(), new ISelectionProvider() {
-                @Override
-                public void addSelectionChangedListener(
-                        final ISelectionChangedListener listener) {
-                }
+            final PropertyDialogAction action = new PropertyDialogAction(
+                    getEditor().getEditorSite(), new ISelectionProvider() {
+                        @Override
+                        public void addSelectionChangedListener(
+                                final ISelectionChangedListener listener) {
+                        }
 
-                @Override
-                @SuppressWarnings("synthetic-access")
-                public ISelection getSelection() {
-                    return new StructuredSelection(getBreakpoint());
-                }
+                        @Override
+                        @SuppressWarnings("synthetic-access")
+                        public ISelection getSelection() {
+                            return new StructuredSelection(getBreakpoint());
+                        }
 
-                @Override
-                public void removeSelectionChangedListener(
-                        final ISelectionChangedListener listener) {
-                }
+                        @Override
+                        public void removeSelectionChangedListener(
+                                final ISelectionChangedListener listener) {
+                        }
 
-                @Override
-                public void setSelection(final ISelection selection) {
-                }
-            });
+                        @Override
+                        public void setSelection(final ISelection selection) {
+                        }
+                    });
             action.run();
         }
     }

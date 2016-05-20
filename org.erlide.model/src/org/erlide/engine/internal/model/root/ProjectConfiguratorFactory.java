@@ -37,8 +37,8 @@ public class ProjectConfiguratorFactory implements IProjectConfiguratorFactory {
             break;
         case REBAR:
         case EMAKE:
-            result = getConfig(configType, new File(project.getWorkspaceProject()
-                    .getLocation().toPortableString()));
+            result = getConfig(configType, new File(
+                    project.getWorkspaceProject().getLocation().toPortableString()));
         }
         return result;
     }

@@ -26,8 +26,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public abstract class AbstractRefactoringRpcMessage extends AbstractRpcMessage implements
-        IRefactoringRpcMessage {
+public abstract class AbstractRefactoringRpcMessage extends AbstractRpcMessage
+        implements IRefactoringRpcMessage {
 
     protected ArrayList<ChangedFile> changedFiles = null;
 

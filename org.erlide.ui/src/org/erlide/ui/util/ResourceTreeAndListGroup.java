@@ -43,8 +43,8 @@ import org.eclipse.swt.widgets.Tree;
  * CheckboxListViewer. All viewer selection-driven interactions are handled
  * within this object
  */
-public class ResourceTreeAndListGroup extends EventManager implements
-        ICheckStateListener, ISelectionChangedListener, ITreeViewerListener {
+public class ResourceTreeAndListGroup extends EventManager
+        implements ICheckStateListener, ISelectionChangedListener, ITreeViewerListener {
     Object root;
 
     private Object currentTreeSelection;
@@ -623,7 +623,8 @@ public class ResourceTreeAndListGroup extends EventManager implements
      */
     private void grayUpdateHierarchy(final Object treeElement) {
 
-        final boolean shouldBeAtLeastGray = determineShouldBeAtLeastGrayChecked(treeElement);
+        final boolean shouldBeAtLeastGray = determineShouldBeAtLeastGrayChecked(
+                treeElement);
 
         treeViewer.setGrayChecked(treeElement, shouldBeAtLeastGray);
 
@@ -972,7 +973,8 @@ public class ResourceTreeAndListGroup extends EventManager implements
      * @param isWhiteChecked
      *            boolean
      */
-    protected void setWhiteChecked(final Object treeElement, final boolean isWhiteChecked) {
+    protected void setWhiteChecked(final Object treeElement,
+            final boolean isWhiteChecked) {
         if (isWhiteChecked) {
             if (!whiteCheckedTreeItems.contains(treeElement)) {
                 whiteCheckedTreeItems.add(treeElement);
@@ -1043,7 +1045,8 @@ public class ResourceTreeAndListGroup extends EventManager implements
     protected void updateHierarchy(final Object treeElement) {
 
         final boolean whiteChecked = determineShouldBeWhiteChecked(treeElement);
-        final boolean shouldBeAtLeastGray = determineShouldBeAtLeastGrayChecked(treeElement);
+        final boolean shouldBeAtLeastGray = determineShouldBeAtLeastGrayChecked(
+                treeElement);
 
         treeViewer.setChecked(treeElement, shouldBeAtLeastGray);
         setWhiteChecked(treeElement, whiteChecked);

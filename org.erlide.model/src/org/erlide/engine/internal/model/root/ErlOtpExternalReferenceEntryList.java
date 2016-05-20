@@ -25,8 +25,8 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.base.Charsets;
 
-public class ErlOtpExternalReferenceEntryList extends Openable implements
-        IErlExternalRoot {
+public class ErlOtpExternalReferenceEntryList extends Openable
+        implements IErlExternalRoot {
 
     public ErlOtpExternalReferenceEntryList(final IParent parent, final String name) {
         super(parent, name);

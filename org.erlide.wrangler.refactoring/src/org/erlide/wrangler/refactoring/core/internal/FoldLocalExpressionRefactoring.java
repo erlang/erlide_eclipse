@@ -36,8 +36,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public class FoldLocalExpressionRefactoring extends
-        CostumWorkflowRefactoringWithPositionsSelection {
+public class FoldLocalExpressionRefactoring
+        extends CostumWorkflowRefactoringWithPositionsSelection {
 
     protected OtpErlangObject syntaxTree;
 
@@ -50,8 +50,9 @@ public class FoldLocalExpressionRefactoring extends
 
         final IErlSelection selection = GlobalParameters.getWranglerSelection();
 
-        if (!(selection instanceof IErlMemberSelection && (selection.getKind() == SelectionKind.FUNCTION || selection
-                .getKind() == SelectionKind.FUNCTION_CLAUSE))) {
+        if (!(selection instanceof IErlMemberSelection
+                && (selection.getKind() == SelectionKind.FUNCTION
+                        || selection.getKind() == SelectionKind.FUNCTION_CLAUSE))) {
             return RefactoringStatus
                     .createFatalErrorStatus("Please select an expression!");
         }
@@ -59,8 +60,8 @@ public class FoldLocalExpressionRefactoring extends
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
         ExpressionPosRpcMessage m = new ExpressionPosRpcMessage();
         m = (ExpressionPosRpcMessage) WranglerBackendManager.getRefactoringBackend()
-                .callWithParser(m, "fold_expr_by_loc_eclipse", "siixi",
-                        sel.getFilePath(), sel.getMemberRange().getStartLine(),
+                .callWithParser(m, "fold_expr_by_loc_eclipse", "siixi", sel.getFilePath(),
+                        sel.getMemberRange().getStartLine(),
                         sel.getMemberRange().getStartCol(), sel.getSearchPath(),
                         GlobalParameters.getTabWidth());
         if (m.isSuccessful()) {

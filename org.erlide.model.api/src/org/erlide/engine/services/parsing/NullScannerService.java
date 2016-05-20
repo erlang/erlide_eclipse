@@ -9,8 +9,7 @@ public class NullScannerService implements SimpleScannerService {
     @Override
     public List<ErlToken> lightScanString(final String string, final int offset)
             throws ScannerException {
-        final ErlToken token = new ErlToken(ErlToken.KIND_OTHER, offset,
-                string.length());
+        final ErlToken token = new ErlToken(ErlToken.KIND_OTHER, offset, string.length());
         return Lists.newArrayList(token);
     }
 }

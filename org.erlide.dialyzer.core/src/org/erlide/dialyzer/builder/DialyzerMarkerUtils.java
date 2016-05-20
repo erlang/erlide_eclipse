@@ -146,8 +146,8 @@ public class DialyzerMarkerUtils {
                 marker.setAttribute(MarkerUtils.PATH_ATTRIBUTE, path);
             }
             if (compiledFile != null) {
-                marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath()
-                        .toString());
+                marker.setAttribute(IMarker.SOURCE_ID,
+                        compiledFile.getFullPath().toString());
             }
             marker.setAttribute(IMarker.LINE_NUMBER, lineNumber != -1 ? lineNumber : 1);
         } catch (final CoreException e) {

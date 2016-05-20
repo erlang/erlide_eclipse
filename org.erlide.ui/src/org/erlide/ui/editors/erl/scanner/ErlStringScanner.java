@@ -14,14 +14,14 @@ public class ErlStringScanner extends ErlTokenScanner {
 
     public ErlStringScanner(final IColorManager colorManager) {
         super(colorManager);
-        final Token defaultToken = ErlTokenScanner.getToken(TokenHighlight.STRING
-                .getName());
+        final Token defaultToken = ErlTokenScanner
+                .getToken(TokenHighlight.STRING.getName());
         setDefaultReturnToken(defaultToken);
 
-        final Token tildeTag = ErlTokenScanner.getToken(TokenHighlight.TILDE_TAG
-                .getName());
-        final Token escapeTag = ErlTokenScanner.getToken(TokenHighlight.ESCAPE_TAG
-                .getName());
+        final Token tildeTag = ErlTokenScanner
+                .getToken(TokenHighlight.TILDE_TAG.getName());
+        final Token escapeTag = ErlTokenScanner
+                .getToken(TokenHighlight.ESCAPE_TAG.getName());
 
         final List<IRule> rulesList = Lists.newArrayList();
         rulesList.add(new RegexpRule("~[0-9*]*(\\.[0-9*]+)?.?t?[~cfegswWpPBbXx#+ni]",

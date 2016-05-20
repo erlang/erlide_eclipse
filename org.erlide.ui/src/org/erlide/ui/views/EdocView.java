@@ -69,7 +69,8 @@ public class EdocView extends AbstractInfoView {
      *
      * @since 3.0
      */
-    //    private static final String DO_NOT_WARN_PREFERENCE_KEY = "EdocView.error.doNotWarn"; //$NON-NLS-1$
+    // private static final String DO_NOT_WARN_PREFERENCE_KEY =
+    // "EdocView.error.doNotWarn"; //$NON-NLS-1$
 
     // private static final boolean WARNING_DIALOG_ENABLED = true;
 
@@ -122,8 +123,8 @@ public class EdocView extends AbstractInfoView {
             setToolTipText("Select All");
             setDescription("Select All");
 
-            PlatformUI.getWorkbench().getHelpSystem()
-                    .setHelp(this, IAbstractTextEditorHelpContextIds.SELECT_ALL_ACTION);
+            PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+                    IAbstractTextEditorHelpContextIds.SELECT_ALL_ACTION);
         }
 
         /**
@@ -188,7 +189,8 @@ public class EdocView extends AbstractInfoView {
          */
         public void fireSelectionChanged() {
             final ISelection selection = getSelection();
-            final SelectionChangedEvent event = new SelectionChangedEvent(this, selection);
+            final SelectionChangedEvent event = new SelectionChangedEvent(this,
+                    selection);
             final Object[] selectionChangedListeners = fListeners.toArray();
             for (final Object element : selectionChangedListeners) {
                 ((ISelectionChangedListener) element).selectionChanged(event);
@@ -201,7 +203,8 @@ public class EdocView extends AbstractInfoView {
          * (org.eclipse.jface.viewers.ISelectionChangedListener)
          */
         @Override
-        public void addSelectionChangedListener(final ISelectionChangedListener listener) {
+        public void addSelectionChangedListener(
+                final ISelectionChangedListener listener) {
             fListeners.add(listener);
         }
 
@@ -277,8 +280,8 @@ public class EdocView extends AbstractInfoView {
         super.createActions();
         openDeclarationAction = new OpenDeclarationAction(this);
         openDeclarationAction.setEnabled(false);
-        fSelectAllAction = new SelectAllAction(getControl(), new SelectionProvider(
-                getControl()));
+        fSelectAllAction = new SelectAllAction(getControl(),
+                new SelectionProvider(getControl()));
     }
 
     @Override

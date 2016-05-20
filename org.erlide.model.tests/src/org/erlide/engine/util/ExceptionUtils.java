@@ -43,7 +43,8 @@ public class ExceptionUtils {
         final Set<String> skippedPackages = newHashSet();
         int skippedLines = 0;
         final boolean shouldFilter = wantsFilter && filtersEnabled();
-        for (final StackTraceElement traceElement : getBottomThrowable(t).getStackTrace()) {
+        for (final StackTraceElement traceElement : getBottomThrowable(t)
+                .getStackTrace()) {
             String forbiddenPackageName = null;
             if (shouldFilter) {
                 forbiddenPackageName = tryGetForbiddenPackageName(traceElement);
@@ -105,7 +106,8 @@ public class ExceptionUtils {
      * returns the package name from the list of suppressed packages that
      * matches, otherwise it returns null.
      */
-    private static String tryGetForbiddenPackageName(final StackTraceElement traceElement) {
+    private static String tryGetForbiddenPackageName(
+            final StackTraceElement traceElement) {
         final String classAndMethod = traceElement.getClassName() + "."
                 + traceElement.getMethodName();
         for (final String pkg : _suppressedPackages) {

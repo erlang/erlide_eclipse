@@ -51,7 +51,8 @@ public class EUnitEventHandler extends ErlangEventHandler {
         }
         final OtpErlangObject data = event.getEvent();
 
-        if (!(data instanceof OtpErlangTuple && ((OtpErlangTuple) data).elementAt(0) instanceof OtpErlangAtom)) {
+        if (!(data instanceof OtpErlangTuple
+                && ((OtpErlangTuple) data).elementAt(0) instanceof OtpErlangAtom)) {
             return;
         }
 
@@ -124,8 +125,8 @@ public class EUnitEventHandler extends ErlangEventHandler {
         if (description != null && !description.equals("[]")
                 && !description.equals("undefined")) {
             final TestTreeObject node = model.findNode(description);
-            node.setDescription(String.format("%s ... canceled: %s",
-                    node.getDescription(), reason));
+            node.setDescription(
+                    String.format("%s ... canceled: %s", node.getDescription(), reason));
         } else {
             model.addChildren(new TestTreeObject(String.format("canceled: %s", reason),
                     TestTreeObject.FAILURE));
@@ -146,8 +147,9 @@ public class EUnitEventHandler extends ErlangEventHandler {
         final String function = source.elementAt(1).toString();
         final int arity = Integer.parseInt(source.elementAt(2).toString());
 
-        final TestTreeObject node = new TestTreeObject(makeTestShortDescription(module,
-                function, arity), TestTreeObject.FAILURE);
+        final TestTreeObject node = new TestTreeObject(
+                makeTestShortDescription(module, function, arity),
+                TestTreeObject.FAILURE);
 
         node.setDescription(makeTestFullDescription(module, function, arity, description,
                 line, String.format("canceled: %s", reason)));
@@ -178,13 +180,14 @@ public class EUnitEventHandler extends ErlangEventHandler {
 
             final OtpErlangTuple func = (OtpErlangTuple) msg.elementAt(5);
 
-            reason = String.format("No such function: %s:%s/%s", func.elementAt(1)
-                    .toString(), func.elementAt(2).toString(), func.elementAt(3)
-                    .toString());
+            reason = String.format("No such function: %s:%s/%s",
+                    func.elementAt(1).toString(), func.elementAt(2).toString(),
+                    func.elementAt(3).toString());
         }
 
-        final TestTreeObject node = new TestTreeObject(makeTestShortDescription(module,
-                function, arity), TestTreeObject.FAILURE);
+        final TestTreeObject node = new TestTreeObject(
+                makeTestShortDescription(module, function, arity),
+                TestTreeObject.FAILURE);
 
         node.setDescription(makeTestFullDescription(module, function, arity, description,
                 line, String.format("skipped: %s", reason)));
@@ -207,8 +210,9 @@ public class EUnitEventHandler extends ErlangEventHandler {
 
         final String exception = msg.elementAt(5).toString();
 
-        final TestTreeObject node = new TestTreeObject(makeTestShortDescription(module,
-                function, arity), TestTreeObject.FAILURE);
+        final TestTreeObject node = new TestTreeObject(
+                makeTestShortDescription(module, function, arity),
+                TestTreeObject.FAILURE);
 
         node.setDescription(makeTestFullDescription(module, function, arity, description,
                 line, "error"));
@@ -253,8 +257,9 @@ public class EUnitEventHandler extends ErlangEventHandler {
         final String function = source.elementAt(1).toString();
         final int arity = Integer.parseInt(source.elementAt(2).toString());
 
-        final TestTreeObject node = new TestTreeObject(makeTestShortDescription(module,
-                function, arity), TestTreeObject.SUCCESS);
+        final TestTreeObject node = new TestTreeObject(
+                makeTestShortDescription(module, function, arity),
+                TestTreeObject.SUCCESS);
 
         node.setDescription(makeTestFullDescription(module, function, arity, description,
                 line, "ok"));
@@ -272,10 +277,11 @@ public class EUnitEventHandler extends ErlangEventHandler {
 
     // test full description
     private String makeTestFullDescription(final String module, final String function,
-            final int arity, final String description, final int line, final String status) {
+            final int arity, final String description, final int line,
+            final String status) {
         if (description != null && !description.equals("undefined")) {
-            return String.format("%s:%s/%d (%s) at line %d - %s", module, function,
-                    arity, description, line, status);
+            return String.format("%s:%s/%d (%s) at line %d - %s", module, function, arity,
+                    description, line, status);
         }
         return String.format("%s:%s/%d at line %d - %s", module, function, arity, line,
                 status);

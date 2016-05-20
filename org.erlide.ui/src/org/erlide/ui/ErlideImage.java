@@ -139,7 +139,8 @@ public enum ErlideImage {
      * @param iconName
      *            the icon name
      */
-    public static void setToolImageDescriptors(final IAction action, final String iconName) {
+    public static void setToolImageDescriptors(final IAction action,
+            final String iconName) {
         setImageDescriptors(action, "tool16", iconName);
     }
 
@@ -161,8 +162,8 @@ public enum ErlideImage {
             final String relPath) {
 
         try {
-            final ImageDescriptor id = ImageDescriptor.createFromURL(makeIconFileURL("d"
-                    + type, relPath));
+            final ImageDescriptor id = ImageDescriptor
+                    .createFromURL(makeIconFileURL("d" + type, relPath));
             if (id != null) {
                 action.setDisabledImageDescriptor(id);
             }

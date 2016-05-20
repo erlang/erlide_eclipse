@@ -91,8 +91,8 @@ public class ModelInternalUtils implements ModelUtilService {
     @Override
     public IErlModule getModuleFromExternalModulePath(final IErlModel model,
             final String modulePath) throws ErlModelException {
-        final List<String> path = Lists.newArrayList(Splitter.on(DELIMITER).split(
-                modulePath));
+        final List<String> path = Lists
+                .newArrayList(Splitter.on(DELIMITER).split(modulePath));
         model.open(null);
         final IErlElement childNamed = model.getChildNamed(path.get(0));
         if (childNamed instanceof IParent) {
@@ -137,8 +137,8 @@ public class ModelInternalUtils implements ModelUtilService {
                 }
             }
             if (checkExternals) {
-                final Collection<IErlModule> externalUnits = includes ? project
-                        .getExternalIncludes() : project.getExternalModules();
+                final Collection<IErlModule> externalUnits = includes
+                        ? project.getExternalIncludes() : project.getExternalModules();
                 addUnitNamesWithPrefix(prefix, result, externalUnits, true, includes);
             }
         }
@@ -333,8 +333,8 @@ public class ModelInternalUtils implements ModelUtilService {
         final IFile beam = project.getWorkspaceProject().getFile(beamPath);
 
         try {
-            final OtpErlangObject info = backend.call("erlide_backend",
-                    "get_module_info", "s", beam.getLocation().toPortableString());
+            final OtpErlangObject info = backend.call("erlide_backend", "get_module_info",
+                    "s", beam.getLocation().toPortableString());
             return (String) TypeConverter.erlang2java(info, String.class);
         } catch (final Exception e) {
             ErlLogger.warn(e);

@@ -41,8 +41,8 @@ import org.erlide.engine.services.SystemInfoService;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.LogUtil;
 
-public class ReportPreferencePage extends PreferencePage implements
-        IWorkbenchPreferencePage {
+public class ReportPreferencePage extends PreferencePage
+        implements IWorkbenchPreferencePage {
     public ReportPreferencePage() {
     }
 
@@ -64,8 +64,8 @@ public class ReportPreferencePage extends PreferencePage implements
         final Label titleLabel = new Label(panel, SWT.NONE);
         titleLabel.setAlignment(SWT.RIGHT);
         {
-            final GridData gridData = new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-                    1, 1);
+            final GridData gridData = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1,
+                    1);
             gridData.widthHint = 60;
             titleLabel.setLayoutData(gridData);
         }
@@ -93,8 +93,8 @@ public class ReportPreferencePage extends PreferencePage implements
         fcontact.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         fcontact.setText(System.getProperty("user.name"));
         attachTechnicalDataButton = new Button(panel, SWT.CHECK);
-        attachTechnicalDataButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER,
-                false, false, 2, 1));
+        attachTechnicalDataButton
+                .setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 1));
         attachTechnicalDataButton.setSelection(true);
         attachTechnicalDataButton
                 .setText("   Attach technical data (eclipse and erlide logs)   ");
@@ -114,22 +114,22 @@ public class ReportPreferencePage extends PreferencePage implements
         sendButton.setText("Create report");
         responseLabel = new Label(panel, SWT.CENTER);
         responseLabel.setVisible(false);
-        responseLabel.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 2,
-                1));
         responseLabel
-                .setText("The report was saved in the location below, you can now close this window.");
+                .setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 1));
+        responseLabel.setText(
+                "The report was saved in the location below, you can now close this window.");
         locationLabel = new Text(panel, SWT.CENTER | SWT.WRAP | SWT.READ_ONLY);
         locationLabel.setVisible(false);
         locationLabel.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_BLUE));
         locationLabel
                 .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
-        locationLabel.setBackground(Display.getCurrent().getSystemColor(
-                SWT.COLOR_WIDGET_BACKGROUND));
+        locationLabel.setBackground(
+                Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
         locationLabel.setText("location");
         responseLabel_1 = new Label(panel, SWT.CENTER);
         responseLabel_1.setVisible(false);
-        responseLabel_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2,
-                1));
+        responseLabel_1
+                .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
         responseLabel_1
                 .setText("Please attach the report if you are writing a trouble ticket.");
 
@@ -181,8 +181,8 @@ public class ReportPreferencePage extends PreferencePage implements
     }
 
     private static void fetchErlangSystemInfo() {
-        final SystemInfoService sysinfo = ErlangEngine.getInstance().getService(
-                SystemInfoService.class);
+        final SystemInfoService sysinfo = ErlangEngine.getInstance()
+                .getService(SystemInfoService.class);
         final String info = sysinfo.get();
         ErlLogger.info("\n++++++++++++++++++++++\n" + info);
     }

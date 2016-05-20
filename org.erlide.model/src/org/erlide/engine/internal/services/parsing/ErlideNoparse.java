@@ -33,8 +33,8 @@ public class ErlideNoparse {
         return res;
     }
 
-    public static OtpErlangTuple reparse(final IOtpRpc b,
-            final String scannerModuleName, final boolean updateSearchServer) {
+    public static OtpErlangTuple reparse(final IOtpRpc b, final String scannerModuleName,
+            final boolean updateSearchServer) {
         OtpErlangTuple res = null;
         try {
             res = (OtpErlangTuple) b.call(20000, ERLIDE_NOPARSE, "reparse", "ao",

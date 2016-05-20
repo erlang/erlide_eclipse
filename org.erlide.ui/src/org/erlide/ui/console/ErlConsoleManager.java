@@ -21,7 +21,8 @@ import org.erlide.util.IDisposable;
 
 import com.google.common.collect.Maps;
 
-public class ErlConsoleManager implements IDisposable, IBackendListener, IConsoleListener {
+public class ErlConsoleManager
+        implements IDisposable, IBackendListener, IConsoleListener {
     private final Map<IBackend, IErlangConsole> consoles;
     private final Map<IErlangConsole, IErlangConsolePage> pages;
     private final IConsoleManager conMan;

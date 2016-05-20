@@ -48,7 +48,8 @@ public class DuplicatesView extends ViewPart {
     ISelectionListener listener = new ISelectionListener() {
 
         @Override
-        public void selectionChanged(final IWorkbenchPart part, final ISelection selection) {
+        public void selectionChanged(final IWorkbenchPart part,
+                final ISelection selection) {
             MessageDialog.openInformation(getSite().getShell(), "test",
                     selection.toString());
 
@@ -57,15 +58,16 @@ public class DuplicatesView extends ViewPart {
 
     private TreeViewer viewer;
     private Action copyGeneralisedToClipboard;
-    private final Action copyFunCallToClipboard = new ClipboardAction(PlatformUI
-            .getWorkbench().getDisplay()) {
+    private final Action copyFunCallToClipboard = new ClipboardAction(
+            PlatformUI.getWorkbench().getDisplay()) {
         private boolean hasText = false;
 
         @Override
         public void run() {
             if (!hasText) {
-                MessageDialog.openInformation(PlatformUI.getWorkbench()
-                        .getActiveWorkbenchWindow().getShell(), "Empty clipboard",
+                MessageDialog.openInformation(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        "Empty clipboard",
                         "There is no FunCall element according the selected item!");
             } else {
                 super.run();
@@ -169,10 +171,10 @@ public class DuplicatesView extends ViewPart {
 
     private void makeActions() {
 
-        copyGeneralisedToClipboard = new ClipboardAction(PlatformUI.getWorkbench()
-                .getDisplay());
+        copyGeneralisedToClipboard = new ClipboardAction(
+                PlatformUI.getWorkbench().getDisplay());
         copyGeneralisedToClipboard
-        .setToolTipText("Copy generalised function to the clipboard");
+                .setToolTipText("Copy generalised function to the clipboard");
         copyGeneralisedToClipboard.setImageDescriptor(PlatformUI.getWorkbench()
                 .getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
         copyFunCallToClipboard.setToolTipText("Copy FunCall to the clipboard");

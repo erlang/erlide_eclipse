@@ -124,8 +124,8 @@ public class SimilarExpressionSearchParser extends AbstractDuplicatesParser {
             }
         }
 
-        final DuplicatedCodeElement result = new DuplicatedCodeElement(values.entrySet()
-                .iterator().next().getValue().get(0));
+        final DuplicatedCodeElement result = new DuplicatedCodeElement(
+                values.entrySet().iterator().next().getValue().get(0));
         result.setSuggestedCode(suggStr);
 
         for (final Map.Entry<IFile, List<DuplicatedCodeInstanceElement>> entry : values

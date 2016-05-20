@@ -38,8 +38,8 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
         store.setDefault(PRINT_MARGIN, DEFAULT_PRINT_MARGIN);
 
         store.setDefault(EDITOR_MATCHING_BRACKETS, true);
-        PreferenceConverter.setDefault(store, EDITOR_MATCHING_BRACKETS_COLOR, new RGB(
-                190, 140, 190));
+        PreferenceConverter.setDefault(store, EDITOR_MATCHING_BRACKETS_COLOR,
+                new RGB(190, 140, 190));
 
         // folding
         store.setDefault(EDITOR_FOLDING_ENABLED, true);

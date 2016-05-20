@@ -22,10 +22,8 @@ public class DebugTraceLaunching {
             return;
         }
         try {
-            final ILaunchConfigurationType lcType = DebugPlugin
-                    .getDefault()
-                    .getLaunchManager()
-                    .getLaunchConfigurationType(
+            final ILaunchConfigurationType lcType = DebugPlugin.getDefault()
+                    .getLaunchManager().getLaunchConfigurationType(
                             "org.erlide.runtime.debug.launchDebugTrace");
             final String name = target.toString();
             final ILaunchConfigurationWorkingCopy wc = lcType.newInstance(null, name);

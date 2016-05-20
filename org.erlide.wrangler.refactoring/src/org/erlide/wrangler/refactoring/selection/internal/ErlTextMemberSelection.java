@@ -44,8 +44,8 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
      *            editor, where the text is selected
      * @throws WranglerException
      */
-    public ErlTextMemberSelection(final ITextSelection selection, final ITextEditor editor)
-            throws WranglerException {
+    public ErlTextMemberSelection(final ITextSelection selection,
+            final ITextEditor editor) throws WranglerException {
         final IEditorInput input = editor.getEditorInput();
         if (!(input instanceof IFileEditorInput)) {
             throw new WranglerException("Can not refactor external modules!");
@@ -76,8 +76,9 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
     }
 
     protected int getEndCol() {
-        return WranglerUtils.calculateColumnFromOffset(textSelection.getOffset()
-                + textSelection.getLength(), getEndLine() - 1, document);
+        return WranglerUtils.calculateColumnFromOffset(
+                textSelection.getOffset() + textSelection.getLength(), getEndLine() - 1,
+                document);
     }
 
     protected int getStartLine() {
@@ -110,10 +111,13 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
             sL = member.getLineStart() + 1;
             eL = member.getLineEnd() + 1;
 
-            sC = WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
-                    .getOffset(), sL - 1, document);
-            eC = WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
-                    .getOffset() + member.getSourceRange().getLength(), eL - 1, document);
+            sC = WranglerUtils.calculateColumnFromOffset(
+                    member.getSourceRange().getOffset(), sL - 1, document);
+            eC = WranglerUtils
+                    .calculateColumnFromOffset(
+                            member.getSourceRange().getOffset()
+                                    + member.getSourceRange().getLength(),
+                            eL - 1, document);
             range = new ErlRange(sL, sC, eL, eC, member.getSourceRange().getOffset(),
                     member.getSourceRange().getLength());
 

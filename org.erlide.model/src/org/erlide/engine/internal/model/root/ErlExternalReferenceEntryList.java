@@ -97,8 +97,8 @@ public class ErlExternalReferenceEntryList extends Openable implements IErlExter
 
     private void addExternalEntries(final IProgressMonitor pm,
             final List<ExternalTreeEntry> externalTree, final IErlModel model,
-            final String rootName, final List<String> otherItems, final boolean includeDir)
-            throws ErlModelException {
+            final String rootName, final List<String> otherItems,
+            final boolean includeDir) throws ErlModelException {
         final Map<String, IErlExternal> pathToEntryMap = Maps.newHashMap();
         pathToEntryMap.put("root", this);
         IErlExternal parent = null;
@@ -123,8 +123,8 @@ public class ErlExternalReferenceEntryList extends Openable implements IErlExter
         }
         if (otherItems != null) {
             if (parent == null) {
-                parent = new ErlExternalReferenceEntry(this, rootName, "." + rootName
-                        + ".", true, includeDir);
+                parent = new ErlExternalReferenceEntry(this, rootName,
+                        "." + rootName + ".", true, includeDir);
                 addChild(parent);
             }
             for (final String path : otherItems) {

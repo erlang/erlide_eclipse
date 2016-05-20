@@ -69,9 +69,8 @@ public class HtmlReportAction extends Action {
 
         log.info(selection.getClass().getName());
         if (!(selection instanceof ITreeSelection)) {
-            final IStatus executionStatus = new Status(IStatus.ERROR,
-                    Activator.PLUGIN_ID, "Internall error occured: bad sellection type",
-                    null);
+            final IStatus executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                    "Internall error occured: bad sellection type", null);
             StatusManager.getManager().handle(executionStatus, StatusManager.SHOW);
             return;
         }

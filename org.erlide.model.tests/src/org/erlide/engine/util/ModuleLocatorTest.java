@@ -42,8 +42,8 @@ public class ModuleLocatorTest {
 
     @Test
     public void demoProjectsShouldBeConfiguredProperly() {
-        checkProjectDirectories(p1, new IPath[] { new Path("src") }, new IPath[] {
-                new Path("include"), new Path("T_ROOT/p3/include") });
+        checkProjectDirectories(p1, new IPath[] { new Path("src") },
+                new IPath[] { new Path("include"), new Path("T_ROOT/p3/include") });
         checkProjectDirectories(p2, new IPath[] { new Path("src") },
                 new IPath[] { new Path("include") });
     }

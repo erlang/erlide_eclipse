@@ -51,8 +51,9 @@ public class StatsViewLabelProvider extends LabelProvider implements ITableLabel
                     ErlLogger.error(e);
                     return null;
                 }
-                img = ErlangElementImageProvider.getErlImageDescriptor(m,
-                        ErlangElementImageProvider.SMALL_ICONS).createImage();
+                img = ErlangElementImageProvider
+                        .getErlImageDescriptor(m, ErlangElementImageProvider.SMALL_ICONS)
+                        .createImage();
                 break;
             case FOLDER:
                 img = PlatformUI.getWorkbench().getSharedImages()

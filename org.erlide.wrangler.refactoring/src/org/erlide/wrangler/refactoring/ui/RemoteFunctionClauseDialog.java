@@ -52,9 +52,9 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
      * Sets back the initial Erlide selection
      */
     public void resetSelection() {
-        WranglerUtils.highlightSelection(initianlSelection.getSelectionRange()
-                .getOffset(), initianlSelection.getSelectionRange().getLength(),
-                initianlSelection);
+        WranglerUtils.highlightSelection(
+                initianlSelection.getSelectionRange().getOffset(),
+                initianlSelection.getSelectionRange().getLength(), initianlSelection);
     }
 
     /**
@@ -82,7 +82,8 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
         final GridData minToksData = new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_CENTER);
-        minToksData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        minToksData.widthHint = convertHorizontalDLUsToPixels(
+                IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
         label.setLayoutData(minToksData);
         label.setFont(parent.getFont());
 
@@ -90,7 +91,8 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
         final GridData treeData = new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_CENTER);
-        treeData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        treeData.widthHint = convertHorizontalDLUsToPixels(
+                IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
         functionClausesTree.setLayoutData(treeData);
 
         try {
@@ -110,8 +112,8 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
                 for (final IErlFunction f : functions) {
                     final TreeItem functionName = new TreeItem(moduleName, 0);
                     functionName.setText(f.getNameWithArity());
-                    final List<IErlFunctionClause> clauses = filterClauses(f
-                            .getChildren());
+                    final List<IErlFunctionClause> clauses = filterClauses(
+                            f.getChildren());
                     functionName.setData(f);
                     for (final IErlFunctionClause c : clauses) {
                         final TreeItem clauseName = new TreeItem(functionName, 0);

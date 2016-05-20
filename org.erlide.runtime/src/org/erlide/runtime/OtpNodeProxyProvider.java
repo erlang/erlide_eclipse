@@ -8,7 +8,7 @@ import org.erlide.runtime.internal.OtpNodeProxy;
 public class OtpNodeProxyProvider {
 
     @NonNull
-    public static IOtpNodeProxy get(RuntimeData data) {
+    public static IOtpNodeProxy get(final RuntimeData data) {
         return new OtpNodeProxy(data);
     }
 

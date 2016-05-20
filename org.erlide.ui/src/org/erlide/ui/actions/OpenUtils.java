@@ -41,9 +41,9 @@ public class OpenUtils {
 
     public void openOpenResult(final ITextEditor editor, final IErlModule module,
             final int offset, final IErlProject erlProject, final OpenResult openResult,
-            final IErlElement element) throws CoreException, ErlModelException,
-            PartInitException, BadLocationException, OtpErlangRangeException,
-            RpcException {
+            final IErlElement element)
+            throws CoreException, ErlModelException, PartInitException,
+            BadLocationException, OtpErlangRangeException, RpcException {
         if (editor == null) {
             return;
         }
@@ -62,7 +62,7 @@ public class OpenUtils {
             OtpErlangRangeException, RpcException, BadLocationException {
         final IErlElementLocator.Scope scope = NavigationPreferencePage
                 .getCheckAllProjects() ? IErlElementLocator.Scope.ALL_PROJECTS
-                : IErlElementLocator.Scope.REFERENCED_PROJECTS;
+                        : IErlElementLocator.Scope.REFERENCED_PROJECTS;
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         Object found = null;
         if (openResult.isExternalCall()) {
@@ -97,9 +97,8 @@ public class OpenUtils {
     }
 
     private IErlElement findLocalCall(final IErlModule module,
-            final IErlProject erlProject, final OpenResult res,
-            final IErlElement element, final IErlElementLocator.Scope scope)
-            throws RpcException, CoreException {
+            final IErlProject erlProject, final OpenResult res, final IErlElement element,
+            final IErlElementLocator.Scope scope) throws RpcException, CoreException {
         if (isTypeDefOrRecordDef(element, res)) {
             return modelFindService.findTypespec(module, res.getFun());
         }
@@ -114,9 +113,7 @@ public class OpenUtils {
         if (ei != null) {
             final IErlModel model = ErlangEngine.getInstance().getModel();
             moduleName = ei.getImportModule();
-            res2 = ErlangEngine
-                    .getInstance()
-                    .getService(OpenService.class)
+            res2 = ErlangEngine.getInstance().getService(OpenService.class)
                     .getSourceFromModule(model.getPathVars(), moduleName,
                             erlProject.getProperties().getExternalModules());
         }
@@ -168,8 +165,8 @@ public class OpenUtils {
             return result;
         }
         return modelFindService.findFunction(model, project, module, res.getName(),
-                res.getPath(),
-                new ErlangFunction(res.getFun(), ErlangFunction.ANY_ARITY), scope);
+                res.getPath(), new ErlangFunction(res.getFun(), ErlangFunction.ANY_ARITY),
+                scope);
     }
 
 }

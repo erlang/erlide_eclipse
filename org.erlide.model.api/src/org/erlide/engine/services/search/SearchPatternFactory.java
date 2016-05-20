@@ -46,8 +46,8 @@ public class SearchPatternFactory {
             final IErlElement element, final LimitTo limitTo) {
         if (element instanceof IErlFunction) {
             final IErlFunction function = (IErlFunction) element;
-            final String withoutExtension = SystemConfiguration.withoutExtension(function
-                    .getModuleName());
+            final String withoutExtension = SystemConfiguration
+                    .withoutExtension(function.getModuleName());
             return new FunctionPattern(withoutExtension, function.getFunctionName(),
                     function.getArity(), limitTo, true,
                     modelUtilService.getModule(function), !function.isExported());

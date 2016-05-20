@@ -49,8 +49,8 @@ public abstract class AbstractErlSelection implements IErlSelection {
         final OtpErlangString[] searchPath = new OtpErlangString[sourcDirs.size()];
         int i = 0;
         for (final IPath src : sourcDirs) {
-            searchPath[i++] = new OtpErlangString(projectLocation.append(src)
-                    .toOSString());
+            searchPath[i++] = new OtpErlangString(
+                    projectLocation.append(src).toOSString());
         }
         return new OtpErlangList(searchPath);
     }

@@ -14,8 +14,8 @@ public final class LaunchUtils {
 
     public static IProject[] getErlangLaunchConfigurationProjects(
             final ILaunchConfiguration configuration) throws CoreException {
-        final String projectNamesString = configuration.getAttribute(
-                ErlRuntimeAttributes.PROJECTS, "");
+        final String projectNamesString = configuration
+                .getAttribute(ErlRuntimeAttributes.PROJECTS, "");
         final String[] projectNames = projectNamesString.split(";");
         final List<IProject> projects = new ArrayList<IProject>();
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();

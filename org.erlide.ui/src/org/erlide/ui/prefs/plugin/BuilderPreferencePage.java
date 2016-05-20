@@ -21,8 +21,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  *
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
-public class BuilderPreferencePage extends FieldEditorPreferencePage implements
-        IWorkbenchPreferencePage {
+public class BuilderPreferencePage extends FieldEditorPreferencePage
+        implements IWorkbenchPreferencePage {
 
     // private PathEditor pathA;
 

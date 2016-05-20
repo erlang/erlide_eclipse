@@ -81,8 +81,8 @@ public final class ConfigurationManager {
      *         otherwise
      */
     public static boolean saveTPConfig(final String configName) {
-        return saveConfiguration(configName, TP_DIR, TraceBackend.getInstance()
-                .getTracePatternsArray());
+        return saveConfiguration(configName, TP_DIR,
+                TraceBackend.getInstance().getTracePatternsArray());
     }
 
     /**
@@ -94,8 +94,8 @@ public final class ConfigurationManager {
      *         otherwise
      */
     public static boolean saveNodesConfig(final String configName) {
-        return saveConfiguration(configName, NODES_DIR, TraceBackend.getInstance()
-                .getTracedNodesArray());
+        return saveConfiguration(configName, NODES_DIR,
+                TraceBackend.getInstance().getTracedNodesArray());
     }
 
     /**
@@ -181,8 +181,8 @@ public final class ConfigurationManager {
                 return false;
             }
 
-            final FileOutputStream out = new FileOutputStream(location.append(configName)
-                    .toFile());
+            final FileOutputStream out = new FileOutputStream(
+                    location.append(configName).toFile());
             objectOutputStream = new ObjectOutputStream(out);
             objectOutputStream.writeObject(configuration);
             return true;

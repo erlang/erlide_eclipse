@@ -64,11 +64,12 @@ public class ProblemMarkerManager implements IResourceChangeListener,
             return true;
         }
 
-        private void checkInvalidate(final IResourceDelta delta, final IResource resource0) {
+        private void checkInvalidate(final IResourceDelta delta,
+                final IResource resource0) {
             IResource resource = resource0;
             final int kind = delta.getKind();
-            if ((kind == IResourceDelta.REMOVED || kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED)
-                    && isErrorDelta(delta)) {
+            if ((kind == IResourceDelta.REMOVED || kind == IResourceDelta.ADDED
+                    || kind == IResourceDelta.CHANGED) && isErrorDelta(delta)) {
                 // invalidate the resource and all parents
                 while (resource.getType() != IResource.ROOT
                         && fChangedElements.add(resource)) {
@@ -87,10 +88,10 @@ public class ProblemMarkerManager implements IResourceChangeListener,
                                 || kind == IResourceDelta.REMOVED) {
                             return true;
                         }
-                        final int severity = markerDeltas[i].getAttribute(
-                                IMarker.SEVERITY, -1);
-                        final int newSeverity = markerDeltas[i].getMarker().getAttribute(
-                                IMarker.SEVERITY, -1);
+                        final int severity = markerDeltas[i]
+                                .getAttribute(IMarker.SEVERITY, -1);
+                        final int newSeverity = markerDeltas[i].getMarker()
+                                .getAttribute(IMarker.SEVERITY, -1);
                         if (newSeverity != severity) {
                             return true;
                         }
@@ -140,8 +141,8 @@ public class ProblemMarkerManager implements IResourceChangeListener,
         if (event instanceof ErlangModuleAnnotationModelEvent) {
             final ErlangModuleAnnotationModelEvent emEvent = (ErlangModuleAnnotationModelEvent) event;
             if (emEvent.includesProblemMarkerAnnotationChanges()) {
-                final IResource[] changes = new IResource[] { emEvent
-                        .getUnderlyingResource() };
+                final IResource[] changes = new IResource[] {
+                        emEvent.getUnderlyingResource() };
                 fireChanges(changes, false);
             }
         }

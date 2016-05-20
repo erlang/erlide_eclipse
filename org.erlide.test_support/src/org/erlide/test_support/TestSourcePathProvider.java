@@ -23,8 +23,8 @@ import org.erlide.util.SystemConfiguration;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public class TestSourcePathProvider implements SourcePathProvider,
-        IResourceChangeListener {
+public class TestSourcePathProvider
+        implements SourcePathProvider, IResourceChangeListener {
 
     Map<IProject, Set<IPath>> pathsMap;
 

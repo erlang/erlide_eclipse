@@ -34,8 +34,8 @@ class LaunchBeamProcessProvider implements IProvider<IProcess> {
         try {
             final boolean registerForDebug = data.getLaunch() != null
                     || SystemConfiguration.getInstance().isDeveloper();
-            return launchConfig.launch(ILaunchManager.RUN_MODE,
-                    new NullProgressMonitor(), false, registerForDebug);
+            return launchConfig.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor(),
+                    false, registerForDebug);
         } catch (final CoreException e) {
             ErlLogger.error(e);
             return null;

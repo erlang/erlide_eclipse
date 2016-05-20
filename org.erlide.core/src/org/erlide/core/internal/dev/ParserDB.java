@@ -48,8 +48,8 @@ public class ParserDB {
                             .getSourcePathProviders();
                     final long time = System.currentTimeMillis();
                     db.run(model, sourcePathProviders, false);
-                    System.out.println(" took " + (System.currentTimeMillis() - time)
-                            / 1000);
+                    System.out.println(
+                            " took " + (System.currentTimeMillis() - time) / 1000);
                 } catch (final Exception e) {
                     ErlLogger.error(e);
                 }

@@ -70,7 +70,8 @@ public class BuildersTest {
         app.create(new StringBufferInputStream(
                 "{application, builders,[{description, \"\"},{vsn, \"1\"},"
                         + "{registered, []},{applications, [kernel,stdlib]},"
-                        + "{mod, { mod, []}},{env, []}]}."), true, null);
+                        + "{mod, { mod, []}},{env, []}]}."),
+                true, null);
         try {
             testBuilder(BuilderTool.MAKE);
         } finally {
@@ -90,7 +91,8 @@ public class BuildersTest {
         app.create(new StringBufferInputStream(
                 "{application, builders,[{description, \"\"},{vsn, \"1\"},"
                         + "{registered, []},{applications, [kernel,stdlib]},"
-                        + "{mod, { mod, []}},{env, []}]}."), true, null);
+                        + "{mod, { mod, []}},{env, []}]}."),
+                true, null);
         try {
             testBuilder(BuilderTool.REBAR);
         } finally {

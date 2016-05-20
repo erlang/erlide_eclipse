@@ -12,8 +12,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.util.SystemConfiguration;
 
-public class InternalSettingsPreferencePage extends PreferencePage implements
-        IWorkbenchPreferencePage {
+public class InternalSettingsPreferencePage extends PreferencePage
+        implements IWorkbenchPreferencePage {
 
     private SystemConfiguration su;
     private Button btnTestMode;
@@ -38,14 +38,14 @@ public class InternalSettingsPreferencePage extends PreferencePage implements
         panel.setLayout(new GridLayout(2, false));
 
         final Label lblPleaseDoNot = new Label(panel, SWT.NONE);
-        lblPleaseDoNot.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2,
-                1));
         lblPleaseDoNot
-                .setText("Please do not change these values unless instructed by an erlide developer!");
+                .setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+        lblPleaseDoNot.setText(
+                "Please do not change these values unless instructed by an erlide developer!");
 
         final Label lblStrangeThingsMight = new Label(panel, SWT.NONE);
-        lblStrangeThingsMight.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
-                false, 1, 1));
+        lblStrangeThingsMight
+                .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
         lblStrangeThingsMight.setAlignment(SWT.RIGHT);
         lblStrangeThingsMight.setText("Strange things might happen...");
         new Label(panel, SWT.NONE);
@@ -76,16 +76,16 @@ public class InternalSettingsPreferencePage extends PreferencePage implements
         lblNewLabel.setText("-Derlide.process.heap.warn.limit (MB)");
 
         warnProcessLimitText = new Label(panel, SWT.BORDER);
-        warnProcessLimitText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-                false, 1, 1));
+        warnProcessLimitText
+                .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         warnProcessLimitText.setText(Integer.toString(su.getWarnProcessSizeLimitMB()));
 
         lblNewLabel_1 = new Label(panel, SWT.NONE);
         lblNewLabel_1.setText("-Derlide.process.heap.kill.limit (MB)");
 
         killProcessLimitText = new Label(panel, SWT.BORDER);
-        killProcessLimitText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-                false, 1, 1));
+        killProcessLimitText
+                .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         killProcessLimitText.setText(Integer.toString(su.getKillProcessSizeLimitMB()));
 
         return panel;

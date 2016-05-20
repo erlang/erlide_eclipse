@@ -35,7 +35,8 @@ public class CodeManager {
     private final RuntimeVersion version;
 
     // only to be called by Backend
-    CodeManager(final IOtpRpc site, final String backendName, final RuntimeVersion version) {
+    CodeManager(final IOtpRpc site, final String backendName,
+            final RuntimeVersion version) {
         this.site = site;
         this.backendName = backendName;
         this.version = version;
@@ -117,7 +118,8 @@ public class CodeManager {
         }
     }
 
-    private void unloadCodeForBundle(final CodeContext context, final ICodeBundle bundle) {
+    private void unloadCodeForBundle(final CodeContext context,
+            final ICodeBundle bundle) {
         final Collection<URL> beams = bundle.getEbinBeamURLs(context);
         if (beams == null) {
             return;

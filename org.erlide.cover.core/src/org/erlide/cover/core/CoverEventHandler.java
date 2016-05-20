@@ -63,8 +63,8 @@ public class CoverEventHandler extends ErlangEventHandler {
             final String info = tuple.elementAt(3).toString();
 
             for (final ICoverObserver obs : coverBackend.getListeners()) {
-                obs.eventOccured(new CoverEvent(CoverStatus.ERROR, String.format(
-                        "Error at %s while %s: %s\n", place, type, info)));
+                obs.eventOccured(new CoverEvent(CoverStatus.ERROR,
+                        String.format("Error at %s while %s: %s\n", place, type, info)));
             }
         } else if (data.toString().equals(COVER_FIN)
                 && coverBackend.getAnnotationMaker() != null) {
@@ -83,18 +83,18 @@ public class CoverEventHandler extends ErlangEventHandler {
         if (msg instanceof OtpErlangTuple) {
             final OtpErlangTuple resTuple = (OtpErlangTuple) msg;
             if (resTuple.elementAt(0) instanceof OtpErlangAtom
-                    && ((OtpErlangAtom) resTuple.elementAt(0)).atomValue().equals(
-                            COVER_RES)) {
+                    && ((OtpErlangAtom) resTuple.elementAt(0)).atomValue()
+                            .equals(COVER_RES)) {
 
                 final String moduleName = resTuple.elementAt(1).toString();
 
                 String htmlPath = resTuple.elementAt(2).toString();
                 htmlPath = htmlPath.substring(1, htmlPath.length() - 1);
                 final int allLines = Integer.parseInt(resTuple.elementAt(3).toString());
-                final int coveredLines = Integer.parseInt(resTuple.elementAt(4)
-                        .toString());
-                final double percent = Double.parseDouble(resTuple.elementAt(5)
-                        .toString());
+                final int coveredLines = Integer
+                        .parseInt(resTuple.elementAt(4).toString());
+                final double percent = Double
+                        .parseDouble(resTuple.elementAt(5).toString());
 
                 log.info(String.format("Module %s %s %d %d %f", moduleName, htmlPath,
                         allLines, coveredLines, percent));
@@ -214,8 +214,8 @@ public class CoverEventHandler extends ErlangEventHandler {
         if (message instanceof OtpErlangTuple) {
             final OtpErlangTuple tuple = (OtpErlangTuple) message;
             if (tuple.elementAt(0) instanceof OtpErlangAtom
-                    && ((OtpErlangAtom) tuple.elementAt(0)).atomValue().equals(
-                            COVER_ERROR)) {
+                    && ((OtpErlangAtom) tuple.elementAt(0)).atomValue()
+                            .equals(COVER_ERROR)) {
 
                 return tuple;
             }

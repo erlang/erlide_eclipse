@@ -48,8 +48,8 @@ public final class ExtensionUtils {
         return null;
     }
 
-    public static <T> Provider<? extends T> getSingletonProviderExtension(
-            final String id, final Class<? extends Provider<? extends T>> clazz) {
+    public static <T> Provider<? extends T> getSingletonProviderExtension(final String id,
+            final Class<? extends Provider<? extends T>> clazz) {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         final IConfigurationElement[] elements = reg.getConfigurationElementsFor(id);
         for (final IConfigurationElement element : elements) {
@@ -124,8 +124,8 @@ public final class ExtensionUtils {
                 final IExtensionPoint extensionPoint = registry.getExtensionPoint(type);
                 extensions = extensionPoint.getExtensions();
             } catch (final Exception e) {
-                ErlLogger.error("Error getting extension for:" + type + " -- "
-                        + e.getMessage());
+                ErlLogger.error(
+                        "Error getting extension for:" + type + " -- " + e.getMessage());
                 throw new RuntimeException(e);
             }
         } else {

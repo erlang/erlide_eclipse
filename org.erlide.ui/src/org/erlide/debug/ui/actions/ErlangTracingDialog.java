@@ -32,8 +32,8 @@ public class ErlangTracingDialog extends Dialog {
         // shell.addShellListener(fActivationListener);
 
         // set help context
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(shell, IErlangHelpContextIds.ERLANG_TRACING_DIALOG);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
+                IErlangHelpContextIds.ERLANG_TRACING_DIALOG);
 
         // fill in combo contents
         // fFindField.removeModifyListener(fFindModifyListener);

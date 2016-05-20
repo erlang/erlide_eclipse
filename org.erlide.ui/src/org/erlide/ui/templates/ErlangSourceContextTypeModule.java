@@ -45,9 +45,7 @@ public class ErlangSourceContextTypeModule extends TemplateContextType {
     }
 
     public void addElementResolvers() {
-        final Template[] templates = ErlideUIPlugin
-                .getDefault()
-                .getTemplateStore()
+        final Template[] templates = ErlideUIPlugin.getDefault().getTemplateStore()
                 .getTemplates(
                         ErlangSourceContextTypeModuleElement.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID);
         for (final Template template : templates) {

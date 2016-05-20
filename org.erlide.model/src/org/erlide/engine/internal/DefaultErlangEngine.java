@@ -225,8 +225,8 @@ public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension 
     }
 
     @Override
-    public CompletionService getCompletionService(IErlProject project, IErlModule module,
-            String elementBefore) {
+    public CompletionService getCompletionService(final IErlProject project,
+            final IErlModule module, final String elementBefore) {
         return new ErlangCompletionService(project, module, elementBefore);
     }
 

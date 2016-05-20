@@ -12,8 +12,8 @@ import org.erlide.tracing.core.Images;
  * @author Piotr Dorobisz
  *
  */
-public class TracingResultsNode extends TreeNode implements
-        Comparable<TracingResultsNode> {
+public class TracingResultsNode extends TreeNode
+        implements Comparable<TracingResultsNode> {
 
     private Date startDate;
     private Date endDate;

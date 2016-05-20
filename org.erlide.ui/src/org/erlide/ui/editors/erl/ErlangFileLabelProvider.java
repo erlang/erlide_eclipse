@@ -10,8 +10,8 @@ import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.navigator.NavigatorProblemsDecorator;
 
-public class ErlangFileLabelProvider extends LabelProvider implements
-        IDescriptionProvider {
+public class ErlangFileLabelProvider extends LabelProvider
+        implements IDescriptionProvider {
 
     private final NavigatorProblemsDecorator fProblemDecorator;
 

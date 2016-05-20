@@ -18,8 +18,8 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 
-public class DummyCompletionProposal implements ICompletionProposal,
-        ICompletionProposalExtension4 {
+public class DummyCompletionProposal
+        implements ICompletionProposal, ICompletionProposalExtension4 {
 
     CompletionProposal delegate;
 

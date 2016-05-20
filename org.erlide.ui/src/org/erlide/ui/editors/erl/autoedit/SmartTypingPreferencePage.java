@@ -18,8 +18,8 @@ import org.erlide.ui.prefs.plugin.ErlEditorMessages;
 import org.erlide.ui.prefs.plugin.ErlidePreferencePage;
 import org.erlide.ui.prefs.plugin.internal.ScrolledPageContent;
 
-public class SmartTypingPreferencePage extends ErlidePreferencePage implements
-        IWorkbenchPreferencePage {
+public class SmartTypingPreferencePage extends ErlidePreferencePage
+        implements IWorkbenchPreferencePage {
 
     public SmartTypingPreferencePage() {
         super();
@@ -28,13 +28,13 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 
     public static final String SMART_TYPING_KEY = "smartTyping"; //$NON-NLS-1$
 
-    private static final String[] SMART_TYPING_KEYS = new String[] {
-            "strings", "atoms", "braces", "brackets", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    private static final String[] SMART_TYPING_KEYS = new String[] { "strings", "atoms", //$NON-NLS-1$ //$NON-NLS-2$
+            "braces", "brackets",  //$NON-NLS-1$ //$NON-NLS-2$
             "parens", "embraceSelection", "pasteReindent" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-    //    public static final String AUTO_NL_KEY = "indentation"; //$NON-NLS-1$
-    public static final String[] AUTO_NL_KEYS = {
-            "semicolon_nl", "dot_nl", "arrow_nl", "comma_nl" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    // public static final String AUTO_NL_KEY = "indentation"; //$NON-NLS-1$
+    public static final String[] AUTO_NL_KEYS = { "semicolon_nl", "dot_nl", "arrow_nl", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            "comma_nl" };  //$NON-NLS-1$
 
     public static final int STRINGS = 0;
     public static final int ATOMS = 1;
@@ -56,8 +56,8 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 
     @Override
     protected Control createContents(final Composite parent) {
-        final ScrolledPageContent scrolled = new ScrolledPageContent(parent, SWT.H_SCROLL
-                | SWT.V_SCROLL);
+        final ScrolledPageContent scrolled = new ScrolledPageContent(parent,
+                SWT.H_SCROLL | SWT.V_SCROLL);
         scrolled.setExpandHorizontal(true);
         scrolled.setExpandVertical(true);
 

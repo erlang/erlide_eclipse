@@ -30,8 +30,8 @@ public final class TracingStatusHandler {
         switch (status) {
         case ERROR:
             final Object errorObject = TraceBackend.getInstance().getErrorObject();
-            executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error: "
-                    + errorObject, null);
+            executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                    "Error: " + errorObject, null);
             break;
         case EXCEPTION_THROWN:
             final Exception e = (Exception) TraceBackend.getInstance().getErrorObject();

@@ -69,7 +69,8 @@ public class ErlangXref implements XrefService {
 
     @Override
     @SuppressWarnings("boxing")
-    public FunctionRef[] functionUse(final String mod, final String fun, final int arity) {
+    public FunctionRef[] functionUse(final String mod, final String fun,
+            final int arity) {
         try {
             final OtpErlangObject r = backend.call(ERLIDE_XREF, "function_use", "aai",
                     mod, fun, arity);

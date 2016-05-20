@@ -12,7 +12,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
 
 class TestResultsContentProvider implements ITreeContentProvider {
-    private static final String[] NO_RESULTS_MSG = new String[] { "No test results available." };
+    private static final String[] NO_RESULTS_MSG = new String[] {
+            "No test results available." };
     private static final Object[] NO_CHILDREN = new Object[] {};
 
     private List<OtpErlangObject> myEvents;

@@ -88,6 +88,7 @@ public interface IErlangBreakpoint extends IBreakpoint {
      *                underlying marker
      * @since 2.1
      */
+
     // void setConditionSuspendOnTrue(boolean suspendOnTrue)
     // throws CoreException;
     /**

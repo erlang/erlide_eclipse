@@ -158,7 +158,8 @@ public abstract class ErlidePreferencePage extends PreferencePage {
 
     protected abstract void putPreferences();
 
-    protected void putBooleanPreferences(final String[] keys, final List<Button> buttons) {
+    protected void putBooleanPreferences(final String[] keys,
+            final List<Button> buttons) {
         final Preferences node = ErlideUIPlugin.getPrefsNode();
         for (int i = 0; i < keys.length; ++i) {
             final boolean b = buttons.get(i).getSelection();
@@ -187,8 +188,8 @@ public abstract class ErlidePreferencePage extends PreferencePage {
         return checkBox;
     }
 
-    protected Pair<Button, String> addCheckBox(final Composite parent,
-            final String label, final String key, final int indentation) {
+    protected Pair<Button, String> addCheckBox(final Composite parent, final String label,
+            final String key, final int indentation) {
         final Button checkBox = new Button(parent, SWT.CHECK);
         checkBox.setText(label);
 

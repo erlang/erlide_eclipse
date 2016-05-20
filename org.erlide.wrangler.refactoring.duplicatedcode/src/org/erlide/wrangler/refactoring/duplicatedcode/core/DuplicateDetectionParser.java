@@ -56,8 +56,8 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
             // TODO testing all cases
             if (object instanceof OtpErlangTuple) {
                 final OtpErlangTuple objectTuple = (OtpErlangTuple) object;
-                setUnSuccessful(((OtpErlangString) objectTuple.elementAt(1))
-                        .stringValue());
+                setUnSuccessful(
+                        ((OtpErlangString) objectTuple.elementAt(1)).stringValue());
 
             } else {
                 final OtpErlangList resultList = (OtpErlangList) object;
@@ -130,8 +130,8 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
             }
         }
 
-        final DuplicatedCodeElement result = new DuplicatedCodeElement(values.entrySet()
-                .iterator().next().getValue().get(0));
+        final DuplicatedCodeElement result = new DuplicatedCodeElement(
+                values.entrySet().iterator().next().getValue().get(0));
         result.setSuggestedCode(suggStr);
 
         for (final Map.Entry<IFile, List<DuplicatedCodeInstanceElement>> entry : values

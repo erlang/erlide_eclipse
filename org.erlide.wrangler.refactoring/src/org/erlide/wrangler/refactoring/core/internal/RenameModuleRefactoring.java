@@ -60,8 +60,8 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
     }
 
     @Override
-    public Change createChange(final IProgressMonitor pm) throws CoreException,
-            OperationCanceledException {
+    public Change createChange(final IProgressMonitor pm)
+            throws CoreException, OperationCanceledException {
 
         final CompositeChange c = (CompositeChange) super.createChange(pm);
 
@@ -96,8 +96,8 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
                         changedFiles = message.getRefactoringChangeset();
                         status = new RefactoringStatus();
                     } else {
-                        status = RefactoringStatus.createFatalErrorStatus(message
-                                .getMessageString());
+                        status = RefactoringStatus
+                                .createFatalErrorStatus(message.getMessageString());
                     }
                 } else if (message.getRefactoringState() == RefactoringState.WARNING) {
                     renameTestMod = !ask("Warning", message.getMessageString());
@@ -107,15 +107,15 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
                             changedFiles = message.getRefactoringChangeset();
                             status = new RefactoringStatus();
                         } else {
-                            status = RefactoringStatus.createFatalErrorStatus(message
-                                    .getMessageString());
+                            status = RefactoringStatus
+                                    .createFatalErrorStatus(message.getMessageString());
                         }
                     } else {
                         stop();
                     }
                 } else {
-                    status = RefactoringStatus.createFatalErrorStatus(message
-                            .getMessageString());
+                    status = RefactoringStatus
+                            .createFatalErrorStatus(message.getMessageString());
                 }
             }
 
@@ -124,10 +124,9 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 
     @Override
     public IRefactoringRpcMessage runAlternative(final IErlSelection sel) {
-        return WranglerBackendManager.getRefactoringBackend().call(
-                "rename_mod_1_eclipse", "ssxix", sel.getFilePath(), userInput,
-                sel.getSearchPath(), GlobalParameters.getTabWidth(),
-                new OtpErlangBoolean(renameTestMod));
+        return WranglerBackendManager.getRefactoringBackend().call("rename_mod_1_eclipse",
+                "ssxix", sel.getFilePath(), userInput, sel.getSearchPath(),
+                GlobalParameters.getTabWidth(), new OtpErlangBoolean(renameTestMod));
     }
 
     @Override

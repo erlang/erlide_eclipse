@@ -98,7 +98,8 @@ public class ErlangPerspective implements IPerspectiveFactory {
         layout.addNewWizardShortcut("org.erlide.ui.wizards.ErlangSourceFile");//$NON-NLS-1$
         layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder"); //$NON-NLS-1$
         layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file"); //$NON-NLS-1$
-        layout.addNewWizardShortcut("org.eclipse.ui.editors.wizards.UntitledTextFileWizard");//$NON-NLS-1$
+        layout.addNewWizardShortcut(
+                "org.eclipse.ui.editors.wizards.UntitledTextFileWizard");//$NON-NLS-1$
         layout.addNewWizardShortcut("org.erlide.ui.wizards.ErlangScratchpad");//$NON-NLS-1$
     }
 

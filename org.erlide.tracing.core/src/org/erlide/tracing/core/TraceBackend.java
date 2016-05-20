@@ -171,18 +171,17 @@ public class TraceBackend {
                                 notActivatedNodes.add(tracedNode.getNodeName());
                             }
                         }
-                        final OtpErlangList nodes = new OtpErlangList(
-                                erlangObjects.toArray(new OtpErlangObject[erlangObjects
-                                        .size()]));
+                        final OtpErlangList nodes = new OtpErlangList(erlangObjects
+                                .toArray(new OtpErlangObject[erlangObjects.size()]));
 
                         // net tick time
                         final int tickTimeValue = Activator.getDefault()
                                 .getPreferenceStore().getInt(PreferenceNames.TICK_TIME);
                         final OtpErlangInt netTickTime = new OtpErlangInt(tickTimeValue);
 
-                        final OtpErlangObject callResult = tracerBackend.getOtpRpc()
-                                .call(Constants.ERLANG_HELPER_MODULE, FUN_START, "xsi",
-                                        nodes, Constants.OUTPUT_FILE, netTickTime);
+                        final OtpErlangObject callResult = tracerBackend.getOtpRpc().call(
+                                Constants.ERLANG_HELPER_MODULE, FUN_START, "xsi", nodes,
+                                Constants.OUTPUT_FILE, netTickTime);
                         status = processResult(callResult);
 
                         if (TracingStatus.OK.equals(status)
@@ -353,10 +352,11 @@ public class TraceBackend {
                         tracerBackend.getRuntime().registerEventListener(handler);
                         final OtpErlangLong start = new OtpErlangLong(theStartIndex);
                         final OtpErlangLong stop = new OtpErlangLong(endIndex);
-                        tracerBackend.getOtpRpc().call(Constants.ERLANG_HELPER_MODULE,
-                                FUN_LOAD, "sii",
-                                new OtpErlangString(activeResultSet.getFileName()),
-                                start, stop);
+                        tracerBackend.getOtpRpc()
+                                .call(Constants.ERLANG_HELPER_MODULE, FUN_LOAD, "sii",
+                                        new OtpErlangString(
+                                                activeResultSet.getFileName()),
+                                        start, stop);
                     } catch (final RpcException e) {
                         ErlLogger.error(e);
                         errorObject = e;
@@ -591,8 +591,8 @@ public class TraceBackend {
         try {
             final BackendData data = getBackendData(info);
             data.setUseStartShell(true);
-            final IBackend b = BackendCore.getBackendManager().createExecutionBackend(
-                    data);
+            final IBackend b = BackendCore.getBackendManager()
+                    .createExecutionBackend(data);
             return b;
         } catch (final Exception e) {
             ErlLogger.error(e);

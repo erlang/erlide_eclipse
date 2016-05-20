@@ -24,8 +24,8 @@ public class ProcessLabelProvider extends LabelProvider implements ITableLabelPr
                     .get(Images.UNCHECKED.toString());
         }
         // flag columns
-        final ProcessFlag flag = ProcessFlag.getByIndex(columnIndex
-                - ProcessColumn.values().length);
+        final ProcessFlag flag = ProcessFlag
+                .getByIndex(columnIndex - ProcessColumn.values().length);
         if (flag != null) {
             if (process.hasFlag(flag)) {
                 return Activator.getDefault().getImageRegistry()

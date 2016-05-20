@@ -143,7 +143,8 @@ public abstract class AbstractErlContentAssistProcessor
                     result = Lists.transform(resultData,
                             new Function<CompletionData, ICompletionProposal>() {
                                 @Override
-                                public ICompletionProposal apply(CompletionData data) {
+                                public ICompletionProposal apply(
+                                        final CompletionData data) {
                                     return toProposal(data);
                                 }
                             });
@@ -184,7 +185,7 @@ public abstract class AbstractErlContentAssistProcessor
         return null;
     }
 
-    protected ICompletionProposal toProposal(CompletionData data) {
+    protected ICompletionProposal toProposal(final CompletionData data) {
         if (data instanceof FunctionCompletionData) {
             final FunctionCompletionData fdata = (FunctionCompletionData) data;
             return new ErlCompletionProposal(fdata.getOffsetsAndLengths(),

@@ -163,16 +163,14 @@ public class OtpRpc implements IOtpRpc {
     }
 
     @Override
-    public OtpErlangObject call(final long timeout, final String module,
-            final String fun, final String signature, final Object... args0)
-            throws RpcException {
+    public OtpErlangObject call(final long timeout, final String module, final String fun,
+            final String signature, final Object... args0) throws RpcException {
         return call(timeout, USER_ATOM, module, fun, signature, args0);
     }
 
     @Override
-    public void cast(final OtpErlangObject gleader, final String module,
-            final String fun, final String signature, final Object... args0)
-            throws RpcException {
+    public void cast(final OtpErlangObject gleader, final String module, final String fun,
+            final String signature, final Object... args0) throws RpcException {
         checkConnected();
         try {
             rpcCast(localNode, nodeName, false, gleader, module, fun, signature, args0);
@@ -323,8 +321,8 @@ public class OtpRpc implements IOtpRpc {
         if (CHECK_RPC) {
             ErlLogger.debug("RPC " + mbox.hashCode() + "=> " + res);
         }
-        return new RpcFuture(ref, mbox, module + ":" + fun + "/" + args0.length,
-                logCalls, this);
+        return new RpcFuture(ref, mbox, module + ":" + fun + "/" + args0.length, logCalls,
+                this);
     }
 
     private static final String SEP = ", ";
@@ -335,8 +333,8 @@ public class OtpRpc implements IOtpRpc {
             final String s = arg.toString();
             result.append(s).append(SEP);
         }
-        final String r = result.length() == 0 ? "" : result.substring(0, result.length()
-                - SEP.length());
+        final String r = result.length() == 0 ? ""
+                : result.substring(0, result.length() - SEP.length());
         return r;
     }
 

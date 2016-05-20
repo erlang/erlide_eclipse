@@ -42,7 +42,8 @@ public class CostumworkFlowInputPage extends SimpleInputPage {
      *            validator object
      */
     public CostumworkFlowInputPage(final String name, final String description,
-            final String labelText, final String inputErrorMsg, final IValidator validator) {
+            final String labelText, final String inputErrorMsg,
+            final IValidator validator) {
         super(name, description, labelText, inputErrorMsg, validator);
     }
 

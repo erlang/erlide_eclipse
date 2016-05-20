@@ -93,8 +93,8 @@ public class RpcFuture implements CheckedFuture<OtpErlangObject, RpcException> {
     @Override
     public OtpErlangObject checkedGet(final long timeout, final TimeUnit unit)
             throws TimeoutException, RpcException {
-        result = rpc
-                .getRpcResult(mbox, TimeUnit.MILLISECONDS.convert(timeout, unit), env);
+        result = rpc.getRpcResult(mbox, TimeUnit.MILLISECONDS.convert(timeout, unit),
+                env);
         if (isDone()) {
             RpcMonitor.recordResponse(ref, result);
             if (logCalls) {

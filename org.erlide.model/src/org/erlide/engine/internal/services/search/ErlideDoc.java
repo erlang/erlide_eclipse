@@ -24,7 +24,7 @@ public class ErlideDoc implements OtpDocService {
     private final IOtpRpc backend;
     private final String stateDir;
 
-    public ErlideDoc(final IOtpRpc backend, String stateDir) {
+    public ErlideDoc(final IOtpRpc backend, final String stateDir) {
         this.backend = backend;
         this.stateDir = stateDir;
     }

@@ -62,8 +62,8 @@ public class SWTImageCanvas extends Canvas {
      *            the style of this control.
      */
     public SWTImageCanvas(final Composite parent, final int style) {
-        super(parent, style | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL
-                | SWT.NO_BACKGROUND);
+        super(parent,
+                style | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.NO_BACKGROUND);
         addControlListener(new ControlAdapter() { /* resize listener. */
             @Override
             public void controlResized(final ControlEvent event) {
@@ -306,10 +306,10 @@ public class SWTImageCanvas extends Canvas {
         final FileDialog fileChooser = new FileDialog(getShell(), SWT.OPEN);
         fileChooser.setText("Open image file");
         fileChooser.setFilterPath(currentDir);
-        fileChooser
-                .setFilterExtensions(new String[] { "*.gif; *.jpg; *.png; *.ico; *.bmp" });
-        fileChooser.setFilterNames(new String[] { "SWT image"
-                + " (gif, jpeg, png, ico, bmp)" });
+        fileChooser.setFilterExtensions(
+                new String[] { "*.gif; *.jpg; *.png; *.ico; *.bmp" });
+        fileChooser.setFilterNames(
+                new String[] { "SWT image" + " (gif, jpeg, png, ico, bmp)" });
         final String filename = fileChooser.open();
         if (filename != null) {
             loadImage(filename);

@@ -24,8 +24,8 @@ import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public abstract class AbstractErlMemberSelection extends AbstractErlSelection implements
-        IErlMemberSelection {
+public abstract class AbstractErlMemberSelection extends AbstractErlSelection
+        implements IErlMemberSelection {
 
     protected ITextSelection textSelection;
 

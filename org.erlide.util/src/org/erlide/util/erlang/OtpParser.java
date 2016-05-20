@@ -99,8 +99,8 @@ public class OtpParser {
         if (t.kind == TokenKind.LISTEND) {
             tokens.remove(0);
             try {
-                return new OtpErlangList(
-                        stack.toArray(new OtpErlangObject[stack.size()]), tail);
+                return new OtpErlangList(stack.toArray(new OtpErlangObject[stack.size()]),
+                        tail);
             } catch (final OtpErlangException e) {
                 ErlLogger.error(e);
                 // can't happen
@@ -289,8 +289,8 @@ public class OtpParser {
             char c;
             c = s.charAt(result.end);
             result.kind = TokenKind.VARIABLE;
-            while (result.end < s.length() && c >= 'a' && c <= 'z' || c >= 'A'
-                    && c <= 'Z' || c >= '0' && c <= '9' || c == '_' || c == ':') {
+            while (result.end < s.length() && c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'
+                    || c >= '0' && c <= '9' || c == '_' || c == ':') {
                 c = s.charAt(result.end++);
             }
             result.end--;
@@ -324,8 +324,8 @@ public class OtpParser {
             char c;
             c = s.charAt(result.end);
             result.kind = TokenKind.ATOM;
-            while (result.end < s.length() && c >= 'a' && c <= 'z' || c >= 'A'
-                    && c <= 'Z' || c >= '0' && c <= '9' || c == '_') {
+            while (result.end < s.length() && c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'
+                    || c >= '0' && c <= '9' || c == '_') {
                 c = s.charAt(result.end++);
             }
             result.end--;

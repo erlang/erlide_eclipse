@@ -54,8 +54,8 @@ public class ErlFolder extends Openable implements IErlFolder {
                 model.create(resource);
             }
         } catch (final CoreException e) {
-            throw new ErlModelException(new ErlModelStatus(
-                    ErlModelStatusConstants.CORE_EXCEPTION, e));
+            throw new ErlModelException(
+                    new ErlModelStatus(ErlModelStatusConstants.CORE_EXCEPTION, e));
         }
         return true;
     }
@@ -85,15 +85,15 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public boolean isOnSourcePath() {
         final IErlProject project = modelUtilService.getProject(this);
-        return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(), project
-                .getProperties().getSourceDirs());
+        return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
+                project.getProperties().getSourceDirs());
     }
 
     @Override
     public boolean isOnIncludePath() {
         final IErlProject project = modelUtilService.getProject(this);
-        return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(), project
-                .getProperties().getIncludeDirs());
+        return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
+                project.getProperties().getIncludeDirs());
     }
 
     @Override
@@ -158,9 +158,8 @@ public class ErlFolder extends Openable implements IErlFolder {
             for (final IErlModule module : modules) {
                 final String name2 = module.getName();
                 final String moduleName = hasExtension ? name2 : module.getModuleName();
-                if (name.equals(moduleName)
-                        && (hasExtension || isInclude == SourceKind
-                                .hasHrlExtension(name2))) {
+                if (name.equals(moduleName) && (hasExtension
+                        || isInclude == SourceKind.hasHrlExtension(name2))) {
                     return module;
                 }
             }

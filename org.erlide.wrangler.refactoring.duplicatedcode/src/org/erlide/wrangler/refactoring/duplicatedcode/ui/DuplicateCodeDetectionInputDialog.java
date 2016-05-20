@@ -112,13 +112,14 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
         final GridData minToksData = new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_CENTER);
-        minToksData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        minToksData.widthHint = convertHorizontalDLUsToPixels(
+                IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
         minTokslabel.setLayoutData(minToksData);
         minTokslabel.setFont(parent.getFont());
 
         minToksText = new Text(composite, getInputTextStyle());
-        minToksText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
+        minToksText.setLayoutData(
+                new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         minToksText.setText("20");
         minToksText.addModifyListener(new ModifyListener() {
             @Override
@@ -132,13 +133,14 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
         final GridData minClonesData = new GridData( // GridData.GRAB_HORIZONTAL
                 // |
                 GridData.GRAB_VERTICAL // | GridData.HORIZONTAL_ALIGN_FILL
-                | GridData.VERTICAL_ALIGN_CENTER);
-        minClonesData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+                        | GridData.VERTICAL_ALIGN_CENTER);
+        minClonesData.widthHint = convertHorizontalDLUsToPixels(
+                IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
         minClonesLabel.setLayoutData(minClonesData);
         minClonesLabel.setFont(parent.getFont());
         minClonesText = new Text(composite, getInputTextStyle());
-        minClonesText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
+        minClonesText.setLayoutData(
+                new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         minClonesText.setText("2");
         minClonesText.addModifyListener(new ModifyListener() {
             @Override
@@ -149,8 +151,8 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
 
         onlyInFileCheckBoxButton = new Button(composite, SWT.CHECK);
         onlyInFileCheckBoxButton.setText("Detect duplicates in the project");
-        onlyInFileCheckBoxButton.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
+        onlyInFileCheckBoxButton.setLayoutData(
+                new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         onlyInFileCheckBoxButton.addSelectionListener(new SelectionListener() {
 
             @Override
@@ -165,10 +167,10 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
 
         });
         errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
-        errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
-        errorMessageText.setBackground(errorMessageText.getDisplay().getSystemColor(
-                SWT.COLOR_WIDGET_BACKGROUND));
+        errorMessageText.setLayoutData(
+                new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+        errorMessageText.setBackground(errorMessageText.getDisplay()
+                .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 
         setErrorMessage("Please use only integers!");
 

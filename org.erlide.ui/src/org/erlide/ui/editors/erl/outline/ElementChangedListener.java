@@ -71,7 +71,8 @@ class ElementChangedListener implements IElementChangedListener {
         if ((flags & IErlElementDelta.F_CHILDREN) != 0) {
             return true;
         }
-        return (flags & (IErlElementDelta.F_CONTENT | IErlElementDelta.F_FINE_GRAINED)) == IErlElementDelta.F_CONTENT;
+        return (flags & (IErlElementDelta.F_CONTENT
+                | IErlElementDelta.F_FINE_GRAINED)) == IErlElementDelta.F_CONTENT;
     }
 
 }

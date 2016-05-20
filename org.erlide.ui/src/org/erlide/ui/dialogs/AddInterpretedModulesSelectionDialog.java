@@ -12,7 +12,7 @@ public class AddInterpretedModulesSelectionDialog extends FilteredModulesSelecti
         super(shell, true, ResourcesPlugin.getWorkspace().getRoot(), IResource.FILE,
                 false);
         setTitle("Add module to debug");
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(shell, IErlangHelpContextIds.ADD_DEBUG_MODULE_DIALOG);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
+                IErlangHelpContextIds.ADD_DEBUG_MODULE_DIALOG);
     }
 }

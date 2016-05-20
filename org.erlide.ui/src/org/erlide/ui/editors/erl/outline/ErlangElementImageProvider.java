@@ -137,7 +137,8 @@ public class ErlangElementImageProvider {
      * Returns an image descriptor for a module not on the class path. The
      * descriptor includes overlays, if specified.
      */
-    public ImageDescriptor getErlResourceImageDescriptor(final IFile file, final int flags) {
+    public ImageDescriptor getErlResourceImageDescriptor(final IFile file,
+            final int flags) {
         final Point size = useSmallSize(flags) ? SMALL_SIZE : BIG_SIZE;
         return new ErlangElementImageDescriptor(
                 ErlideImage.MODULE_RESOURCE.getDescriptor(), 0, size);
@@ -300,8 +301,8 @@ public class ErlangElementImageProvider {
 
     public static Image getDecoratedImage(final ImageDescriptor baseImage,
             final int adornments, final Point size) {
-        return ErlideUIPlugin.getImageDescriptorRegistry().get(
-                new ErlangElementImageDescriptor(baseImage, adornments, size));
+        return ErlideUIPlugin.getImageDescriptorRegistry()
+                .get(new ErlangElementImageDescriptor(baseImage, adornments, size));
     }
 
 }

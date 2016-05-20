@@ -13,8 +13,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
-public class NavigationPreferencePage extends ErlidePreferencePage implements
-        IWorkbenchPreferencePage {
+public class NavigationPreferencePage extends ErlidePreferencePage
+        implements IWorkbenchPreferencePage {
 
     private static Boolean fCachedCheckAllProjects = null;
     private final List<Button> buttons = new ArrayList<Button>();
@@ -63,8 +63,8 @@ public class NavigationPreferencePage extends ErlidePreferencePage implements
     public static boolean getCheckAllProjects() {
         if (fCachedCheckAllProjects == null) {
             final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
-            final boolean checkAllProjects = node.getBoolean(NAVIGATION_KEY + "/"
-                    + CHECK_ALL_PROJECTS_KEY, true);
+            final boolean checkAllProjects = node
+                    .getBoolean(NAVIGATION_KEY + "/" + CHECK_ALL_PROJECTS_KEY, true);
             fCachedCheckAllProjects = checkAllProjects;
         }
         return fCachedCheckAllProjects.booleanValue();

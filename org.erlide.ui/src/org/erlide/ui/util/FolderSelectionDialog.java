@@ -34,8 +34,8 @@ import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
 /**
  */
-public class FolderSelectionDialog extends ElementTreeSelectionDialog implements
-        ISelectionChangedListener {
+public class FolderSelectionDialog extends ElementTreeSelectionDialog
+        implements ISelectionChangedListener {
 
     private Button fNewFolderButton;
     private IContainer fSelectedContainer;
@@ -65,11 +65,8 @@ public class FolderSelectionDialog extends ElementTreeSelectionDialog implements
 
         applyDialogFont(result);
 
-        PlatformUI
-                .getWorkbench()
-                .getHelpSystem()
-                .setHelp(parent,
-                        IErlangHelpContextIds.BP_SELECT_DEFAULT_OUTPUT_FOLDER_DIALOG);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
+                IErlangHelpContextIds.BP_SELECT_DEFAULT_OUTPUT_FOLDER_DIALOG);
 
         return result;
     }
@@ -88,7 +85,8 @@ public class FolderSelectionDialog extends ElementTreeSelectionDialog implements
     }
 
     protected void newFolderButtonPressed() {
-        final NewFolderDialog dialog = new NewFolderDialog(getShell(), fSelectedContainer);
+        final NewFolderDialog dialog = new NewFolderDialog(getShell(),
+                fSelectedContainer);
         if (dialog.open() == Window.OK) {
             final TreeViewer treeViewer = getTreeViewer();
             treeViewer.refresh(fSelectedContainer);

@@ -128,16 +128,16 @@ public abstract class AbstractErlangEditor extends TextEditor {
 
         sendToConsoleWithResult = new SendToConsoleAction(getSite(), keyBundle,
                 "SendToConsoleWithResult.", this, true, getProject());
-        sendToConsoleWithResult
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE_WITH_RESULT);
+        sendToConsoleWithResult.setActionDefinitionId(
+                IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE_WITH_RESULT);
         setAction("SendToConsoleWithResult", sendToConsoleWithResult);
         markAsStateDependentAction("sendToConsoleWithResult", true);
         markAsSelectionDependentAction("sendToConsoleWithResult", true);
 
         final Action contentAssistAction = new ContentAssistAction(keyBundle,
                 "ContentAssistProposal.", this);
-        contentAssistAction
-                .setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
+        contentAssistAction.setActionDefinitionId(
+                ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
         setAction("ContentAssistProposal", contentAssistAction);
         markAsStateDependentAction("ContentAssistProposal", true);
 
@@ -147,8 +147,8 @@ public abstract class AbstractErlangEditor extends TextEditor {
                 keyBundle, "ShowEDoc.", showEdocAction0);
         showEdocAction.setActionDefinitionId(IErlangEditorActionDefinitionIds.SHOW_EDOC);
         setAction("ShowEDoc", showEdocAction);
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(showEdocAction, IErlangHelpContextIds.SHOW_EDOC_ACTION);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(showEdocAction,
+                IErlangHelpContextIds.SHOW_EDOC_ACTION);
     }
 
     protected void addCommonActions(final IMenuManager menu) {
@@ -156,7 +156,8 @@ public abstract class AbstractErlangEditor extends TextEditor {
         // menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, cleanUpAction);
         menu.prependToGroup(ITextEditorActionConstants.GROUP_OPEN, openAction);
         menu.appendToGroup(ITextEditorActionConstants.GROUP_REST, sendToConsole);
-        menu.appendToGroup(ITextEditorActionConstants.GROUP_REST, sendToConsoleWithResult);
+        menu.appendToGroup(ITextEditorActionConstants.GROUP_REST,
+                sendToConsoleWithResult);
     }
 
     @Override

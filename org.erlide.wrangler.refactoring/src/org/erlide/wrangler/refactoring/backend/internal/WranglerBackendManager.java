@@ -30,8 +30,8 @@ public class WranglerBackendManager {
      */
     public static WranglerRefactoringBackend getRefactoringBackend() {
         if (refactoringBackend == null) {
-            refactoringBackend = new WranglerRefactoringBackend(Activator.getDefault()
-                    .getBackend());
+            refactoringBackend = new WranglerRefactoringBackend(
+                    Activator.getDefault().getBackend());
         }
         return refactoringBackend;
     }
@@ -43,7 +43,8 @@ public class WranglerBackendManager {
      */
     public static WranglerSyntaxBackend getSyntaxBackend() {
         if (syntaxBackend == null) {
-            syntaxBackend = new WranglerSyntaxBackend(Activator.getDefault().getBackend());
+            syntaxBackend = new WranglerSyntaxBackend(
+                    Activator.getDefault().getBackend());
         }
         return syntaxBackend;
     }

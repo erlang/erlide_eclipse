@@ -103,13 +103,11 @@ public class CallHierarchyView extends ViewPart {
             }
             if (parentElement == input && children.length == 0) {
                 // TODO ErlangXref should cache _all_ projects added to it
-                return new Object[] { "<no callers from project "
-                        + ErlangEngine
-                                .getInstance()
-                                .getModelUtilService()
-                                .getProject(
-                                        ErlangEngine.getInstance().getModelUtilService()
-                                                .getModule(parent)).getName() + ">" };
+                return new Object[] { "<no callers from project " + ErlangEngine
+                        .getInstance()
+                        .getModelUtilService().getProject(ErlangEngine.getInstance()
+                                .getModelUtilService().getModule(parent))
+                        .getName() + ">" };
             }
             final List<IErlFunction> result = new ArrayList<IErlFunction>();
             for (final FunctionRef r : children) {
@@ -149,14 +147,14 @@ public class CallHierarchyView extends ViewPart {
             composite.setLayout(new GridLayout(2, false));
             {
                 lblRoot = new Label(composite, SWT.NONE);
-                lblRoot.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
-                        1));
+                lblRoot.setLayoutData(
+                        new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
                 lblRoot.setText("<no function>");
             }
             {
                 final ToolBar toolBar = new ToolBar(composite, SWT.FLAT);
-                toolBar.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1,
-                        1));
+                toolBar.setLayoutData(
+                        new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
                 {
                     final ToolItem tltmRefresh = new ToolItem(toolBar, SWT.NONE);
                     tltmRefresh.addSelectionListener(new SelectionAdapter() {

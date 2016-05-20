@@ -23,7 +23,6 @@ import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangLogEventHandler;
 import org.erlide.runtime.events.LogEventHandler;
-import org.erlide.runtime.internal.LocalNodeCreator;
 import org.erlide.runtime.internal.rpc.OtpRpc;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -55,8 +54,8 @@ public class OtpNodeProxy implements IOtpNodeProxy {
     private static final long EXIT_POLL_INTERVAL = 500;
 
     private static final int MAX_RETRIES = 15;
-    public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
-            "erlide.connect.delay", "400"));
+    public static final int RETRY_DELAY = Integer
+            .parseInt(System.getProperty("erlide.connect.delay", "400"));
 
     private final Service service;
     protected final RuntimeData data;
@@ -69,8 +68,8 @@ public class OtpNodeProxy implements IOtpNodeProxy {
     private Process process = null;
     private volatile int exitCode = -1;
 
-    static final boolean DEBUG = Boolean.parseBoolean(System
-            .getProperty("erlide.event.daemon"));
+    static final boolean DEBUG = Boolean
+            .parseBoolean(System.getProperty("erlide.event.daemon"));
     public static final long POLL_INTERVAL = 100;
 
     public OtpNodeProxy(final RuntimeData data) {
@@ -225,8 +224,8 @@ public class OtpNodeProxy implements IOtpNodeProxy {
         int tries = MAX_RETRIES;
         boolean ok = false;
         while (!ok && tries > 0) {
-            ok = localNode.ping(getNodeName(), RETRY_DELAY + (MAX_RETRIES - tries)
-                    * RETRY_DELAY % 3);
+            ok = localNode.ping(getNodeName(),
+                    RETRY_DELAY + (MAX_RETRIES - tries) * RETRY_DELAY % 3);
             tries--;
         }
         return ok;
@@ -249,8 +248,8 @@ public class OtpNodeProxy implements IOtpNodeProxy {
                 i--;
             } while (gotIt && i > 0);
             if (gotIt) {
-                ErlLogger
-                        .error("code server did not start in time for %s", getNodeName());
+                ErlLogger.error("code server did not start in time for %s",
+                        getNodeName());
                 return false;
             }
             return true;
@@ -437,7 +436,8 @@ public class OtpNodeProxy implements IOtpNodeProxy {
             }
         }
 
-        private void setEnvironment(final RuntimeData data, final ProcessBuilder builder) {
+        private void setEnvironment(final RuntimeData data,
+                final ProcessBuilder builder) {
             final Map<String, String> env = builder.environment();
             if (!SystemConfiguration.getInstance().isOnWindows()
                     && SystemConfiguration.getInstance().hasSpecialTclLib()) {

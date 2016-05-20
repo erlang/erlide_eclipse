@@ -198,8 +198,8 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
         if (name == null || name.trim().length() == 0) {
             status.setError("Enter the runtime's name"); //$NON-NLS-1$
         } else {
-            if (fRequestor.isDuplicateName(name)
-                    && (fEditedRuntime == null || !name.equals(fEditedRuntime.getName()))) {
+            if (fRequestor.isDuplicateName(name) && (fEditedRuntime == null
+                    || !name.equals(fEditedRuntime.getName()))) {
                 status.setError("The name is already used"); //$NON-NLS-1$
             } else {
                 final IStatus s = ResourcesPlugin.getWorkspace().validateName(name,
@@ -252,8 +252,9 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
     }
 
     private void doOkPressed() {
-        final RuntimeInfo info = new RuntimeInfo(fName.getText().trim(), fOtpHome
-                .getText().trim(), fArgs.getText().trim(), fCodePath.getElements());
+        final RuntimeInfo info = new RuntimeInfo(fName.getText().trim(),
+                fOtpHome.getText().trim(), fArgs.getText().trim(),
+                fCodePath.getElements());
         fRequestor.itemAdded(info);
     }
 
@@ -328,7 +329,8 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
     }
 
     @Override
-    public void customButtonPressed(final ListDialogField<String> field, final int index) {
+    public void customButtonPressed(final ListDialogField<String> field,
+            final int index) {
         switch (index) {
         case 0:
             addPath(field);

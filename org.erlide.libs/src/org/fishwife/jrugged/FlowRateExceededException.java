@@ -33,7 +33,7 @@ public class FlowRateExceededException extends Exception {
     }
 
     public FlowRateExceededException(final double rate, final double maximumRate) {
-        this("Rate Exceeded (Max=" + maximumRate + ", Current=" + rate + ")",
-                rate, maximumRate);
+        this("Rate Exceeded (Max=" + maximumRate + ", Current=" + rate + ")", rate,
+                maximumRate);
     }
 }

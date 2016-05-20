@@ -34,8 +34,8 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame,
-        IDropToFrame {
+public class ErlangStackFrame extends ErlangDebugElement
+        implements IStackFrame, IDropToFrame {
 
     private final String fModuleName;
     private final ErlangProcess fParent;

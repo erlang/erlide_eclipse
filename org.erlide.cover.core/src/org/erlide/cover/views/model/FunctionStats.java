@@ -52,8 +52,8 @@ public class FunctionStats extends StatsTreeObject {
         IErlModule m;
         try {
             m = ErlangEngine.getInstance().getModel().findModule(mName);
-            final IErlFunction f = m.findFunction(new ErlangFunction(getLabel(),
-                    getArity()));
+            final IErlFunction f = m
+                    .findFunction(new ErlangFunction(getLabel(), getArity()));
 
             lineStart = f.getLineStart();
         } catch (final ErlModelException e) {

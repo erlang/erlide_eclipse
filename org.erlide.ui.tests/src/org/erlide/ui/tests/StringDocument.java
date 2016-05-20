@@ -76,7 +76,8 @@ public class StringDocument implements IDocument {
     }
 
     @Override
-    public void removePrenotifiedDocumentListener(final IDocumentListener documentAdapter) {
+    public void removePrenotifiedDocumentListener(
+            final IDocumentListener documentAdapter) {
         // defining interface method
     }
 

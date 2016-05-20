@@ -37,11 +37,8 @@ public class Configuration implements IConfiguration {
         if (name == null || name.length() == 0) {
             project = null;
         } else {
-            project = ErlangEngine
-                    .getInstance()
-                    .getModel()
-                    .getErlangProject(
-                            ResourcesPlugin.getWorkspace().getRoot().getProject(name));
+            project = ErlangEngine.getInstance().getModel().getErlangProject(
+                    ResourcesPlugin.getWorkspace().getRoot().getProject(name));
         }
     }
 

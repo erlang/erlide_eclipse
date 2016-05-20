@@ -29,7 +29,8 @@ public class CoverageMap {
      * @param lr
      * @param ann
      */
-    public void addAnnotation(final String name, final LineResult lr, final Annotation ann) {
+    public void addAnnotation(final String name, final LineResult lr,
+            final Annotation ann) {
         if (!coverage.containsKey(name)) {
             coverage.put(name, new HashMap<LineResult, Annotation>());
         }

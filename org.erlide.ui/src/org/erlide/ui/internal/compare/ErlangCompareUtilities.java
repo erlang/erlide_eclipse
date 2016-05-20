@@ -70,7 +70,8 @@ class ErlangCompareUtilities {
             if (a.getValue() != null) {
                 sb.append(a.getValue().toString());
             }
-        } else if (kind == ErlElementKind.RECORD_DEF || kind == ErlElementKind.MACRO_DEF) {
+        } else if (kind == ErlElementKind.RECORD_DEF
+                || kind == ErlElementKind.MACRO_DEF) {
             final IErlPreprocessorDef pd = (IErlPreprocessorDef) e;
             sb.append(pd.getDefinedName());
         }
@@ -119,7 +120,8 @@ class ErlangCompareUtilities {
         return null;
     }
 
-    public static String readString(final IStreamContentAccessor sa) throws CoreException {
+    public static String readString(final IStreamContentAccessor sa)
+            throws CoreException {
         final InputStream is = sa.getContents();
         if (is != null) {
             String encoding = null;

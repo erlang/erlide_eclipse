@@ -45,8 +45,8 @@ import org.erlide.ui.util.ColorManager;
  *
  *
  */
-public class SourceViewerInformationControl implements IInformationControl,
-        IInformationControlExtension, DisposeListener {
+public class SourceViewerInformationControl
+        implements IInformationControl, IInformationControlExtension, DisposeListener {
 
     /** Border thickness in pixels. */
     private static final int BORDER = 1;
@@ -109,7 +109,8 @@ public class SourceViewerInformationControl implements IInformationControl,
      *            <code>null</code> if the status field should be hidden
      */
     public SourceViewerInformationControl(final Shell parent, final int shellStyle,
-            final int style, final String symbolicFontName, final String statusFieldText) {
+            final int style, final String symbolicFontName,
+            final String statusFieldText) {
         GridLayout layout;
         GridData gd;
 
@@ -140,15 +141,17 @@ public class SourceViewerInformationControl implements IInformationControl,
 
         // Source viewer
         fViewer = new SourceViewer(composite, null, style);
-        fViewer.configure(new ErlangSourceViewerConfiguration(ErlangEditor
-                .getErlangEditorPreferenceStore(), new ColorManager()));
+        fViewer.configure(new ErlangSourceViewerConfiguration(
+                ErlangEditor.getErlangEditorPreferenceStore(), new ColorManager()));
         fViewer.setEditable(false);
 
         fText = fViewer.getTextWidget();
         gd = new GridData(GridData.BEGINNING | GridData.FILL_BOTH);
         fText.setLayoutData(gd);
-        fText.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_INFO_FOREGROUND));
-        fText.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+        fText.setForeground(
+                parent.getDisplay().getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+        fText.setBackground(
+                parent.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
         fText.setFont(JFaceResources.getFont(symbolicFontName));
 
         fText.addKeyListener(new KeyListener() {
@@ -169,8 +172,8 @@ public class SourceViewerInformationControl implements IInformationControl,
         if (statusFieldText != null) {
 
             // Horizontal separator line
-            fSeparator = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL
-                    | SWT.LINE_DOT);
+            fSeparator = new Label(composite,
+                    SWT.SEPARATOR | SWT.HORIZONTAL | SWT.LINE_DOT);
             fSeparator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
             // Status field label
@@ -188,8 +191,8 @@ public class SourceViewerInformationControl implements IInformationControl,
                     | GridData.VERTICAL_ALIGN_BEGINNING);
             fStatusField.setLayoutData(gd2);
 
-            fStatusField.setForeground(display
-                    .getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
+            fStatusField
+                    .setForeground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
 
             fStatusField.setBackground(display.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
         }

@@ -88,9 +88,8 @@ public class TupleFunctionParametersRefactoring extends SimpleOneStepWranglerRef
     @Override
     public IRefactoringRpcMessage run(final IErlSelection selection) {
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
-        return WranglerBackendManager.getRefactoringBackend().call(
-                "tuple_funpar_eclipse", "sxxxi", sel.getFilePath(),
-                sel.getSelectionRange().getStartPos(),
+        return WranglerBackendManager.getRefactoringBackend().call("tuple_funpar_eclipse",
+                "sxxxi", sel.getFilePath(), sel.getSelectionRange().getStartPos(),
                 sel.getSelectionRange().getEndPos(), sel.getSearchPath(),
                 GlobalParameters.getTabWidth());
     }

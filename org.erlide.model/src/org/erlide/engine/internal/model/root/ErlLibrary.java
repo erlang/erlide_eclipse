@@ -31,8 +31,7 @@ public class ErlLibrary extends Openable implements IErlLibrary {
     }
 
     @Override
-    public boolean buildStructure(final IProgressMonitor pm)
-            throws ErlModelException {
+    public boolean buildStructure(final IProgressMonitor pm) throws ErlModelException {
         return false;
     }
 }

@@ -12,7 +12,8 @@ public class ErlangScratchPadConfiguration extends EditorConfiguration {
     private final AbstractErlangEditor abstractErlangEditor;
 
     public ErlangScratchPadConfiguration(final IPreferenceStore store,
-            final IColorManager colorManager, final AbstractErlangEditor erlangScratchPad) {
+            final IColorManager colorManager,
+            final AbstractErlangEditor erlangScratchPad) {
         super(store, erlangScratchPad, colorManager);
         abstractErlangEditor = erlangScratchPad;
     }

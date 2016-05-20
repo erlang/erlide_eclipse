@@ -133,7 +133,8 @@ public class ErlModel extends Openable implements IErlModel {
         final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
                 .getProjects();
         for (final IProject project : projects) {
-            if (NatureUtil.hasErlangNature(project) && getErlangProject(project) == null) {
+            if (NatureUtil.hasErlangNature(project)
+                    && getErlangProject(project) == null) {
                 addChild(createErlangProject(project));
             }
         }
@@ -361,7 +362,8 @@ public class ErlModel extends Openable implements IErlModel {
         }
     }
 
-    private final class PathVariableChangeListener implements IPathVariableChangeListener {
+    private final class PathVariableChangeListener
+            implements IPathVariableChangeListener {
 
         @Override
         public void pathVariableChanged(final IPathVariableChangeEvent event) {
@@ -543,9 +545,9 @@ public class ErlModel extends Openable implements IErlModel {
         deltaManager.erlModelDeltas.add(delta);
     }
 
-    public void notifyListeners(final IErlElementDelta deltaToNotify,
-            final int eventType, final IElementChangedListener[] listeners,
-            final int[] listenerMask, final int listenerCount) {
+    public void notifyListeners(final IErlElementDelta deltaToNotify, final int eventType,
+            final IElementChangedListener[] listeners, final int[] listenerMask,
+            final int listenerCount) {
 
         final ElementChangedEvent extraEvent = new ElementChangedEvent(deltaToNotify,
                 eventType);
@@ -992,8 +994,8 @@ public class ErlModel extends Openable implements IErlModel {
             final boolean checkExternals, final IErlElementLocator.Scope scope)
             throws ErlModelException {
         if (project != null) {
-            final IErlModule module = getModuleFromCacheByNameOrPath(
-                    (ErlProject) project, includeName, includePath, scope);
+            final IErlModule module = getModuleFromCacheByNameOrPath((ErlProject) project,
+                    includeName, includePath, scope);
             if (module != null && module.isOnIncludePath()) {
                 return module;
             }
@@ -1012,8 +1014,8 @@ public class ErlModel extends Openable implements IErlModel {
         if (includeName != null) {
             final boolean hasExtension = SystemConfiguration.hasExtension(includeName);
             for (final IErlModule module2 : includes) {
-                final String name = hasExtension ? module2.getName() : module2
-                        .getModuleName();
+                final String name = hasExtension ? module2.getName()
+                        : module2.getModuleName();
                 if (ResourceUtil.samePath(includeName, name)) {
                     return module2;
                 }
@@ -1042,8 +1044,8 @@ public class ErlModel extends Openable implements IErlModel {
             final boolean checkExternals, final IErlElementLocator.Scope scope)
             throws ErlModelException {
         if (project != null) {
-            final IErlModule module = getModuleFromCacheByNameOrPath(
-                    (ErlProject) project, moduleName, modulePath, scope);
+            final IErlModule module = getModuleFromCacheByNameOrPath((ErlProject) project,
+                    moduleName, modulePath, scope);
             if (module != null && module.isOnSourcePath()) {
                 return module;
             }
@@ -1096,8 +1098,8 @@ public class ErlModel extends Openable implements IErlModel {
         IErlModule module;
         for (final IErlProject project : projects) {
             final Collection<IErlModule> modules = Lists.newArrayList();
-            final Collection<IErlModule> modulesOrExternals = externalModules ? project
-                    .getExternalModules() : project.getModules();
+            final Collection<IErlModule> modulesOrExternals = externalModules
+                    ? project.getExternalModules() : project.getModules();
             getAllModulesAux(modulesOrExternals, modules, paths);
             allModules.addAll(modules);
             module = findModule(modules, moduleName, modulePath);
@@ -1121,8 +1123,8 @@ public class ErlModel extends Openable implements IErlModel {
         if (moduleName != null) {
             final boolean hasExtension = SystemConfiguration.hasExtension(moduleName);
             for (final IErlModule module : modules) {
-                final String name = hasExtension ? module.getName() : module
-                        .getModuleName();
+                final String name = hasExtension ? module.getName()
+                        : module.getModuleName();
                 if (moduleName.equals(name)) {
                     return module;
                 }
@@ -1144,8 +1146,9 @@ public class ErlModel extends Openable implements IErlModel {
                 return include;
             }
         }
-        return findIncludeFromProject(ErlangEngine.getInstance().getModelUtilService()
-                .getProject(module), includeName, includePath, true, scope);
+        return findIncludeFromProject(
+                ErlangEngine.getInstance().getModelUtilService().getProject(module),
+                includeName, includePath, true, scope);
     }
 
     private final Object fModelLock = new Object();

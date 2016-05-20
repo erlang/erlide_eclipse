@@ -33,8 +33,8 @@ import org.erlide.wrangler.refactoring.util.IErlRange;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public class MergeForAllRefactoring extends
-        CostumWorkflowRefactoringWithPositionsSelection {
+public class MergeForAllRefactoring
+        extends CostumWorkflowRefactoringWithPositionsSelection {
     @Override
     public RefactoringWorkflowController getWorkflowController(final Shell shell) {
         return new RefactoringWorkflowController(shell) {

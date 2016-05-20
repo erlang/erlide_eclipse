@@ -128,7 +128,8 @@ public class BreakpointMarkerUpdater implements IMarkerUpdater {
 
     private static boolean isLineBreakpointMarker(final IMarker marker)
             throws CoreException {
-        return marker.getType() == ErlangLineBreakpoint.ERLANG_LINE_BREAKPOINT_MARKER_TYPE;
+        return marker
+                .getType() == ErlangLineBreakpoint.ERLANG_LINE_BREAKPOINT_MARKER_TYPE;
     }
 
     /**

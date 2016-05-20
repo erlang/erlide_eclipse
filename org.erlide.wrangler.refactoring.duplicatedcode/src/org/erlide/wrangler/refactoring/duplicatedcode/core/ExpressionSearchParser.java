@@ -76,9 +76,10 @@ public class ExpressionSearchParser extends AbstractDuplicatesParser {
                         .elementAt(1);
 
                 final IErlSelection sel = GlobalParameters.getWranglerSelection();
-                instances.add(new DuplicatedCodeInstanceElement((IFile) sel
-                        .getErlElement().getResource(), startLine.intValue(), startColumn
-                        .intValue(), endLine.intValue(), endColumn.intValue() + 1));
+                instances.add(new DuplicatedCodeInstanceElement(
+                        (IFile) sel.getErlElement().getResource(), startLine.intValue(),
+                        startColumn.intValue(), endLine.intValue(),
+                        endColumn.intValue() + 1));
             }
 
             final DuplicatedCodeInstanceElement defaultInstance = instances.get(0);

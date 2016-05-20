@@ -40,9 +40,8 @@ public class ModelTest {
         final IErlProject erlProject = ErlideTestUtils.createTmpErlProject(projectName);
         assertNotNull(erlProject);
         // when creating a module with non-erlang extension, e.g. erlx
-        final IErlModule a = ErlideTestUtils
-                .createModule(erlProject, "a.erlx",
-                        "-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
+        final IErlModule a = ErlideTestUtils.createModule(erlProject, "a.erlx",
+                "-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
         // then it should be created
         assertNotNull(a);
     }

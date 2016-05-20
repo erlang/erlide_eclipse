@@ -40,8 +40,8 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
     public void moduleLoaded(final IBackend backend, final IProject project,
             final String moduleName) {
         try {
-            final ErlangDebugTarget erlangDebugTarget = debugTargetOfBackend(backend
-                    .getOtpRpc());
+            final ErlangDebugTarget erlangDebugTarget = debugTargetOfBackend(
+                    backend.getOtpRpc());
             if (erlangDebugTarget != null
                     && erlangDebugTarget.getInterpretedModules().contains(moduleName)) {
                 if (isModuleRunningInInterpreter(erlangDebugTarget, backend.getOtpRpc(),
@@ -128,8 +128,8 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
             final ErlangDebugTarget erlangDebugTarget, final IOtpRpc backend,
             final String moduleName) {
         for (final OtpErlangPid metaPid : erlangDebugTarget.getAllMetaPids()) {
-            final List<String> allModulesOnStack = ErlideDebug.getAllModulesOnStack(
-                    backend, metaPid);
+            final List<String> allModulesOnStack = ErlideDebug
+                    .getAllModulesOnStack(backend, metaPid);
             if (allModulesOnStack != null) {
                 for (final String m : allModulesOnStack) {
                     if (m.equals(moduleName)) {

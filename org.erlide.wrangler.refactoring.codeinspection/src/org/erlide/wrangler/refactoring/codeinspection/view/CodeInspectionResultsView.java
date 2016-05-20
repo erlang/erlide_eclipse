@@ -75,8 +75,7 @@ public class CodeInspectionResultsView extends ViewPart {
             } else if (e instanceof IErlFunctionClause) {
                 final IErlFunctionClause fc = (IErlFunctionClause) e;
                 return ErlangEngine.getInstance().getModelUtilService().getModule(fc)
-                        .getModuleName()
-                        + ":" + fc.toString();
+                        .getModuleName() + ":" + fc.toString();
             }
             return e.toString();
         }

@@ -24,7 +24,7 @@ public interface FailureInterpreter {
     /**
      * Returns whether the governed {@link CircuitBreaker} should trip OPEN as a
      * result of this failure.
-     * 
+     *
      * @param oops
      *            the {@link Throwable} failure that occurred
      * @return boolean <code>true</code> iff the circuit should trip

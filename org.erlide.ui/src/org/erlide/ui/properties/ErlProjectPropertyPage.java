@@ -47,8 +47,8 @@ public class ErlProjectPropertyPage extends PropertyPage {
 
     @Override
     protected IPreferenceStore doGetPreferenceStore() {
-        final IPreferenceStore store = new ScopedPreferenceStore(new ProjectScope(
-                getProject()), ErlangCore.PLUGIN_ID);
+        final IPreferenceStore store = new ScopedPreferenceStore(
+                new ProjectScope(getProject()), ErlangCore.PLUGIN_ID);
         return store;
     }
 
@@ -324,7 +324,8 @@ public class ErlProjectPropertyPage extends PropertyPage {
         librariesComposite.setLayout(new FormLayout());
         librariesTab.setControl(librariesComposite);
 
-        final Label lblExternalLibrariesRequired = new Label(librariesComposite, SWT.NONE);
+        final Label lblExternalLibrariesRequired = new Label(librariesComposite,
+                SWT.NONE);
         {
             final FormData formData = new FormData();
             formData.right = new FormAttachment(100, -10);

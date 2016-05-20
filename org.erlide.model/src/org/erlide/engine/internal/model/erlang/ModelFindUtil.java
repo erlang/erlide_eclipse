@@ -136,9 +136,9 @@ public class ModelFindUtil implements ModelFindService {
     }
 
     @Override
-    public IErlPreprocessorDef findPreprocessorDef(
-            final Collection<IErlProject> projects, final String moduleName,
-            final String definedName, final ErlElementKind kind) throws CoreException {
+    public IErlPreprocessorDef findPreprocessorDef(final Collection<IErlProject> projects,
+            final String moduleName, final String definedName, final ErlElementKind kind)
+            throws CoreException {
         for (final IErlProject project : projects) {
             if (project != null) {
                 final IErlModule module = project.getModule(moduleName);

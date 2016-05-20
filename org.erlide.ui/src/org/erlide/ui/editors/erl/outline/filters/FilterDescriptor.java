@@ -48,9 +48,8 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
     public static Collection<FilterDescriptor> getFilterDescriptors() {
         if (fgFilterDescriptors == null) {
             final IExtensionRegistry registry = Platform.getExtensionRegistry();
-            final IConfigurationElement[] elements = registry
-                    .getConfigurationElementsFor(ErlideUIPlugin.PLUGIN_ID,
-                            EXTENSION_POINT_NAME);
+            final IConfigurationElement[] elements = registry.getConfigurationElementsFor(
+                    ErlideUIPlugin.PLUGIN_ID, EXTENSION_POINT_NAME);
             final String extensionPointID = ErlideUIPlugin.PLUGIN_ID + "."
                     + EXTENSION_POINT_NAME;
             fgFilterDescriptors = createFilterDescriptors(elements, extensionPointID);
@@ -91,14 +90,11 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
     private FilterDescriptor(final IConfigurationElement element) {
         fElement = element;
         // it is either a pattern filter or a custom filter
-        Assert.isTrue(
-                isPatternFilter() ^ isClassFilter(),
+        Assert.isTrue(isPatternFilter() ^ isClassFilter(),
                 "An extension for extension-point org.erlide.ui.erlangElementFilters does not specify a correct filter"); //$NON-NLS-1$
-        Assert.isNotNull(
-                getId(),
+        Assert.isNotNull(getId(),
                 "An extension for extension-point org.erlide.ui.erlangElementFilters does not provide a valid ID"); //$NON-NLS-1$
-        Assert.isNotNull(
-                getName(),
+        Assert.isNotNull(getName(),
                 "An extension for extension-point org.erlide.ui.erlangElementFilters does not provide a valid name"); //$NON-NLS-1$
     }
 
@@ -116,9 +112,9 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
         if (fCachedInstance == null) {
 
             final ViewerFilter[] result = new ViewerFilter[1];
-            final String message = String
-                    .format("The org.erlide.ui.erlangElementFilters plug-in extension \"%s\" specifies a viewer filter class which does not exist.",
-                            getId());
+            final String message = String.format(
+                    "The org.erlide.ui.erlangElementFilters plug-in extension \"%s\" specifies a viewer filter class which does not exist.",
+                    getId());
             final ISafeRunnable code = new SafeRunnable(message) {
                 /*
                  * @see org.eclipse.core.runtime.ISafeRunnable#run()
@@ -273,14 +269,14 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
             if (FILTER_TAG.equals(element.getName())) {
 
                 final FilterDescriptor[] desc = new FilterDescriptor[1];
-                SafeRunner.run(new SafeRunnable(
-                        " One of the extensions for extension-point " + extensionPointID
-                                + " is incorrect.") {
-                    @Override
-                    public void run() throws Exception {
-                        desc[0] = new FilterDescriptor(element);
-                    }
-                });
+                SafeRunner.run(
+                        new SafeRunnable(" One of the extensions for extension-point "
+                                + extensionPointID + " is incorrect.") {
+                            @Override
+                            public void run() throws Exception {
+                                desc[0] = new FilterDescriptor(element);
+                            }
+                        });
 
                 if (desc[0] != null && !descIds.contains(desc[0].getId())) {
                     result.add(desc[0]);

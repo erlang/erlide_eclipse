@@ -101,10 +101,13 @@ public class StringMatcher {
      * Find the first occurrence of the pattern between <code>start</code
      * )(inclusive) and <code>end</code>(exclusive).
      *
-     * @param <code>text</code>, the String object to search in
-     * @param <code>start</code>, the starting index of the search range,
-     *        inclusive
-     * @param <code>end</code>, the ending index of the search range, exclusive
+     * @param <code>text</code>,
+     *            the String object to search in
+     * @param <code>start</code>,
+     *            the starting index of the search range,
+     *            inclusive
+     * @param <code>end</code>,
+     *            the ending index of the search range, exclusive
      * @return an <code>StringMatcher.Position</code> object that keeps the
      *         starting (inclusive) and ending positions (exclusive) of the
      *         first occurrence of the pattern in the specified range of the
@@ -114,7 +117,8 @@ public class StringMatcher {
      *         position of "abc" is returned. For a pattern like"*??*" in text
      *         "abcdf", (1,3) is returned
      */
-    public StringMatcher.Position find(final String text, final int start0, final int end0) {
+    public StringMatcher.Position find(final String text, final int start0,
+            final int end0) {
         int end = end0;
         int start = start0;
         if (text == null) {
@@ -171,7 +175,8 @@ public class StringMatcher {
      * match the given <code>text</code> with the pattern
      *
      * @return true if matched eitherwise false
-     * @param <code>text</code>, a String object
+     * @param <code>text</code>,
+     *            a String object
      */
     public boolean match(final String text) {
         return match(text, 0, text.length());
@@ -187,9 +192,11 @@ public class StringMatcher {
      *            <code>text</code>, a String object that contains the substring
      *            to match
      * @param int
-     *        <code>start<code> marks the starting position (inclusive) of the substring
-     * @param int <code>end<code> marks the ending index (exclusive) of the
-     *        substring
+     *            <code>start<code> marks the starting position (inclusive) of the
+     *            substring
+     * @param int
+     *            <code>end<code> marks the ending index (exclusive) of the
+     *            substring
      */
     public boolean match(final String text, final int start0, final int end0) {
         if (null == text) {
@@ -356,10 +363,13 @@ public class StringMatcher {
     }
 
     /**
-     * @param <code>text</code>, a string which contains no wildcard
-     * @param <code>start</code>, the starting index in the text for search,
-     *        inclusive
-     * @param <code>end</code>, the stopping point of search, exclusive
+     * @param <code>text</code>,
+     *            a string which contains no wildcard
+     * @param <code>start</code>,
+     *            the starting index in the text for search,
+     *            inclusive
+     * @param <code>end</code>,
+     *            the stopping point of search, exclusive
      * @return the starting index in the text of the pattern , or -1 if not
      *         found
      */
@@ -388,13 +398,18 @@ public class StringMatcher {
     }
 
     /**
-     * @param <code>text</code>, a simple regular expression that may only
-     *        contain '?'(s)
-     * @param <code>start</code>, the starting index in the text for search,
-     *        inclusive
-     * @param <code>end</code>, the stopping point of search, exclusive
-     * @param <code>p</code>, a simple regular expression that may contains '?'
-     * @param <code>caseIgnored</code>, wether the pattern is not casesensitive
+     * @param <code>text</code>,
+     *            a simple regular expression that may only
+     *            contain '?'(s)
+     * @param <code>start</code>,
+     *            the starting index in the text for search,
+     *            inclusive
+     * @param <code>end</code>,
+     *            the stopping point of search, exclusive
+     * @param <code>p</code>,
+     *            a simple regular expression that may contains '?'
+     * @param <code>caseIgnored</code>,
+     *            wether the pattern is not casesensitive
      * @return the starting index in the text of the pattern , or -1 if not
      *         found
      */
@@ -414,15 +429,20 @@ public class StringMatcher {
     /**
      *
      * @return boolean
-     * @param <code>text</code>, a String to match
-     * @param <code>start</code>, int that indicates the starting index of
-     *        match, inclusive
-     * @param <code>end</code> int that indicates the ending index of match,
-     *        exclusive
-     * @param <code>p</code>, String, String, a simple regular expression that
-     *        may contain '?'
-     * @param <code>ignoreCase</code>, boolean indicating wether code>p</code>
-     *        is case sensitive
+     * @param <code>text</code>,
+     *            a String to match
+     * @param <code>start</code>,
+     *            int that indicates the starting index of
+     *            match, inclusive
+     * @param <code>end</code>
+     *            int that indicates the ending index of match,
+     *            exclusive
+     * @param <code>p</code>,
+     *            String, String, a simple regular expression that
+     *            may contain '?'
+     * @param <code>ignoreCase</code>,
+     *            boolean indicating wether code>p</code>
+     *            is case sensitive
      */
     protected boolean regExpRegionMatches(final String text, final int tStart0,
             final String p, final int pStart0, final int plen0) {
@@ -460,10 +480,13 @@ public class StringMatcher {
     }
 
     /**
-     * @param <code>text</code>, the string to match
-     * @param <code>start</code>, the starting index in the text for search,
-     *        inclusive
-     * @param <code>end</code>, the stopping point of search, exclusive
+     * @param <code>text</code>,
+     *            the string to match
+     * @param <code>start</code>,
+     *            the starting index in the text for search,
+     *            inclusive
+     * @param <code>end</code>,
+     *            the stopping point of search, exclusive
      * @param code
      *            >p </code>, a string that has no wildcard
      * @param <code>

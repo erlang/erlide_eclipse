@@ -106,8 +106,9 @@ public class RefactoringHandler extends AbstractHandler {
                     .getActiveWorkbenchWindow().getActivePage().getSelection());
         } catch (final WranglerException e1) {
 
-            MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                    .getShell(), "Error", e1.getMessage());
+            MessageDialog.openError(
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                    "Error", e1.getMessage());
             return null;
         }
 
@@ -143,8 +144,8 @@ public class RefactoringHandler extends AbstractHandler {
                     .setCallbackModuleName(callbackModule);
 
             if (!((ApplyAdhocElemRefactoring) refactoring).fetchParPrompts()) {
-                MessageDialog.openError(PlatformUI.getWorkbench()
-                        .getActiveWorkbenchWindow().getShell(),
+                MessageDialog.openError(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Elementary refactoring error", "Can not load callback module");
                 return null;
             }
@@ -162,9 +163,9 @@ public class RefactoringHandler extends AbstractHandler {
             refactoring = new ApplyUserElementaryRefactoring(name, callbackModule);
 
             if (!((ApplyUserElementaryRefactoring) refactoring).fetchParPrompts()) {
-                MessageDialog.openError(PlatformUI.getWorkbench()
-                        .getActiveWorkbenchWindow().getShell(), "Refactoring error",
-                        "Can not find callback module");
+                MessageDialog.openError(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        "Refactoring error", "Can not find callback module");
                 return null;
             }
 
@@ -206,10 +207,10 @@ public class RefactoringHandler extends AbstractHandler {
 
             // run rename module refactoring
         } else if (actionId.equals("org.erlide.wrangler.refactoring.renamemodule")) {
-            final boolean answer = MessageDialog
-                    .openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                            .getShell(), "Warning!",
-                            "The requested operation cannot be undone. Would you like to continue?");
+            final boolean answer = MessageDialog.openQuestion(
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                    "Warning!",
+                    "The requested operation cannot be undone. Would you like to continue?");
 
             if (!answer) {
                 return null;
@@ -240,7 +241,8 @@ public class RefactoringHandler extends AbstractHandler {
             refactoring = new MoveFunctionRefactoring();
 
             // run fold expression against a local function
-        } else if (actionId.equals("org.erlide.wrangler.refactoring.foldlocalexpression")) {
+        } else if (actionId
+                .equals("org.erlide.wrangler.refactoring.foldlocalexpression")) {
 
             refactoring = new FoldLocalExpressionRefactoring();
 
@@ -269,7 +271,8 @@ public class RefactoringHandler extends AbstractHandler {
 
                 if (dialog.isFinished()) {
                     final IErlFunctionClause functionClause = dialog.getFunctionClause();
-                    refactoring = new FoldRemoteExpressionRefactoring(functionClause, sel);
+                    refactoring = new FoldRemoteExpressionRefactoring(functionClause,
+                            sel);
                     pages.add(new SelectionInputPage("Fold expression",
                             "Please select expression which should be fold!",
                             "Select expressions which should be folded!",
@@ -280,7 +283,8 @@ public class RefactoringHandler extends AbstractHandler {
                 }
 
                 // run introduce macro refactoring
-            } else if (actionId.equals("org.erlide.wrangler.refactoring.introducemacro")) {
+            } else if (actionId
+                    .equals("org.erlide.wrangler.refactoring.introducemacro")) {
                 refactoring = new IntroduceMacroRefactoring();
                 pages.add(new SimpleInputPage("Introduce macro definition",
                         "Please type the new macro name!", "New macro name:",
@@ -335,8 +339,8 @@ public class RefactoringHandler extends AbstractHandler {
                         (CostumWorkflowRefactoringWithPositionsSelection) refactoring));
 
                 // normalize record expression
-            } else if (actionId
-                    .equals("org.erlide.wrangler.refactoring.normalizerecordexpression")) {
+            } else if (actionId.equals(
+                    "org.erlide.wrangler.refactoring.normalizerecordexpression")) {
                 final boolean showDefaultFields = MessageDialog.openQuestion(activeShell,
                         "Showing defaults", "Show record fields with default values?");
                 refactoring = new NormalizeRecordExpression(showDefaultFields);
@@ -344,8 +348,7 @@ public class RefactoringHandler extends AbstractHandler {
 
                 pages.add(new CostumworkFlowInputPage("Introduce ?LET",
                         "Please type the pattern variable name!",
-                        "Pattern variable name:",
-                        "New name must be a valid Erlang atom!",
+                        "Pattern variable name:", "New name must be a valid Erlang atom!",
                         new VariableNameValidator()));
                 refactoring = new IntroduceLetRefactoring();
             } else if (actionId.equals("org.erlide.wrangler.refactoring.mergelet")) {
@@ -366,16 +369,18 @@ public class RefactoringHandler extends AbstractHandler {
                 refactoring = new EqcStatemStateDataToRecordRefactoring();
                 pages.add(new RecordDataInputPage("eqc_statem State Data To Record"));
 
-            } else if (actionId.equals("org.erlide.wrangler.refactoring.eqc_fsmtorecord")) {
+            } else if (actionId
+                    .equals("org.erlide.wrangler.refactoring.eqc_fsmtorecord")) {
                 refactoring = new EqcFsmStateDataToRecordRefactoring();
                 pages.add(new RecordDataInputPage("eqc_fsm State Data To Record"));
 
-            } else if (actionId.equals("org.erlide.wrangler.refactoring.gen_fsmtorecord")) {
+            } else if (actionId
+                    .equals("org.erlide.wrangler.refactoring.gen_fsmtorecord")) {
                 refactoring = new GenFsmStateDataToRecordRefactoring();
                 pages.add(new RecordDataInputPage("gen_fsm State Data To Record"));
 
-            } else if (actionId
-                    .equals("org.erlide.wrangler.refactoring.unfoldfunctionapplication")) {
+            } else if (actionId.equals(
+                    "org.erlide.wrangler.refactoring.unfoldfunctionapplication")) {
                 refactoring = new UnfoldFunctionApplicationRefactoring();
 
             } else if (actionId
@@ -417,31 +422,30 @@ public class RefactoringHandler extends AbstractHandler {
     }
 
     private InputDialog getModuleInput(final String name, final String mesg) {
-        return new InputDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                .getShell(), name, mesg, "", new IInputValidator() {
+        return new InputDialog(
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), name,
+                mesg, "", new IInputValidator() {
 
-            public IValidator internalV = new ModuleNameValidator();
+                    public IValidator internalV = new ModuleNameValidator();
 
-            @Override
-            public String isValid(final String newText) {
-                if (internalV.isValid(newText)) {
-                    return null;
-                }
-                return "Please type a correct module name!";
-            }
-        });
+                    @Override
+                    public String isValid(final String newText) {
+                        if (internalV.isValid(newText)) {
+                            return null;
+                        }
+                        return "Please type a correct module name!";
+                    }
+                });
     }
 
     private boolean checkForDirtyEditors() {
         final IEditorPart[] dirtyEditors = PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage().getDirtyEditors();
         if (dirtyEditors.length > 0) {
-            final Boolean answer = MessageDialog
-                    .openQuestion(
-                            PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                                    .getShell(),
-                            "Unsaved changes",
-                            "For running Wrangler refactorings, all Erlang files need to be saved. Would you like to continue with saving files?");
+            final Boolean answer = MessageDialog.openQuestion(
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                    "Unsaved changes",
+                    "For running Wrangler refactorings, all Erlang files need to be saved. Would you like to continue with saving files?");
             if (answer) {
                 for (final IEditorPart ed : dirtyEditors) {
                     if (ed instanceof ITextEditor) {
@@ -477,8 +481,8 @@ public class RefactoringHandler extends AbstractHandler {
                     for (int i = 0; i < reslist.arity(); ++i) {
                         final OtpErlangTuple restuple = (OtpErlangTuple) reslist
                                 .elementAt(i);
-                        final String formattedString = formatWarningString(OtpErlang
-                                .asString(restuple.elementAt(1)));
+                        final String formattedString = formatWarningString(
+                                OtpErlang.asString(restuple.elementAt(1)));
                         WarningViewManager.addWarningMessage(formattedString);
                     }
                 }
@@ -557,10 +561,10 @@ public class RefactoringHandler extends AbstractHandler {
                     "Multiple clauses",
                     "The function selected has multiple clauses, would you like"
                             + " to generalise the function clause selected only?");
-            refactoring = new GeneraliseFunctionRefactoring(State.more_than_one_clause,
-                    m, selectedClauseOnly);
-            if (((OtpErlangList) m.getParameters().get(
-                    GenFunReturnParameterName.dupsInClause)).arity() > 0) {
+            refactoring = new GeneraliseFunctionRefactoring(State.more_than_one_clause, m,
+                    selectedClauseOnly);
+            if (((OtpErlangList) m.getParameters()
+                    .get(GenFunReturnParameterName.dupsInClause)).arity() > 0) {
                 pages.add(new SelectionInputPage("Generalise expression",
                         "Please select which of them should be generalised!",
                         "Select one of them, which should be folded!",
@@ -571,22 +575,23 @@ public class RefactoringHandler extends AbstractHandler {
             final boolean sideEffect = MessageDialog.openQuestion(activeShell,
                     "Side effect", "Does the expression selected has side effect?");
 
-            final OtpErlangObject noOfClausesPar = m.getParameters().get(
-                    GenFunReturnParameterName.noOfClauses);
-            if (noOfClausesPar != null && ((OtpErlangLong) noOfClausesPar).intValue() > 1) {
-                final boolean selectedClauseOnly = MessageDialog.openQuestion(
-                        activeShell, "Multiple clauses",
+            final OtpErlangObject noOfClausesPar = m.getParameters()
+                    .get(GenFunReturnParameterName.noOfClauses);
+            if (noOfClausesPar != null
+                    && ((OtpErlangLong) noOfClausesPar).intValue() > 1) {
+                final boolean selectedClauseOnly = MessageDialog.openQuestion(activeShell,
+                        "Multiple clauses",
                         "The function selected has multiple clauses, would you like"
                                 + " to generalise the function clause selected only?");
-                refactoring = new GeneraliseFunctionRefactoring(
-                        State.unknown_side_effect, m, selectedClauseOnly, sideEffect);
+                refactoring = new GeneraliseFunctionRefactoring(State.unknown_side_effect,
+                        m, selectedClauseOnly, sideEffect);
 
                 if (!selectedClauseOnly
-                        && ((OtpErlangList) m.getParameters().get(
-                                GenFunReturnParameterName.dupsInFun)).arity() > 0
-                        || selectedClauseOnly
-                        && ((OtpErlangList) m.getParameters().get(
-                                GenFunReturnParameterName.dupsInClause)).arity() > 0) {
+                        && ((OtpErlangList) m.getParameters()
+                                .get(GenFunReturnParameterName.dupsInFun)).arity() > 0
+                        || selectedClauseOnly && ((OtpErlangList) m.getParameters()
+                                .get(GenFunReturnParameterName.dupsInClause))
+                                        .arity() > 0) {
                     pages.add(new SelectionInputPage("Generalise expression",
                             "Please select which of them should be generalised!",
                             "Select one of them, which should be folded!",
@@ -594,8 +599,8 @@ public class RefactoringHandler extends AbstractHandler {
                 }
 
             } else {
-                refactoring = new GeneraliseFunctionRefactoring(
-                        State.unknown_side_effect, m, true, sideEffect);
+                refactoring = new GeneraliseFunctionRefactoring(State.unknown_side_effect,
+                        m, true, sideEffect);
                 pages.add(new SelectionInputPage("Generalise expression",
                         "Please select which of them should be generalised!",
                         "Select one of them, which should be folded!",

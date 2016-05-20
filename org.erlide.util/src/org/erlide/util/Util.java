@@ -105,8 +105,8 @@ public final class Util {
         }
         // for compatibility with MessageFormat which eliminates double quotes
         // in original message
-        final char[] messageWithNoDoubleQuotes = CharOperation.replace(
-                message.toCharArray(), DOUBLE_QUOTES, SINGLE_QUOTE);
+        final char[] messageWithNoDoubleQuotes = CharOperation
+                .replace(message.toCharArray(), DOUBLE_QUOTES, SINGLE_QUOTE);
 
         if (bindings == null) {
             return new String(messageWithNoDoubleQuotes);
@@ -145,7 +145,8 @@ public final class Util {
                             }
                         }
                         if (!done) {
-                            output.append(messageWithNoDoubleQuotes, end + 1, start - end);
+                            output.append(messageWithNoDoubleQuotes, end + 1,
+                                    start - end);
                         }
                     } catch (final ArrayIndexOutOfBoundsException e) {
                         output.append("{missing " + Integer.toString(index) + "}"); //$NON-NLS-2$ //$NON-NLS-1$
@@ -326,8 +327,8 @@ public final class Util {
         try {
             bundle = ResourceBundle.getBundle(BUNDLE_NAME, Locale.getDefault());
         } catch (final MissingResourceException e) {
-            ErlLogger
-                    .error("Missing resource : " + BUNDLE_NAME.replace('.', '/') + ".properties for locale " + Locale.getDefault()); //$NON-NLS-1$//$NON-NLS-2$
+            ErlLogger.error("Missing resource : " + BUNDLE_NAME.replace('.', '/') //$NON-NLS-1$
+                    + ".properties for locale " + Locale.getDefault()); //$NON-NLS-1$
             throw e;
         }
     }
@@ -504,8 +505,8 @@ public final class Util {
                 result = decode(b.binaryValue(), Charsets.ISO_8859_1);
             }
             if (result == null) {
-                ErlLogger.error("bad binary value in stringValue" + " (can't decode): "
-                        + o);
+                ErlLogger.error(
+                        "bad binary value in stringValue" + " (can't decode): " + o);
             }
             return result;
         }
@@ -629,7 +630,8 @@ public final class Util {
         return sb;
     }
 
-    public static int getIntegerValue(final OtpErlangObject object, final int defaultValue) {
+    public static int getIntegerValue(final OtpErlangObject object,
+            final int defaultValue) {
         if (object instanceof OtpErlangLong) {
             final OtpErlangLong l = (OtpErlangLong) object;
             try {
@@ -652,8 +654,8 @@ public final class Util {
             return (OtpErlangList) o;
         } else if (o instanceof OtpErlangString) {
             final OtpErlangString erlangString = (OtpErlangString) o;
-            final int[] codePoints = OtpErlangString.stringToCodePoints(erlangString
-                    .stringValue());
+            final int[] codePoints = OtpErlangString
+                    .stringToCodePoints(erlangString.stringValue());
             final OtpErlangObject elements[] = new OtpErlangObject[codePoints.length];
             for (int i = 0; i < codePoints.length; i++) {
                 elements[i] = new OtpErlangLong(codePoints[i]);

@@ -39,8 +39,8 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.core.builder.BuildNotifier;
 import org.erlide.core.builder.BuildResource;
 import org.erlide.core.builder.BuilderHelper;
-import org.erlide.core.builder.BuilderMessages;
 import org.erlide.core.builder.BuilderHelper.SearchVisitor;
+import org.erlide.core.builder.BuilderMessages;
 import org.erlide.core.builder.CompilerOptions;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.MarkerUtils;
@@ -99,8 +99,9 @@ public class InternalBuilder extends ErlangBuilder {
             }
 
             if (delta != null && delta.getAffectedChildren().length != 0) {
-                handleAppFile(project, project.getLocation().toPortableString() + "/"
-                        + out, properties.getSourceDirs());
+                handleAppFile(project,
+                        project.getLocation().toPortableString() + "/" + out,
+                        properties.getSourceDirs());
             }
             handleErlangFiles(erlProject, project, kind, delta, notifier);
         } catch (final OperationCanceledException e) {
@@ -111,15 +112,13 @@ public class InternalBuilder extends ErlangBuilder {
             ErlLogger.error(e);
             final String msg = NLS.bind(BuilderMessages.build_inconsistentProject,
                     e.getLocalizedMessage(), e.getClass().getName());
-            MarkerUtils
-                    .createProblemMarker(project, null, msg, 0, IMarker.SEVERITY_ERROR);
+            MarkerUtils.createProblemMarker(project, null, msg, 0,
+                    IMarker.SEVERITY_ERROR);
         } finally {
             cleanup(notifier);
             if (BuilderHelper.isDebugging()) {
-                ErlLogger.trace(
-                        "build",
-                        " Done " + project.getName() + " took "
-                                + Long.toString(System.currentTimeMillis() - time));
+                ErlLogger.trace("build", " Done " + project.getName() + " took "
+                        + Long.toString(System.currentTimeMillis() - time));
             }
         }
         return null;
@@ -140,8 +139,8 @@ public class InternalBuilder extends ErlangBuilder {
         try {
             initializeBuilder(notifier);
             MarkerUtils.removeProblemMarkersFor(currentProject);
-            final IFolder bf = currentProject.getFolder(erlProject.getProperties()
-                    .getOutputDir());
+            final IFolder bf = currentProject
+                    .getFolder(erlProject.getProperties().getOutputDir());
             if (bf.exists()) {
                 cleanupOutput(bf, notifier);
             }
@@ -203,8 +202,8 @@ public class InternalBuilder extends ErlangBuilder {
         // if (BuilderHelper.isDebugging()) {
         ErlLogger.debug("Will compile %d resource(s)", Integer.valueOf(n));
         // }
-        final IBackend backend = BackendCore.getBackendManager().getBuildBackend(
-                erlProject);
+        final IBackend backend = BackendCore.getBackendManager()
+                .getBuildBackend(erlProject);
         if (backend == null) {
             final String message = "No backend with the required "
                     + "version could be found. Can't build.";
@@ -242,8 +241,8 @@ public class InternalBuilder extends ErlangBuilder {
         }
 
         final List<Entry<RpcFuture, IResource>> done = Lists.newArrayList();
-        final List<Entry<RpcFuture, IResource>> waiting = Lists.newArrayList(results
-                .entrySet());
+        final List<Entry<RpcFuture, IResource>> waiting = Lists
+                .newArrayList(results.entrySet());
 
         // TODO should use some kind of notification!
         while (!waiting.isEmpty()) {
@@ -340,8 +339,8 @@ public class InternalBuilder extends ErlangBuilder {
     private boolean isModuleOnDirectSourcePath(final IErlProject erlangProject,
             final IErlModule m) {
         boolean result = false;
-        final List<IPath> sourceDirs = Lists.newArrayList(erlangProject.getProperties()
-                .getSourceDirs());
+        final List<IPath> sourceDirs = Lists
+                .newArrayList(erlangProject.getProperties().getSourceDirs());
 
         for (final IPath p : sourceDirs) {
             if (m.getResource().getParent().getProjectRelativePath().equals(p)) {
@@ -360,10 +359,10 @@ public class InternalBuilder extends ErlangBuilder {
             if (eproject == null) {
                 return;
             }
-            final IBackend backend = BackendCore.getBackendManager().getBuildBackend(
-                    eproject);
-            backend.getOtpRpc().call("erlide_builder", "compile_app_src", "ssla",
-                    appSrc, destPath, modules);
+            final IBackend backend = BackendCore.getBackendManager()
+                    .getBuildBackend(eproject);
+            backend.getOtpRpc().call("erlide_builder", "compile_app_src", "ssla", appSrc,
+                    destPath, modules);
         } catch (final Exception e) {
             ErlLogger.error(e);
         }

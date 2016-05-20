@@ -57,8 +57,8 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
     @Override
     public void createControl(final Composite parent) {
-        final ScrolledComposite scrolled = new ScrolledComposite(parent, SWT.BORDER
-                | SWT.V_SCROLL | SWT.H_SCROLL);
+        final ScrolledComposite scrolled = new ScrolledComposite(parent,
+                SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
         final Composite comp = new Composite(scrolled, SWT.NONE);
         scrolled.setContent(comp);
         scrolled.setExpandVertical(true);
@@ -130,12 +130,9 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
             projectMBr.setText(projectName);
 
             if (projectName != null && projectName.length() > 0) {
-                final IErlProject p = ErlangEngine
-                        .getInstance()
-                        .getModel()
-                        .getErlangProject(
-                                ResourcesPlugin.getWorkspace().getRoot()
-                                        .getProject(projectName));
+                final IErlProject p = ErlangEngine.getInstance().getModel()
+                        .getErlangProject(ResourcesPlugin.getWorkspace().getRoot()
+                                .getProject(projectName));
                 if (p != null) {
                     moduleDialog.setElements(createModuleArray(p));
                 }
@@ -257,12 +254,9 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
                 updateLaunchConfigurationDialog();
                 final String projectName = projectMBr.getText();
                 if (projectName != null && projectName.length() > 0) {
-                    final IErlProject p = ErlangEngine
-                            .getInstance()
-                            .getModel()
-                            .getErlangProject(
-                                    ResourcesPlugin.getWorkspace().getRoot()
-                                            .getProject(projectName));
+                    final IErlProject p = ErlangEngine.getInstance().getModel()
+                            .getErlangProject(ResourcesPlugin.getWorkspace().getRoot()
+                                    .getProject(projectName));
                     if (p != null) {
                         moduleDialog.setElements(createModuleArray(p));
                     }
@@ -282,14 +276,14 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         try {
             final List<ProjectElement> res = new LinkedList<ProjectElement>();
 
-            final Collection<IErlProject> projects = ErlangEngine.getInstance()
-                    .getModel().getErlangProjects();
+            final Collection<IErlProject> projects = ErlangEngine.getInstance().getModel()
+                    .getErlangProjects();
 
             for (final IErlProject p : projects) {
-                final ProjectElement elem = new ProjectElement(p.getName(), PlatformUI
-                        .getWorkbench().getSharedImages()
-                        .getImageDescriptor(IDE.SharedImages.IMG_OBJ_PROJECT)
-                        .createImage());
+                final ProjectElement elem = new ProjectElement(p.getName(),
+                        PlatformUI.getWorkbench().getSharedImages()
+                                .getImageDescriptor(IDE.SharedImages.IMG_OBJ_PROJECT)
+                                .createImage());
 
                 res.add(elem);
             }
@@ -311,8 +305,10 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
             for (final IErlModule m : modules) {
                 final ProjectElement elem = new ProjectElement(m.getName(),
-                        ErlangElementImageProvider.getErlImageDescriptor(m,
-                                ErlangElementImageProvider.SMALL_ICONS).createImage());
+                        ErlangElementImageProvider
+                                .getErlImageDescriptor(m,
+                                        ErlangElementImageProvider.SMALL_ICONS)
+                                .createImage());
                 res.add(elem);
             }
             array = res.toArray();
@@ -350,7 +346,8 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         label.setLayoutData(gData);
         label.setText(text);
 
-        final ItemBrowser browser = new ItemBrowser(comp, SWT.SINGLE | SWT.BORDER, dialog);
+        final ItemBrowser browser = new ItemBrowser(comp, SWT.SINGLE | SWT.BORDER,
+                dialog);
 
         return browser;
     }

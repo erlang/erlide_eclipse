@@ -21,8 +21,8 @@ public class CoverLaunchData {
 
     public CoverLaunchData(final ILaunchConfiguration config) throws CoreException {
 
-        type = LaunchType.valueOf(config.getAttribute(ICoverAttributes.TYPE,
-                LaunchType.MODULE.toString()));
+        type = LaunchType.valueOf(
+                config.getAttribute(ICoverAttributes.TYPE, LaunchType.MODULE.toString()));
 
         project = config.getAttribute(ICoverAttributes.PROJECT, "");
         module = config.getAttribute(ICoverAttributes.MODULE, "");

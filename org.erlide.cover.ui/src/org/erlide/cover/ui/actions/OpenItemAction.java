@@ -54,9 +54,8 @@ public class OpenItemAction extends Action {
         final ISelection selection = viewer.getSelection();
 
         if (!(selection instanceof ITreeSelection)) {
-            final IStatus executionStatus = new Status(IStatus.ERROR,
-                    Activator.PLUGIN_ID, "Internall error occured: bad sellection type",
-                    null);
+            final IStatus executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                    "Internall error occured: bad sellection type", null);
             StatusManager.getManager().handle(executionStatus, StatusManager.SHOW);
             return;
         }
@@ -86,8 +85,8 @@ public class OpenItemAction extends Action {
             try {
                 module = ErlangEngine.getInstance().getModel().findModule(moduleName);
 
-                final IErlFunction f = module.findFunction(new ErlangFunction(fs
-                        .getLabel(), fs.getArity()));
+                final IErlFunction f = module
+                        .findFunction(new ErlangFunction(fs.getLabel(), fs.getArity()));
 
                 editor.setSelection(f);
 

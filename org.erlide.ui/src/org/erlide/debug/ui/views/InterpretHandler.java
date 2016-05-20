@@ -22,8 +22,8 @@ public class InterpretHandler extends AbstractHandler {
                 .getActivePart(event);
         final String commandId = event.getCommand().getId();
         if (commandId.equals(INTERPRET_COMMAND_ID)) {
-            final List<IErlModule> modules = DebugTab.getModulesFromAddModulesDialog(view
-                    .getSite().getShell());
+            final List<IErlModule> modules = DebugTab
+                    .getModulesFromAddModulesDialog(view.getSite().getShell());
             for (final IErlModule module : modules) {
                 view.interpretOrDeinterpret(module, true);
             }

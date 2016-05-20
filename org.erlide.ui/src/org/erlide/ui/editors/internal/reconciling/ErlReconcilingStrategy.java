@@ -21,8 +21,8 @@ import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.util.ErlLogger;
 
-public class ErlReconcilingStrategy implements IErlReconcilingStrategy,
-        IReconcilingStrategyExtension {
+public class ErlReconcilingStrategy
+        implements IErlReconcilingStrategy, IReconcilingStrategyExtension {
 
     private IErlModule fModule;
     private final AbstractErlangEditor fEditor;

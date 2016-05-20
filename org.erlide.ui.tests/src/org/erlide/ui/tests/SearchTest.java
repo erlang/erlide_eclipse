@@ -37,11 +37,11 @@ public class SearchTest {
         ErlideTestUtils.initProjects();
         // We set up projects here, it's quite costly
         final String name1 = "testproject1";
-        final IErlProject erlProject1 = ErlideTestUtils.createProject(
-                ErlideTestUtils.getTmpPath(name1), name1);
+        final IErlProject erlProject1 = ErlideTestUtils
+                .createProject(ErlideTestUtils.getTmpPath(name1), name1);
         final String name2 = "testproject2";
-        final IErlProject erlProject2 = ErlideTestUtils.createProject(
-                ErlideTestUtils.getTmpPath(name2), name2);
+        final IErlProject erlProject2 = ErlideTestUtils
+                .createProject(ErlideTestUtils.getTmpPath(name2), name2);
         projects = new IErlProject[] { erlProject1, erlProject2 };
     }
 
@@ -88,9 +88,9 @@ public class SearchTest {
         moduleB.open(null);
         // when
         // searching for the call to a:f
-        final ErlangSearchPattern ref = new SearchPatternFactory(ErlangEngine
-                .getInstance().getModelUtilService()).getSearchPattern(
-                SearchFor.FUNCTION, "a", "f", 0, limitTo, moduleA);
+        final ErlangSearchPattern ref = new SearchPatternFactory(
+                ErlangEngine.getInstance().getModelUtilService()).getSearchPattern(
+                        SearchFor.FUNCTION, "a", "f", 0, limitTo, moduleA);
         final ErlSearchScope scope = new ErlSearchScope(moduleA);
         scope.addModule(moduleB);
         final ErlSearchQuery query = new ErlSearchQuery(ref, scope, "");
@@ -124,9 +124,9 @@ public class SearchTest {
         moduleB.open(null);
         // when
         // searching for the call to a:f
-        final ErlangSearchPattern ref = new SearchPatternFactory(ErlangEngine
-                .getInstance().getModelUtilService()).getSearchPattern(
-                SearchFor.FUNCTION, "a", "f", 0, LimitTo.REFERENCES, moduleA);
+        final ErlangSearchPattern ref = new SearchPatternFactory(
+                ErlangEngine.getInstance().getModelUtilService()).getSearchPattern(
+                        SearchFor.FUNCTION, "a", "f", 0, LimitTo.REFERENCES, moduleA);
         final ErlSearchScope scope = new ErlSearchScope(moduleA);
         scope.addModule(moduleB);
         final ErlSearchQuery query = new ErlSearchQuery(ref, scope, "");
@@ -154,9 +154,10 @@ public class SearchTest {
         moduleB.open(null);
         // when
         // searching for the variable A from module a
-        final ErlangSearchPattern pattern = new SearchPatternFactory(ErlangEngine
-                .getInstance().getModelUtilService()).getSearchPattern(
-                SearchFor.VARIABLE, null, "A", 0, LimitTo.ALL_OCCURRENCES, moduleA);
+        final ErlangSearchPattern pattern = new SearchPatternFactory(
+                ErlangEngine.getInstance().getModelUtilService()).getSearchPattern(
+                        SearchFor.VARIABLE, null, "A", 0, LimitTo.ALL_OCCURRENCES,
+                        moduleA);
         final ErlSearchScope scope = new ErlSearchScope(moduleA);
         scope.addModule(moduleB);
         final ErlSearchScope reducedScope = pattern.reduceScope(scope);

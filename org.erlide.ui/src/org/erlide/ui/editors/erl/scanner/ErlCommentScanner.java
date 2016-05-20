@@ -16,8 +16,8 @@ public class ErlCommentScanner extends ErlTokenScanner {
 
     public ErlCommentScanner(final IColorManager colorManager) {
         super(colorManager);
-        final Token defaultToken = ErlTokenScanner.getToken(TokenHighlight.COMMENT
-                .getName());
+        final Token defaultToken = ErlTokenScanner
+                .getToken(TokenHighlight.COMMENT.getName());
         setDefaultReturnToken(defaultToken);
 
         final Token edocTag = ErlTokenScanner.getToken(TokenHighlight.EDOC_TAG.getName());

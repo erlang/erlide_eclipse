@@ -64,8 +64,8 @@ public class CodeInspectionViewsManager {
      * @param e
      *            Erlang elements
      */
-    static public void showErlElements(final String title,
-            final ArrayList<IErlElement> e, final String secId) {
+    static public void showErlElements(final String title, final ArrayList<IErlElement> e,
+            final String secId) {
         try {
             final CodeInspectionResultsView v = (CodeInspectionResultsView) showView(
                     CODE_INSPECTION_VIEW, secId);

@@ -27,8 +27,8 @@ import org.erlide.ui.prefs.SyntaxColorPreviewHighlightScanner;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.util.IColorManager;
 
-public class SyntaxColorPreviewEditorConfiguration extends
-        ErlangSourceViewerConfiguration {
+public class SyntaxColorPreviewEditorConfiguration
+        extends ErlangSourceViewerConfiguration {
 
     public SyntaxColorPreviewEditorConfiguration(final IPreferenceStore store,
             final IColorManager lcolorManager, final List<TokenHighlight> styles) {

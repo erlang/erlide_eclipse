@@ -82,9 +82,8 @@ public class ErlFunction extends ErlMember implements IErlFunction {
 
     @Override
     public boolean isExported() {
-        return fExported
-                || ErlangEngine.getInstance().getModelUtilService().getModule(this)
-                        .exportsAllFunctions();
+        return fExported || ErlangEngine.getInstance().getModelUtilService()
+                .getModule(this).exportsAllFunctions();
     }
 
     public void setArity(final int i) {

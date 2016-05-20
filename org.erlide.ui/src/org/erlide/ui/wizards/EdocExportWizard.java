@@ -49,8 +49,8 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
         final Map<String, OtpErlangObject> options = page.getOptions();
         for (final IProject project : projects) {
             if (!project.isAccessible()) {
-                ErlLogger.debug("EDOC: " + project.getName()
-                        + " is not accessible, skipping.");
+                ErlLogger.debug(
+                        "EDOC: " + project.getName() + " is not accessible, skipping.");
                 continue;
             }
             ErlLogger.debug("EDOC: " + project.getName());
@@ -81,8 +81,8 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
                     }
                 }
                 try {
-                    ErlangEngine.getInstance().getEdocExportService()
-                            .files(files, options);
+                    ErlangEngine.getInstance().getEdocExportService().files(files,
+                            options);
                 } catch (final Exception e) {
                     ErlLogger.warn(e);
                 }

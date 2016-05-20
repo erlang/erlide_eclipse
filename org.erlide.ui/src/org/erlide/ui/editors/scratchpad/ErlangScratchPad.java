@@ -149,8 +149,8 @@ public class ErlangScratchPad extends AbstractErlangEditor implements ISaveableP
         // menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, testAction);
         // }
         addCommonActions(menu);
-        final ActionContext context = new ActionContext(getSelectionProvider()
-                .getSelection());
+        final ActionContext context = new ActionContext(
+                getSelectionProvider().getSelection());
         fContextMenuGroup.setContext(context);
         fContextMenuGroup.fillContextMenu(menu);
         fContextMenuGroup.setContext(null);

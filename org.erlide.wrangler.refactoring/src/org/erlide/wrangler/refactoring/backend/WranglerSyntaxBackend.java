@@ -47,9 +47,9 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
 
     protected OtpErlangTuple parseFile(final IFile f) {
         final String filePath = f.getLocation().toOSString();
-        final RpcResult res = backend
-                .call_noexception(MODULE, PARSE_FUNCTION, "sax", filePath, "true",
-                        GlobalParameters.getWranglerSelection().getSearchPath());
+        final RpcResult res = backend.call_noexception(MODULE, PARSE_FUNCTION, "sax",
+                filePath, "true",
+                GlobalParameters.getWranglerSelection().getSearchPath());
         return parseParserResult(res.getValue());
     }
 

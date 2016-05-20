@@ -67,8 +67,8 @@ public final class ChangesetMaker {
 
         // delete
         if (diff.getAddedEnd() == -1 && diff.getDeletedEnd() != -1) {
-            result = new DeleteEdit(diff.getDeletedStart(), diff.getDeletedEnd()
-                    - diff.getDeletedStart() + 1);
+            result = new DeleteEdit(diff.getDeletedStart(),
+                    diff.getDeletedEnd() - diff.getDeletedStart() + 1);
         }
         // replace
         else if (diff.getAddedEnd() != -1 && diff.getDeletedEnd() != -1) {
@@ -77,8 +77,8 @@ public final class ChangesetMaker {
         }
         // insert
         else if (diff.getAddedEnd() != -1 && diff.getDeletedEnd() == -1) {
-            result = new InsertEdit(diff.getDeletedStart(), getString(
-                    diff.getAddedStart(), diff.getAddedEnd()));
+            result = new InsertEdit(diff.getDeletedStart(),
+                    getString(diff.getAddedStart(), diff.getAddedEnd()));
         }
 
         return result;
@@ -160,16 +160,16 @@ public final class ChangesetMaker {
         final int minLength = Math.min(addedLength, deletedLength);
 
         if (deletedLength < addedLength) {
-            result.addChild(new InsertEdit(deletedStart + minLength, getString(addedStart
-                    + minLength, addedEnd)));
+            result.addChild(new InsertEdit(deletedStart + minLength,
+                    getString(addedStart + minLength, addedEnd)));
         }
 
-        result.addChild(new ReplaceEdit(deletedStart, minLength, getString(addedStart,
-                addedStart + minLength - 1)));
+        result.addChild(new ReplaceEdit(deletedStart, minLength,
+                getString(addedStart, addedStart + minLength - 1)));
 
         if (addedLength < deletedLength) {
-            result.addChild(new DeleteEdit(deletedStart + minLength, deletedLength
-                    - minLength));
+            result.addChild(
+                    new DeleteEdit(deletedStart + minLength, deletedLength - minLength));
         }
 
         return result;

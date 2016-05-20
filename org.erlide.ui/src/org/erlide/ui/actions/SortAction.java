@@ -109,8 +109,8 @@ public class SortAction extends Action {
         setComparator();
         if (fStore != null) {
             fStore.setValue("erlide.sortedOutline", fSorted);
-            final int how = fViewer.getComparator() == fComparator2 ? ErlElementSorter.SORT_ON_EXPORT
-                    : ErlElementSorter.SORT_ON_NAME;
+            final int how = fViewer.getComparator() == fComparator2
+                    ? ErlElementSorter.SORT_ON_EXPORT : ErlElementSorter.SORT_ON_NAME;
             fStore.setValue("erlide.sortedOutlineHow", how);
         }
         setChecked(fSorted);
@@ -119,8 +119,9 @@ public class SortAction extends Action {
 
     private void setImage() {
         final ImageDescriptor desc = fSorted
-                && fSortedHow == ErlElementSorter.SORT_ON_EXPORT ? ErlideImage.EXPORTED_SORT
-                .getDescriptor() : ErlideImage.ALPHAB_SORT.getDescriptor();
+                && fSortedHow == ErlElementSorter.SORT_ON_EXPORT
+                        ? ErlideImage.EXPORTED_SORT.getDescriptor()
+                        : ErlideImage.ALPHAB_SORT.getDescriptor();
         setImageDescriptor(desc);
     }
 

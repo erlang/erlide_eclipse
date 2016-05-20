@@ -180,14 +180,16 @@ public class Backend implements IStreamListener, IBackend {
             final IStreamMonitor errorStreamMonitor = proxy.getErrorStreamMonitor();
             errorStreamMonitor.addListener(new IStreamListener() {
                 @Override
-                public void streamAppended(final String text, final IStreamMonitor monitor) {
+                public void streamAppended(final String text,
+                        final IStreamMonitor monitor) {
                     shell.add(text, IoRequestKind.STDERR);
                 }
             });
             final IStreamMonitor outputStreamMonitor = proxy.getOutputStreamMonitor();
             outputStreamMonitor.addListener(new IStreamListener() {
                 @Override
-                public void streamAppended(final String text, final IStreamMonitor monitor) {
+                public void streamAppended(final String text,
+                        final IStreamMonitor monitor) {
                     shell.add(text, IoRequestKind.STDOUT);
                 }
             });
@@ -202,8 +204,7 @@ public class Backend implements IStreamListener, IBackend {
             if (proxy != null) {
                 proxy.write(s);
             } else {
-                ErlLogger.warn(
-                        "Could not send input to backend %s, stream proxy is null",
+                ErlLogger.warn("Could not send input to backend %s, stream proxy is null",
                         getName());
             }
         }
@@ -276,7 +277,8 @@ public class Backend implements IStreamListener, IBackend {
         return ErlideDebug.isRunning(getOtpRpc());
     }
 
-    private void registerProjectsWithExecutionBackend(final Collection<IProject> projects) {
+    private void registerProjectsWithExecutionBackend(
+            final Collection<IProject> projects) {
         for (final IProject project : projects) {
             backendManager.addExecutionBackend(project, this);
         }
@@ -337,8 +339,9 @@ public class Backend implements IStreamListener, IBackend {
 
             @Override
             public void running() {
-                codeManager = new CodeManager(getOtpRpc(), data.getRuntimeInfo()
-                        .getName(), data.getRuntimeInfo().getVersion());
+                codeManager = new CodeManager(getOtpRpc(),
+                        data.getRuntimeInfo().getName(),
+                        data.getRuntimeInfo().getVersion());
 
                 for (final ICodeBundle bb : bundles) {
                     registerCodeBundle(context, bb);

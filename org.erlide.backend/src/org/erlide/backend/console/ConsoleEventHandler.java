@@ -32,7 +32,7 @@ public class ConsoleEventHandler extends ErlangEventHandler {
 
         try {
             shell.add(event.getEvent());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             ErlLogger.error(e);
         }
     }

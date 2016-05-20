@@ -243,7 +243,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
     void handleTreeViewerMouseUp(final Tree tree, final MouseEvent e) {
         // Ensure a selection was made, the first mouse button was
         // used and the event happened in the tree
-        if (tree.getSelectionCount() < 1 || e.button != 1 || !tree.equals(e.getSource())) {
+        if (tree.getSelectionCount() < 1 || e.button != 1
+                || !tree.equals(e.getSource())) {
             return;
         }
         // Selection is made in the selection changed listener

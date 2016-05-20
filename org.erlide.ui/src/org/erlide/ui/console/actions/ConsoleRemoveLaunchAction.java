@@ -36,8 +36,8 @@ import org.erlide.ui.console.ErlangConsole;
  * ConsoleRemoveTerminatedAction
  */
 @SuppressWarnings("restriction")
-public class ConsoleRemoveLaunchAction extends Action implements IViewActionDelegate,
-        IConsoleListener, ILaunchesListener2 {
+public class ConsoleRemoveLaunchAction extends Action
+        implements IViewActionDelegate, IConsoleListener, ILaunchesListener2 {
 
     private ILaunch fLaunch;
     private IConsole fConsole;
@@ -48,10 +48,10 @@ public class ConsoleRemoveLaunchAction extends Action implements IViewActionDele
     public ConsoleRemoveLaunchAction() {
         super(ConsoleMessages.ConsoleRemoveTerminatedAction_0);
         setToolTipText(ConsoleMessages.ConsoleRemoveTerminatedAction_1);
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(this, IDebugHelpContextIds.CONSOLE_REMOVE_LAUNCH);
-        setImageDescriptor(DebugPluginImages
-                .getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE));
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+                IDebugHelpContextIds.CONSOLE_REMOVE_LAUNCH);
+        setImageDescriptor(
+                DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE));
         setDisabledImageDescriptor(DebugPluginImages
                 .getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_REMOVE));
         setHoverImageDescriptor(DebugPluginImages

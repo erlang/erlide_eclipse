@@ -7,8 +7,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.tracing.core.Activator;
 
-public class TracingPreferencePage extends FieldEditorPreferencePage implements
-        IWorkbenchPreferencePage {
+public class TracingPreferencePage extends FieldEditorPreferencePage
+        implements IWorkbenchPreferencePage {
 
     public TracingPreferencePage() {
         super(GRID);

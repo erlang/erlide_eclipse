@@ -139,8 +139,8 @@ public class TraceDataHandler {
 
                     final OtpErlangAtom traceType = (OtpErlangAtom) tuple
                             .elementAt(INDEX_TRACE_TYPE);
-                    lastTraceDate = readDateTuple((OtpErlangTuple) tuple.elementAt(tuple
-                            .arity() - 1));
+                    lastTraceDate = readDateTuple(
+                            (OtpErlangTuple) tuple.elementAt(tuple.arity() - 1));
 
                     switch (TraceType.valueOf(traceType.atomValue().toUpperCase())) {
                     case CALL:
@@ -211,7 +211,8 @@ public class TraceDataHandler {
      * @return java date
      * @throws OtpErlangRangeException
      */
-    private Date readDateTuple(final OtpErlangTuple tuple) throws OtpErlangRangeException {
+    private Date readDateTuple(final OtpErlangTuple tuple)
+            throws OtpErlangRangeException {
         final OtpErlangTuple dateTuple = (OtpErlangTuple) tuple.elementAt(0);
         final OtpErlangTuple timeTuple = (OtpErlangTuple) tuple.elementAt(1);
 
@@ -253,10 +254,10 @@ public class TraceDataHandler {
             return null;
         }
         try {
-            final Date from = readDateTuple((OtpErlangTuple) tuple
-                    .elementAt(INDEX_INFO_START_DATE));
-            final Date to = readDateTuple((OtpErlangTuple) tuple
-                    .elementAt(INDEX_INFO_END_DATE));
+            final Date from = readDateTuple(
+                    (OtpErlangTuple) tuple.elementAt(INDEX_INFO_START_DATE));
+            final Date to = readDateTuple(
+                    (OtpErlangTuple) tuple.elementAt(INDEX_INFO_END_DATE));
             final String path = ((OtpErlangString) tuple.elementAt(INDEX_INFO_PATH))
                     .stringValue();
             final long size = ((OtpErlangLong) tuple.elementAt(INDEX_INFO_COUNT))
@@ -306,12 +307,12 @@ public class TraceDataHandler {
                 index = 1;// tuple doesn't contain Pid element
             }
 
-            final OtpErlangObject info = processTuple.elementAt(INDEX_PROCESS_INFO
-                    - index);
+            final OtpErlangObject info = processTuple
+                    .elementAt(INDEX_PROCESS_INFO - index);
 
             // process node
-            final OtpErlangObject processNode = processTuple.elementAt(INDEX_PROCESS_NODE
-                    - index);
+            final OtpErlangObject processNode = processTuple
+                    .elementAt(INDEX_PROCESS_NODE - index);
             processNodeNode = new TreeNode("node: " + processNode,
                     Activator.getImage(Images.INFO_NODE));
 
@@ -394,7 +395,8 @@ public class TraceDataHandler {
             } else {
                 // last element is arity
                 try {
-                    if (functionTuple.elementAt(INDEX_FUNCTION_ARGS) instanceof OtpErlangInt) {
+                    if (functionTuple
+                            .elementAt(INDEX_FUNCTION_ARGS) instanceof OtpErlangInt) {
                         arityValue = ((OtpErlangInt) functionTuple
                                 .elementAt(INDEX_FUNCTION_ARGS)).intValue();
                     } else {
@@ -453,8 +455,8 @@ public class TraceDataHandler {
             final OtpErlangTuple infoTuple = (OtpErlangTuple) otpErlangObject;
             final OtpErlangObject key = infoTuple.elementAt(0);
             final OtpErlangObject value = infoTuple.elementAt(1);
-            final TreeNode treeNode = new TreeNode(key.toString() + ": "
-                    + value.toString());
+            final TreeNode treeNode = new TreeNode(
+                    key.toString() + ": " + value.toString());
             treeNode.setImage(Activator.getImage(Images.INFO_NODE));
             node.addChildren(treeNode);
         }
@@ -484,7 +486,8 @@ public class TraceDataHandler {
         return node;
     }
 
-    private ITreeNode processExceptionFrom(final String label, final OtpErlangTuple tuple) {
+    private ITreeNode processExceptionFrom(final String label,
+            final OtpErlangTuple tuple) {
         final StringBuilder labelBuilder = new StringBuilder(label).append(": ");
 
         final ITreeNode processNode = createProcessNode("process: ",
@@ -526,8 +529,8 @@ public class TraceDataHandler {
         node.addChildren(processNode, functionNode);
 
         if (showRetValue) {
-            final ITreeNode returnValueNode = new TreeNode("return value: "
-                    + tuple.elementAt(INDEX_RETURN_VALUE));
+            final ITreeNode returnValueNode = new TreeNode(
+                    "return value: " + tuple.elementAt(INDEX_RETURN_VALUE));
             returnValueNode.setImage(Activator.getImage(Images.INFO_NODE));
             labelBuilder.append("->").append(tuple.elementAt(INDEX_RETURN_VALUE));
             node.addChildren(returnValueNode);
@@ -566,8 +569,8 @@ public class TraceDataHandler {
         process.setImage(Activator.getImage(Images.REGISTER_NODE));
         labelBuilder.append(lastProcessDescription).append("->");
 
-        final TreeNode regName = new TreeNode("name: "
-                + tuple.elementAt(INDEX_REGNAME).toString(),
+        final TreeNode regName = new TreeNode(
+                "name: " + tuple.elementAt(INDEX_REGNAME).toString(),
                 Activator.getImage(Images.INFO_NODE));
         labelBuilder.append(regName);
 
@@ -605,8 +608,8 @@ public class TraceDataHandler {
         processNode.setImage(Activator.getImage(Images.PROCESS_NODE));
         labelBuilder.append(lastProcessDescription);
 
-        final ITreeNode reasonNode = new TreeNode("reason: "
-                + tuple.elementAt(INDEX_REASON).toString(),
+        final ITreeNode reasonNode = new TreeNode(
+                "reason: " + tuple.elementAt(INDEX_REASON).toString(),
                 Activator.getImage(Images.INFO_NODE));
 
         final TreeNode node = new TreeNode(createNodeLabel(labelBuilder.toString()));
@@ -616,7 +619,8 @@ public class TraceDataHandler {
         return node;
     }
 
-    private ITreeNode processReceiveTrace(final String label, final OtpErlangTuple tuple) {
+    private ITreeNode processReceiveTrace(final String label,
+            final OtpErlangTuple tuple) {
         final StringBuilder labelBuilder = new StringBuilder(label).append(": ");
 
         final ITreeNode processNode = createProcessNode("receiver: ",

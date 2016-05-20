@@ -55,7 +55,8 @@ public abstract class MessageReporter {
         show(INFO, message, details);
     }
 
-    public static void show(final int severity, final String message, final String details) {
+    public static void show(final int severity, final String message,
+            final String details) {
         ErlideEventBus.post(new ErlideMessage(severity, message, details));
     }
 

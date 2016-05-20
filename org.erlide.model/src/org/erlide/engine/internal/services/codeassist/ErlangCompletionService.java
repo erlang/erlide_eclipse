@@ -54,16 +54,17 @@ public class ErlangCompletionService implements CompletionService {
 
     private static final List<CompletionData> EMPTY_COMPLETIONS = new ArrayList<CompletionData>();
 
-    public ErlangCompletionService(IErlProject project, IErlModule module,
-            String elementBefore) {
+    public ErlangCompletionService(final IErlProject project, final IErlModule module,
+            final String elementBefore) {
         this.project = project;
         this.module = module;
         this.elementBefore = elementBefore;
     }
 
     @Override
-    public List<CompletionData> computeCompletions(IOtpRpc backend, final int offset,
-            final String before0, boolean inString) throws CoreException {
+    public List<CompletionData> computeCompletions(final IOtpRpc backend,
+            final int offset, final String before0, final boolean inString)
+            throws CoreException {
         String before = before0;
         final int commaPos = before.lastIndexOf(',');
         final int colonPos = before.lastIndexOf(':');
@@ -177,7 +178,7 @@ public class ErlangCompletionService implements CompletionService {
     }
 
     protected List<CompletionData> getModules(final IOtpRpc backend, final int offset,
-            final String prefix, final CompletionFlag kind, boolean inString)
+            final String prefix, final CompletionFlag kind, final boolean inString)
             throws ErlModelException {
         final List<String> mods = getModules0(backend, offset, prefix, kind);
         final boolean includes = kind == CompletionFlag.INCLUDES
@@ -194,7 +195,7 @@ public class ErlangCompletionService implements CompletionService {
     }
 
     private String quoted(final String string, final CompletionFlag kind,
-            boolean inString) {
+            final boolean inString) {
         if (kind == CompletionFlag.INCLUDES || kind == CompletionFlag.INCLUDE_LIBS) {
             if (!inString) {
                 return "\"" + string + "\"";
@@ -361,10 +362,10 @@ public class ErlangCompletionService implements CompletionService {
         return EMPTY_COMPLETIONS;
     }
 
-    List<CompletionData> addCompletions(IOtpRpc backend, final Set<CompletionFlag> flags,
-            final int offset, final String prefix, final String moduleOrRecord,
-            final int pos, final List<String> fieldsSoFar, boolean inString)
-            throws CoreException {
+    List<CompletionData> addCompletions(final IOtpRpc backend,
+            final Set<CompletionFlag> flags, final int offset, final String prefix,
+            final String moduleOrRecord, final int pos, final List<String> fieldsSoFar,
+            final boolean inString) throws CoreException {
         final List<CompletionData> result = new ArrayList<CompletionData>();
         final IErlProject aProject = project;
         if (aProject == null) {
