@@ -469,15 +469,15 @@ public class ModelUtilsTest {
         // given
         // a project with an include dir outside the model, the include file
         // contains a record def
+        final String projectName = "testprojectx";
         try {
             // ErlModelCache.getDefault().setNoModelCache(true);
             // ErlModelCache.getDefault().clearModelCache();
-            final String projectName = "testprojectx";
             project = ErlideTestUtils
                     .createProject(ErlideTestUtils.getTmpPath(projectName), projectName);
             final IErlModule module = ErlideTestUtils.createModule(project, "a.erl",
-                    "-include(\"x.hrl\").\n");
-            final String includeName = "x.hrl";
+                    "-include(\"z.hrl\").\n");
+            final String includeName = "z.hrl";
             externalInclude = ErlideTestUtils.createTmpFile(includeName,
                     "-record(rec2, {field, another=def}.");
             final String includePath = externalInclude.getAbsolutePath();
@@ -501,6 +501,8 @@ public class ModelUtilsTest {
             if (externalInclude != null && externalInclude.exists()) {
                 externalInclude.delete();
             }
+            new File(ErlideTestUtils.getTmpPath(projectName).removeLastSegments(1)
+                    .toPortableString()).delete();
             // ErlModelCache.getDefault().setNoModelCache(false);
         }
     }
@@ -517,8 +519,8 @@ public class ModelUtilsTest {
             project = ErlideTestUtils
                     .createProject(ErlideTestUtils.getTmpPath(projectName), projectName);
             final IErlModule module = ErlideTestUtils.createModule(project, "a.erl",
-                    "-include(\"x.hrl\").\n");
-            final String includeName = "x.hrl";
+                    "-include(\"y.hrl\").\n");
+            final String includeName = "y.hrl";
             externalInclude = ErlideTestUtils.createTmpFile(includeName,
                     "-record(rec2, {field, another=def}.");
             final String includePath = externalInclude.getAbsolutePath();
