@@ -489,7 +489,10 @@ public class ErlProject extends Openable
                         || element.getKind() == ErlElementKind.PROJECT;
                 if (element instanceof IErlModule) {
                     final IErlModule module = (IErlModule) element;
-                    result.add(module);
+                    if (module.getAncestorOfKind(
+                            ErlElementKind.PROJECT) == ErlProject.this) {
+                        result.add(module);
+                    }
                     return false;
                 } else if (isExternalOrProject && element instanceof IOpenable) {
                     final IOpenable openable = (IOpenable) element;
@@ -611,13 +614,16 @@ public class ErlProject extends Openable
 
             @Override
             public boolean visit(final IErlElement element) throws ErlModelException {
-                final boolean isExternalOrProject = element.getKind() == ErlElementKind.EXTERNAL_ROOT
+                final boolean isExternalOrProject = element
+                        .getKind() == ErlElementKind.EXTERNAL_ROOT
                         || element.getKind() == ErlElementKind.EXTERNAL_APP
                         || element.getKind() == ErlElementKind.EXTERNAL_FOLDER
                         || element.getKind() == ErlElementKind.PROJECT;
                 if (element instanceof IErlModule) {
                     final IErlModule module = (IErlModule) element;
-                    if (module.getSourceKind() == SourceKind.HRL) {
+                    if (module.getSourceKind() == SourceKind.HRL
+                            && module.getAncestorOfKind(
+                                    ErlElementKind.PROJECT) == ErlProject.this) {
                         result.add(module);
                     }
                     return false;
