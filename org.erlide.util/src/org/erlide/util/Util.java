@@ -584,8 +584,13 @@ public final class Util {
 
     public static String getInputStreamAsString(final InputStream is,
             final String encoding) {
-        final Scanner s = new Scanner(is, encoding).useDelimiter("\\A");
+        final Scanner s = new Scanner(is, encoding);
+        try {
+            s.useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
+        } finally {
+            s.close();
+        }
     }
 
     private static StringBuilder ioListToStringBuilder(final OtpErlangObject o,
