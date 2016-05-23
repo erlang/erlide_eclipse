@@ -4,7 +4,7 @@ Bundle-Name: Utilities that depend on eclipse
 Bundle-SymbolicName: org.erlide.util_eclipse;singleton:=true
 Bundle-Version: 0.32.1.qualifier
 Bundle-Vendor: erlide.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.eclipse.core.resources;bundle-version="3.6.1",

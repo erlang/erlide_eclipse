@@ -52,7 +52,7 @@ public class ErlangStackFrame extends ErlangDebugElement
         fParent = parent;
         fModuleName = moduleName;
         this.stackFrameNo = stackFrameNo;
-        final List<ErlangVariable> framesReversed = new ArrayList<ErlangVariable>(
+        final List<ErlangVariable> framesReversed = new ArrayList<>(
                 bindings.arity());
         for (final OtpErlangObject o : bindings) {
             if (o instanceof OtpErlangTuple) {
@@ -63,7 +63,7 @@ public class ErlangStackFrame extends ErlangDebugElement
                         value, parent, moduleName, stackFrameNo));
             }
         }
-        final List<ErlangVariable> frames = new ArrayList<ErlangVariable>(
+        final List<ErlangVariable> frames = new ArrayList<>(
                 framesReversed.size());
         for (int i = framesReversed.size() - 1; i >= 0; --i) {
             frames.add(framesReversed.get(i));

@@ -35,7 +35,7 @@ public class DebugTraceTarget extends DebugTraceElement implements IDebugTarget 
         this.parentLaunch = parentLaunch;
         this.node = node;
         this.events = events;
-        processes = new ArrayList<DebugTraceProcess>();
+        processes = new ArrayList<>();
         pointer = 0;
         fTerminated = false;
         cacheCurrentProcess();

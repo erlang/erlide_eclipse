@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class TableLayoutComposite extends Composite {
 
-    private final List<ColumnLayoutData> columns = new ArrayList<ColumnLayoutData>();
+    private final List<ColumnLayoutData> columns = new ArrayList<>();
 
     /**
      * Creates a new <code>TableLayoutComposite</code>.

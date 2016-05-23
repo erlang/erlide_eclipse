@@ -189,23 +189,17 @@ public class ReportPreferencePage extends PreferencePage
 
     void sendToDisk(final String location, final ProblemData data) {
         final File report = new File(location);
-        try {
+        try (final OutputStream out = new FileOutputStream(report);
+                final PrintWriter pw = new PrintWriter(out)) {
             report.createNewFile();
-            final OutputStream out = new FileOutputStream(report);
-            final PrintWriter pw = new PrintWriter(out);
-            try {
-                pw.println(data.summary);
-                pw.println(data.reporter);
-                pw.println(data.description);
-                pw.println("\n==================================\n");
-                pw.println(data.platformLog);
-                pw.println("\n==================================\n");
-                pw.println(data.erlideLog);
-            } finally {
-                pw.flush();
-                pw.close();
-                out.close();
-            }
+            pw.println(data.summary);
+            pw.println(data.reporter);
+            pw.println(data.description);
+            pw.println("\n==================================\n");
+            pw.println(data.platformLog);
+            pw.println("\n==================================\n");
+            pw.println(data.erlideLog);
+            pw.flush();
         } catch (final IOException e) {
             ErlLogger.warn(e);
         }

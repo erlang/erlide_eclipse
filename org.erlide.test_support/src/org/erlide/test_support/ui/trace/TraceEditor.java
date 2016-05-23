@@ -88,7 +88,7 @@ public class TraceEditor extends TextEditor {
         }
 
         if (annotationModel instanceof IAnnotationModelExtension) {
-            final Map<Annotation, Position> annotationMap = new HashMap<Annotation, Position>();
+            final Map<Annotation, Position> annotationMap = new HashMap<>();
             if (callMatchingLine != null) {
                 annotationMap.put(callMatchingLine, position);
             }

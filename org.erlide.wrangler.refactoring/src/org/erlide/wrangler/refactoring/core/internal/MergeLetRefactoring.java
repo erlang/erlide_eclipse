@@ -25,7 +25,6 @@ import org.erlide.wrangler.refactoring.core.RefactoringWorkflowController;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
-import org.erlide.wrangler.refactoring.util.IErlRange;
 
 /**
  * Integration class of the Merge ?LET refactoring
@@ -85,7 +84,7 @@ public class MergeLetRefactoring extends CostumWorkflowRefactoringWithPositionsS
                         sel.getSearchPath(), GlobalParameters.getTabWidth());
         if (m.isSuccessful()) {
             positions = m.getPositionDefinitions(sel.getDocument());
-            selectedPositions = new ArrayList<IErlRange>();
+            selectedPositions = new ArrayList<>();
         } else {
             return RefactoringStatus.createFatalErrorStatus(m.getMessageString());
         }

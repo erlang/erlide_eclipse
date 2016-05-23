@@ -33,7 +33,7 @@ public class StatsTreeObject implements ICoverageObject {
 
     public StatsTreeObject(final ObjectType type) {
         this.type = type;
-        children = new HashMap<String, ICoverageObject>();
+        children = new HashMap<>();
     }
 
     public StatsTreeObject(final ICoverageObject parent, final ObjectType type) {
@@ -172,7 +172,7 @@ public class StatsTreeObject implements ICoverageObject {
      */
     @Override
     public ICoverageObject getPrevSiblingTo(final String name) {
-        final List<String> l = new LinkedList<String>(children.keySet());
+        final List<String> l = new LinkedList<>(children.keySet());
         final ListIterator<String> it = l.listIterator(l.indexOf(name));
 
         if (it.hasPrevious()) {
@@ -183,7 +183,7 @@ public class StatsTreeObject implements ICoverageObject {
 
     @Override
     public ICoverageObject getNextSiblingTo(final String name) {
-        final List<String> l = new LinkedList<String>(children.keySet());
+        final List<String> l = new LinkedList<>(children.keySet());
         final ListIterator<String> it = l.listIterator(l.indexOf(name));
 
         it.next();
@@ -210,7 +210,7 @@ public class StatsTreeObject implements ICoverageObject {
 
     @Override
     public Collection<ICoverageObject> getModules() {
-        final Collection<ICoverageObject> col = new HashSet<ICoverageObject>();
+        final Collection<ICoverageObject> col = new HashSet<>();
         if (type.equals(ObjectType.MODULE)) {
             col.add(this);
         } else if (hasChildren()) {

@@ -40,8 +40,8 @@ public class CodeManager {
         this.site = site;
         this.backendName = backendName;
         this.version = version;
-        pathA = new ArrayList<PathItem>();
-        pathZ = new ArrayList<PathItem>();
+        pathA = new ArrayList<>();
+        pathZ = new ArrayList<>();
     }
 
     public void addPath(final boolean usePathZ, final @NonNull String path) {

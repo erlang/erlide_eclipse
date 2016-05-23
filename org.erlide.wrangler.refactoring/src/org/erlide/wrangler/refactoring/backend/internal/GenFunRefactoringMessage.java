@@ -70,7 +70,7 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
             return;
 
         } else if (state.equals("multiple_instances")) {
-            parameters = new HashMap<GenFunReturnParameterName, OtpErlangObject>();
+            parameters = new HashMap<>();
             final OtpErlangTuple pars = (OtpErlangTuple) wranglerResult;
             setState("", RefactoringState.MULTI_INSTANCES);
             parameters.put(GenFunReturnParameterName.parName, pars.elementAt(0));
@@ -83,7 +83,7 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
             parameters.put(GenFunReturnParameterName.logCmd, pars.elementAt(7));
 
         } else if (state.equals("unknown_side_effect")) {
-            parameters = new HashMap<GenFunReturnParameterName, OtpErlangObject>();
+            parameters = new HashMap<>();
             final OtpErlangTuple pars = (OtpErlangTuple) wranglerResult;
             setState("", RefactoringState.UNKNOWN_SIDE_EFFECT);
 
@@ -98,7 +98,7 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
             parameters.put(GenFunReturnParameterName.logCmd, pars.elementAt(8));
 
         } else if (state.equals("more_than_one_clause")) {
-            parameters = new HashMap<GenFunReturnParameterName, OtpErlangObject>();
+            parameters = new HashMap<>();
             final OtpErlangTuple pars = (OtpErlangTuple) wranglerResult;
             setState("", RefactoringState.MORE_THAN_ONE_CLAUSE);
 

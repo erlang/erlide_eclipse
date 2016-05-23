@@ -102,19 +102,15 @@ public class ErlRuntimeReporter {
         final File report = new File(reportFile);
         try {
             report.createNewFile();
-            final OutputStream out = new FileOutputStream(report);
-            final PrintWriter pw = new PrintWriter(out);
-            try {
+            try (final OutputStream out = new FileOutputStream(report);
+                    final PrintWriter pw = new PrintWriter(out)) {
                 pw.println(String.format(msg, nodeName, v));
                 pw.println(System.getProperty("user.name"));
                 pw.println(delim);
                 pw.println(plog);
                 pw.println(delim);
                 pw.println(elog);
-            } finally {
                 pw.flush();
-                pw.close();
-                out.close();
             }
         } catch (final IOException e) {
             ErlLogger.warn(e);

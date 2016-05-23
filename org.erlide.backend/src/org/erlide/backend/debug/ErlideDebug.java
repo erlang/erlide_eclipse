@@ -265,7 +265,7 @@ public class ErlideDebug {
                     "x", meta);
             if (res instanceof OtpErlangList) {
                 final OtpErlangList modules = (OtpErlangList) res;
-                final List<String> result = new ArrayList<String>(modules.arity());
+                final List<String> result = new ArrayList<>(modules.arity());
                 for (final OtpErlangObject module : modules) {
                     final OtpErlangAtom moduleA = (OtpErlangAtom) module;
                     result.add(moduleA.atomValue());

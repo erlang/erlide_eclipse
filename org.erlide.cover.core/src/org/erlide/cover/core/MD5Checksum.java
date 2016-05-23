@@ -14,17 +14,16 @@ public class MD5Checksum {
 
     public static String getMD5(final File file) throws Exception {
 
-        final FileInputStream f = new FileInputStream(file);
+        try (final FileInputStream f = new FileInputStream(file)) {
+            final byte[] buffer = new byte[1024];
+            final MessageDigest digest = MessageDigest.getInstance("MD5");
 
-        final byte[] buffer = new byte[1024];
-        final MessageDigest digest = MessageDigest.getInstance("MD5");
-
-        int numRead;
-        while ((numRead = f.read(buffer)) != -1) {
-            digest.update(buffer, 0, numRead);
+            int numRead;
+            while ((numRead = f.read(buffer)) != -1) {
+                digest.update(buffer, 0, numRead);
+            }
+            return new String(digest.digest());
         }
-        f.close();
-        return new String(digest.digest());
     }
 
 }

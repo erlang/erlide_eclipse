@@ -122,26 +122,22 @@ class ErlangCompareUtilities {
 
     public static String readString(final IStreamContentAccessor sa)
             throws CoreException {
-        final InputStream is = sa.getContents();
-        if (is != null) {
-            String encoding = null;
-            if (sa instanceof IEncodedStreamContentAccessor) {
-                try {
-                    encoding = ((IEncodedStreamContentAccessor) sa).getCharset();
-                } catch (final Exception e) {
+        try (final InputStream is = sa.getContents()) {
+            if (is != null) {
+                String encoding = null;
+                if (sa instanceof IEncodedStreamContentAccessor) {
+                    try {
+                        encoding = ((IEncodedStreamContentAccessor) sa).getCharset();
+                    } catch (final Exception e) {
+                    }
                 }
-            }
-            if (encoding == null) {
-                encoding = ResourcesPlugin.getEncoding();
-            }
-            try {
+                if (encoding == null) {
+                    encoding = ResourcesPlugin.getEncoding();
+                }
                 return readString(is, encoding);
-            } finally {
-                try {
-                    is.close();
-                } catch (final IOException e) {
-                }
             }
+        } catch (final IOException e1) {
+            return null;
         }
         return null;
     }
@@ -170,7 +166,7 @@ class ErlangCompareUtilities {
         try {
             reader = new BufferedReader(new InputStreamReader(is2, encoding));
             StringBuffer sb = new StringBuffer();
-            final List<String> list = new ArrayList<String>();
+            final List<String> list = new ArrayList<>();
             while (true) {
                 int c = reader.read();
                 if (c == -1) {

@@ -46,7 +46,7 @@ public class CodePathEditor extends ListEditor {
     protected String[] parseString(final String stringList) {
         final StringTokenizer st = new StringTokenizer(stringList,
                 File.pathSeparator + "\r\n");//$NON-NLS-1$
-        final List<String> v = new ArrayList<String>();
+        final List<String> v = new ArrayList<>();
         while (st.hasMoreElements()) {
             v.add((String) st.nextElement());
         }

@@ -250,10 +250,10 @@ public class DebuggerTraceView extends AbstractDebugView
     // private static final String DEBUG_TRACE_AS_LAUNCH = "DebugTraceAsLaunch";
     // //$NON-NLS-1$
     private TreeViewer viewer;
-    private final List<ILaunch> launches = new ArrayList<ILaunch>();
-    private final Map<ILaunch, List<IDebugTarget>> nodeMap = new HashMap<ILaunch, List<IDebugTarget>>();
-    private final Map<IDebugTarget, List<DebugTraceEvent>> eventMap = new HashMap<IDebugTarget, List<DebugTraceEvent>>();
-    private final Map<Object, Object> parentMap = new HashMap<Object, Object>();
+    private final List<ILaunch> launches = new ArrayList<>();
+    private final Map<ILaunch, List<IDebugTarget>> nodeMap = new HashMap<>();
+    private final Map<IDebugTarget, List<DebugTraceEvent>> eventMap = new HashMap<>();
+    private final Map<Object, Object> parentMap = new HashMap<>();
 
     // private ErlangDebugTarget debugTarget;
     public DebuggerTraceView() {
@@ -641,7 +641,7 @@ public class DebuggerTraceView extends AbstractDebugView
                     }
                     List<IDebugTarget> nodes = nodeMap.get(launch);
                     if (nodes == null) {
-                        nodes = new ArrayList<IDebugTarget>(1);
+                        nodes = new ArrayList<>(1);
                         nodeMap.put(launch, nodes);
                     }
                     final IDebugTarget node = data.getNode();
@@ -652,7 +652,7 @@ public class DebuggerTraceView extends AbstractDebugView
                     }
                     List<DebugTraceEvent> events = eventMap.get(node);
                     if (events == null) {
-                        events = new ArrayList<DebugTraceEvent>(data.getEvents().length);
+                        events = new ArrayList<>(data.getEvents().length);
                         eventMap.put(node, events);
                     }
                     final OtpErlangPid pid = data.getPid();

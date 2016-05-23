@@ -60,7 +60,7 @@ public class EdocExportWizardPage extends WizardPage {
 
         @Override
         public Object[] getElements(final Object inputElement) {
-            final java.util.List<IProject> ps = new ArrayList<IProject>();
+            final java.util.List<IProject> ps = new ArrayList<>();
 
             final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
                     .getProjects();
@@ -141,7 +141,7 @@ public class EdocExportWizardPage extends WizardPage {
     }
 
     public Collection<IProject> getSelectedResources() {
-        final ArrayList<IProject> result = new ArrayList<IProject>();
+        final ArrayList<IProject> result = new ArrayList<>();
         final Object[] sel = checkboxTableViewer.getCheckedElements();
         for (final Object o : sel) {
             result.add((IProject) o);
@@ -150,7 +150,7 @@ public class EdocExportWizardPage extends WizardPage {
     }
 
     public Map<String, OtpErlangObject> getOptions() {
-        final HashMap<String, OtpErlangObject> result = new HashMap<String, OtpErlangObject>();
+        final HashMap<String, OtpErlangObject> result = new HashMap<>();
         result.put("dir", new OtpErlangString(destination.getText()));
         // result.put("preprocess", new OtpErlangBoolean(false));
         return result;

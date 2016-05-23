@@ -211,7 +211,7 @@ public class RuntimeData {
 
     public String[] getCmdLine() {
         final RuntimeInfo r = getRuntimeInfo();
-        final List<String> result = new ArrayList<String>();
+        final List<String> result = new ArrayList<>();
 
         if (hasDetachedConsole() && !isInternal()) {
             if (SystemConfiguration.getInstance().isOnWindows()) {
@@ -276,7 +276,7 @@ public class RuntimeData {
     private Collection<String> splitQuoted(final String theArgs) {
         final Pattern p = Pattern.compile("(\"[^\"]*?\"|'[^']*?'|\\S+)");
         final Matcher m = p.matcher(theArgs);
-        final List<String> tokens = new ArrayList<String>();
+        final List<String> tokens = new ArrayList<>();
         while (m.find()) {
             tokens.add(m.group(1));
         }

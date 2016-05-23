@@ -168,7 +168,7 @@ public class ModelInternalUtils implements ModelUtilService {
         if (imports.isEmpty()) {
             return NO_IMPORTS;
         }
-        final List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(
+        final List<OtpErlangObject> result = new ArrayList<>(
                 imports.size());
         for (final IErlImport i : imports) {
             final Collection<ErlangFunction> functions = i.getFunctions();
@@ -198,7 +198,7 @@ public class ModelInternalUtils implements ModelUtilService {
         return result;
     }
 
-    public static final List<OtpErlangObject> NO_IMPORTS = new ArrayList<OtpErlangObject>(
+    public static final List<OtpErlangObject> NO_IMPORTS = new ArrayList<>(
             0);
 
     private void addUnitNamesWithPrefix(final String prefix, final List<String> result,

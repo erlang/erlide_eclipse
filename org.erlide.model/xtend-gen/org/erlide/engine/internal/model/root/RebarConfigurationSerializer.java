@@ -2,7 +2,6 @@ package org.erlide.engine.internal.model.root;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
-import com.google.common.base.Objects;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IPath;
@@ -80,24 +79,21 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
   public void parseOption(final ErlangProjectProperties result, final OtpBindings b) {
     try {
       String _atom = b.getAtom("Tag");
-      boolean _matched = false;
-      if (Objects.equal(_atom, "i")) {
-        _matched=true;
-        String _string = b.getString("Arg");
-        final Path inc = new Path(_string);
-        Collection<IPath> _includeDirs = result.getIncludeDirs();
-        boolean _contains = _includeDirs.contains(inc);
-        boolean _not = (!_contains);
-        if (_not) {
-          Collection<IPath> _includeDirs_1 = result.getIncludeDirs();
-          final List<IPath> incs = CollectionLiterals.<IPath>newArrayList(((IPath[])Conversions.unwrapArray(_includeDirs_1, IPath.class)));
-          incs.add(inc);
-          result.setIncludeDirs(incs);
-        }
-      }
-      if (!_matched) {
-        if (Objects.equal(_atom, "src_dirs")) {
-          _matched=true;
+      switch (_atom) {
+        case "i":
+          String _string = b.getString("Arg");
+          final Path inc = new Path(_string);
+          Collection<IPath> _includeDirs = result.getIncludeDirs();
+          boolean _contains = _includeDirs.contains(inc);
+          boolean _not = (!_contains);
+          if (_not) {
+            Collection<IPath> _includeDirs_1 = result.getIncludeDirs();
+            final List<IPath> incs = CollectionLiterals.<IPath>newArrayList(((IPath[])Conversions.unwrapArray(_includeDirs_1, IPath.class)));
+            incs.add(inc);
+            result.setIncludeDirs(incs);
+          }
+          break;
+        case "src_dirs":
           Collection<OtpErlangObject> _list = b.getList("Arg");
           final Function1<OtpErlangObject, Path> _function = new Function1<OtpErlangObject, Path>() {
             @Override
@@ -118,7 +114,7 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
           };
           Iterable<Path> _map = IterableExtensions.<OtpErlangObject, Path>map(_list, _function);
           result.setSourceDirs(((IPath[])Conversions.unwrapArray(_map, IPath.class)));
-        }
+          break;
       }
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);

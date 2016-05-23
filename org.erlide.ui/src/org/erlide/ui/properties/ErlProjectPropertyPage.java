@@ -310,7 +310,7 @@ public class ErlProjectPropertyPage extends PropertyPage {
 
         final Collection<RuntimeInfo> rs = BackendCore.getRuntimeInfoCatalog()
                 .getRuntimes();
-        final List<String[]> vv = new ArrayList<String[]>();
+        final List<String[]> vv = new ArrayList<>();
         for (final RuntimeInfo ri : rs) {
             vv.add(new String[] { ri.getName(), ri.getName() });
         }

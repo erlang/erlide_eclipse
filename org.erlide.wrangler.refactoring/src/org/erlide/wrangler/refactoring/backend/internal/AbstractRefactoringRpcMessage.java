@@ -40,7 +40,7 @@ public abstract class AbstractRefactoringRpcMessage extends AbstractRpcMessage
     }
 
     protected ArrayList<ChangedFile> parseFileList(final OtpErlangList fileList) {
-        final ArrayList<ChangedFile> ret = new ArrayList<ChangedFile>();
+        final ArrayList<ChangedFile> ret = new ArrayList<>();
 
         OtpErlangTuple e;
         OtpErlangString oldPath, newPath;

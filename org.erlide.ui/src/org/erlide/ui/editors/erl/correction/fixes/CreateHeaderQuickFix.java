@@ -39,16 +39,8 @@ public class CreateHeaderQuickFix extends MarkerQuickFixExecutor {
         final IProject wproject = project.getWorkspaceProject();
         final IFolder folder = wproject.getFolder(inc);
         final IFile header = folder.getFile(name);
-        try {
-            final EmptyInputStream source = new EmptyInputStream();
-            try {
-                header.create(source, true, null);
-            } finally {
-                try {
-                    source.close();
-                } catch (final IOException e) {
-                }
-            }
+        try (final EmptyInputStream source = new EmptyInputStream()) {
+            header.create(source, true, null);
             folder.refreshLocal(IResource.DEPTH_ONE, null);
 
             final IFile fileToOpen = header;
@@ -56,6 +48,8 @@ public class CreateHeaderQuickFix extends MarkerQuickFixExecutor {
                     .getActiveWorkbenchWindow().getActivePage();
             IDE.openEditor(page, fileToOpen);
         } catch (final CoreException e) {
+            ErlLogger.error(e);
+        } catch (final IOException e) {
             ErlLogger.error(e);
         }
 

@@ -66,7 +66,7 @@ public final class OpenModuleHandler extends Action
 
     @Override
     public final Object execute(final ExecutionEvent event) throws ExecutionException {
-        final List<IFile> files = new ArrayList<IFile>();
+        final List<IFile> files = new ArrayList<>();
 
         if (event.getParameter(PARAM_ID_FILE_PATH) == null) {
             // Prompt the user for the resource to open.

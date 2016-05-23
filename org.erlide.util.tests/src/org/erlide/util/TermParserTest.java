@@ -184,18 +184,17 @@ public class TermParserTest {
     public void sublist_5() throws OtpParserException, IOException {
         final OtpErlangList r = (OtpErlangList) termParser.parse("[1,2,3,4]");
         final OtpErlangObject ss = r.getNthTail(2);
-        final OtpOutputStream out = new OtpOutputStream();
-        ss.encode(out);
-        final byte[] contents1 = out.toByteArray();
-        out.reset();
-        final OtpErlangList s = (OtpErlangList) termParser.parse("[3,4]");
-        s.encode(out);
-        final byte[] contents2 = out.toByteArray();
-        out.close();
-
-        Assert.assertEquals(contents2.length, contents1.length);
-        for (int i = 0; i < contents1.length; i++) {
-            Assert.assertEquals(contents2[i], contents1[i]);
+        try (final OtpOutputStream out = new OtpOutputStream()) {
+            ss.encode(out);
+            final byte[] contents1 = out.toByteArray();
+            out.reset();
+            final OtpErlangList s = (OtpErlangList) termParser.parse("[3,4]");
+            s.encode(out);
+            final byte[] contents2 = out.toByteArray();
+            Assert.assertEquals(contents2.length, contents1.length);
+            for (int i = 0; i < contents1.length; i++) {
+                Assert.assertEquals(contents2[i], contents1[i]);
+            }
         }
     }
 
@@ -203,18 +202,18 @@ public class TermParserTest {
     public void sublist_6() throws OtpParserException, IOException {
         final OtpErlangList r = (OtpErlangList) termParser.parse("[1,2,3|4]");
         final OtpErlangObject ss = r.getNthTail(2);
-        final OtpOutputStream out = new OtpOutputStream();
-        ss.encode(out);
-        final byte[] contents1 = out.toByteArray();
-        out.reset();
-        final OtpErlangList s = (OtpErlangList) termParser.parse("[3|4]");
-        s.encode(out);
-        final byte[] contents2 = out.toByteArray();
-        out.close();
+        try (final OtpOutputStream out = new OtpOutputStream()) {
+            ss.encode(out);
+            final byte[] contents1 = out.toByteArray();
+            out.reset();
+            final OtpErlangList s = (OtpErlangList) termParser.parse("[3|4]");
+            s.encode(out);
+            final byte[] contents2 = out.toByteArray();
 
-        Assert.assertEquals(contents2.length, contents1.length);
-        for (int i = 0; i < contents1.length; i++) {
-            Assert.assertEquals(contents2[i], contents1[i]);
+            Assert.assertEquals(contents2.length, contents1.length);
+            for (int i = 0; i < contents1.length; i++) {
+                Assert.assertEquals(contents2[i], contents1[i]);
+            }
         }
     }
 

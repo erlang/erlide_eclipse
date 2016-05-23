@@ -129,7 +129,7 @@ public final class BackendData extends RuntimeData {
     public static Set<String> addBreakpointProjectsAndModules(
             final Collection<IProject> projects, final List<String> interpretedModules) {
         final IBreakpointManager bpm = DebugPlugin.getDefault().getBreakpointManager();
-        final Set<String> result = new HashSet<String>(interpretedModules);
+        final Set<String> result = new HashSet<>(interpretedModules);
         for (final IBreakpoint bp : bpm
                 .getBreakpoints(ErlDebugConstants.ID_ERLANG_DEBUG_MODEL)) {
             final IMarker m = bp.getMarker();

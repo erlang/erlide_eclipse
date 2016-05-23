@@ -101,7 +101,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         Collection<IErlProject> projects;
         try {
             projects = ErlangEngine.getInstance().getModel().getErlangProjects();
-            final List<String> ps = new ArrayList<String>();
+            final List<String> ps = new ArrayList<>();
             for (final IErlProject p : projects) {
                 ps.add(p.getName());
             }
@@ -274,7 +274,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
     private Object[] createProjectArray() {
         Object[] array;
         try {
-            final List<ProjectElement> res = new LinkedList<ProjectElement>();
+            final List<ProjectElement> res = new LinkedList<>();
 
             final Collection<IErlProject> projects = ErlangEngine.getInstance().getModel()
                     .getErlangProjects();
@@ -299,7 +299,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
     private Object[] createModuleArray(final IErlProject p) {
         Object[] array;
         try {
-            final List<ProjectElement> res = new LinkedList<ProjectElement>();
+            final List<ProjectElement> res = new LinkedList<>();
 
             final Collection<IErlModule> modules = p.getModules();
 

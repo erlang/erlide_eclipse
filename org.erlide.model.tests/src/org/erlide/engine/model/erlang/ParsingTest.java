@@ -74,7 +74,7 @@ public class ParsingTest {
         assertTrue(parse(source));
         final IErlElement attribute = TestingSupport.createErlAttribute(module, "compile",
                 null, sourceContent, 0, 50);
-        final List<IErlElement> expected = new ArrayList<IErlElement>(1);
+        final List<IErlElement> expected = new ArrayList<>(1);
         expected.add(attribute);
         final Collection<IErlElement> actual = module.getChildren();
         // assertEquals(expected, actual);

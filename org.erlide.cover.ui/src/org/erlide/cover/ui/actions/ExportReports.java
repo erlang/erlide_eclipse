@@ -24,13 +24,13 @@ import org.erlide.util.ErlLogger;
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  *
  */
-public class EksportReports extends Action {
+public class ExportReports extends Action {
 
     private final Shell shell;
 
     private final Logger log = Activator.getDefault();
 
-    public EksportReports(final Shell shell) {
+    public ExportReports(final Shell shell) {
         this.shell = shell;
     }
 
@@ -81,9 +81,9 @@ public class EksportReports extends Action {
                 final String report = ReportGenerator.getInstance().getHTMLreport(obj,
                         true);
                 log.info(report);
-                final FileWriter writer = new FileWriter(pathOut);
-                writer.write(report);
-                writer.close();
+                try (final FileWriter writer = new FileWriter(pathOut)) {
+                    writer.write(report);
+                }
                 obj.setHtmlPath(pathOut);
 
             } catch (final IOException e) {
@@ -94,17 +94,13 @@ public class EksportReports extends Action {
             final File input = new File(pathIn);
             final File output = new File(pathOut);
 
-            try {
-                final FileReader in = new FileReader(input);
-                final FileWriter out = new FileWriter(output);
+            try (final FileReader in = new FileReader(input);
+                    final FileWriter out = new FileWriter(output)) {
 
                 int c;
                 while ((c = in.read()) != -1) {
                     out.write(c);
                 }
-
-                in.close();
-                out.close();
             } catch (final IOException e) {
                 CoverageHelper.reportError("Could not export HTML reports");
                 ErlLogger.error(e);

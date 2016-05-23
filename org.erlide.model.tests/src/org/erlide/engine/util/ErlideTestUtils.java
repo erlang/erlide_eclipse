@@ -221,12 +221,12 @@ public class ErlideTestUtils {
         final IProject project = erlProject.getWorkspaceProject();
         final ErlangProjectProperties prefs = erlProject.getProperties();
 
-        final List<IPath> srcDirs = new ArrayList<IPath>();
+        final List<IPath> srcDirs = new ArrayList<>();
         srcDirs.add(new Path("src"));
         prefs.setSourceDirs(srcDirs);
         buildPaths(root, project, srcDirs);
 
-        final List<IPath> includeDirs = new ArrayList<IPath>();
+        final List<IPath> includeDirs = new ArrayList<>();
         includeDirs.add(new Path("include"));
         buildPaths(root, project, includeDirs);
         prefs.setIncludeDirs(includeDirs);
@@ -272,9 +272,9 @@ public class ErlideTestUtils {
             f.delete();
         }
         f.createNewFile();
-        final FileOutputStream fileOutputStream = new FileOutputStream(pathString);
-        fileOutputStream.write(contentString.getBytes());
-        fileOutputStream.close();
+        try (final FileOutputStream fileOutputStream = new FileOutputStream(pathString)) {
+            fileOutputStream.write(contentString.getBytes());
+        }
         return f;
     }
 

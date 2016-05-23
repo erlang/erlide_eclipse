@@ -30,12 +30,12 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 
     public ErlangSearchResult(final ErlSearchQuery query) {
         this.query = query;
-        result = new ArrayList<ErlangSearchElement>();
+        result = new ArrayList<>();
     }
 
     @Override
     public synchronized void removeAll() {
-        result = new ArrayList<ErlangSearchElement>();
+        result = new ArrayList<>();
         super.removeAll();
     }
 
@@ -126,7 +126,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
     }
 
     public synchronized List<ErlangSearchElement> getResult() {
-        return new ArrayList<ErlangSearchElement>(result);
+        return new ArrayList<>(result);
     }
 
     public synchronized void setResult(final List<ErlangSearchElement> result) {
@@ -167,7 +167,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
     public Match[] computeContainedMatches(final AbstractTextSearchResult aResult,
             final IFile file) {
         final ErlangSearchResult esr = (ErlangSearchResult) aResult;
-        final List<Match> l = new ArrayList<Match>();
+        final List<Match> l = new ArrayList<>();
         final List<ErlangSearchElement> eses = esr.getResult();
         final String name = file.getName();
         if (eses == null) {// || !ErlideUtil.hasModuleExtension(name)) {

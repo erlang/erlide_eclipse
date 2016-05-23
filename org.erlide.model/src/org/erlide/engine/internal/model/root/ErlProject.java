@@ -128,7 +128,7 @@ public class ErlProject extends Openable
         try {
             final IContainer c = (IContainer) r;
             final IResource[] elems = c.members();
-            final List<IErlElement> children = new ArrayList<IErlElement>(
+            final List<IErlElement> children = new ArrayList<>(
                     elems.length + 1);
             // ErlLogger.debug(">>adding externals");
             addExternals(children);
@@ -305,7 +305,7 @@ public class ErlProject extends Openable
         if (modulesForProject != null) {
             return modulesForProject;
         }
-        final List<IErlModule> result = new ArrayList<IErlModule>();
+        final List<IErlModule> result = new ArrayList<>();
         final List<IPath> sourceDirs = Lists
                 .newArrayList(getProperties().getSourceDirs());
         for (final IPath s : SourcePathUtils.getExtraSourcePathsForModel(fProject)) {
@@ -345,7 +345,7 @@ public class ErlProject extends Openable
 
     @Override
     public Collection<IErlModule> getModulesAndIncludes() throws ErlModelException {
-        final List<IErlModule> result = new ArrayList<IErlModule>();
+        final List<IErlModule> result = new ArrayList<>();
         final ErlModelCache erlModelCache = ErlModelCache.getDefault();
         final List<IErlModule> modulesForProject = erlModelCache
                 .getModulesForProject(this);

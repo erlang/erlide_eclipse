@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Signature {
-    private static final Map<String, Signature[]> CACHE = new HashMap<String, Signature[]>();
+    private static final Map<String, Signature[]> CACHE = new HashMap<>();
     private static boolean useCache = true;
 
     public char kind = 'x';
@@ -63,7 +63,7 @@ public class Signature {
             }
         }
         String sign = signature;
-        final List<Signature> type = new ArrayList<Signature>();
+        final List<Signature> type = new ArrayList<>();
         while (sign.length() > 0) {
             final ParseState e = parseOne(sign);
             type.add(e.sign);

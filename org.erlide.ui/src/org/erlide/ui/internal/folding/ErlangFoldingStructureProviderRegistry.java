@@ -97,7 +97,7 @@ public class ErlangFoldingStructureProviderRegistry {
      */
     public void reloadExtensions() {
         final IExtensionRegistry registry = Platform.getExtensionRegistry();
-        final Map<String, ErlangFoldingStructureProviderDescriptor> map = new HashMap<String, ErlangFoldingStructureProviderDescriptor>();
+        final Map<String, ErlangFoldingStructureProviderDescriptor> map = new HashMap<>();
 
         final IConfigurationElement[] elements = registry.getConfigurationElementsFor(
                 ErlideUIPlugin.PLUGIN_ID, EXTENSION_POINT);

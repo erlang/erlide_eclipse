@@ -489,8 +489,8 @@ public class ErlModel extends Openable implements IErlModel {
         // | ElementChangedEvent.POST_RECONCILE);
     }
 
-    private static Map<Object, IErlModule> moduleMap = new HashMap<Object, IErlModule>();
-    private static Map<IErlModule, Object> mapModule = new HashMap<IErlModule, Object>();
+    private static Map<Object, IErlModule> moduleMap = new HashMap<>();
+    private static Map<IErlModule, Object> mapModule = new HashMap<>();
 
     @Override
     public IErlModule getModuleFromFile(final IParent parent, final String name,

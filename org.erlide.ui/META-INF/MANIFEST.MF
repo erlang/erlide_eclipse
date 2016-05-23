@@ -96,6 +96,6 @@ Require-Bundle: org.eclipse.compare;bundle-version="3.5.202",
  org.eclipse.jface.databinding,
  org.erlide.kernel
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Eclipse-ExtensibleAPI: true
 

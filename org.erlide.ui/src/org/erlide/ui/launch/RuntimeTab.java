@@ -74,7 +74,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         final Label runtimeLabel = new Label(comp, SWT.NONE);
         runtimeLabel.setText("Runtime");
 
-        final List<String> rtl = new ArrayList<String>();
+        final List<String> rtl = new ArrayList<>();
         for (final RuntimeInfo r : runtimes) {
             rtl.add(r.getName());
         }

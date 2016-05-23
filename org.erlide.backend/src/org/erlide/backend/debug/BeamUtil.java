@@ -23,15 +23,8 @@ public class BeamUtil {
 
     public static OtpErlangBinary getBeamBinary(final String moduleName,
             final URL beamPath) {
-        FileInputStream s;
-        try {
-            s = (FileInputStream) beamPath.openStream();
-            try {
-                return getBeamBinary(moduleName, s);
-            } finally {
-                s.close();
-            }
-
+        try (final FileInputStream s = (FileInputStream) beamPath.openStream()) {
+            return getBeamBinary(moduleName, s);
         } catch (final IOException e) {
             ErlLogger.warn(e);
             return null;
@@ -40,15 +33,8 @@ public class BeamUtil {
 
     public static OtpErlangBinary getBeamBinary(final String moduleName,
             final IPath beamPath) {
-        FileInputStream s;
-        try {
-            s = new FileInputStream(beamPath.toPortableString());
-            try {
-                return getBeamBinary(moduleName, s);
-            } finally {
-                s.close();
-            }
-
+        try (FileInputStream s = new FileInputStream(beamPath.toPortableString())) {
+            return getBeamBinary(moduleName, s);
         } catch (final IOException e) {
             ErlLogger.warn(e);
             return null;

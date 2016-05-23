@@ -15,7 +15,7 @@ public class ModuleStats extends StatsTreeObject {
 
     private String md5; // file hash (in order to check if
     // marking annotations in editor makes sense)
-    private final List<LineResult> lineResults = new LinkedList<LineResult>(); // results
+    private final List<LineResult> lineResults = new LinkedList<>(); // results
     // per
     // line
     public boolean couldBeMarked = true; // if annotation could be marked for

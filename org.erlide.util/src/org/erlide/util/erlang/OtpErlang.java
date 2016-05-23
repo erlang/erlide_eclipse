@@ -40,14 +40,10 @@ public class OtpErlang {
 
     // for debugging purposes
     public static long sizeOf(final OtpErlangObject obj) {
-        final OtpOutputStream buf = new OtpOutputStream(obj);
-        try {
+        try (final OtpOutputStream buf = new OtpOutputStream(obj)) {
             return buf.size();
-        } finally {
-            try {
-                buf.close();
-            } catch (final IOException e) {
-            }
+        } catch (final IOException e) {
+            return -1;
         }
     }
 
@@ -76,7 +72,7 @@ public class OtpErlang {
      */
     public static OtpErlangObject format(final String fmt, final Object... args)
             throws OtpParserException, SignatureException {
-        final List<Object> values = new ArrayList<Object>(Arrays.asList(args));
+        final List<Object> values = new ArrayList<>(Arrays.asList(args));
         final OtpErlangObject result = fill(parse(fmt), values);
         return result;
     }
@@ -194,16 +190,14 @@ public class OtpErlang {
         }
         if (template instanceof OtpErlangList) {
             final OtpErlangObject[] elements = ((OtpErlangList) template).elements();
-            final List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(
-                    elements.length);
+            final List<OtpErlangObject> result = new ArrayList<>(elements.length);
             for (final OtpErlangObject elem : elements) {
                 result.add(fill(elem, values));
             }
             return new OtpErlangList(result.toArray(elements));
         } else if (template instanceof OtpErlangTuple) {
             final OtpErlangObject[] elements = ((OtpErlangTuple) template).elements();
-            final List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(
-                    elements.length);
+            final List<OtpErlangObject> result = new ArrayList<>(elements.length);
             for (final OtpErlangObject elem : elements) {
                 result.add(fill(elem, values));
             }

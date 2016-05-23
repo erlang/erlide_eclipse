@@ -69,7 +69,7 @@ public class ErlElementDelta implements IErlElementDelta {
 
     @Override
     public IErlElementDelta[] getChildren(final int kind) {
-        final ArrayList<IErlElementDelta> children = new ArrayList<IErlElementDelta>(0);
+        final ArrayList<IErlElementDelta> children = new ArrayList<>(0);
         for (int i = 0; i < fChildren.size(); ++i) {
             final IErlElementDelta c = fChildren.get(i);
             if (c.getKind() == kind || kind == ALL) {

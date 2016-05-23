@@ -64,7 +64,7 @@ public class ErlangOtpSourceContainer extends CompositeSourceContainer {
     }
 
     private Set<String> modules(final File directory) {
-        final Set<String> r = new TreeSet<String>();
+        final Set<String> r = new TreeSet<>();
         final String n[] = directory.list();
         for (final String f : n) {
             final String[] parts = f.split("-");
@@ -114,14 +114,14 @@ public class ErlangOtpSourceContainer extends CompositeSourceContainer {
         final IPath lib = otpHome.addTrailingSeparator().append("lib")
                 .addTrailingSeparator();
         final Set<String> moduleNames = modules(lib.toFile());
-        final List<IPath> moduleDirs = new ArrayList<IPath>();
+        final List<IPath> moduleDirs = new ArrayList<>();
         for (final String moduleName : moduleNames) {
             final String h = highestVersion(lib.toFile(), moduleName);
             if (h != null) {
                 moduleDirs.add(lib.addTrailingSeparator().append(h));
             }
         }
-        final List<ISourceContainer> r = new ArrayList<ISourceContainer>();
+        final List<ISourceContainer> r = new ArrayList<>();
         for (final IPath dir : moduleDirs) {
             r.add(new DirectorySourceContainer(dir.addTrailingSeparator().append("src"),
                     false));

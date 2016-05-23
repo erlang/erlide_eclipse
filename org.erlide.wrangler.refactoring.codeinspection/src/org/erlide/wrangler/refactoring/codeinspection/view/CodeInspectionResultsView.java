@@ -44,7 +44,7 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
 public class CodeInspectionResultsView extends ViewPart {
     public static final String VIEW_ID = "org.erlide.wrangler.refactoring.codeinspection.codeinspectionresultview";
 
-    ArrayList<IErlElement> results = new ArrayList<IErlElement>();
+    ArrayList<IErlElement> results = new ArrayList<>();
 
     private TableViewer viewer;
 

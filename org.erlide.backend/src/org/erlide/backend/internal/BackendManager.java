@@ -225,7 +225,7 @@ public final class BackendManager implements IBackendManager {
             } else if ("init".equals(el.getName())) {
                 final String module = el.getAttribute("module");
                 final String function = el.getAttribute("function");
-                inits.add(new Pair<String, String>(module, function));
+                inits.add(new Pair<>(module, function));
             } else if ("otp_version".equals(el.getName())) {
                 final String attribute = el.getAttribute("value");
                 if (attribute != null) {

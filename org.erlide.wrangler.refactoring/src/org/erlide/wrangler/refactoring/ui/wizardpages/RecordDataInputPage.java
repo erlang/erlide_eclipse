@@ -86,8 +86,8 @@ public class RecordDataInputPage extends MultiInputPage {
 
         // adding field name inputs
         final int n = refactoring.getRecordFieldCount();
-        fieldNameLabels = new ArrayList<Label>();
-        fieldNames = new ArrayList<Text>();
+        fieldNameLabels = new ArrayList<>();
+        fieldNames = new ArrayList<>();
         for (int i = 0; i < n; ++i) {
             final Label l = new Label(composite, SWT.LEFT);
             l.setText("Field name (" + i + "):");
@@ -122,7 +122,7 @@ public class RecordDataInputPage extends MultiInputPage {
         final IValidator theValidator = new AtomValidator();
         boolean valid = theValidator.isValid(recordName.getText());
 
-        final ArrayList<String> fn = new ArrayList<String>();
+        final ArrayList<String> fn = new ArrayList<>();
         for (final Text t : fieldNames) {
             valid = valid && theValidator.isValid(t.getText());
             fn.add(t.getText());

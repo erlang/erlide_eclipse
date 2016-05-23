@@ -35,22 +35,17 @@ public final class LogUtil {
     public static String fetchErlideLog() {
         final StringBuffer result = new StringBuffer();
         final File log = new File(ErlLogger.getInstance().getLogFile());
-        try {
-            final BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(log), "UTF-8"));
-            try {
-                for (;;) {
-                    final String line = reader.readLine();
-                    if (line == null) {
-                        break;
-                    }
-                    if (line.length() == 0) {
-                        continue;
-                    }
-                    result.append(line).append('\n');
+        try (final BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(log), "UTF-8"))) {
+            for (;;) {
+                final String line = reader.readLine();
+                if (line == null) {
+                    break;
                 }
-            } finally {
-                reader.close();
+                if (line.length() == 0) {
+                    continue;
+                }
+                result.append(line).append('\n');
             }
         } catch (final Exception e) {
             ErlLogger.warn(e);
@@ -59,28 +54,23 @@ public final class LogUtil {
     }
 
     public static String fetchPlatformLog() {
-        final List<String> result = new ArrayList<String>();
+        final List<String> result = new ArrayList<>();
         final File log = Platform.getLogFileLocation().toFile();
-        try {
-            final BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(log), "UTF-8"));
-            try {
-                for (;;) {
-                    String line = reader.readLine();
-                    if (line == null) {
-                        break;
-                    }
-                    line = line.trim();
-                    if (line.length() == 0) {
-                        continue;
-                    }
-                    if (line.startsWith("!SESSION ")) {
-                        result.clear();
-                    }
-                    result.add(line);
+        try (final BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(log), "UTF-8"))) {
+            for (;;) {
+                String line = reader.readLine();
+                if (line == null) {
+                    break;
                 }
-            } finally {
-                reader.close();
+                line = line.trim();
+                if (line.length() == 0) {
+                    continue;
+                }
+                if (line.startsWith("!SESSION ")) {
+                    result.clear();
+                }
+                result.add(line);
             }
         } catch (final Exception e) {
             ErlLogger.warn(e);
@@ -96,23 +86,18 @@ public final class LogUtil {
         final StringBuffer result = new StringBuffer();
         final File log = new File(filename);
         if (log.exists()) {
-            try {
-                final BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(new FileInputStream(log), "UTF-8"));
-                try {
-                    for (;;) {
-                        String line = reader.readLine();
-                        if (line == null) {
-                            break;
-                        }
-                        line = line.trim();
-                        if (line.length() == 0) {
-                            continue;
-                        }
-                        result.append(line).append('\n');
+            try (final BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(log), "UTF-8"))) {
+                for (;;) {
+                    String line = reader.readLine();
+                    if (line == null) {
+                        break;
                     }
-                } finally {
-                    reader.close();
+                    line = line.trim();
+                    if (line.length() == 0) {
+                        continue;
+                    }
+                    result.append(line).append('\n');
                 }
             } catch (final Exception e) {
             }

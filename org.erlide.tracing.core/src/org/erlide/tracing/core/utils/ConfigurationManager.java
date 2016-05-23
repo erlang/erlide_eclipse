@@ -3,7 +3,6 @@ package org.erlide.tracing.core.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public final class ConfigurationManager {
      * @return loaded trace patterns
      */
     public static TracePattern[] loadTPConfig(final String configName) {
-        final ArrayList<TracePattern> patterns = new ArrayList<TracePattern>();
+        final ArrayList<TracePattern> patterns = new ArrayList<>();
 
         final Object[] objects = loadConfiguration(configName, TP_DIR);
         if (objects != null) {
@@ -60,7 +59,7 @@ public final class ConfigurationManager {
      * @return loaded nodes
      */
     public static TracedNode[] loadNodesConfig(final String configName) {
-        final ArrayList<TracedNode> nodes = new ArrayList<TracedNode>();
+        final ArrayList<TracedNode> nodes = new ArrayList<>();
 
         final Object[] objects = loadConfiguration(configName, NODES_DIR);
         if (objects != null) {
@@ -148,22 +147,13 @@ public final class ConfigurationManager {
         final File file = location.toFile();
 
         if (file.exists() && file.isFile()) {
-            ObjectInputStream objectInputStream = null;
-            try {
-                final FileInputStream inputStream = new FileInputStream(file);
-                objectInputStream = new ObjectInputStream(inputStream);
+            try (final FileInputStream inputStream = new FileInputStream(file);
+                    final ObjectInputStream objectInputStream = new ObjectInputStream(
+                            inputStream)) {
                 return (Object[]) objectInputStream.readObject();
 
             } catch (final Exception e) {
                 ErlLogger.error(e);
-            } finally {
-                if (objectInputStream != null) {
-                    try {
-                        objectInputStream.close();
-                    } catch (final IOException e) {
-                        ErlLogger.error(e);
-                    }
-                }
             }
         }
         return null;
@@ -171,31 +161,19 @@ public final class ConfigurationManager {
 
     private static boolean saveConfiguration(final String configName,
             final String dirName, final Object configuration) {
-        ObjectOutputStream objectOutputStream = null;
-        try {
-            final IPath location = Activator.getDefault().getStateLocation()
-                    .append(dirName);
-            final File dir = location.toFile();
+        final IPath location = Activator.getDefault().getStateLocation().append(dirName);
+        final File dir = location.toFile();
+        if (!dir.exists() && !dir.mkdir()) {
+            return false;
+        }
 
-            if (!dir.exists() && !dir.mkdir()) {
-                return false;
-            }
-
-            final FileOutputStream out = new FileOutputStream(
-                    location.append(configName).toFile());
-            objectOutputStream = new ObjectOutputStream(out);
+        try (final FileOutputStream out = new FileOutputStream(
+                location.append(configName).toFile());
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(out);) {
             objectOutputStream.writeObject(configuration);
             return true;
         } catch (final Exception e) {
             ErlLogger.error(e);
-        } finally {
-            if (objectOutputStream != null) {
-                try {
-                    objectOutputStream.close();
-                } catch (final IOException e) {
-                    ErlLogger.error(e);
-                }
-            }
         }
         return false;
     }
@@ -212,7 +190,7 @@ public final class ConfigurationManager {
     }
 
     private static String[] getConfigurationsList(final String dirName) {
-        final ArrayList<String> configNames = new ArrayList<String>();
+        final ArrayList<String> configNames = new ArrayList<>();
 
         final IPath location = Activator.getDefault().getStateLocation().append(dirName);
         final File dir = location.toFile();

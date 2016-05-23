@@ -51,8 +51,8 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage
     private static final String[] AUTO_NL_DEFAULTS = new String[] { "0", "0", //$NON-NLS-1$ //$NON-NLS-2$
             "0", "0" }; //$NON-NLS-1$ //$NON-NLS-2$
 
-    private final List<Button> buttons = new ArrayList<Button>();
-    private final List<Button> autoNLButtons = new ArrayList<Button>();
+    private final List<Button> buttons = new ArrayList<>();
+    private final List<Button> autoNLButtons = new ArrayList<>();
 
     @Override
     protected Control createContents(final Composite parent) {

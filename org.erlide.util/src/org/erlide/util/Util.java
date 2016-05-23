@@ -584,12 +584,9 @@ public final class Util {
 
     public static String getInputStreamAsString(final InputStream is,
             final String encoding) {
-        final Scanner s = new Scanner(is, encoding);
-        try {
+        try (final Scanner s = new Scanner(is, encoding)) {
             s.useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
-        } finally {
-            s.close();
+            return s.hasNext() ? s.next() : "";
         }
     }
 

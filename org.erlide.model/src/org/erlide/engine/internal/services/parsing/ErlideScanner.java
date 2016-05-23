@@ -145,7 +145,7 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
             if (t1.elementAt(1) instanceof OtpErlangBinary) {
                 final OtpErlangBinary b = (OtpErlangBinary) t1.elementAt(1);
                 final byte[] bytes = b.binaryValue();
-                toks = new ArrayList<ErlToken>(bytes.length / 10);
+                toks = new ArrayList<>(bytes.length / 10);
                 for (int i = 0; i < bytes.length; i += 10) {
                     final ErlToken tk = new ErlToken(bytes, i, offset);
                     toks.add(tk);

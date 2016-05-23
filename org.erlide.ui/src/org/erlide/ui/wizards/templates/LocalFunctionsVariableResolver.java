@@ -15,7 +15,7 @@ import java.util.List;
 
 public class LocalFunctionsVariableResolver extends FunctionVariableResolver {
 
-    private static final List<FunctionVariableResolver> fInstances = new ArrayList<FunctionVariableResolver>();
+    private static final List<FunctionVariableResolver> fInstances = new ArrayList<>();
 
     public LocalFunctionsVariableResolver() {
         fInstances.add(this);

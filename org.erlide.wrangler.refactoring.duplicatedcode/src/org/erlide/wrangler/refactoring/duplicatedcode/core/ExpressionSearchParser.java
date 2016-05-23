@@ -61,7 +61,7 @@ public class ExpressionSearchParser extends AbstractDuplicatesParser {
             OtpErlangTuple actPos;
             OtpErlangLong startLine, startColumn, endLine, endColumn;
 
-            final ArrayList<DuplicatedCodeInstanceElement> instances = new ArrayList<DuplicatedCodeInstanceElement>();
+            final ArrayList<DuplicatedCodeInstanceElement> instances = new ArrayList<>();
 
             final Iterator<OtpErlangObject> it = posList.iterator();
             while (it.hasNext()) {
@@ -93,7 +93,7 @@ public class ExpressionSearchParser extends AbstractDuplicatesParser {
 
             isSuccessful = true;
             errorMessage = null;
-            duplicates = new ArrayList<DuplicatedCodeElement>();
+            duplicates = new ArrayList<>();
             duplicates.add(result);
 
         } catch (final Exception e) {

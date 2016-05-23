@@ -88,8 +88,8 @@ public class ErlangDebugTarget extends ErlangDebugElement
     private final Set<String> interpretedModules;
     private final Collection<IProject> projects;
 
-    private final Map<OtpErlangPid, OtpErlangPid> metaPids = new TreeMap<OtpErlangPid, OtpErlangPid>();
-    private final Map<OtpErlangPid, OtpErlangPid> pidsFromMeta = new TreeMap<OtpErlangPid, OtpErlangPid>();
+    private final Map<OtpErlangPid, OtpErlangPid> metaPids = new TreeMap<>();
+    private final Map<OtpErlangPid, OtpErlangPid> pidsFromMeta = new TreeMap<>();
 
     private final DebuggerEventDaemon debuggerDaemon;
     private boolean disposed = false;
@@ -101,9 +101,9 @@ public class ErlangDebugTarget extends ErlangDebugElement
         this.launch = launch;
         this.projects = projects;
 
-        allProcesses = new ArrayList<ErlangProcess>();
-        localProcesses = new ArrayList<ErlangProcess>();
-        interpretedModules = new HashSet<String>();
+        allProcesses = new ArrayList<>();
+        localProcesses = new ArrayList<>();
+        interpretedModules = new HashSet<>();
 
         debuggerDaemon = new DebuggerEventDaemon(backend, this);
         debuggerDaemon.start();
@@ -494,7 +494,7 @@ public class ErlangDebugTarget extends ErlangDebugElement
     private void distributeDebuggerCode() {
         final List<String> debuggerModules = getDebuggerModules();
 
-        final List<OtpErlangTuple> modules = new ArrayList<OtpErlangTuple>(
+        final List<OtpErlangTuple> modules = new ArrayList<>(
                 debuggerModules.size());
         final String ver = backend.getRuntime().getVersion().asMajor().toString()
                 .toLowerCase();
@@ -580,7 +580,7 @@ public class ErlangDebugTarget extends ErlangDebugElement
         final Bundle debugger = Platform.getBundle("org.erlide.kernel.debugger");
         if (debugger == null) {
             ErlLogger.warn("debugger bundle was not found...");
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
         final List<String> dbg_modules = getModulesFromBundle(debugger, null);
 

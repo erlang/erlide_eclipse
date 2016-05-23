@@ -37,7 +37,7 @@ public class ProcessHelper {
         try {
             final IOtpRpc backend = TraceBackend.getInstance().getBackend(true)
                     .getOtpRpc();
-            final List<OtpErlangAtom> nodeAtoms = new ArrayList<OtpErlangAtom>();
+            final List<OtpErlangAtom> nodeAtoms = new ArrayList<>();
 
             for (final Object o : TraceBackend.getInstance().getTracedNodesArray()) {
                 final TracedNode tracedNode = (TracedNode) o;

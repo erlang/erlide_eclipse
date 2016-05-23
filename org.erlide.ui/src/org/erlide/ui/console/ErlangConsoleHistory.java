@@ -18,7 +18,7 @@ public class ErlangConsoleHistory {
     private int navIndex;
 
     public ErlangConsoleHistory() {
-        history = new ArrayList<String>();
+        history = new ArrayList<>();
     }
 
     public void addToHistory(final String in) {

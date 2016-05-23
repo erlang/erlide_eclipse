@@ -22,7 +22,7 @@ public class ErlangConsolePartitioner implements IConsoleDocumentPartitioner {
     private static final String[] LEGAL_CONTENT_TYPES = new String[] {
             IDocument.DEFAULT_CONTENT_TYPE };
 
-    private final List<ScriptStyleRange> ranges = new ArrayList<ScriptStyleRange>();
+    private final List<ScriptStyleRange> ranges = new ArrayList<>();
 
     public ErlangConsolePartitioner() {
     }
@@ -82,7 +82,7 @@ public class ErlangConsolePartitioner implements IConsoleDocumentPartitioner {
 
         boolean found = false;
 
-        final List<ScriptStyleRange> result = new ArrayList<ScriptStyleRange>();
+        final List<ScriptStyleRange> result = new ArrayList<>();
         for (int i = ranges.size() - 1; i >= 0; i--) {
             final ScriptStyleRange r = ranges.get(i);
             if (r.start >= offset && r.start <= offset + length

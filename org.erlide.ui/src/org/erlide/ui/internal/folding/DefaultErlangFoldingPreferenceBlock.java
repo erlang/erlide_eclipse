@@ -33,7 +33,7 @@ public class DefaultErlangFoldingPreferenceBlock implements IErlangFoldingPrefer
 
     private final OverlayKey[] fKeys;
 
-    Map<Button, String> fCheckBoxes = new HashMap<Button, String>();
+    Map<Button, String> fCheckBoxes = new HashMap<>();
 
     private final SelectionListener fCheckBoxListener = new SelectionListener() {
 
@@ -55,7 +55,7 @@ public class DefaultErlangFoldingPreferenceBlock implements IErlangFoldingPrefer
     }
 
     private OverlayKey[] createKeys() {
-        final ArrayList<OverlayKey> overlayKeys = new ArrayList<OverlayKey>();
+        final ArrayList<OverlayKey> overlayKeys = new ArrayList<>();
 
         overlayKeys.add(new OverlayPreferenceStore.OverlayKey(TypeDescriptor.BOOLEAN,
                 PreferenceConstants.EDITOR_FOLDING_CLAUSES));

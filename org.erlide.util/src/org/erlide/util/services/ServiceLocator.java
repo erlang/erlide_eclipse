@@ -6,8 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.xtext.xbase.lib.Pair;
 
 public class ServiceLocator {
-    private final static Map<Pair<Class<?>, Object>, Object> services = new ConcurrentHashMap<Pair<Class<?>, Object>, Object>();
-    private final static Map<Pair<Class<?>, Object>, Provider<?>> providers = new ConcurrentHashMap<Pair<Class<?>, Object>, Provider<?>>();
+    private final static Map<Pair<Class<?>, Object>, Object> services = new ConcurrentHashMap<>();
+    private final static Map<Pair<Class<?>, Object>, Provider<?>> providers = new ConcurrentHashMap<>();
 
     /**
      * Acquire an implementation of a service, identified by id key. If one has

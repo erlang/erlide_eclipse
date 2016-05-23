@@ -43,7 +43,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     protected Button fHitCountButton;
     // protected Text fHitCountText;
     protected Combo fBreakActionCombo;
-    protected List<String> fErrorMessages = new ArrayList<String>();
+    protected List<String> fErrorMessages = new ArrayList<>();
 
     /**
      * Attribute used to indicate that a breakpoint should be deleted when

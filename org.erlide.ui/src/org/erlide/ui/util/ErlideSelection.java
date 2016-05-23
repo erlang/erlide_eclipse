@@ -600,7 +600,7 @@ public class ErlideSelection {
             }
         }
         final String post = doc.get(tup.getValue(), end - tup.getValue());
-        return new Pair<String, Integer>(prefix + post, start);
+        return new Pair<>(prefix + post, start);
     }
 
     /**
@@ -672,7 +672,7 @@ public class ErlideSelection {
     }
 
     public static List<Integer> getLineStartOffsets(final String replacementString) {
-        final ArrayList<Integer> ret = new ArrayList<Integer>();
+        final ArrayList<Integer> ret = new ArrayList<>();
         ret.add(0);// there is always a starting one at 0
 
         // we may have line breaks with \r\n, or only \n or \r
@@ -700,7 +700,7 @@ public class ErlideSelection {
     }
 
     public static List<Integer> getLineBreakOffsets(final String replacementString) {
-        final ArrayList<Integer> ret = new ArrayList<Integer>();
+        final ArrayList<Integer> ret = new ArrayList<>();
 
         int ignoreNextNAt = -1;
 
@@ -779,7 +779,7 @@ public class ErlideSelection {
             int i = offset;
 
             if (i > document.getLength()) {
-                return new Pair<String, Integer>("", document.getLength()); //$NON-NLS-1$
+                return new Pair<>("", document.getLength()); //$NON-NLS-1$
             }
 
             while (i > 0) {
@@ -790,9 +790,9 @@ public class ErlideSelection {
                 i--;
             }
 
-            return new Pair<String, Integer>(document.get(i, offset - i), offset);
+            return new Pair<>(document.get(i, offset - i), offset);
         } catch (final BadLocationException e) {
-            return new Pair<String, Integer>("", offset); //$NON-NLS-1$
+            return new Pair<>("", offset); //$NON-NLS-1$
         }
     }
 
@@ -1041,7 +1041,7 @@ public class ErlideSelection {
             final IRegion region = doc.getLineInformationOfOffset(offset);
             final int line = doc.getLineOfOffset(offset);
             final int col = offset - region.getOffset();
-            return new Pair<Integer, Integer>(line, col);
+            return new Pair<>(line, col);
         } catch (final BadLocationException e) {
             throw new RuntimeException(e);
         }

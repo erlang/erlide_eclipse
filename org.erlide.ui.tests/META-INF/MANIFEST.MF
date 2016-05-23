@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.erlide.ui.tests;singleton:=true
 Bundle-Version: 0.32.1.qualifier
 Bundle-Vendor: Erilde.org project
 Fragment-Host: org.erlide.ui
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit,
  org.erlide.libs,
  org.erlide.testing.libs

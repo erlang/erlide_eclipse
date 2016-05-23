@@ -27,7 +27,7 @@ public abstract class AbstractResultTreeParent extends AbstractResultTreeObject 
      */
     public void addChild(final AbstractResultTreeObject child) {
         if (children == null) {
-            children = new ArrayList<AbstractResultTreeObject>();
+            children = new ArrayList<>();
         }
         children.add(child);
         child.setParent(this);

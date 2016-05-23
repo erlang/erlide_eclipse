@@ -43,4 +43,4 @@ Export-Package:
  org.erlide.wrangler.refactoring.util
 Bundle-Localization: plugin
 Bundle-Vendor: UKC
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

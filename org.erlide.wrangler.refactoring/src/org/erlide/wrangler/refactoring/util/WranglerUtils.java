@@ -155,7 +155,7 @@ public final class WranglerUtils {
     static public ArrayList<String> getModuleNames(final IProject project) {
         final ArrayList<IFile> erlangFiles = getModules(project);
 
-        final ArrayList<String> moduleNames = new ArrayList<String>();
+        final ArrayList<String> moduleNames = new ArrayList<>();
         for (final IFile f : erlangFiles) {
             moduleNames.add(removeExtension(f.getName()));
         }
@@ -171,12 +171,12 @@ public final class WranglerUtils {
      * @return module list
      */
     static public ArrayList<IFile> getModules(final IProject project) {
-        final ArrayList<IFile> erlangFiles = new ArrayList<IFile>();
+        final ArrayList<IFile> erlangFiles = new ArrayList<>();
         try {
             findModulesRecursively(project, erlangFiles);
         } catch (final CoreException e) {
             ErlLogger.error(e);
-            return new ArrayList<IFile>();
+            return new ArrayList<>();
         }
         return erlangFiles;
     }
@@ -402,21 +402,15 @@ public final class WranglerUtils {
     }
 
     static private String getFileContent(final IFile file) {
-        try {
-            final InputStream in = file.getContents();
-            final ByteArrayOutputStream out = new ByteArrayOutputStream();
-            try {
-                final byte[] buf = new byte[1024];
-                int read = in.read(buf);
-                while (read > 0) {
-                    out.write(buf, 0, read);
-                    read = in.read(buf);
-                }
-                return out.toString();
-            } finally {
-                in.close();
-                out.close();
+        try (final InputStream in = file.getContents();
+                final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            final byte[] buf = new byte[1024];
+            int read = in.read(buf);
+            while (read > 0) {
+                out.write(buf, 0, read);
+                read = in.read(buf);
             }
+            return out.toString();
         } catch (final CoreException e) {
             ErlLogger.error(e);
         } catch (final IOException e) {

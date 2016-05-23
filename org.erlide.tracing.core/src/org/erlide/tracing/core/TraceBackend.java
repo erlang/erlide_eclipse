@@ -53,10 +53,10 @@ public class TraceBackend {
     private static final String FUN_FILE_INFO = "get_file_info";
     private static final String FUN_LOAD = "load";
 
-    private final Set<TracePattern> tracePatterns = new LinkedHashSet<TracePattern>();
-    private final Set<TracedNode> tracedNodes = new LinkedHashSet<TracedNode>();
-    private final List<ITraceNodeObserver> listeners = new ArrayList<ITraceNodeObserver>();
-    private final Set<ProcessFlag> processFlags = new HashSet<ProcessFlag>();
+    private final Set<TracePattern> tracePatterns = new LinkedHashSet<>();
+    private final Set<TracedNode> tracedNodes = new LinkedHashSet<>();
+    private final List<ITraceNodeObserver> listeners = new ArrayList<>();
+    private final Set<ProcessFlag> processFlags = new HashSet<>();
     private TracedProcess[] processes;
     private ProcessMode processMode;
     private IBackend tracerBackend;
@@ -157,8 +157,8 @@ public class TraceBackend {
                         tracerBackend.getRuntime().registerEventListener(handler);
 
                         // list of nodes being traced
-                        final List<OtpErlangObject> erlangObjects = new ArrayList<OtpErlangObject>();
-                        notActivatedNodes = new HashSet<String>();
+                        final List<OtpErlangObject> erlangObjects = new ArrayList<>();
+                        notActivatedNodes = new HashSet<>();
                         for (final TracedNode tracedNode : tracedNodes) {
                             if (tracedNode.isEnabled()) {
                                 final OtpErlangAtom name = new OtpErlangAtom(
@@ -217,7 +217,7 @@ public class TraceBackend {
             return TracingStatus.ERROR;
         }
         final OtpErlangList nodeNames = (OtpErlangList) tuple.elementAt(1);
-        activatedNodes = new ArrayList<String>();
+        activatedNodes = new ArrayList<>();
         for (final OtpErlangObject nodeName : nodeNames) {
             final String nodeNameString = ((OtpErlangAtom) nodeName).atomValue();
             activatedNodes.add(nodeNameString);

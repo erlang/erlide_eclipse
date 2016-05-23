@@ -25,7 +25,7 @@ public class SuiteLocator {
 
     protected class ResVisitor implements IResourceVisitor {
 
-        public List<IResource> result = new ArrayList<IResource>();
+        public List<IResource> result = new ArrayList<>();
 
         @Override
         public boolean visit(final IResource arg) throws CoreException {

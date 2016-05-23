@@ -79,7 +79,7 @@ public class ErlangXref implements XrefService {
                 return new FunctionRef[0];
             }
             final OtpErlangList l = (OtpErlangList) bind.get("L");
-            final List<FunctionRef> result = new ArrayList<FunctionRef>();
+            final List<FunctionRef> result = new ArrayList<>();
             for (final OtpErlangObject e : l) {
                 result.add(new FunctionRef(e));
             }

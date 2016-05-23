@@ -488,20 +488,12 @@ public class BrowserInformationControl extends AbstractInformationControl
         // Furthermore, the indentation of <dl><dd> elements is too small (e.g
         // with a long @see line)
         final TextPresentation presentation = new TextPresentation();
-        final HTML2TextReader reader = new HTML2TextReader(
-                new StringReader(fInput.getHtml()), presentation);
         String text;
-        try {
-            try {
-                text = reader.getString();
-            } catch (final IOException e) {
-                text = ""; //$NON-NLS-1$
-            }
-        } finally {
-            try {
-                reader.close();
-            } catch (final IOException e) {
-            }
+        try (final HTML2TextReader reader = new HTML2TextReader(
+                new StringReader(fInput.getHtml()), presentation)) {
+            text = reader.getString();
+        } catch (final IOException e) {
+            text = ""; //$NON-NLS-1$
         }
 
         fTextLayout.setText(text);

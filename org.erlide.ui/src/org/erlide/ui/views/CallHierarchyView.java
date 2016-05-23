@@ -109,7 +109,7 @@ public class CallHierarchyView extends ViewPart {
                                 .getModelUtilService().getModule(parent))
                         .getName() + ">" };
             }
-            final List<IErlFunction> result = new ArrayList<IErlFunction>();
+            final List<IErlFunction> result = new ArrayList<>();
             for (final FunctionRef r : children) {
                 try {
                     final IErlFunction fun = ErlangEngine.getInstance().getModel()

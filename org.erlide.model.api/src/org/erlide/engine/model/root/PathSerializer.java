@@ -43,16 +43,11 @@ public final class PathSerializer {
     }
 
     public static List<String> readFile(final String file) {
-        final List<String> res = new ArrayList<String>();
-        try {
-            final BufferedReader reader = new BufferedReader(new FileReader(file));
-            try {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    res.add(line);
-                }
-            } finally {
-                reader.close();
+        final List<String> res = new ArrayList<>();
+        try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                res.add(line);
             }
         } catch (final IOException e) {
         }
@@ -67,8 +62,8 @@ public final class PathSerializer {
             return EMPTY_LIST;
         }
         final String[] v = string.split(sep);
-        final List<String> sresult = new ArrayList<String>(Arrays.asList(v));
-        final List<IPath> result = new ArrayList<IPath>();
+        final List<String> sresult = new ArrayList<>(Arrays.asList(v));
+        final List<IPath> result = new ArrayList<>();
         for (final String s : sresult) {
             final Path path = new Path(s.trim());
             if (!path.isEmpty()) {

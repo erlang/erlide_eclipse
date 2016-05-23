@@ -36,7 +36,7 @@ public class CoveragePerformer implements ICoveragePerformer {
 
     private CoveragePerformer() {
         log = Activator.getDefault();
-        coverNodes = new LinkedList<String>();
+        coverNodes = new LinkedList<>();
     }
 
     public static synchronized CoveragePerformer getPerformer() {
@@ -79,7 +79,7 @@ public class CoveragePerformer implements ICoveragePerformer {
 
             // TODO restarting
 
-            final List<OtpErlangObject> names = new ArrayList<OtpErlangObject>(
+            final List<OtpErlangObject> names = new ArrayList<>(
                     coverNodes.size());
             for (final String name : coverNodes) {
                 names.add(new OtpErlangAtom(name));
@@ -115,7 +115,7 @@ public class CoveragePerformer implements ICoveragePerformer {
         final IPath ppath = config.getProject().getWorkspaceProject().getLocation();
 
         // set include files
-        final List<OtpErlangObject> includes = new ArrayList<OtpErlangObject>(
+        final List<OtpErlangObject> includes = new ArrayList<>(
                 config.getModules().size());
         for (final IPath include : config.getIncludeDirs()) {
             log.info(ppath.append(include));
@@ -136,7 +136,7 @@ public class CoveragePerformer implements ICoveragePerformer {
 
     // cover compilation of chosen modules
     private void recompileModules() throws CoverException {
-        final List<OtpErlangObject> paths = new ArrayList<OtpErlangObject>(
+        final List<OtpErlangObject> paths = new ArrayList<>(
                 config.getModules().size());
         for (final IErlModule module : config.getModules()) {
             if (module == null) {
@@ -165,7 +165,7 @@ public class CoveragePerformer implements ICoveragePerformer {
     @Override
     public synchronized void analyse() throws CoverException {
 
-        final List<OtpErlangObject> modules = new ArrayList<OtpErlangObject>(
+        final List<OtpErlangObject> modules = new ArrayList<>(
                 config.getModules().size());
         for (final IErlModule module : config.getModules()) {
             log.info(module.getModuleName());

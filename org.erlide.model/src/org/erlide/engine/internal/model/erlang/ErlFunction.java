@@ -59,7 +59,7 @@ public class ErlFunction extends ErlMember implements IErlFunction {
 
     @Override
     public List<IErlFunctionClause> getClauses() {
-        final ArrayList<IErlFunctionClause> fc = new ArrayList<IErlFunctionClause>();
+        final ArrayList<IErlFunctionClause> fc = new ArrayList<>();
         synchronized (getModelLock()) {
             for (final IErlElement el : internalGetChildren()) {
                 if (el instanceof IErlFunctionClause) {

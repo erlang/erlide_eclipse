@@ -5,5 +5,5 @@ Bundle-SymbolicName: org.erlide.testing;singleton:=true
 Bundle-Version: 0.32.0.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Eclipse-RegisterBuddy: org.apache.log4j

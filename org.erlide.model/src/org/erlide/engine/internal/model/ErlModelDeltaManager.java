@@ -40,7 +40,7 @@ public class ErlModelDeltaManager {
     public ErlModelDeltaManager(final ErlModel model) {
         this.model = model;
         fFire = true;
-        reconcileDeltas = new HashMap<IErlModule, IErlElementDelta>();
+        reconcileDeltas = new HashMap<>();
         erlModelDeltas = Collections.synchronizedList(new ArrayList<IErlElementDelta>());
     }
 

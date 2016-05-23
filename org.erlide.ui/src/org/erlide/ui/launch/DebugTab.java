@@ -268,7 +268,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
     public void performApply(final ILaunchConfigurationWorkingCopy config) {
         config.setAttribute(ErlRuntimeAttributes.DEBUG_FLAGS,
                 ErlDebugFlags.getFlag(getFlagCheckboxes()));
-        final List<String> r = new ArrayList<String>();
+        final List<String> r = new ArrayList<>();
         for (final Object o : contentProvider.getElements(null)) {
             final IErlModule module = (IErlModule) o;
             r.add(ErlangEngine.getInstance().getModelUtilService().getProject(module)

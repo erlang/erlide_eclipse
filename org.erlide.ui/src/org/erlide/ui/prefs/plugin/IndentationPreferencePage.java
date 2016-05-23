@@ -69,7 +69,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage
     public void init(final IWorkbench workbench) {
     }
 
-    private final List<Text> textFields = new ArrayList<Text>();
+    private final List<Text> textFields = new ArrayList<>();
 
     /*
      * @see PreferencePage#createContents(Composite)

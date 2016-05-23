@@ -85,7 +85,7 @@ public class CoverRunner extends AbstractCoverRunner {
                     config.getModules().iterator().next().getFilePath());
             break;
         case ALL:
-            final List<String> testDirs = new LinkedList<String>();
+            final List<String> testDirs = new LinkedList<>();
             for (final IPath p : config.getSourceDirs()) {
                 log.info(p);
                 if (!p.toString().endsWith("test")) {

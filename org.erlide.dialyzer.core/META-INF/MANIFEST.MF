@@ -13,7 +13,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.runtime,
  org.erlide.util,
  org.erlide.libs
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.erlide.dialyzer.builder,
  org.erlide.dialyzer.internal.builder
 Bundle-ActivationPolicy: lazy

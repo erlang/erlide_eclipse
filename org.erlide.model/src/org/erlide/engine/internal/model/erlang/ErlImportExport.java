@@ -21,7 +21,7 @@ public abstract class ErlImportExport extends ErlMember implements IErlImportExp
     protected ErlImportExport(final IParent parent, final String name,
             final OtpErlangList functionList) {
         super(parent, name);
-        fFunctions = new ArrayList<ErlangFunction>(functionList.arity());
+        fFunctions = new ArrayList<>(functionList.arity());
         for (final OtpErlangObject object : functionList) {
             fFunctions.add(new ErlangFunction((OtpErlangTuple) object));
         }

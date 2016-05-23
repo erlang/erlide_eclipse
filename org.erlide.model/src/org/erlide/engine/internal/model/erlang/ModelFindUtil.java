@@ -159,7 +159,7 @@ public class ModelFindUtil implements ModelFindService {
             final String definedName, final ErlElementKind kind) throws CoreException {
         String unquoted = StringUtils.unquote(definedName);
         final String quoted = StringUtils.quote(definedName);
-        final Set<String> names = new HashSet<String>(3);
+        final Set<String> names = new HashSet<>(3);
         if (kind == ErlElementKind.RECORD_DEF) {
             while (names.add(unquoted)) {
                 unquoted = resolveMacroValue(unquoted, module);

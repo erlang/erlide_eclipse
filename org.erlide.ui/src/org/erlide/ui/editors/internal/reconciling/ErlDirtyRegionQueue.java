@@ -58,7 +58,7 @@ public class ErlDirtyRegionQueue {
     }
 
     public List<ErlDirtyRegion> extractAllDirtyRegions() {
-        final List<ErlDirtyRegion> d = new ArrayList<ErlDirtyRegion>(fDirtyRegions);
+        final List<ErlDirtyRegion> d = new ArrayList<>(fDirtyRegions);
         fDirtyRegions.clear();
         return d;
     }

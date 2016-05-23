@@ -84,7 +84,7 @@ public final class PreferencesHelper {
 
     public static IScopeContext[] getNextContexts(final IScopeContext[] list,
             final IScopeContext item) {
-        final List<IScopeContext> result = new ArrayList<IScopeContext>();
+        final List<IScopeContext> result = new ArrayList<>();
         boolean found = false;
         for (final IScopeContext ctx : list) {
             if (found) {

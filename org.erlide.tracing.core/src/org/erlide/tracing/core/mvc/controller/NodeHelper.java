@@ -54,9 +54,9 @@ public class NodeHelper {
             return BackendCore.getBackendManager().getAllBackends();
         }
 
-        final List<IBackend> backends = new ArrayList<IBackend>();
+        final List<IBackend> backends = new ArrayList<>();
         final IBackendManager backendManager = BackendCore.getBackendManager();
-        final Set<IBackend> ignored = new HashSet<IBackend>();
+        final Set<IBackend> ignored = new HashSet<>();
         IBackend backend;
 
         if ((backend = backendManager.getIdeBackend()) != null) {

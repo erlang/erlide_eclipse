@@ -60,7 +60,7 @@ public class CompilerOptionTest {
         final DefineOption option = CompilerOption.DEFINE;
         @SuppressWarnings("unchecked")
         final List<Pair<String, String>> values = Lists
-                .newArrayList(new Pair<String, String>("Macro", "[hej,1]"));
+                .newArrayList(new Pair<>("Macro", "[hej,1]"));
         final OtpErlangObject actual = option.toTerm(values);
         final String expected = "[{d,'Macro',[hej,1]}]";
         Assert.assertEquals(expected, actual.toString());
@@ -71,7 +71,7 @@ public class CompilerOptionTest {
         final DefineOption option = CompilerOption.DEFINE;
         @SuppressWarnings("unchecked")
         final List<Pair<String, String>> values = Lists
-                .newArrayList(new Pair<String, String>("Macro", ""));
+                .newArrayList(new Pair<>("Macro", ""));
         final OtpErlangObject actual = option.toTerm(values);
         final String expected = "[{d,'Macro'}]";
         Assert.assertEquals(expected, actual.toString());

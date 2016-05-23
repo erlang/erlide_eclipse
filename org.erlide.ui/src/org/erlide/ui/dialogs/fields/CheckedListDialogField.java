@@ -45,7 +45,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
     public CheckedListDialogField(final IListAdapter<Element> adapter,
             final String[] customButtonLabels, final ILabelProvider lprovider) {
         super(adapter, customButtonLabels, lprovider);
-        fCheckElements = new ArrayList<Element>();
+        fCheckElements = new ArrayList<>();
 
         fCheckAllButtonIndex = -1;
         fUncheckAllButtonIndex = -1;
@@ -128,7 +128,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
         if (isOkToUse(fTableControl)) {
             // workaround for bug 53853
             final Object[] checked = ((CheckboxTableViewer) fTable).getCheckedElements();
-            final ArrayList<Object> res = new ArrayList<Object>(checked.length);
+            final ArrayList<Object> res = new ArrayList<>(checked.length);
             for (final Object element : checked) {
                 res.add(element);
             }
@@ -160,7 +160,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
      * Sets the checked elements.
      */
     public void setCheckedElements(final Collection<? extends Element> list) {
-        fCheckElements = new ArrayList<Element>(list);
+        fCheckElements = new ArrayList<>(list);
         if (isOkToUse(fTableControl)) {
             ((CheckboxTableViewer) fTable).setCheckedElements(list.toArray());
         }

@@ -104,7 +104,7 @@ public class IndentHandler extends ErlangAbstractHandler {
         final int tabw = EditorsUI.getPreferenceStore()
                 .getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
         final int indentw = AutoIndentStrategy.getIndentWidthFromPreferences();
-        final Map<String, String> prefs = new TreeMap<String, String>();
+        final Map<String, String> prefs = new TreeMap<>();
         IndentationPreferencePage.addKeysAndPrefs(prefs);
         SmartTypingPreferencePage.addAutoNLKeysAndPrefs(prefs);
         final boolean useTabs = AutoIndentStrategy.getUseTabsFromPreferences();

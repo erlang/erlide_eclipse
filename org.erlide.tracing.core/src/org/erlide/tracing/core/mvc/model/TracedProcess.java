@@ -27,7 +27,7 @@ public class TracedProcess {
     private final OtpErlangPid pid;
     private final String initialCall;
     private final String node;
-    private final Set<ProcessFlag> flags = new HashSet<ProcessFlag>();
+    private final Set<ProcessFlag> flags = new HashSet<>();
 
     /**
      * Creates process from tuple. List of tuples describing all processes is

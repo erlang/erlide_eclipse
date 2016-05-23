@@ -112,8 +112,8 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
         fStore = store;
         fStore.addKeys(createOverlayStoreKeys());
         fProviderDescriptors = createListModel();
-        fProviderPreferences = new HashMap<String, IErlangFoldingPreferenceBlock>();
-        fProviderControls = new HashMap<String, Control>();
+        fProviderPreferences = new HashMap<>();
+        fProviderControls = new HashMap<>();
     }
 
     private Map<String, ErlangFoldingStructureProviderDescriptor> createListModel() {
@@ -122,7 +122,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
         reg.reloadExtensions();
         final ErlangFoldingStructureProviderDescriptor[] descs = reg
                 .getFoldingProviderDescriptors();
-        final Map<String, ErlangFoldingStructureProviderDescriptor> map = new HashMap<String, ErlangFoldingStructureProviderDescriptor>();
+        final Map<String, ErlangFoldingStructureProviderDescriptor> map = new HashMap<>();
         for (final ErlangFoldingStructureProviderDescriptor element : descs) {
             map.put(element.getId(), element);
         }
@@ -131,7 +131,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 
     private OverlayPreferenceStore.OverlayKey[] createOverlayStoreKeys() {
 
-        final ArrayList<OverlayPreferenceStore.OverlayKey> overlayKeys = new ArrayList<OverlayPreferenceStore.OverlayKey>();
+        final ArrayList<OverlayPreferenceStore.OverlayKey> overlayKeys = new ArrayList<>();
 
         overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
                 OverlayPreferenceStore.TypeDescriptor.BOOLEAN,

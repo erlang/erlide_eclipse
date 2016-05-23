@@ -48,9 +48,9 @@ public class ResourceTreeAndListGroup extends EventManager
     Object root;
 
     private Object currentTreeSelection;
-    Collection<Object> expandedTreeNodes = new HashSet<Object>();
-    Map<Object, List<Object>> checkedStateStore = new HashMap<Object, List<Object>>(9);
-    Collection<Object> whiteCheckedTreeItems = new HashSet<Object>();
+    Collection<Object> expandedTreeNodes = new HashSet<>();
+    Map<Object, List<Object>> checkedStateStore = new HashMap<>(9);
+    Collection<Object> whiteCheckedTreeItems = new HashSet<>();
     final ITreeContentProvider treeContentProvider;
     private final IStructuredContentProvider listContentProvider;
     private final ILabelProvider treeLabelProvider;
@@ -367,7 +367,7 @@ public class ResourceTreeAndListGroup extends EventManager
                                 final Object child = children[i];
                                 setWhiteChecked(child, true);
                                 treeViewer.setChecked(child, true);
-                                checkedStateStore.put(child, new ArrayList<Object>());
+                                checkedStateStore.put(child, new ArrayList<>());
                             }
                         }
 
@@ -492,7 +492,7 @@ public class ResourceTreeAndListGroup extends EventManager
      */
     public List<Object> getAllCheckedListItems() {
 
-        final ArrayList<Object> returnValue = new ArrayList<Object>();
+        final ArrayList<Object> returnValue = new ArrayList<>();
 
         final IElementFilter passThroughFilter = new IElementFilter() {
 
@@ -514,7 +514,7 @@ public class ResourceTreeAndListGroup extends EventManager
         try {
             getAllCheckedListItems(passThroughFilter, null);
         } catch (final InterruptedException exception) {
-            return new ArrayList<Object>();
+            return new ArrayList<>();
         }
         return returnValue;
 
@@ -529,7 +529,7 @@ public class ResourceTreeAndListGroup extends EventManager
      */
     public List<Object> getAllWhiteCheckedItems() {
 
-        final List<Object> result = new ArrayList<Object>();
+        final List<Object> result = new ArrayList<>();
 
         // Iterate through the children of the root as the root is not in the
         // store
@@ -610,7 +610,7 @@ public class ResourceTreeAndListGroup extends EventManager
             return; // no need to proceed upwards from here
         }
 
-        checkedStateStore.put(treeElement, new ArrayList<Object>());
+        checkedStateStore.put(treeElement, new ArrayList<>());
         final Object parent = treeContentProvider.getParent(treeElement);
         if (parent != null) {
             grayCheckHierarchy(parent);
@@ -677,7 +677,7 @@ public class ResourceTreeAndListGroup extends EventManager
      */
     protected void initialize() {
         treeViewer.setInput(root);
-        expandedTreeNodes = new ArrayList<Object>();
+        expandedTreeNodes = new ArrayList<>();
         expandedTreeNodes.add(root);
 
     }
@@ -788,7 +788,7 @@ public class ResourceTreeAndListGroup extends EventManager
             return;
         }
 
-        checkedStateStore.put(item, new ArrayList<Object>());
+        checkedStateStore.put(item, new ArrayList<>());
 
         // mark as expanded as we are going to populate it after this
         expandedTreeNodes.add(item);
@@ -869,7 +869,7 @@ public class ResourceTreeAndListGroup extends EventManager
     void setListForWhiteSelection(final Object treeElement) {
 
         final Object[] listItems = listContentProvider.getElements(treeElement);
-        final List<Object> listItemsChecked = new ArrayList<Object>();
+        final List<Object> listItemsChecked = new ArrayList<>();
         for (int i = 0; i < listItems.length; ++i) {
             listItemsChecked.add(listItems[i]);
         }
@@ -1079,9 +1079,9 @@ public class ResourceTreeAndListGroup extends EventManager
         // so reinitialize everything.
         listViewer.setAllChecked(false);
         treeViewer.setCheckedElements(new Object[0]);
-        whiteCheckedTreeItems = new HashSet<Object>();
-        final Set<Object> selectedNodes = new HashSet<Object>();
-        checkedStateStore = new HashMap<Object, List<Object>>();
+        whiteCheckedTreeItems = new HashSet<>();
+        final Set<Object> selectedNodes = new HashSet<>();
+        checkedStateStore = new HashMap<>();
 
         // Update the store before the hierarchy to prevent updating parents
         // before all of the children are done

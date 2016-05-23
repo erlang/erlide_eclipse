@@ -91,7 +91,7 @@ public class ColoringPreferencePage extends PreferencePage
     private OverlayPreferenceStore fOverlayStore;
 
     public ColoringPreferencePage() {
-        fColors = new ArrayList<TokenHighlight>();
+        fColors = new ArrayList<>();
     }
 
     /**

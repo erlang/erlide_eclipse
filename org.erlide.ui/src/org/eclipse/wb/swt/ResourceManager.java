@@ -49,7 +49,7 @@ public class ResourceManager extends SWTResourceManager {
     // Image
     //
     // //////////////////////////////////////////////////////////////////////////
-    private static Map<ImageDescriptor, Image> descriptorImageMap = new HashMap<ImageDescriptor, Image>();
+    private static Map<ImageDescriptor, Image> descriptorImageMap = new HashMap<>();
 
     /**
      * Returns an {@link ImageDescriptor} stored in the file at the specified
@@ -143,12 +143,12 @@ public class ResourceManager extends SWTResourceManager {
         }
         Map<Image, Map<Image, Image>> cornerDecoratedImageMap = m_decoratedImageMap[corner];
         if (cornerDecoratedImageMap == null) {
-            cornerDecoratedImageMap = new HashMap<Image, Map<Image, Image>>();
+            cornerDecoratedImageMap = new HashMap<>();
             m_decoratedImageMap[corner] = cornerDecoratedImageMap;
         }
         Map<Image, Image> decoratedMap = cornerDecoratedImageMap.get(baseImage);
         if (decoratedMap == null) {
-            decoratedMap = new HashMap<Image, Image>();
+            decoratedMap = new HashMap<>();
             cornerDecoratedImageMap.put(baseImage, decoratedMap);
         }
         //
@@ -229,7 +229,7 @@ public class ResourceManager extends SWTResourceManager {
     /**
      * Maps URL to images.
      */
-    private static Map<String, Image> m_URLImageMap = new HashMap<String, Image>();
+    private static Map<String, Image> m_URLImageMap = new HashMap<>();
 
     /**
      * Provider for plugin resources, used by WindowBuilder at design time.
@@ -298,12 +298,9 @@ public class ResourceManager extends SWTResourceManager {
             final String key = url.toExternalForm();
             Image image = m_URLImageMap.get(key);
             if (image == null) {
-                final InputStream stream = url.openStream();
-                try {
+                try (final InputStream stream = url.openStream();){
                     image = getImage(stream);
                     m_URLImageMap.put(key, image);
-                } finally {
-                    stream.close();
                 }
             }
             return image;

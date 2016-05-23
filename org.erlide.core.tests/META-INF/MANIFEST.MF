@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.erlide.core.tests;singleton:=true
 Bundle-Version: 0.32.1.qualifier
 Bundle-Vendor: erlide.org
 Fragment-Host: org.erlide.core;bundle-version="0.14.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.erlide.core,
  org.erlide.core.builder,
  org.erlide.core.preferences,

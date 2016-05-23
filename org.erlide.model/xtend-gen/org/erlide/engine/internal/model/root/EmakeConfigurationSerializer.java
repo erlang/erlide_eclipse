@@ -1,7 +1,6 @@
 package org.erlide.engine.internal.model.root;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.google.common.base.Objects;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -94,19 +93,19 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
   public void parseOption(final OtpBindings b, final ErlangProjectProperties result) {
     try {
       String _atom = b.getAtom("Tag");
-      boolean _matched = false;
-      if (Objects.equal(_atom, "i")) {
-        _matched=true;
-        Collection<IPath> _includeDirs = result.getIncludeDirs();
-        final List<IPath> incs = new ArrayList<IPath>(_includeDirs);
-        String _string = b.getString("Arg");
-        final Path inc = new Path(_string);
-        boolean _contains = incs.contains(inc);
-        boolean _not = (!_contains);
-        if (_not) {
-          incs.add(inc);
-        }
-        result.setIncludeDirs(incs);
+      switch (_atom) {
+        case "i":
+          Collection<IPath> _includeDirs = result.getIncludeDirs();
+          final List<IPath> incs = new ArrayList<IPath>(_includeDirs);
+          String _string = b.getString("Arg");
+          final Path inc = new Path(_string);
+          boolean _contains = incs.contains(inc);
+          boolean _not = (!_contains);
+          if (_not) {
+            incs.add(inc);
+          }
+          result.setIncludeDirs(incs);
+          break;
       }
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);

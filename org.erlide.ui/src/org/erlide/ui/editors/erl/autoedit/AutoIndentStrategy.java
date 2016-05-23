@@ -83,7 +83,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
             final int tabw = EditorsUI.getPreferenceStore().getInt(
                     AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 
-            final Map<String, String> prefs = new TreeMap<String, String>();
+            final Map<String, String> prefs = new TreeMap<>();
             IndentationPreferencePage.addKeysAndPrefs(prefs);
             SmartTypingPreferencePage.addAutoNLKeysAndPrefs(prefs);
             final boolean useTabs = getUseTabsFromPreferences();

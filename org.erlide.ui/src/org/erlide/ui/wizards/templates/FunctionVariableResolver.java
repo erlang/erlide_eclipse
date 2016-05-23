@@ -26,7 +26,7 @@ import org.erlide.util.ErlLogger;
 
 public class FunctionVariableResolver extends TemplateVariableResolver {
 
-    protected List<Object[]> functions = new ArrayList<Object[]>();
+    protected List<Object[]> functions = new ArrayList<>();
 
     @Override
     public void resolve(final TemplateVariable variable, final TemplateContext context) {

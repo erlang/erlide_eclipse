@@ -9,7 +9,7 @@
 	<classpathentry exported="true" kind="lib" path="commons-collections-3.2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="commons-lang-2.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="jbehave-core-3.0.jar" sourcepath="jbehave-core-3.0-sources.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

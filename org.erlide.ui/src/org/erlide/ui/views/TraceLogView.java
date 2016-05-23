@@ -79,7 +79,7 @@ public class TraceLogView extends ViewPart {
 
         public TreeParent(final String name) {
             super(name);
-            children = new ArrayList<TreeObject>();
+            children = new ArrayList<>();
         }
 
         public void addChild(final TreeObject child) {

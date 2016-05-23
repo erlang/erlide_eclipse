@@ -29,7 +29,7 @@ public class CommandData {
 
     public void addUserInput(final List<String> input) {
 
-        final List<OtpErlangObject> argsTmp = new LinkedList<OtpErlangObject>();
+        final List<OtpErlangObject> argsTmp = new LinkedList<>();
         final OtpErlangObject[] userInput = new OtpErlangObject[input.size()];
 
         int i = 0;

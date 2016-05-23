@@ -334,7 +334,7 @@ public class OtpParser {
 
     private static List<Token> scan(final String s) {
         String ss = s + " ";
-        final List<Token> result = new ArrayList<Token>();
+        final List<Token> result = new ArrayList<>();
         Token t = Token.nextToken(ss);
         while (t != null) {
             result.add(t);

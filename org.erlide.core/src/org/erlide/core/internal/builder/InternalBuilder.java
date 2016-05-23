@@ -215,7 +215,7 @@ public class InternalBuilder extends ErlangBuilder {
         backend.addProjectPath(model.findProject(project));
 
         notifier.setProgressPerCompilationUnit(1.0f / n);
-        final Map<RpcFuture, IResource> results = new HashMap<RpcFuture, IResource>();
+        final Map<RpcFuture, IResource> results = new HashMap<>();
         for (final BuildResource bres : resourcesToBuild) {
             notifier.checkCancel();
             final IResource resource = bres.getResource();

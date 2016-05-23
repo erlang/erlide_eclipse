@@ -17,7 +17,7 @@ public final class LaunchUtils {
         final String projectNamesString = configuration
                 .getAttribute(ErlRuntimeAttributes.PROJECTS, "");
         final String[] projectNames = projectNamesString.split(";");
-        final List<IProject> projects = new ArrayList<IProject>();
+        final List<IProject> projects = new ArrayList<>();
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         for (final String s : projectNames) {
             if (s != null && s.length() > 0) {

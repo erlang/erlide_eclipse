@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Testing Support Libraries
 Bundle-SymbolicName: org.erlide.testing.libs;singleton:=true
 Bundle-Version: 1.2.1
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: commons-collections-3.2.1.jar,
  commons-lang-2.5.jar,
  jbehave-core-3.0.jar,

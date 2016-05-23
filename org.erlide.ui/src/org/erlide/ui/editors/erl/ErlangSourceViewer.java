@@ -64,7 +64,7 @@ public class ErlangSourceViewer extends ProjectionViewer implements IDisposable 
 
         List<TokenHighlight> colors;
         if (colors0 == null) {
-            colors = new ArrayList<TokenHighlight>();
+            colors = new ArrayList<>();
             for (final TokenHighlight th : TokenHighlight.values()) {
                 colors.add(th);
             }

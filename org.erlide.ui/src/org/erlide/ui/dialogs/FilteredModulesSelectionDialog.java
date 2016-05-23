@@ -460,7 +460,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
         private final ModuleFilter moduleFilter;
         private final IProgressMonitor progressMonitor;
         private final List<IResource> projects;
-        private final Set<IPath> validPaths = new HashSet<IPath>();
+        private final Set<IPath> validPaths = new HashSet<>();
         private final Set<IPath> extraLocations = Sets.newHashSet();
 
         /**
@@ -479,7 +479,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
             this.moduleFilter = moduleFilter;
             this.progressMonitor = progressMonitor;
             final IResource[] resources = container.members();
-            projects = new ArrayList<IResource>(Arrays.asList(resources));
+            projects = new ArrayList<>(Arrays.asList(resources));
             extraLocations.addAll(SourcePathUtils.getExtraSourcePaths());
             if (progressMonitor != null) {
                 progressMonitor.beginTask("Searching", projects.size());
@@ -542,7 +542,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
             if (erlProject != null) {
                 final ErlangProjectProperties properties = erlProject.getProperties();
                 final String extMods = properties.getExternalModules();
-                final List<String> files = new ArrayList<String>();
+                final List<String> files = new ArrayList<>();
                 files.addAll(PreferencesUtils.unpackList(extMods));
                 final String extIncs = properties.getExternalIncludes();
                 files.addAll(PreferencesUtils.unpackList(extIncs));
@@ -601,7 +601,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
         private Set<IPath> getFullPaths(final IProject project,
                 final Collection<IPath> sourcePaths) {
-            final HashSet<IPath> result = new HashSet<IPath>();
+            final HashSet<IPath> result = new HashSet<>();
             for (final IPath path : sourcePaths) {
                 final String path_string = path.toString();
                 if (".".equals(path_string)) {

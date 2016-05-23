@@ -26,7 +26,7 @@ public class ErlideContextAssist implements ContextAssistService {
 
     @Override
     public Collection<String> getVariables(final String src, final String prefix) {
-        final SortedSet<String> result = new TreeSet<String>();
+        final SortedSet<String> result = new TreeSet<>();
         try {
             final OtpErlangObject res = backend.call("erlide_content_assist",
                     "get_variables", "ss", src, prefix);

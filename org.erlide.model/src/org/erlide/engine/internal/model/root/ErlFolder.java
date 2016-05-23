@@ -62,7 +62,7 @@ public class ErlFolder extends Openable implements IErlFolder {
 
     @Override
     public Collection<IErlModule> getModules() throws ErlModelException {
-        final List<IErlModule> result = new ArrayList<IErlModule>();
+        final List<IErlModule> result = new ArrayList<>();
         addModules(result);
         return result;
     }

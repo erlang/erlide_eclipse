@@ -88,7 +88,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
         fEnabledFilterIds = Sets.newHashSet(enabledFilterIds);
 
         fBuiltInFilters = FilterDescriptor.getFilterDescriptors(fViewId);
-        fFilterDescriptorChangeHistory = new Stack<FilterDescriptor>();
+        fFilterDescriptorChangeHistory = new Stack<>();
     }
 
     @Override

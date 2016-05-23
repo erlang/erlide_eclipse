@@ -134,7 +134,7 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
 
     private final String CATEGORY = toString();
     private final IPositionUpdater fUpdater = new ExclusivePositionUpdater(CATEGORY);
-    private final Stack<BracketLevel> fBracketLevelStack = new Stack<BracketLevel>();
+    private final Stack<BracketLevel> fBracketLevelStack = new Stack<>();
     private IPreferenceChangeListener fPreferenceChangeListener;
 
     public void setCloseBracketsEnabled(final boolean enabled) {

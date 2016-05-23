@@ -49,7 +49,7 @@ public final class ChangesetMaker {
      */
     @SuppressWarnings("boxing")
     private static List<Character> convertArrayToArrayList(final char[] charArray) {
-        final List<Character> result = new ArrayList<Character>();
+        final List<Character> result = new ArrayList<>();
         for (final char c : charArray) {
             result.add(c);
         }
@@ -123,15 +123,15 @@ public final class ChangesetMaker {
             throws IOException {
         inFile = in;
 
-        final List<TextEdit> edits = new ArrayList<TextEdit>();
+        final List<TextEdit> edits = new ArrayList<>();
         inFileCharArray = null;
         outFileCharArray = null;
 
         inFileCharArray = readFile(inFile);
-        outFileCharArray = new ArrayList<Character>();
+        outFileCharArray = new ArrayList<>();
         outFileCharArray = convertArrayToArrayList(out.toCharArray());
 
-        algorithm = new Diff<Character>(inFileCharArray, outFileCharArray);
+        algorithm = new Diff<>(inFileCharArray, outFileCharArray);
 
         differencesList = algorithm.diff();
         for (final Difference d : differencesList) {
@@ -206,10 +206,8 @@ public final class ChangesetMaker {
     @SuppressWarnings("boxing")
     static private List<Character> readFile(final File file) throws IOException {
 
-        final List<Character> result = new ArrayList<Character>();
-        final BufferedReader input = new BufferedReader(new FileReader(file));
-
-        try {
+        final List<Character> result = new ArrayList<>();
+        try (final BufferedReader input = new BufferedReader(new FileReader(file))) {
             final char c[] = new char[1];
             while (input.read(c) > 0) {
                 /*
@@ -220,8 +218,6 @@ public final class ChangesetMaker {
                  */
                 result.add(c[0]);
             }
-        } finally {
-            input.close();
         }
         return result;
     }

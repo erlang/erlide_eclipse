@@ -66,7 +66,7 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
         final String erlideTemplates = System.getProperty("erlide.templates");
         if (erlideTemplates != null) {
             final String[] l = erlideTemplates.split(";");
-            final Collection<TemplatePersistenceData> templates = new ArrayList<TemplatePersistenceData>();
+            final Collection<TemplatePersistenceData> templates = new ArrayList<>();
             readIncludedTemplates(templates, l);
             for (final TemplatePersistenceData data : templates) {
                 add(data);
@@ -75,14 +75,11 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
     }
 
     private void readIncludedTemplates(
-            final Collection<TemplatePersistenceData> templates, final String[] files)
-            throws IOException {
+            final Collection<TemplatePersistenceData> templates, final String[] files) {
         for (final String file : files) {
             if (file != null) {
-                InputStream stream = null;
-                try {
-                    final InputStream input = new FileInputStream(new File(file));
-                    stream = new BufferedInputStream(input);
+                try (final InputStream input = new FileInputStream(new File(file));
+                        InputStream stream = new BufferedInputStream(input)) {
                     final TemplateReaderWriter reader = new TemplateReaderWriter();
                     final TemplatePersistenceData[] datas = reader.read(stream, null);
                     for (final TemplatePersistenceData data : datas) {
@@ -90,13 +87,7 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
                             templates.add(data);
                         }
                     }
-                } finally {
-                    try {
-                        if (stream != null) {
-                            stream.close();
-                        }
-                    } catch (final IOException x) {
-                    }
+                } catch (final IOException x) {
                 }
             }
         }

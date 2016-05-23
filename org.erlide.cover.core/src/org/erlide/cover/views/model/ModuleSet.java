@@ -16,7 +16,7 @@ public class ModuleSet {
     private static Map<String, ModuleStats> map;
 
     static {
-        map = new HashMap<String, ModuleStats>();
+        map = new HashMap<>();
     }
 
     public static void add(final ModuleStats module) {

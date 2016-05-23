@@ -27,13 +27,13 @@ public class CoverBackend implements ICoverBackend {
     private CoverEventHandler handler;
     private CoverLaunchSettings settings;
 
-    private final List<ICoverObserver> listeners = new LinkedList<ICoverObserver>();
+    private final List<ICoverObserver> listeners = new LinkedList<>();
     private ICoverAnnotationMarker annotationMarker;
 
     private final Logger log; // logger
 
     private EUnitEventHandler testHandler;
-    private final List<IEUnitObserver> testListeners = new LinkedList<IEUnitObserver>();
+    private final List<IEUnitObserver> testListeners = new LinkedList<>();
 
     public static synchronized CoverBackend getInstance() {
         if (instance == null) {

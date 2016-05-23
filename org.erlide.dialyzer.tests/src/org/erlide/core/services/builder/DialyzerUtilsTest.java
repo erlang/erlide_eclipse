@@ -212,9 +212,9 @@ public class DialyzerUtilsTest {
                     ErlangEngine.getInstance().getModel(), selectedResource);
             final Set<IErlProject> projects = Sets.newHashSet();
             projects.add(erlProject);
-            final List<String> names = new ArrayList<String>();
-            final List<IPath> includeDirs = new ArrayList<IPath>();
-            final List<String> files = new ArrayList<String>();
+            final List<String> names = new ArrayList<>();
+            final List<IPath> includeDirs = new ArrayList<>();
+            final List<String> files = new ArrayList<>();
             DialyzerUtils.collectFilesAndIncludeDirs(modules, projects, files, names,
                     includeDirs, sources);
             // then
@@ -230,7 +230,7 @@ public class DialyzerUtilsTest {
                 }
             } else {
                 assertEquals(2, files.size());
-                final Set<String> fSet = new HashSet<String>(2);
+                final Set<String> fSet = new HashSet<>(2);
                 for (final String i : files) {
                     fSet.add(new Path(i).lastSegment());
                 }
@@ -328,9 +328,9 @@ public class DialyzerUtilsTest {
                     ErlangEngine.getInstance().getModel(), erlProject.getResource());
             final Set<IErlProject> projects = Sets.newHashSet();
             projects.add(erlProject);
-            final List<String> names = new ArrayList<String>();
-            final List<IPath> includeDirs = new ArrayList<IPath>();
-            final List<String> files = new ArrayList<String>();
+            final List<String> names = new ArrayList<>();
+            final List<IPath> includeDirs = new ArrayList<>();
+            final List<String> files = new ArrayList<>();
             DialyzerUtils.collectFilesAndIncludeDirs(modules, projects, files, names,
                     includeDirs, false);
             // then

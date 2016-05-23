@@ -312,7 +312,7 @@ public class StringMatcher {
             }
         }
 
-        final Vector<String> temp = new Vector<String>();
+        final Vector<String> temp = new Vector<>();
 
         int pos = 0;
         final StringBuilder buf = new StringBuilder();
