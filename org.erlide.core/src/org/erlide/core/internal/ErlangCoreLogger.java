@@ -1,4 +1,4 @@
-package org.erlide.core;
+package org.erlide.core.internal;
 
 import java.io.File;
 import java.util.logging.Level;
@@ -12,6 +12,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangStatus;
 import org.erlide.util.ErlLogger;
 
 public class ErlangCoreLogger {

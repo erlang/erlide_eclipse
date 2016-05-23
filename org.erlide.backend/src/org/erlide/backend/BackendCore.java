@@ -2,6 +2,7 @@ package org.erlide.backend;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.api.IBackendManager;
+import org.erlide.backend.internal.EpmdWatchJob;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.RuntimeCore;

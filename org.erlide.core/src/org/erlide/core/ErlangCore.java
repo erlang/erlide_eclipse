@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.backend.debug.ErlangDebugOptionsManager;
+import org.erlide.core.internal.ErlangCoreLogger;
 import org.erlide.runtime.rpc.RpcMonitor;
 import org.erlide.util.EncodingUtils;
 import org.erlide.util.ErlLogger;

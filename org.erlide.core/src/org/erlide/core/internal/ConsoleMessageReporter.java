@@ -1,5 +1,6 @@
-package org.erlide.core;
+package org.erlide.core.internal;
 
+import org.erlide.core.ErlangPlugin;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.ErlideMessage;
 
