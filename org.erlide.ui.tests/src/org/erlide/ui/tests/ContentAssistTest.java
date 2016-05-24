@@ -163,7 +163,7 @@ public class ContentAssistTest {
         try {
             final String initialText1 = "-define(abc,abc).\n-define(aBc, aBc).\nf()->?ab";
             completionTest(project, "w.erl", initialText1, initialText1.length() - 1,
-                    Lists.newArrayList("abc", "aBc"), false);
+                    Lists.newArrayList("aBc", "abc"), false);
             final String initialText2 = "-define(abc,abc).\n-define(aBc, aBc).\nf()->?aB";
             completionTest(project, "w2.erl", initialText2, initialText2.length(),
                     Lists.newArrayList("aBc", "abc"), false);

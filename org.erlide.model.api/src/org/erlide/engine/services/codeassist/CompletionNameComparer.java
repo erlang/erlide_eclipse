@@ -15,6 +15,9 @@ public class CompletionNameComparer implements Comparator<CompletionData> {
         final String s1 = o1.getDisplayString();
         final String s2 = o2.getDisplayString();
         // exact prefix matches get higher priority
+        if (s1.startsWith(prefix) && s2.startsWith(prefix)) {
+            return s1.compareTo(s2);
+        }
         if (s1.startsWith(prefix)) {
             return -1;
         }
