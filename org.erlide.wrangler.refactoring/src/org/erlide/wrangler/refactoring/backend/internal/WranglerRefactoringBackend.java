@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend.internal;
 
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.IRpcMessage;
@@ -62,8 +62,8 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      *            parameters array
      * @return parsed RPC message
      */
-    public IRpcMessage callWithParser(final IRpcMessage parser,
-            final String functionName, final String signature, final Object... parameters) {
+    public IRpcMessage callWithParser(final IRpcMessage parser, final String functionName,
+            final String signature, final Object... parameters) {
         final RpcResult res = callWithoutParser(functionName, signature, parameters);
         parser.parse(res);
         return parser;
@@ -149,13 +149,13 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      *            parameters
      * @return true if the call was successful, else false
      */
-    public boolean callSimpleInspection(final String functionName,
-            final String signature, final Object... parameters) {
-        ErlLogger.info("Wrangler inspection call: "
-                + makeLogStr(functionName, parameters));
+    public boolean callSimpleInspection(final String functionName, final String signature,
+            final Object... parameters) {
+        ErlLogger.info(
+                "Wrangler inspection call: " + makeLogStr(functionName, parameters));
         RpcResult res;
-        res = backend.call_noexception(UNLIMITED_TIMEOUT, INSPECTION_MODULE,
-                functionName, signature, parameters);
+        res = backend.call_noexception(UNLIMITED_TIMEOUT, INSPECTION_MODULE, functionName,
+                signature, parameters);
         try {
             if (res.isOk()) {
                 final OtpErlangAtom b = (OtpErlangAtom) res.getValue();
@@ -181,11 +181,11 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      */
     public RpcResult callInspection(final String functionName, final String signature,
             final Object... parameters) {
-        ErlLogger.info("Wrangler inspection call: "
-                + makeLogStr(functionName, parameters));
+        ErlLogger.info(
+                "Wrangler inspection call: " + makeLogStr(functionName, parameters));
         RpcResult res;
-        res = backend.call_noexception(UNLIMITED_TIMEOUT, INSPECTION_MODULE,
-                functionName, signature, parameters);
+        res = backend.call_noexception(UNLIMITED_TIMEOUT, INSPECTION_MODULE, functionName,
+                signature, parameters);
         return res;
 
     }

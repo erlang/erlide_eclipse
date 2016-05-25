@@ -116,16 +116,7 @@ public class RuntimeFinder {
     }
     File[] _listFiles = folder.listFiles();
     for (final File f : _listFiles) {
-      boolean _and = false;
-      boolean _isDirectory = f.isDirectory();
-      if (!_isDirectory) {
-        _and = false;
-      } else {
-        String _path_1 = f.getPath();
-        boolean _validateLocation_1 = RuntimeInfo.validateLocation(_path_1);
-        _and = _validateLocation_1;
-      }
-      if (_and) {
+      if ((f.isDirectory() && RuntimeInfo.validateLocation(f.getPath()))) {
         result.add(f);
       }
     }

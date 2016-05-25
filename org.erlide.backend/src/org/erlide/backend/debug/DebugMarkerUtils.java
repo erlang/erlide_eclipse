@@ -24,8 +24,8 @@ public class DebugMarkerUtils {
         marker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
         marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
         marker.setAttribute(IBreakpoint.ID, modelIdentifier);
-        marker.setAttribute(IMarker.MESSAGE, "Line Breakpoint: " + resource.getName()
-                + " [line: " + lineNumber + "]");
+        marker.setAttribute(IMarker.MESSAGE,
+                "Line Breakpoint: " + resource.getName() + " [line: " + lineNumber + "]");
         return marker;
     }
 

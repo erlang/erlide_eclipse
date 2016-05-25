@@ -27,8 +27,8 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public class UnfoldFunctionApplicationRefactoring extends
-        SimpleOneStepWranglerRefactoring {
+public class UnfoldFunctionApplicationRefactoring
+        extends SimpleOneStepWranglerRefactoring {
 
     /**
      * Default constructor

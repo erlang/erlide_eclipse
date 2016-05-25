@@ -35,17 +35,18 @@ public class PreferencesProjectConfigurator implements IProjectConfigurator {
                 ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
         final String outputStr = outputDirStr.replaceAll(";", "");
         result.setOutputDir(new Path(outputStr));
-        result.setRequiredRuntimeVersion(RuntimeVersion.Serializer.parse(node.get(
-                ProjectPreferencesConstants.RUNTIME_VERSION, null)));
+        result.setRequiredRuntimeVersion(RuntimeVersion.Serializer
+                .parse(node.get(ProjectPreferencesConstants.RUNTIME_VERSION, null)));
         if (!result.getRequiredRuntimeVersion().isDefined()) {
-            result.setRequiredRuntimeVersion(ProjectPreferencesConstants.FALLBACK_RUNTIME_VERSION);
+            result.setRequiredRuntimeVersion(
+                    ProjectPreferencesConstants.FALLBACK_RUNTIME_VERSION);
         }
-        result.setExternalModulesFile(node.get(
-                ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
-                ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES));
-        result.setExternalIncludesFile(node.get(
-                ProjectPreferencesConstants.EXTERNAL_INCLUDES,
-                ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES));
+        result.setExternalModulesFile(
+                node.get(ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
+                        ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES));
+        result.setExternalIncludesFile(
+                node.get(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
+                        ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES));
         return result;
     }
 
@@ -55,13 +56,13 @@ public class PreferencesProjectConfigurator implements IProjectConfigurator {
                 PathSerializer.packList(info.getSourceDirs()));
         node.put(ProjectPreferencesConstants.INCLUDE_DIRS,
                 PathSerializer.packList(info.getIncludeDirs()));
-        node.put(ProjectPreferencesConstants.OUTPUT_DIR, info.getOutputDir()
-                .toPortableString());
+        node.put(ProjectPreferencesConstants.OUTPUT_DIR,
+                info.getOutputDir().toPortableString());
         node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
                 info.getExternalIncludesFile());
         if (info.getRequiredRuntimeVersion().isDefined()) {
-            node.put(ProjectPreferencesConstants.RUNTIME_VERSION, info
-                    .getRequiredRuntimeVersion().asMinor().toString());
+            node.put(ProjectPreferencesConstants.RUNTIME_VERSION,
+                    info.getRequiredRuntimeVersion().asMinor().toString());
         } else {
             node.remove(ProjectPreferencesConstants.RUNTIME_VERSION);
         }

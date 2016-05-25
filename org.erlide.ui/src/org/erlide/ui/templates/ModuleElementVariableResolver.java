@@ -31,14 +31,15 @@ public class ModuleElementVariableResolver extends TemplateVariableResolver {
     }
 
     @Override
-    public void resolve(final TemplateVariable variable, final TemplateContext theContext) {
+    public void resolve(final TemplateVariable variable,
+            final TemplateContext theContext) {
         if (reentry) {
             return;
         }
         reentry = true;
         final DocumentTemplateContext context = new DocumentTemplateContext(
-                ErlangSourceContextTypeModule.getDefault(), new Document(
-                        fTemplate.getPattern()), 0, fTemplate.getPattern().length());
+                ErlangSourceContextTypeModule.getDefault(),
+                new Document(fTemplate.getPattern()), 0, fTemplate.getPattern().length());
         TemplateBuffer tb;
         try {
             tb = context.evaluate(fTemplate);

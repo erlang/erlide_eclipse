@@ -20,7 +20,7 @@ import org.erlide.backend.api.ICodeBundle;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.backend.debug.BeamUtil;
 import org.erlide.runtime.api.BeamLoader;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 
@@ -35,7 +35,8 @@ public class CodeManager {
     private final RuntimeVersion version;
 
     // only to be called by Backend
-    CodeManager(final IOtpRpc site, final String backendName, final RuntimeVersion version) {
+    CodeManager(final IOtpRpc site, final String backendName,
+            final RuntimeVersion version) {
         this.site = site;
         this.backendName = backendName;
         this.version = version;
@@ -117,7 +118,8 @@ public class CodeManager {
         }
     }
 
-    private void unloadCodeForBundle(final CodeContext context, final ICodeBundle bundle) {
+    private void unloadCodeForBundle(final CodeContext context,
+            final ICodeBundle bundle) {
         final Collection<URL> beams = bundle.getEbinBeamURLs(context);
         if (beams == null) {
             return;

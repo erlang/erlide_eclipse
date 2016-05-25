@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IResourceDelta;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
-import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementDelta;
 
 import com.google.common.collect.Lists;
@@ -200,7 +200,7 @@ public class ErlElementDelta implements IErlElementDelta {
                 case CHANGED:
                     return;
 
-                    // child was added then removed -> noop
+                // child was added then removed -> noop
                 case REMOVED:
                     fChildren.remove(existingChildIndex);
                     return;
@@ -214,7 +214,7 @@ public class ErlElementDelta implements IErlElementDelta {
                     fChildren.set(existingChildIndex, child);
                     return;
 
-                    // child was removed then changed -> it is removed
+                // child was removed then changed -> it is removed
                 case CHANGED:
                     // child was removed then removed -> it is removed
                 case REMOVED:
@@ -230,7 +230,7 @@ public class ErlElementDelta implements IErlElementDelta {
                     fChildren.set(existingChildIndex, child);
                     return;
 
-                    // child was changed then changed -> it is changed
+                // child was changed then changed -> it is changed
                 case CHANGED:
                     final IErlElementDelta[] children = child.getChildren(ALL);
                     for (final IErlElementDelta element : children) {

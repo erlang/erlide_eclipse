@@ -2,6 +2,7 @@ package org.erlide.engine.model.erlang;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.After;
@@ -39,9 +40,8 @@ public class ModelTest {
         final IErlProject erlProject = ErlideTestUtils.createTmpErlProject(projectName);
         assertNotNull(erlProject);
         // when creating a module with non-erlang extension, e.g. erlx
-        final IErlModule a = ErlideTestUtils
-                .createModule(erlProject, "a.erlx",
-                        "-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
+        final IErlModule a = ErlideTestUtils.createModule(erlProject, "a.erlx",
+                "-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
         // then it should be created
         assertNotNull(a);
     }

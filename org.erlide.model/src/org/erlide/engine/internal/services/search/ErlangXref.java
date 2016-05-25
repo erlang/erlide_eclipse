@@ -7,11 +7,11 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.model.erlang.FunctionRef;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.XrefService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpBindings;
-import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.OtpErlang;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -69,11 +69,12 @@ public class ErlangXref implements XrefService {
 
     @Override
     @SuppressWarnings("boxing")
-    public FunctionRef[] functionUse(final String mod, final String fun, final int arity) {
+    public FunctionRef[] functionUse(final String mod, final String fun,
+            final int arity) {
         try {
             final OtpErlangObject r = backend.call(ERLIDE_XREF, "function_use", "aai",
                     mod, fun, arity);
-            final OtpBindings bind = ErlUtils.match("{ok, L}", r);
+            final OtpBindings bind = OtpErlang.match("{ok, L}", r);
             if (bind == null) {
                 return new FunctionRef[0];
             }

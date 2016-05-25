@@ -3,6 +3,7 @@ package org.erlide.runtime.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -20,8 +21,8 @@ public class BeamLoader {
             r = backend.call("code", "is_sticky", "a", moduleName);
             // TODO handle sticky directories
             if (!((OtpErlangAtom) r).booleanValue()) {
-                r = backend.call("code", "load_binary", "asb", moduleName, moduleName
-                        + ".erl", bin);
+                r = backend.call("code", "load_binary", "asb", moduleName,
+                        moduleName + ".erl", bin);
             } else {
                 ErlLogger.warn("sticky:: %s", moduleName);
                 r = null;
@@ -53,7 +54,7 @@ public class BeamLoader {
                 final OtpErlangTuple t = (OtpErlangTuple) elem;
                 final OtpErlangAtom mod = (OtpErlangAtom) t.elementAt(0);
                 if (mod.atomValue().startsWith("erlide_")) {
-                    // ErlLogger.debug(">>> HAD " + mod + "   " +
+                    // ErlLogger.debug(">>> HAD " + mod + " " +
                     // t.elementAt(1));
                     mine.add(mod);
                 }

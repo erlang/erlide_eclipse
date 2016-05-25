@@ -15,9 +15,9 @@ import org.erlide.engine.internal.model.erlang.ModelFindUtil;
 import org.erlide.engine.internal.model.erlang.ModelInternalUtils;
 import org.erlide.engine.internal.model.root.ProjectConfiguratorFactory;
 import org.erlide.engine.internal.services.cleanup.ErlTidyCleanupProvider;
+import org.erlide.engine.internal.services.codeassist.ErlangCompletionService;
 import org.erlide.engine.internal.services.codeassist.ErlideContextAssist;
 import org.erlide.engine.internal.services.edoc.ErlideEdocExport;
-import org.erlide.engine.internal.services.importer.ErlideImport;
 import org.erlide.engine.internal.services.parsing.ErlParser;
 import org.erlide.engine.internal.services.parsing.ErlideParser;
 import org.erlide.engine.internal.services.parsing.ErlideScanner;
@@ -29,16 +29,19 @@ import org.erlide.engine.internal.services.search.ErlideOpen;
 import org.erlide.engine.internal.services.search.ErlideSearchServer;
 import org.erlide.engine.internal.services.search.ModelSearcher;
 import org.erlide.engine.internal.services.text.ErlideIndent;
-import org.erlide.engine.model.IBeamLocator;
-import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.OtpRpcFactory;
+import org.erlide.engine.model.root.IBeamLocator;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IProjectConfiguratorFactory;
 import org.erlide.engine.services.ErlangService;
 import org.erlide.engine.services.GenericService;
 import org.erlide.engine.services.SystemInfoService;
 import org.erlide.engine.services.cleanup.CleanupProvider;
+import org.erlide.engine.services.codeassist.CompletionService;
 import org.erlide.engine.services.codeassist.ContextAssistService;
 import org.erlide.engine.services.edoc.EdocExportService;
-import org.erlide.engine.services.importer.ImportService;
 import org.erlide.engine.services.parsing.NullScannerService;
 import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.services.parsing.ScannerProviderService;
@@ -53,8 +56,7 @@ import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.engine.services.search.SearchServerService;
 import org.erlide.engine.services.search.XrefService;
 import org.erlide.engine.services.text.IndentService;
-import org.erlide.engine.util.OtpRpcFactory;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
@@ -87,8 +89,8 @@ public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension 
             }
             return (T) constructor.newInstance(initargs);
         } catch (final Exception e) {
-            throw new InjectionException("Could not instantiate service "
-                    + type.getName(), e);
+            throw new InjectionException(
+                    "Could not instantiate service " + type.getName(), e);
         }
     }
 
@@ -171,8 +173,7 @@ public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension 
 
     /**
      * <p>
-     * Construct a {@link CleanUpProvider} appropriate for a particular
-     * IResource.
+     * Construct a {@link CleanUpProvider} appropriate for a particular IResource.
      * </p>
      */
     @Override
@@ -188,11 +189,6 @@ public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension 
     @Override
     public ScannerProviderService getScannerProviderService() {
         return new ScannerProvider(backend);
-    }
-
-    @Override
-    public ImportService getImportService() {
-        return new ErlideImport(backend);
     }
 
     @Override
@@ -226,6 +222,12 @@ public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension 
     @Override
     public IProjectConfiguratorFactory getProjectConfiguratorFactory() {
         return ProjectConfiguratorFactory.getDefault();
+    }
+
+    @Override
+    public CompletionService getCompletionService(final IErlProject project,
+            final IErlModule module, final String elementBefore) {
+        return new ErlangCompletionService(project, module, elementBefore);
     }
 
     @Override

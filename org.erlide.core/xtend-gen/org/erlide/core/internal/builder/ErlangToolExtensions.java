@@ -107,39 +107,15 @@ public class ErlangToolExtensions {
   }
   
   public static boolean buildsWithMake(final IProject project) {
-    boolean _and = false;
-    boolean _hasTopFile = ErlangToolExtensions.hasTopFile(project, "Makefile");
-    if (!_hasTopFile) {
-      _and = false;
-    } else {
-      boolean _hasMakeBuilderEnabled = ErlangToolExtensions.hasMakeBuilderEnabled(project);
-      _and = _hasMakeBuilderEnabled;
-    }
-    return _and;
+    return (ErlangToolExtensions.hasTopFile(project, "Makefile") && ErlangToolExtensions.hasMakeBuilderEnabled(project));
   }
   
   public static boolean buildsWithEmake(final IProject project) {
-    boolean _and = false;
-    boolean _hasTopFile = ErlangToolExtensions.hasTopFile(project, "Emakefile");
-    if (!_hasTopFile) {
-      _and = false;
-    } else {
-      boolean _hasEmakeBuilderEnabled = ErlangToolExtensions.hasEmakeBuilderEnabled(project);
-      _and = _hasEmakeBuilderEnabled;
-    }
-    return _and;
+    return (ErlangToolExtensions.hasTopFile(project, "Emakefile") && ErlangToolExtensions.hasEmakeBuilderEnabled(project));
   }
   
   public static boolean buildsWithRebar(final IProject project) {
-    boolean _and = false;
-    boolean _hasTopFile = ErlangToolExtensions.hasTopFile(project, "rebar.config");
-    if (!_hasTopFile) {
-      _and = false;
-    } else {
-      boolean _hasRebarBuilderEnabled = ErlangToolExtensions.hasRebarBuilderEnabled(project);
-      _and = _hasRebarBuilderEnabled;
-    }
-    return _and;
+    return (ErlangToolExtensions.hasTopFile(project, "rebar.config") && ErlangToolExtensions.hasRebarBuilderEnabled(project));
   }
   
   public static boolean hasMakeBuilderEnabled(final IProject project) {

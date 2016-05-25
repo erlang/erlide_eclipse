@@ -23,7 +23,8 @@ public class TraceChangedEventData {
     }
 
     public TraceChangedEventData(final int what, final ILaunch launch,
-            final IDebugTarget node, final OtpErlangPid pid, final OtpErlangTuple[] events) {
+            final IDebugTarget node, final OtpErlangPid pid,
+            final OtpErlangTuple[] events) {
         super();
         this.what = what;
         this.launch = launch;

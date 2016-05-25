@@ -120,8 +120,8 @@ public class HTML2TextReader extends SubstitutionTextReader {
         --fBold;
         if (fBold == 0) {
             if (fTextPresentation != null) {
-                fTextPresentation.addStyleRange(new StyleRange(fStartOffset, fCounter
-                        - fStartOffset, null, null, SWT.BOLD));
+                fTextPresentation.addStyleRange(new StyleRange(fStartOffset,
+                        fCounter - fStartOffset, null, null, SWT.BOLD));
             }
             fStartOffset = -1;
         }
@@ -225,7 +225,8 @@ public class HTML2TextReader extends SubstitutionTextReader {
             return inParagraph ? EMPTY_STRING : LINE_DELIM;
         }
 
-        if (html.startsWith("/h") && html.length() > 2 && Character.isDigit(html.charAt(2)) || "/dt".equals(html)) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (html.startsWith("/h") && html.length() > 2 //$NON-NLS-1$
+                && Character.isDigit(html.charAt(2)) || "/dt".equals(html)) {  //$NON-NLS-1$
             stopBold();
             return LINE_DELIM;
         }

@@ -52,8 +52,8 @@ public class CompilerOptionsTest {
     @Test
     public void test_4() {
         final CompilerOptions prefs = new CompilerOptions();
-        prefs.setListOption(CompilerOption.DEFINE, new Pair<String, String>("Macro",
-                "[value,1]"));
+        prefs.setListOption(CompilerOption.DEFINE,
+                new Pair<String, String>("Macro", "[value,1]"));
         final String actual = prefs.export().toString();
         final String expect = "[{d,'Macro',[value,1]}," + DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);

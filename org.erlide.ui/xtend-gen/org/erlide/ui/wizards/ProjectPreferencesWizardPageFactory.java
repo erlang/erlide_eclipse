@@ -6,7 +6,7 @@ import java.util.Map;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Pair;
-import org.erlide.engine.model.root.NewProjectData;
+import org.erlide.engine.NewProjectData;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.ui.wizards.EmakeProjectPreferencesWizardPage;
 import org.erlide.ui.wizards.InternalProjectPreferencesWizardPage;

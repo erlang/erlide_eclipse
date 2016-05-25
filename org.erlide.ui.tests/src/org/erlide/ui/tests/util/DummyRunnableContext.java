@@ -23,8 +23,8 @@ public class DummyRunnableContext implements IRunnableContext {
      */
     @Override
     public void run(final boolean fork, final boolean cancelable,
-            final IRunnableWithProgress runnable) throws InvocationTargetException,
-            InterruptedException {
+            final IRunnableWithProgress runnable)
+            throws InvocationTargetException, InterruptedException {
         runnable.run(null);
     }
 

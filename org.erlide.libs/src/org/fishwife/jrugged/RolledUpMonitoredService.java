@@ -38,7 +38,7 @@ public class RolledUpMonitoredService implements MonitoredService {
     /**
      * Initializes the {@link RolledUpMonitoredService} with its component
      * subsystems.
-     * 
+     *
      * @param name
      *            the name for this rolled up service.
      * @param criticals
@@ -112,7 +112,7 @@ public class RolledUpMonitoredService implements MonitoredService {
     /**
      * Get the {@link List} of {@link ServiceStatus} instances for all
      * subsystems.
-     * 
+     *
      * @return the {@link List} of {@link ServiceStatus} instances.
      */
     public List<ServiceStatus> getAllStatuses() {
@@ -124,7 +124,7 @@ public class RolledUpMonitoredService implements MonitoredService {
     /**
      * Get the {@link List} of {@link ServiceStatus} instances for all critical
      * subsystems.
-     * 
+     *
      * @return the {@link List} of {@link ServiceStatus} instances.
      */
     public List<ServiceStatus> getCriticalStatuses() {
@@ -140,7 +140,7 @@ public class RolledUpMonitoredService implements MonitoredService {
     /**
      * Get the {@link List} of {@link ServiceStatus} instances for all
      * non-critical subsystems.
-     * 
+     *
      * @return the {@link List} of {@link ServiceStatus} instances.
      */
     public List<ServiceStatus> getNonCriticalStatuses() {

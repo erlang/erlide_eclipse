@@ -18,7 +18,7 @@ import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.erlide.engine.model.builder.ProblemData;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
-import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.OtpErlang;
 
 @SuppressWarnings("all")
 public class ErlProblems {
@@ -39,7 +39,7 @@ public class ErlProblems {
         String _name = Charsets.ISO_8859_1.name();
         final String src = Util.getInputStreamAsString(input, _name);
         try {
-          final OtpErlangObject source0 = ErlUtils.parse(src);
+          final OtpErlangObject source0 = OtpErlang.parse(src);
           final OtpErlangList source = ((OtpErlangList) source0);
           OtpErlangObject[] _elements = source.elements();
           for (final OtpErlangObject item0 : _elements) {

@@ -7,8 +7,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.erlide.engine.util.OtpRpcFactory;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.engine.model.OtpRpcFactory;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.tracing.core.Constants;
 import org.erlide.tracing.core.mvc.model.MatchSpec;
 import org.erlide.util.ErlLogger;
@@ -92,11 +92,11 @@ public class MatchSpecCellEditor extends DialogCellEditor {
                     builder.append(errorTuple.elementAt(0)).append(": ");
                     final OtpErlangList errorList = (OtpErlangList) errorTuple
                             .elementAt(2);
-                    builder.append(((OtpErlangString) errorList.elementAt(0))
-                            .stringValue());
+                    builder.append(
+                            ((OtpErlangString) errorList.elementAt(0)).stringValue());
                     if (errorList.elementAt(1) instanceof OtpErlangString) {
-                        builder.append(((OtpErlangString) errorList.elementAt(1))
-                                .stringValue());
+                        builder.append(
+                                ((OtpErlangString) errorList.elementAt(1)).stringValue());
                     }
                     return builder.toString();
                 } else if (errorType.atomValue().equals("not_fun")) {

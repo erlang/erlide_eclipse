@@ -14,7 +14,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.OpenResourceAction;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.util.ErlLogger;
@@ -90,13 +90,13 @@ public class OpenErlangAction extends Action {
                             treeViewer.setExpandedState(selectedElement, !expanded);
                         }
                     } else {
-                        final IEditorPart part = EditorUtility.openInEditor(
-                                selectedElement, true);
+                        final IEditorPart part = EditorUtility
+                                .openInEditor(selectedElement, true);
                         EditorUtility.revealInEditor(part, selectedElement);
                     }
                 } else if (!selectedClosedProjects.isEmpty()) {
-                    openResourceAction.selectionChanged((IStructuredSelection) provider
-                            .getSelection());
+                    openResourceAction.selectionChanged(
+                            (IStructuredSelection) provider.getSelection());
                     openResourceAction.run();
                 }
             } catch (final PartInitException e) {

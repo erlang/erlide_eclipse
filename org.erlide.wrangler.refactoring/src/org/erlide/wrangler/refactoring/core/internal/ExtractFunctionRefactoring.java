@@ -38,8 +38,9 @@ public class ExtractFunctionRefactoring extends CostumWorkflowRefactoring {
             throws CoreException, OperationCanceledException {
         final IErlSelection selection = GlobalParameters.getWranglerSelection();
 
-        if (!(selection instanceof IErlMemberSelection && (selection.getKind() == SelectionKind.FUNCTION || selection
-                .getKind() == SelectionKind.FUNCTION_CLAUSE))) {
+        if (!(selection instanceof IErlMemberSelection
+                && (selection.getKind() == SelectionKind.FUNCTION
+                        || selection.getKind() == SelectionKind.FUNCTION_CLAUSE))) {
             return RefactoringStatus
                     .createFatalErrorStatus("Please select an expression!");
         }
@@ -81,15 +82,15 @@ public class ExtractFunctionRefactoring extends CostumWorkflowRefactoring {
                         if (message.getRefactoringState() == RefactoringState.OK) {
                             status = new RefactoringStatus();
                         } else {
-                            status = RefactoringStatus.createFatalErrorStatus(message
-                                    .getMessageString());
+                            status = RefactoringStatus
+                                    .createFatalErrorStatus(message.getMessageString());
                         }
                     } else {
                         stop();
                     }
                 } else {
-                    status = RefactoringStatus.createFatalErrorStatus(message
-                            .getMessageString());
+                    status = RefactoringStatus
+                            .createFatalErrorStatus(message.getMessageString());
                 }
             }
 

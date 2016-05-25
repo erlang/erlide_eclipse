@@ -52,15 +52,15 @@ import org.erlide.core.builder.CompilerOption.PathsOption;
 import org.erlide.core.builder.CompilerOptions;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
 
-public class CompilerPreferencePage extends PropertyPage implements
-        IWorkbenchPreferencePage {
+public class CompilerPreferencePage extends PropertyPage
+        implements IWorkbenchPreferencePage {
     CompilerOptions prefs;
     private Composite prefsComposite;
     private IProject fProject;
@@ -115,8 +115,8 @@ public class CompilerPreferencePage extends PropertyPage implements
         lblNewLabel.setText(CompilerOption.INCLUDE_DIRS.getDescription());
 
         includeDirsText = new Text(prefsComposite, SWT.BORDER);
-        includeDirsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
-                1));
+        includeDirsText
+                .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         includeDirsText.setToolTipText(CompilerOption.INCLUDE_DIRS.getTooltip());
         includeDirsText.addModifyListener(new ModifyListener() {
             @Override
@@ -128,7 +128,8 @@ public class CompilerPreferencePage extends PropertyPage implements
 
         final Group warningsGroup = new Group(prefsComposite, SWT.NONE);
         {
-            final GridData gridData = new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1);
+            final GridData gridData = new GridData(SWT.FILL, SWT.FILL, false, false, 2,
+                    1);
             gridData.widthHint = 400;
             warningsGroup.setLayoutData(gridData);
         }
@@ -141,14 +142,14 @@ public class CompilerPreferencePage extends PropertyPage implements
         new Label(optionsGroup, SWT.NONE);
 
         final Label lblNewLabel_1 = new Label(prefsComposite, SWT.NONE);
-        lblNewLabel_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1,
-                1));
+        lblNewLabel_1
+                .setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lblNewLabel_1.setText(CompilerOption.PARSE_TRANSFORM.getDescription());
 
         parseTransformText = new Text(prefsComposite, SWT.BORDER);
         parseTransformText.setToolTipText(CompilerOption.PARSE_TRANSFORM.getTooltip());
-        parseTransformText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-                1, 1));
+        parseTransformText
+                .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         parseTransformText.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
@@ -212,7 +213,8 @@ public class CompilerPreferencePage extends PropertyPage implements
         return lblSelectTheCompiler;
     }
 
-    protected void enableProjectSpecificSettings(final boolean useProjectSpecificSettings) {
+    protected void enableProjectSpecificSettings(
+            final boolean useProjectSpecificSettings) {
         fUseProjectSettings.setSelection(useProjectSpecificSettings);
         enablePreferenceContent(useProjectSpecificSettings);
         fChangeWorkspaceSettings.setEnabled(!useProjectSpecificSettings);
@@ -274,24 +276,24 @@ public class CompilerPreferencePage extends PropertyPage implements
             if (true) { // if (offerLink()) {
                 fChangeWorkspaceSettings = createLink(composite,
                         "Configure Workspace settings...");
-                fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END, SWT.CENTER,
-                        false, false));
+                fChangeWorkspaceSettings
+                        .setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
             }
             // else {
             // LayoutUtil.setHorizontalSpan(fUseProjectSettings
             // .getSelectionButton(null), 2);
             // }
 
-            final Label horizontalLine = new Label(composite, SWT.SEPARATOR
-                    | SWT.HORIZONTAL);
-            horizontalLine.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true,
-                    false, 2, 1));
+            final Label horizontalLine = new Label(composite,
+                    SWT.SEPARATOR | SWT.HORIZONTAL);
+            horizontalLine.setLayoutData(
+                    new GridData(GridData.FILL, GridData.FILL, true, false, 2, 1));
             horizontalLine.setFont(composite.getFont());
         } else { // if (supportsProjectSpecificOptions() && offerLink()) {
             fChangeWorkspaceSettings = createLink(parent,
                     "Configure project specific settings..");
-            fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END, SWT.CENTER,
-                    true, false));
+            fChangeWorkspaceSettings
+                    .setLayoutData(new GridData(SWT.END, SWT.CENTER, true, false));
         }
 
     }
@@ -350,8 +352,9 @@ public class CompilerPreferencePage extends PropertyPage implements
 
     protected final void openWorkspacePreferences(final Object data) {
         final String id = getPreferencePageID();
-        PreferencesUtil.createPreferenceDialogOn(getShell(), id, new String[] { id },
-                data).open();
+        PreferencesUtil
+                .createPreferenceDialogOn(getShell(), id, new String[] { id }, data)
+                .open();
     }
 
     protected String getPreferencePageID() {
@@ -438,7 +441,8 @@ public class CompilerPreferencePage extends PropertyPage implements
     }
 
     @SuppressWarnings("unused")
-    private static class MacrosTableContentProvider implements IStructuredContentProvider {
+    private static class MacrosTableContentProvider
+            implements IStructuredContentProvider {
         @Override
         public Object[] getElements(final Object inputElement) {
             return new Object[] { "aaa", "vvv" };
@@ -455,8 +459,8 @@ public class CompilerPreferencePage extends PropertyPage implements
     }
 
     @SuppressWarnings("unused")
-    private class MacrosTableLabelProvider extends LabelProvider implements
-            ITableLabelProvider {
+    private class MacrosTableLabelProvider extends LabelProvider
+            implements ITableLabelProvider {
         @Override
         public Image getColumnImage(final Object element, final int columnIndex) {
             return null;

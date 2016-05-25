@@ -38,8 +38,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public class FoldRemoteExpressionRefactoring extends
-        CostumWorkflowRefactoringWithPositionsSelection {
+public class FoldRemoteExpressionRefactoring
+        extends CostumWorkflowRefactoringWithPositionsSelection {
 
     // the selected module, on which, the refactoring will be applied
     private final IErlMemberSelection selection;

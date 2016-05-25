@@ -39,11 +39,11 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ISourceRange;
-import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlExternal;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -80,8 +80,8 @@ public class EditorUtility {
         for (final IEditorPart editorPart : allErlangEditors) {
             if (inputElement instanceof IErlElement) {
                 final IErlElement element = (IErlElement) inputElement;
-                final IErlModule module = ErlangEngine.getInstance()
-                        .getModelUtilService().getModule(element);
+                final IErlModule module = ErlangEngine.getInstance().getModelUtilService()
+                        .getModule(element);
                 final AbstractErlangEditor editor = (AbstractErlangEditor) editorPart;
                 if (module.equals(editor.getModule())) {
                     return editorPart;
@@ -140,7 +140,8 @@ public class EditorUtility {
     /**
      * Selects a Erlang Element in an editor
      */
-    public static boolean revealInEditor(final IEditorPart part, final IErlElement element) {
+    public static boolean revealInEditor(final IEditorPart part,
+            final IErlElement element) {
         if (element != null && part instanceof ErlangEditor) {
             ((ErlangEditor) part).setSelection(element);
             return true;
@@ -175,9 +176,9 @@ public class EditorUtility {
             ((ITextEditor) editor).selectAndReveal(offset, length);
             return;
         }
-        ErlLogger
-                .warn("EditorUtility.revealInEditor should only be called on an ErlangEditor; it was an %s",
-                        editor.getClass().getName());
+        ErlLogger.warn(
+                "EditorUtility.revealInEditor should only be called on an ErlangEditor; it was an %s",
+                editor.getClass().getName());
     }
 
     private static IEditorPart openInEditor(final IFile file, final boolean activate)
@@ -208,8 +209,8 @@ public class EditorUtility {
         IEditorDescriptor editorDescriptor;
         try {
             if (input instanceof IFileEditorInput) {
-                editorDescriptor = IDE.getEditorDescriptor(((IFileEditorInput) input)
-                        .getFile());
+                editorDescriptor = IDE
+                        .getEditorDescriptor(((IFileEditorInput) input).getFile());
             } else {
                 editorDescriptor = IDE.getEditorDescriptor(input.getName());
             }
@@ -244,8 +245,8 @@ public class EditorUtility {
         }
         if (filePath != null) {
             final IPath path = new Path(filePath);
-            IFileStore fileStore = EFS.getLocalFileSystem().getStore(
-                    path.removeLastSegments(1));
+            IFileStore fileStore = EFS.getLocalFileSystem()
+                    .getStore(path.removeLastSegments(1));
             fileStore = fileStore.getChild(path.lastSegment());
             final IFileInfo fetchInfo = fileStore.fetchInfo();
             if (!fetchInfo.isDirectory() && fetchInfo.exists()) {
@@ -264,8 +265,8 @@ public class EditorUtility {
         if (file.getResourceAttributes().isSymbolicLink()) {
             try {
                 final File f = new File(file.getLocation().toString());
-                final IFileInfo info = EFS.getFileSystem(EFS.SCHEME_FILE)
-                        .fromLocalFile(f).fetchInfo();
+                final IFileInfo info = EFS.getFileSystem(EFS.SCHEME_FILE).fromLocalFile(f)
+                        .fetchInfo();
                 final String target = info.getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET);
                 if (target != null) {
                     // FIXME this is wrong in the general case

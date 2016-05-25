@@ -32,7 +32,7 @@ import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.ErlangFunctionCall;
 import org.erlide.util.erlang.OtpBindings;
-import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.OtpParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -84,8 +84,8 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public String getRegisteredName() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
-                fPid, "registered_name");
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(), fPid,
+                "registered_name");
         if (res != null) {
             return res.toString();
         }
@@ -93,8 +93,8 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public OtpErlangTuple getCurrentFunction() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
-                fPid, "current_function");
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(), fPid,
+                "current_function");
         return (OtpErlangTuple) res;
     }
 
@@ -106,8 +106,8 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public long getReductions() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
-                fPid, "reductions");
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(), fPid,
+                "reductions");
         if (res != null) {
             return ((OtpErlangLong) res).longValue();
         }
@@ -115,26 +115,26 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public OtpErlangObject getDictionary() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
-                fPid, "dictionary");
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(), fPid,
+                "dictionary");
         return res;
     }
 
     public OtpErlangObject getErrorHandler() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
-                fPid, "error_handler");
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(), fPid,
+                "error_handler");
         return res;
     }
 
     public OtpErlangObject getGroupLeader() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
-                fPid, "group_leader");
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(), fPid,
+                "group_leader");
         return res;
     }
 
     public OtpErlangObject getHeapSize() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
-                fPid, "heap_size");
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(), fPid,
+                "heap_size");
         return res;
     }
 
@@ -147,32 +147,32 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public OtpErlangObject getLinks() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
-                fPid, "links");
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(), fPid,
+                "links");
         return res;
     }
 
     public OtpErlangObject getMessageQueueLen() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
-                fPid, "message_queue_len");
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(), fPid,
+                "message_queue_len");
         return res;
     }
 
     public OtpErlangObject getMessages() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
-                fPid, "messages");
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(), fPid,
+                "messages");
         return res;
     }
 
     public OtpErlangObject getErlPriority() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
-                fPid, "priority");
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(), fPid,
+                "priority");
         return res;
     }
 
     public OtpErlangObject getStackSize() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
-                fPid, "stack_size");
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(), fPid,
+                "stack_size");
         return res;
     }
 
@@ -194,21 +194,21 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public boolean getTrapExit() {
-        final OtpErlangAtom res = (OtpErlangAtom) ErlideDebug.getProcessInfo(
-                fBackend.getOtpRpc(), fPid, "trap_exit");
+        final OtpErlangAtom res = (OtpErlangAtom) ErlideDebug
+                .getProcessInfo(fBackend.getOtpRpc(), fPid, "trap_exit");
         return Boolean.parseBoolean(res.atomValue());
     }
 
     public void getStackAndBindings(final String module, final int line) {
-        final OtpErlangTuple stackAndBindings = ErlideDebug.getAllStackframes(
-                fBackend.getOtpRpc(), getMeta());
+        final OtpErlangTuple stackAndBindings = ErlideDebug
+                .getAllStackframes(fBackend.getOtpRpc(), getMeta());
         if (stackAndBindings == null) {
             ErlLogger.warn("could not retrieve stack -"
                     + "- are there more than one debug sessions started?");
             return;
         }
         OtpErlangObject savedStackTrace = null;
-        // OtpBindings b = ErlUtils.match("{ST, F:l, }", stackAndBindings);
+        // OtpBindings b = OtpErlang.match("{ST, F:l, }", stackAndBindings);
         // System.out.println("STACK=" + stackAndBindings);
         OtpErlangObject el0 = stackAndBindings.elementAt(0);
         if (el0 instanceof OtpErlangTuple) {
@@ -226,7 +226,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
     private void addStackTrace(final OtpErlangTuple savedStackTrace) {
         try {
-            final OtpBindings bind = ErlUtils.match("{saved_stacktrace, _,STrace}",
+            final OtpBindings bind = OtpErlang.match("{saved_stacktrace, _,STrace}",
                     savedStackTrace);
             if (bind != null) {
                 final Collection<OtpErlangObject> trace = bind.getList("STrace");
@@ -301,26 +301,26 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public OtpErlangObject getLastCalls() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
-                fPid, "last_calls");
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(), fPid,
+                "last_calls");
         return res;
     }
 
     public OtpErlangObject getMemory() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
-                fPid, "memory");
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(), fPid,
+                "memory");
         return res;
     }
 
     public OtpErlangObject getMonitoredBy() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
-                fPid, "monitored_by");
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(), fPid,
+                "monitored_by");
         return res;
     }
 
     public OtpErlangObject getMonitors() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
-                fPid, "monitors");
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(), fPid,
+                "monitors");
         return res;
     }
 

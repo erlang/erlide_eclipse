@@ -1,6 +1,7 @@
 package org.erlide.engine.model.erlang;
 
 import org.eclipse.core.runtime.CoreException;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.After;
@@ -16,11 +17,11 @@ public class ErlModelTestBase {
         ErlideTestUtils.initProjects();
         // We set up projects here, it's quite costly
         final String name1 = "testproject1";
-        final IErlProject project1 = ErlideTestUtils.createProject(
-                ErlideTestUtils.getTmpPath(name1), name1);
+        final IErlProject project1 = ErlideTestUtils
+                .createProject(ErlideTestUtils.getTmpPath(name1), name1);
         final String name2 = "testproject2";
-        final IErlProject project2 = ErlideTestUtils.createProject(
-                ErlideTestUtils.getTmpPath(name2), name2);
+        final IErlProject project2 = ErlideTestUtils
+                .createProject(ErlideTestUtils.getTmpPath(name2), name2);
         projects = new IErlProject[] { project1, project2 };
     }
 

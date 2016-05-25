@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Eric Merritt and others. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Eric Merritt
- *     Vlad Dumitrescu
+ * Contributors: Eric Merritt Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.wizards;
 
@@ -21,7 +19,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.engine.model.root.NewProjectData;
+import org.erlide.engine.NewProjectData;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -44,7 +42,8 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
      * @param info
      * @wbp.parser.constructor
      */
-    public ProjectPreferencesWizardPage(final String pageName, final NewProjectData info) {
+    public ProjectPreferencesWizardPage(final String pageName,
+            final NewProjectData info) {
         super(pageName);
         this.info = info;
 
@@ -114,7 +113,8 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
             fd_source.left = new FormAttachment(0, 141);
             source.setLayoutData(fd_source);
         }
-        source.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
+        source.setToolTipText(
+                "enter a list of folders, using / in paths and ; as list separator");
         source.setText(PathSerializer.packList(info.getSourceDirs()));
         source.setEnabled(false);
         source.addModifyListener(new ModifyListener() {
@@ -145,7 +145,8 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
             fd_include.left = new FormAttachment(0, 141);
             include.setLayoutData(fd_include);
         }
-        include.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
+        include.setToolTipText(
+                "enter a list of folders, using / in paths and ; as list separator");
         include.setText(PathSerializer.packList(info.getIncludeDirs()));
         include.setEnabled(false);
         include.addModifyListener(new ModifyListener() {
@@ -181,7 +182,8 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
         }
         test.setEditable(false);
         test.setEnabled(false);
-        test.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
+        test.setToolTipText(
+                "enter a list of folders, using / in paths and ; as list separator");
 
         // for (final Control c : composite.getChildren()) {
         // c.setEnabled(!isReadOnly());
@@ -198,15 +200,15 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
     protected boolean testPageComplete() {
         if (null != output
                 && (output.getText() == null || output.getText().trim().length() == 0)) {
-            setErrorMessage(ErlideUIPlugin
-                    .getResourceString("wizards.errors.outputrequired"));
+            setErrorMessage(
+                    ErlideUIPlugin.getResourceString("wizards.errors.outputrequired"));
             return false;
         }
 
         if (null != source
                 && (source.getText() == null || source.getText().trim().length() == 0)) {
-            setErrorMessage(ErlideUIPlugin
-                    .getResourceString("wizards.errors.sourcerequired"));
+            setErrorMessage(
+                    ErlideUIPlugin.getResourceString("wizards.errors.sourcerequired"));
             return false;
         }
 
@@ -226,8 +228,10 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
     protected void onEntry() {
         if (info.getConfigType() != ProjectConfigType.INTERNAL) {
             final String op = info.isExistingProject() ? "editing" : "creating";
-            setMessage("Please configure the project by " + op + " "
-                    + info.getConfigType().getConfigName(), IMessageProvider.INFORMATION);
+            setMessage(
+                    "Please configure the project by " + op + " "
+                            + info.getConfigType().getConfigName(),
+                    IMessageProvider.INFORMATION);
         }
         info.loadFromFile();
         output.setText(info.getOutputDir().toPortableString());

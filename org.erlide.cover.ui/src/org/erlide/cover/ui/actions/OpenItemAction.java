@@ -25,7 +25,7 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.IErlFunction;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.util.ErlLogger;
 
@@ -54,9 +54,8 @@ public class OpenItemAction extends Action {
         final ISelection selection = viewer.getSelection();
 
         if (!(selection instanceof ITreeSelection)) {
-            final IStatus executionStatus = new Status(IStatus.ERROR,
-                    Activator.PLUGIN_ID, "Internall error occured: bad sellection type",
-                    null);
+            final IStatus executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                    "Internall error occured: bad sellection type", null);
             StatusManager.getManager().handle(executionStatus, StatusManager.SHOW);
             return;
         }
@@ -86,8 +85,8 @@ public class OpenItemAction extends Action {
             try {
                 module = ErlangEngine.getInstance().getModel().findModule(moduleName);
 
-                final IErlFunction f = module.findFunction(new ErlangFunction(fs
-                        .getLabel(), fs.getArity()));
+                final IErlFunction f = module
+                        .findFunction(new ErlangFunction(fs.getLabel(), fs.getArity()));
 
                 editor.setSelection(f);
 

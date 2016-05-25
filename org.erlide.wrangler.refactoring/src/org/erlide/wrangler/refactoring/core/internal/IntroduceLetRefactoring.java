@@ -80,17 +80,17 @@ public class IntroduceLetRefactoring extends CostumWorkflowRefactoring {
                             status = new RefactoringStatus();
                             changedFiles = message.getRefactoringChangeset();
                         } else {
-                            status = RefactoringStatus.createFatalErrorStatus(message
-                                    .getMessageString());
+                            status = RefactoringStatus
+                                    .createFatalErrorStatus(message.getMessageString());
                         }
                     } else {
-                        status = RefactoringStatus
-                                .createFatalErrorStatus("Refactoring failed: the expression selected is not a QuickCheck generator.");
+                        status = RefactoringStatus.createFatalErrorStatus(
+                                "Refactoring failed: the expression selected is not a QuickCheck generator.");
                     }
 
                 } else if (message.getRefactoringState() == RefactoringState.ERROR) {
-                    status = RefactoringStatus.createFatalErrorStatus(message
-                            .getMessageString());
+                    status = RefactoringStatus
+                            .createFatalErrorStatus(message.getMessageString());
                 }
 
             }

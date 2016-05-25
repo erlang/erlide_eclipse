@@ -15,15 +15,15 @@ import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.ISourceRange;
 import org.erlide.engine.model.erlang.ISourceReference;
-import org.erlide.engine.model.root.IErlElement;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageDescriptor;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
-public class ProblemsLabelDecorator implements ILabelDecorator,
-        ILightweightLabelDecorator {
+public class ProblemsLabelDecorator
+        implements ILabelDecorator, ILightweightLabelDecorator {
 
     /**
      * This is a special <code>LabelProviderChangedEvent</code> carrying
@@ -87,15 +87,15 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
      */
     protected int computeAdornmentFlags(final Object obj) {
         try {
-            final ISourceReference r = obj instanceof ISourceReference ? (ISourceReference) obj
-                    : null;
+            final ISourceReference r = obj instanceof ISourceReference
+                    ? (ISourceReference) obj : null;
             if (obj instanceof IResource) {
-                return getErrorTicksFromMarkers((IResource) obj,
-                        IResource.DEPTH_INFINITE, r);
+                return getErrorTicksFromMarkers((IResource) obj, IResource.DEPTH_INFINITE,
+                        r);
             } else if (obj instanceof IErlElement) {
                 final IErlElement e = (IErlElement) obj;
-                return getErrorTicksFromMarkers(e.getResource(),
-                        IResource.DEPTH_INFINITE, r);
+                return getErrorTicksFromMarkers(e.getResource(), IResource.DEPTH_INFINITE,
+                        r);
             }
         } catch (final CoreException e) {
             if (e.getStatus().getCode() == IResourceStatus.MARKER_NOT_FOUND) {
@@ -116,7 +116,8 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
         } else {
             final IMarker[] markers = res.findMarkers(IMarker.PROBLEM, true, depth);
             if (markers != null && markers.length > 0) {
-                for (int i = 0; i < markers.length && severity != IMarker.SEVERITY_ERROR; i++) {
+                for (int i = 0; i < markers.length
+                        && severity != IMarker.SEVERITY_ERROR; i++) {
                     final IMarker curr = markers[i];
                     if (isMarkerInRange(curr, sourceElement)) {
                         final int val = curr.getAttribute(IMarker.SEVERITY, -1);
@@ -268,8 +269,8 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
         if (adornmentFlags != 0) {
             final ImageDescriptor baseImage = new ImageImageDescriptor(image);
             final Rectangle bounds = image.getBounds();
-            return ErlideUIPlugin.getImageDescriptorRegistry().get(
-                    new ErlangElementImageDescriptor(baseImage, adornmentFlags,
+            return ErlideUIPlugin.getImageDescriptorRegistry()
+                    .get(new ErlangElementImageDescriptor(baseImage, adornmentFlags,
                             new Point(bounds.width, bounds.height)));
         }
         return image;

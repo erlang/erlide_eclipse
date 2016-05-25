@@ -59,18 +59,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
     final Function1<MethodDeclaration, Boolean> _function = new Function1<MethodDeclaration, Boolean>() {
       @Override
       public Boolean apply(final MethodDeclaration it) {
-        boolean _and = false;
-        String _simpleName = it.getSimpleName();
-        boolean _startsWith = _simpleName.startsWith("accept");
-        if (!_startsWith) {
-          _and = false;
-        } else {
-          Iterable<? extends ParameterDeclaration> _parameters = it.getParameters();
-          int _size = IterableExtensions.size(_parameters);
-          boolean _greaterEqualsThan = (_size >= 1);
-          _and = _greaterEqualsThan;
-        }
-        return Boolean.valueOf(_and);
+        return Boolean.valueOf((it.getSimpleName().startsWith("accept") && (IterableExtensions.size(it.getParameters()) >= 1)));
       }
     };
     return IterableExtensions.<MethodDeclaration>filter(_filter, _function);
@@ -239,16 +228,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
               }
             };
             IterableExtensions.forEach(_drop, _function);
-            boolean _or = false;
-            boolean _equals = Objects.equal(clazz, inheritor);
-            if (_equals) {
-              _or = true;
-            } else {
-              TypeReference _extendedClass = inheritor.getExtendedClass();
-              boolean _tripleEquals = (_extendedClass == null);
-              _or = _tripleEquals;
-            }
-            if (_or) {
+            if ((Objects.equal(clazz, inheritor) || (inheritor.getExtendedClass() == null))) {
               Expression _body = original.getBody();
               boolean _tripleNotEquals = (_body != null);
               if (_tripleNotEquals) {

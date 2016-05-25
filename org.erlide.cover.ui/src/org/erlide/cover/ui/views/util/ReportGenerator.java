@@ -58,11 +58,11 @@ public class ReportGenerator {
         final String type = "file";
         String cssCode = "";
         try {
-            final URL bundleRoot = Platform.getBundle(
-                    org.erlide.cover.ui.Activator.PLUGIN_ID).getEntry(
-                    "/templates/reports.css");
-            final BufferedReader stream = new BufferedReader(new InputStreamReader(
-                    bundleRoot.openStream()));
+            final URL bundleRoot = Platform
+                    .getBundle(org.erlide.cover.ui.Activator.PLUGIN_ID)
+                    .getEntry("/templates/reports.css");
+            final BufferedReader stream = new BufferedReader(
+                    new InputStreamReader(bundleRoot.openStream()));
             final StringBuilder sb = new StringBuilder();
             String line;
             while ((line = stream.readLine()) != null) {
@@ -111,8 +111,8 @@ public class ReportGenerator {
                     .getEntry("/templates/report.vm");
         }
 
-        final BufferedReader stream = new BufferedReader(new InputStreamReader(
-                bundleRoot.openStream()));
+        final BufferedReader stream = new BufferedReader(
+                new InputStreamReader(bundleRoot.openStream()));
         final StringBuilder sb = new StringBuilder();
         String line;
         while ((line = stream.readLine()) != null) {

@@ -5,6 +5,8 @@ package org.erlide.engine.model.root;
 
 import java.util.List;
 
+import org.erlide.engine.model.IErlElement;
+
 /**
  * @author jakob
  *

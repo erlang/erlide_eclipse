@@ -2,11 +2,12 @@ package org.erlide.backend;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.api.IBackendManager;
+import org.erlide.backend.internal.EpmdWatchJob;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.epmd.EpmdWatcher;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 
 public class BackendCore {

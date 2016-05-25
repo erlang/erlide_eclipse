@@ -23,8 +23,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.Activator;
@@ -61,8 +61,8 @@ public class GlobalParameters {
         if (isQCchecked) {
             return hasQuickCheck;
         }
-        final RpcResult res = Activator.getDefault().getBackend()
-                .call_noexception("code", "which", "a", "eqc");
+        final RpcResult res = Activator.getDefault().getBackend().call_noexception("code",
+                "which", "a", "eqc");
         if (!res.isOk()) {
             return false;
         }
@@ -126,8 +126,8 @@ public class GlobalParameters {
                         .getActiveWorkbenchWindow();
                 editor = activeWorkbenchWindow.getActivePage().getActiveEditor();
 
-                wranglerSelection = new ErlTextMemberSelection(
-                        (ITextSelection) selection, (ITextEditor) editor);
+                wranglerSelection = new ErlTextMemberSelection((ITextSelection) selection,
+                        (ITextEditor) editor);
             } else if (selection instanceof ITreeSelection) {
                 final Object firstElement = ((ITreeSelection) selection)
                         .getFirstElement();

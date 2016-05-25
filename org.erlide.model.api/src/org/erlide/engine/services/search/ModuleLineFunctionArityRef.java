@@ -11,8 +11,8 @@ public class ModuleLineFunctionArityRef {
     private final boolean def;
 
     public ModuleLineFunctionArityRef(final String modulePath, final int offset,
-            final int length, final String name, final int arity,
-            final String clauseHead, final boolean subClause, final boolean def) {
+            final int length, final String name, final int arity, final String clauseHead,
+            final boolean subClause, final boolean def) {
         this.modulePath = modulePath;
         this.offset = offset;
         this.length = length;

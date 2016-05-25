@@ -15,7 +15,7 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
-import org.erlide.core.internal.builder.BuildNotifier;
+import org.erlide.core.builder.BuildNotifier;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 
@@ -53,16 +53,16 @@ public class ToolExecutor {
         }
 
         final ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
-        final ILaunchConfigurationType type = launchManager
-                .getLaunchConfigurationType(IExternalToolConstants.ID_PROGRAM_BUILDER_LAUNCH_CONFIGURATION_TYPE);
+        final ILaunchConfigurationType type = launchManager.getLaunchConfigurationType(
+                IExternalToolConstants.ID_PROGRAM_BUILDER_LAUNCH_CONFIGURATION_TYPE);
 
         try {
             final ILaunchConfigurationWorkingCopy launchConfig = type.newInstance(null,
                     launchManager.generateLaunchConfigurationName("erlTool"));
             launchConfig.setAttribute(IExternalToolConstants.ATTR_LOCATION, cmd);
             launchConfig.setAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, args);
-            launchConfig
-                    .setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, wdir);
+            launchConfig.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY,
+                    wdir);
             launchConfig.setAttribute(IExternalToolConstants.ATTR_LAUNCH_IN_BACKGROUND,
                     true);
             launchConfig.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, true);
@@ -162,8 +162,8 @@ public class ToolExecutor {
 
     private static String getWindowsToolLocation(final String cmd) {
         final ToolProgressCallback callback = new ToolProgressCallback();
-        new ToolExecutor().run("c:\\Windows\\System32\\cmd.exe", "/c \"where " + cmd
-                + "\"", null, callback, null);
+        new ToolExecutor().run("c:\\Windows\\System32\\cmd.exe",
+                "/c \"where " + cmd + "\"", null, callback, null);
         if (callback.result == null) {
             return null;
         }

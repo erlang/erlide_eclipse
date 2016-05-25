@@ -12,8 +12,9 @@ import java.util.List;
 
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.services.parsing.InternalScanner;
 import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.util.TestingSupport;
@@ -71,8 +72,8 @@ public class ParsingTest {
         final String sourceContent = "[inline,{hipe,[{regalloc,linear_scan}]}]";
         final String source = "-compile(" + sourceContent + ").";
         assertTrue(parse(source));
-        final IErlElement attribute = TestingSupport.createErlAttribute(module,
-                "compile", null, sourceContent, 0, 50);
+        final IErlElement attribute = TestingSupport.createErlAttribute(module, "compile",
+                null, sourceContent, 0, 50);
         final List<IErlElement> expected = new ArrayList<IErlElement>(1);
         expected.add(attribute);
         final Collection<IErlElement> actual = module.getChildren();

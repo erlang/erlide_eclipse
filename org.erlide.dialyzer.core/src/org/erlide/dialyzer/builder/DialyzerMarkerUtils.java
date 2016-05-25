@@ -7,12 +7,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.builder.MarkerUtils;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.MarkerUtils;
 import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.IErlElementLocator;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.util.ResourceUtil;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
@@ -146,8 +146,8 @@ public class DialyzerMarkerUtils {
                 marker.setAttribute(MarkerUtils.PATH_ATTRIBUTE, path);
             }
             if (compiledFile != null) {
-                marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath()
-                        .toString());
+                marker.setAttribute(IMarker.SOURCE_ID,
+                        compiledFile.getFullPath().toString());
             }
             marker.setAttribute(IMarker.LINE_NUMBER, lineNumber != -1 ? lineNumber : 1);
         } catch (final CoreException e) {

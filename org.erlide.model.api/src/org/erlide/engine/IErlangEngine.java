@@ -1,13 +1,15 @@
 package org.erlide.engine;
 
-import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IProjectConfiguratorFactory;
 import org.erlide.engine.services.ErlangService;
 import org.erlide.engine.services.GenericService;
 import org.erlide.engine.services.cleanup.CleanupProvider;
+import org.erlide.engine.services.codeassist.CompletionService;
 import org.erlide.engine.services.codeassist.ContextAssistService;
 import org.erlide.engine.services.edoc.EdocExportService;
-import org.erlide.engine.services.importer.ImportService;
 import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.services.parsing.ScannerProviderService;
 import org.erlide.engine.services.parsing.SimpleParserService;
@@ -42,8 +44,6 @@ public interface IErlangEngine {
 
     ScannerProviderService getScannerProviderService();
 
-    ImportService getImportService();
-
     EdocExportService getEdocExportService();
 
     ProclistService getProclistService();
@@ -56,9 +56,14 @@ public interface IErlangEngine {
 
     ModelSearcherService getModelSearcherService();
 
-    IProjectConfiguratorFactory getProjectConfiguratorFactory();
+    CompletionService getCompletionService(IErlProject project, IErlModule module,
+            String elementBefore);
 
     // TODO
     GenericService getGenericService();
+
+    // INTERNAL use
+
+    IProjectConfiguratorFactory getProjectConfiguratorFactory();
 
 }

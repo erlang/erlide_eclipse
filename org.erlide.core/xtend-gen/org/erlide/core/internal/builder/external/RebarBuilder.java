@@ -2,7 +2,7 @@ package org.erlide.core.internal.builder.external;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.core.internal.builder.BuildNotifier;
+import org.erlide.core.builder.BuildNotifier;
 import org.erlide.core.internal.builder.ErlangBuilder;
 import org.erlide.core.internal.builder.ExternalBuilder;
 import org.erlide.engine.model.builder.BuilderProperties;

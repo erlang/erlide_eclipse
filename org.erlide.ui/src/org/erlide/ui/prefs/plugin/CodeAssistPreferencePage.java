@@ -21,8 +21,8 @@ import org.erlide.ui.util.StatusInfo;
 import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class CodeAssistPreferencePage extends PreferencePage implements
-        IWorkbenchPreferencePage {
+public class CodeAssistPreferencePage extends PreferencePage
+        implements IWorkbenchPreferencePage {
 
     private Button autoActivateButton;
     private Text delayText;
@@ -137,7 +137,8 @@ public class CodeAssistPreferencePage extends PreferencePage implements
             final String[] chars = text.split(",");
             for (final String c : chars) {
                 if (c.trim().length() != 1) {
-                    status.setError("Trigger keys should be a list of comma-separated characters");
+                    status.setError(
+                            "Trigger keys should be a list of comma-separated characters");
                     break;
                 }
             }

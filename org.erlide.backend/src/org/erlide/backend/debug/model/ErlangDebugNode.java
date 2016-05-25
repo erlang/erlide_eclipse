@@ -21,8 +21,8 @@ import org.erlide.backend.debug.IErlangDebugNode;
  * @author jakob
  *
  */
-public class ErlangDebugNode extends ErlangDebugElement implements IDebugTarget,
-        IErlangDebugNode {
+public class ErlangDebugNode extends ErlangDebugElement
+        implements IDebugTarget, IErlangDebugNode {
 
     private final String fNodeName;
     private final List<ErlangProcess> fShownProcesses;
@@ -107,12 +107,14 @@ public class ErlangDebugNode extends ErlangDebugElement implements IDebugTarget,
     }
 
     @Override
-    public void breakpointChanged(final IBreakpoint breakpoint, final IMarkerDelta delta) {
+    public void breakpointChanged(final IBreakpoint breakpoint,
+            final IMarkerDelta delta) {
         fErlangDebugTarget.breakpointChanged(breakpoint, delta);
     }
 
     @Override
-    public void breakpointRemoved(final IBreakpoint breakpoint, final IMarkerDelta delta) {
+    public void breakpointRemoved(final IBreakpoint breakpoint,
+            final IMarkerDelta delta) {
         fErlangDebugTarget.breakpointRemoved(breakpoint, delta);
     }
 

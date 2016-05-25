@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.Path
 import org.erlide.engine.ErlangEngine
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.erlide.engine.model.root.ProjectConfigurationSerializer
-import org.erlide.util.erlang.ErlUtils
+import org.erlide.util.erlang.OtpErlang
 import org.erlide.util.erlang.OtpBindings
 
 class EmakeConfigurationSerializer implements ProjectConfigurationSerializer {
@@ -34,7 +34,7 @@ class EmakeConfigurationSerializer implements ProjectConfigurationSerializer {
     if (content.empty) return result
 
     content.forEach [ erl_opts |
-      val bindings = ErlUtils.match("{Src,Opts}", erl_opts)
+      val bindings = OtpErlang.match("{Src,Opts}", erl_opts)
       if (bindings !== null) {
         val src = bindings.getAtom("Src")
         val path = if (src.contains("/")) {
@@ -49,7 +49,7 @@ class EmakeConfigurationSerializer implements ProjectConfigurationSerializer {
         val opts = bindings.getList("Opts")
         if (opts !== null)
           opts.forEach [ opt |
-            val b = ErlUtils.match("{Tag,Arg}", opt)
+            val b = OtpErlang.match("{Tag,Arg}", opt)
             if (b !== null)
               parseOption(b, result)
           ]

@@ -1,8 +1,8 @@
 package org.erlide.engine.internal.model.erlang;
 
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlExport;
-import org.erlide.engine.model.root.ErlElementKind;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 

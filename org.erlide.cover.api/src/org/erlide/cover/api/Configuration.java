@@ -8,7 +8,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 
 /**
@@ -37,11 +37,8 @@ public class Configuration implements IConfiguration {
         if (name == null || name.length() == 0) {
             project = null;
         } else {
-            project = ErlangEngine
-                    .getInstance()
-                    .getModel()
-                    .getErlangProject(
-                            ResourcesPlugin.getWorkspace().getRoot().getProject(name));
+            project = ErlangEngine.getInstance().getModel().getErlangProject(
+                    ResourcesPlugin.getWorkspace().getRoot().getProject(name));
         }
     }
 

@@ -97,7 +97,8 @@ public class EdocExportWizardPage extends WizardPage {
             final IStructuredSelection selection) {
         super(pageName);
         setTitle("eDoc export (work in progress!)");
-        setDescription("Select the projects and files for which you want to generate eDoc documentation");
+        setDescription(
+                "Select the projects and files for which you want to generate eDoc documentation");
     }
 
     @Override
@@ -109,8 +110,8 @@ public class EdocExportWizardPage extends WizardPage {
 
         final Label selectProjectsForLabel = new Label(composite, SWT.NONE);
         selectProjectsForLabel.setLayoutData(new GridData());
-        selectProjectsForLabel
-                .setText("Select projects for which edoc documentation will be generated:");
+        selectProjectsForLabel.setText(
+                "Select projects for which edoc documentation will be generated:");
 
         checkboxTableViewer = CheckboxTableViewer.newCheckList(composite, SWT.BORDER);
         checkboxTableViewer.setContentProvider(new TableContentProvider());

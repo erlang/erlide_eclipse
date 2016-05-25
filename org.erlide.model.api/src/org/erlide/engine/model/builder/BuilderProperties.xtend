@@ -34,9 +34,9 @@ class BuilderProperties {
         try {
             val bt = BuilderTool.valueOf(parts.get(0))
             val b = parts.get(1)
-            val c = parts.get(2)
-            val l = parts.get(3)
-            val t = parts.get(4)
+            val c = parts.get(1)
+            val l = parts.get(2)
+            val t = parts.get(3)
 
             builderTool = bt
             buildTarget = b

@@ -13,7 +13,8 @@ import org.eclipse.debug.core.ILaunchesListener;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.erlide.util.ErlLogger;
 
-public class ErlangDebugOptionsManager implements ILaunchesListener, IBreakpointsListener {
+public class ErlangDebugOptionsManager
+        implements ILaunchesListener, IBreakpointsListener {
 
     public ErlangDebugOptionsManager() {
     }

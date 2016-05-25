@@ -46,7 +46,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.ui.ErlideUIMessages;
 import org.erlide.ui.actions.SortAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
@@ -243,7 +243,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
     void handleTreeViewerMouseUp(final Tree tree, final MouseEvent e) {
         // Ensure a selection was made, the first mouse button was
         // used and the event happened in the tree
-        if (tree.getSelectionCount() < 1 || e.button != 1 || !tree.equals(e.getSource())) {
+        if (tree.getSelectionCount() < 1 || e.button != 1
+                || !tree.equals(e.getSource())) {
             return;
         }
         // Selection is made in the selection changed listener

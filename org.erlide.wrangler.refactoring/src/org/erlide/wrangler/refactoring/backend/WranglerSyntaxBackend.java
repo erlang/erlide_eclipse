@@ -11,7 +11,7 @@
 package org.erlide.wrangler.refactoring.backend;
 
 import org.eclipse.core.resources.IFile;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.SyntaxInfo.Type;
@@ -47,9 +47,9 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
 
     protected OtpErlangTuple parseFile(final IFile f) {
         final String filePath = f.getLocation().toOSString();
-        final RpcResult res = backend
-                .call_noexception(MODULE, PARSE_FUNCTION, "sax", filePath, "true",
-                        GlobalParameters.getWranglerSelection().getSearchPath());
+        final RpcResult res = backend.call_noexception(MODULE, PARSE_FUNCTION, "sax",
+                filePath, "true",
+                GlobalParameters.getWranglerSelection().getSearchPath());
         return parseParserResult(res.getValue());
     }
 

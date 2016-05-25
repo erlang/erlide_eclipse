@@ -18,8 +18,8 @@ public class ModelActivator implements BundleActivator {
     public void start(final BundleContext context) throws Exception {
         ErlLogger.debug("Starting Erlang model api");
 
-        engine = ExtensionUtils.getSingletonExtension(
-                "org.erlide.model.api.erlangEngine", IErlangEngine.class);
+        engine = ExtensionUtils.getSingletonExtension("org.erlide.model.api.erlangEngine",
+                IErlangEngine.class);
         if (engine == null) {
             ErlLogger.warn("Could not instantiate Erlang engine!");
             final Status status = new Status(IStatus.ERROR, "org.erlide.model",

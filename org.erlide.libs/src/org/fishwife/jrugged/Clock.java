@@ -23,7 +23,7 @@ public interface Clock {
 
     /**
      * Returns the current time in milliseconds.
-     * 
+     *
      * @return <code>long</code>
      */
     long currentTimeMillis();

@@ -27,10 +27,10 @@ public final class SystemConfiguration {
         test = hasFeatureEnabled("erlide.test");
         clearCacheAvailable = hasFeatureEnabled("erlide.clearCacheAvailable");
         onWindows = System.getProperty("os.name").toLowerCase().contains("windows");
-        setWarnProcessSizeLimit(System
-                .getProperty("erlide.process.heap.warn.limit", "10"));
-        setKillProcessSizeLimit(System
-                .getProperty("erlide.process.heap.kill.limit", "50"));
+        setWarnProcessSizeLimit(
+                System.getProperty("erlide.process.heap.warn.limit", "10"));
+        setKillProcessSizeLimit(
+                System.getProperty("erlide.process.heap.kill.limit", "50"));
         setMaxParallelBuilds(System.getProperty("erlide.max.parallel.builds", "4"));
     }
 

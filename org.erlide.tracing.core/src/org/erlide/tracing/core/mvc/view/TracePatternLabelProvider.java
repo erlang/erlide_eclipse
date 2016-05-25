@@ -13,8 +13,8 @@ import org.erlide.tracing.core.mvc.model.TracePattern;
  * @author Piotr Dorobisz
  *
  */
-public class TracePatternLabelProvider extends LabelProvider implements
-        ITableLabelProvider {
+public class TracePatternLabelProvider extends LabelProvider
+        implements ITableLabelProvider {
 
     @Override
     public Image getColumnImage(final Object element, final int index) {

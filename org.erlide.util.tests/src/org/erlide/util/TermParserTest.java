@@ -4,9 +4,9 @@ import java.io.IOException;
 
 import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.OtpFormatPlaceholder;
-import org.erlide.util.erlang.OtpPatternVariable;
 import org.erlide.util.erlang.OtpParser;
 import org.erlide.util.erlang.OtpParserException;
+import org.erlide.util.erlang.OtpPatternVariable;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -226,14 +226,12 @@ public class TermParserTest {
 
     @Test
     public void map_2() throws OtpParserException {
-        @SuppressWarnings("unused")
         final OtpErlangMap r = (OtpErlangMap) termParser.parse("#{a=>2,\"b\"=>[4]}");
         Assert.assertEquals("#{a => 2,\"b\" => [4]}", r.toString());
     }
 
     @Test(expected = OtpParserException.class)
     public void map_2a() throws OtpParserException {
-        @SuppressWarnings("unused")
         final OtpErlangMap r = (OtpErlangMap) termParser.parse("#{a=>2 \"b\"=>[4]}");
         Assert.assertEquals("#{a => 2,\"b\" => [4]}", r.toString());
     }

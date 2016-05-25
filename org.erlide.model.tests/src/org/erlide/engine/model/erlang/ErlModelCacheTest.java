@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.root.IErlElementLocator;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.After;
@@ -47,15 +48,12 @@ public class ErlModelCacheTest {
             // a project with a module, and some searches that fills the model
             // cache
             final String projectName = "testprojectx";
-            project = ErlideTestUtils.createProject(
-                    ErlideTestUtils.getTmpPath(projectName), projectName);
+            project = ErlideTestUtils
+                    .createProject(ErlideTestUtils.getTmpPath(projectName), projectName);
             final String moduleName = "f.erl";
-            final IErlModule module = ErlideTestUtils
-                    .createModule(
-                            project,
-                            moduleName,
-                            "-module(f).\n-include(\"a.hrl\").\n-export([f/0]).\n-record(rec2, {a, b}).\n"
-                                    + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
+            final IErlModule module = ErlideTestUtils.createModule(project, moduleName,
+                    "-module(f).\n-include(\"a.hrl\").\n-export([f/0]).\n-record(rec2, {a, b}).\n"
+                            + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
             module.open(null);
             final IErlElementLocator model = ErlangEngine.getInstance().getModel();
             final IErlModule module2 = model.findModuleFromProject(project, moduleName,
@@ -90,8 +88,8 @@ public class ErlModelCacheTest {
             // cache
             // is updated
             final String projectName = "testprojecta";
-            project = ErlideTestUtils.createProject(
-                    ErlideTestUtils.getTmpPath(projectName), projectName);
+            project = ErlideTestUtils
+                    .createProject(ErlideTestUtils.getTmpPath(projectName), projectName);
             final String externalName = "xyz.erl";
             final File externalFile = ErlideTestUtils.createTmpFile(externalName,
                     "-module(xyz).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
@@ -115,8 +113,8 @@ public class ErlModelCacheTest {
             final String projectName2 = "testprojectb";
             project2 = ErlideTestUtils.createProject(
                     ErlideTestUtils.getTmpPath(projectName2), projectName2);
-            final IErlModule module = ErlideTestUtils.createModule(project2,
-                    externalName, "-module(xyz).\n");
+            final IErlModule module = ErlideTestUtils.createModule(project2, externalName,
+                    "-module(xyz).\n");
             final IErlModule findModule2 = model.findModuleFromProject(project,
                     externalName, null, IErlElementLocator.Scope.ALL_PROJECTS);
             // final Set<IErlModule> modulesByName2 = cache

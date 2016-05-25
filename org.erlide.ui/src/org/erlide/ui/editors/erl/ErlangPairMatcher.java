@@ -115,16 +115,17 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
         }
         final boolean isForward = fPairs.isStartString(prevString);
         fAnchor = isForward ? ICharacterPairMatcher.LEFT : ICharacterPairMatcher.RIGHT;
-        final int searchStartPosition = isForward ? offset : offset
-                - (prevString.length() + 1);
+        final int searchStartPosition = isForward ? offset
+                : offset - (prevString.length() + 1);
         final int adjustedOffset = isForward ? offset - 1 : offset;
         final String partition = TextUtilities.getContentType(doc, fPartitioning,
                 adjustedOffset, false);
         final DocumentPartitionAccessor partDoc = new DocumentPartitionAccessor(doc,
                 fPartitioning, partition);
         final int endOffset = findMatchingPeer(partDoc, prevString,
-                fPairs.getMatching(prevString), isForward, isForward ? doc.getLength()
-                        - prevString.length() + 1 : -1, searchStartPosition);
+                fPairs.getMatching(prevString), isForward,
+                isForward ? doc.getLength() - prevString.length() + 1 : -1,
+                searchStartPosition);
         if (endOffset == -1) {
             return null;
         }

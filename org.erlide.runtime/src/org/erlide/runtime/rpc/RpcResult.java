@@ -32,10 +32,12 @@ public class RpcResult {
     public RpcResult(final OtpErlangObject res) {
         if (res instanceof OtpErlangTuple
                 && ((OtpErlangTuple) res).elementAt(0) instanceof OtpErlangAtom
-                && ("badrpc".equals(((OtpErlangAtom) ((OtpErlangTuple) res).elementAt(0))
-                        .atomValue()) || "EXIT"
+                && ("badrpc"
                         .equals(((OtpErlangAtom) ((OtpErlangTuple) res).elementAt(0))
-                                .atomValue()))) {
+                                .atomValue())
+                        || "EXIT".equals(
+                                ((OtpErlangAtom) ((OtpErlangTuple) res).elementAt(0))
+                                        .atomValue()))) {
             fOk = false;
             fValue = ((OtpErlangTuple) res).elementAt(1);
         } else {

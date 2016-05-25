@@ -12,7 +12,7 @@ package org.erlide.engine.internal.services.parsing;
 
 import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.engine.services.parsing.ScannerService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 
 /**
  * Erlang syntax scanner
@@ -40,7 +40,8 @@ public class ErlScanner implements ScannerService {
     }
 
     @Override
-    public void replaceText(final int offset, final int removeLength, final String newText) {
+    public void replaceText(final int offset, final int removeLength,
+            final String newText) {
         scanner.replaceText(name, offset, removeLength, newText);
     }
 

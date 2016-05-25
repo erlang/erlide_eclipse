@@ -32,7 +32,8 @@ public class SWT2Dutil {
      *            source rectangle
      * @return rectangle after transform with positive width and height
      */
-    public static Rectangle transformRect(final AffineTransform af, final Rectangle src0) {
+    public static Rectangle transformRect(final AffineTransform af,
+            final Rectangle src0) {
         final Rectangle dest = new Rectangle(0, 0, 0, 0);
         final Rectangle src = absRect(src0);
         Point p1 = new Point(src.x, src.y);
@@ -97,7 +98,8 @@ public class SWT2Dutil {
         final Point2D src = new Point2D.Float(pt.x, pt.y);
         try {
             final Point2D dest = af.inverseTransform(src, null);
-            return new Point((int) Math.floor(dest.getX()), (int) Math.floor(dest.getY()));
+            return new Point((int) Math.floor(dest.getX()),
+                    (int) Math.floor(dest.getY()));
         } catch (final Exception e) {
             ErlLogger.error(e);
             return new Point(0, 0);

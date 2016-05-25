@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ErlideTestUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -87,8 +88,8 @@ public class IErlProjectTest extends ErlModelTestBase {
             externalsFile = ErlideTestUtils.createTmpFile(XX_ERLIDEX, absolutePath);
             aProject.open(null);
             final Collection<IErlModule> otpModules = aProject.getExternalModules();
-            ((ErlProject) aProject).setExternalModulesFile(externalsFile
-                    .getAbsolutePath());
+            ((ErlProject) aProject)
+                    .setExternalModulesFile(externalsFile.getAbsolutePath());
             aProject.open(null);
             // when
             // fetching all external modules
@@ -131,12 +132,12 @@ public class IErlProjectTest extends ErlModelTestBase {
                     "-define(E, hej).\n");
             final String absolutePath = externalFile.getAbsolutePath();
             final String externalsFileName = XX_ERLIDEX;
-            externalsFile = ErlideTestUtils
-                    .createTmpFile(externalsFileName, absolutePath);
+            externalsFile = ErlideTestUtils.createTmpFile(externalsFileName,
+                    absolutePath);
             aProject.open(null);
             final Collection<IErlModule> otpIncludes = aProject.getExternalIncludes();
-            ((ErlProject) aProject).setExternalIncludesFile(externalsFile
-                    .getAbsolutePath());
+            ((ErlProject) aProject)
+                    .setExternalIncludesFile(externalsFile.getAbsolutePath());
             aProject.open(null);
             // when
             // fetching all external includes

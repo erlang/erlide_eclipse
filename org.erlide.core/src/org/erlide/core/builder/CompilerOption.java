@@ -22,9 +22,7 @@ import com.google.common.collect.Lists;
 
 public abstract class CompilerOption {
 
-    public static final BooleanOption COMPRESSED = new BooleanOption(
-            "compressed",
-            false,
+    public static final BooleanOption COMPRESSED = new BooleanOption("compressed", false,
             "Compress beam file",
             "The compiler will compress the generated object code, which can be useful for embedded systems");
     public static final BooleanOption DEBUG_INFO = new BooleanOption("debug_info", false,
@@ -32,8 +30,8 @@ public abstract class CompilerOption {
     public static final BooleanOption ENCRYPT_DEBUG_INFO = new BooleanOption(
             "encrypt_debug_info", false, "Encrypt debug info",
             "Encrypt debug info, the key will be read from .erlang.crypt");
-    public static final DefineOption DEFINE = new DefineOption("d", new String[] {
-            "Name", "Value" }, "", "");
+    public static final DefineOption DEFINE = new DefineOption("d",
+            new String[] { "Name", "Value" }, "", "");
 
     public static final WarningOption WARN_UNUSED_RECORD = new WarningOption(
             "warn_unused_record", true, "Unused records", "Unused records");
@@ -51,22 +49,18 @@ public abstract class CompilerOption {
             "warn_unused_function", true, "Unused functions",
             "Local functions are not being called");
     public static final WarningOption WARN_SHADOW_VARS = new WarningOption(
-            "warn_shadow_vars",
-            false,
-            "Shadowed variables",
+            "warn_shadow_vars", false, "Shadowed variables",
             "Warn for \"fresh\" variables in functional objects or list comprehensions with the same name as some already defined variable");
     public static final WarningOption WARN_EXPORT_VARS = new WarningOption(
-            "warn_export_vars",
-            false,
-            "Implicitely exported variables",
+            "warn_export_vars", false, "Implicitely exported variables",
             "Warn for implicitly exported variables referred to after the primitives where they were first defined");
     public static final WarningOption WARN_EXPORT_ALL = new WarningOption(
             "warn_export_all", false, "Use of export_all",
             "The compiler option export_all");
     public static final PathsOption INCLUDE_DIRS = new PathsOption("i",
             "Additional include dirs: ", "Comma-separated list of paths");
-    public static final ModuleOption PARSE_TRANSFORM = new ModuleOption(
-            "parse_transform", "Global parse transform module: ",
+    public static final ModuleOption PARSE_TRANSFORM = new ModuleOption("parse_transform",
+            "Global parse transform module: ",
             "Specify a module to be used as a global parse transform");
 
     public static final RawOption CUSTOM = new RawOption("raw", "Other options: ",
@@ -103,8 +97,8 @@ public abstract class CompilerOption {
         }
 
         public OtpErlangObject toTerm(final String value) {
-            return OtpErlang.mkTuple(new OtpErlangAtom(getName()), new OtpErlangAtom(
-                    value));
+            return OtpErlang.mkTuple(new OtpErlangAtom(getName()),
+                    new OtpErlangAtom(value));
         }
 
         public static String toString(final String value) {
@@ -117,7 +111,8 @@ public abstract class CompilerOption {
     }
 
     public static class RawOption extends CompilerOption {
-        public RawOption(final String name, final String description, final String tooltip) {
+        public RawOption(final String name, final String description,
+                final String tooltip) {
             super(name, description, tooltip);
         }
 

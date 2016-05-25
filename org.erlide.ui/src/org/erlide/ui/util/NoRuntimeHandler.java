@@ -45,8 +45,8 @@ public class NoRuntimeHandler implements Runnable {
                         "org.erlide.ui.preferences.runtimes", null, null);
                 if (pref != null) {
                     if (pref.open() == Window.OK) {
-                        ErlLogger
-                                .info("Restarting workbench after initial runtime configuration...");
+                        ErlLogger.info(
+                                "Restarting workbench after initial runtime configuration...");
                         PlatformUI.getWorkbench().restart();
                     }
                 }

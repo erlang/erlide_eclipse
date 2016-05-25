@@ -37,7 +37,8 @@ public class BackendShell implements IBackendShell {
     private OtpErlangPid server;
     private final String fId;
 
-    public BackendShell(final IBackend backend, final String id, final OtpErlangPid server) {
+    public BackendShell(final IBackend backend, final String id,
+            final OtpErlangPid server) {
         this.backend = backend;
         fId = id;
         this.server = server;
@@ -62,10 +63,8 @@ public class BackendShell implements IBackendShell {
     @Override
     public void send(final String string) {
         if (server != null) {
-            backend.getOtpRpc().send(
-                    server,
-                    OtpErlang.mkTuple(new OtpErlangAtom("input"), new OtpErlangString(
-                            string)));
+            backend.getOtpRpc().send(server, OtpErlang.mkTuple(new OtpErlangAtom("input"),
+                    new OtpErlangString(string)));
         } else {
             try {
                 backend.input(string);
@@ -167,7 +166,8 @@ public class BackendShell implements IBackendShell {
     public IoRequest findAtPos(final int thePos) {
         synchronized (requests) {
             for (final IoRequest req : requests) {
-                if (req.getStart() <= thePos && req.getStart() + req.getLength() > thePos) {
+                if (req.getStart() <= thePos
+                        && req.getStart() + req.getLength() > thePos) {
                     return req;
                 }
             }

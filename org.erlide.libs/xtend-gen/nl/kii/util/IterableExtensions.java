@@ -73,18 +73,7 @@ public class IterableExtensions {
       }
       Set<?> _keySet = map.keySet();
       final Object key0 = ((Object[])Conversions.unwrapArray(_keySet, Object.class))[0];
-      boolean _and = false;
-      Class<?> _class = key0.getClass();
-      boolean _isAssignableFrom = _class.isAssignableFrom(keyType);
-      if (!_isAssignableFrom) {
-        _and = false;
-      } else {
-        Object _get = map.get(key0);
-        Class<?> _class_1 = _get.getClass();
-        boolean _isAssignableFrom_1 = _class_1.isAssignableFrom(valueType);
-        _and = _isAssignableFrom_1;
-      }
-      _xblockexpression = _and;
+      _xblockexpression = (key0.getClass().isAssignableFrom(keyType) && map.get(key0).getClass().isAssignableFrom(valueType));
     }
     return _xblockexpression;
   }
@@ -568,22 +557,7 @@ public class IterableExtensions {
   }
   
   public static <T extends Object> boolean in(final T instance, final T... objects) {
-    boolean _and = false;
-    boolean _and_1 = false;
-    boolean _defined = OptExtensions.<Object>defined(instance);
-    if (!_defined) {
-      _and_1 = false;
-    } else {
-      boolean _defined_1 = OptExtensions.<Object>defined(objects);
-      _and_1 = _defined_1;
-    }
-    if (!_and_1) {
-      _and = false;
-    } else {
-      boolean _contains = ((List<T>)Conversions.doWrapArray(objects)).contains(instance);
-      _and = _contains;
-    }
-    return _and;
+    return ((OptExtensions.<Object>defined(instance) && OptExtensions.<Object>defined(objects)) && ((List<T>)Conversions.doWrapArray(objects)).contains(instance));
   }
   
   public static <T extends Object> boolean in(final T instance, final Iterable<? extends T> objects) {
@@ -592,23 +566,7 @@ public class IterableExtensions {
   }
   
   public static <T extends Object> boolean in(final T instance, final Iterator<? extends T> objects) {
-    boolean _and = false;
-    boolean _and_1 = false;
-    boolean _defined = OptExtensions.<Object>defined(instance);
-    if (!_defined) {
-      _and_1 = false;
-    } else {
-      boolean _defined_1 = OptExtensions.<Object>defined(objects);
-      _and_1 = _defined_1;
-    }
-    if (!_and_1) {
-      _and = false;
-    } else {
-      List<T> _list = IteratorExtensions.<T>toList(objects);
-      boolean _contains = _list.contains(instance);
-      _and = _contains;
-    }
-    return _and;
+    return ((OptExtensions.<Object>defined(instance) && OptExtensions.<Object>defined(objects)) && IteratorExtensions.<T>toList(objects).contains(instance));
   }
   
   /**

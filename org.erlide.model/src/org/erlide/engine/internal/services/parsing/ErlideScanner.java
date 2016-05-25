@@ -13,7 +13,7 @@ import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.engine.services.parsing.InternalScanner;
 import org.erlide.engine.services.parsing.ScannerException;
 import org.erlide.engine.services.parsing.SimpleScannerService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.util.ErlLogger;
@@ -102,12 +102,12 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
     }
 
     @SuppressWarnings("boxing")
-    public void replaceText(final String module, final int offset,
-            final int removeLength, final String newText) {
+    public void replaceText(final String module, final int offset, final int removeLength,
+            final String newText) {
         assertThat(newText, is(not(nullValue())));
         try {
-            final OtpErlangObject r = backend.call(ERLIDE_SCANNER, "replace_text",
-                    "aiis", module, offset, removeLength, newText);
+            final OtpErlangObject r = backend.call(ERLIDE_SCANNER, "replace_text", "aiis",
+                    module, offset, removeLength, newText);
             if (r instanceof OtpErlangTuple) {
                 ErlLogger.error("replace_text %s @ %d GOT:: %s", module, offset,
                         r.toString());
@@ -127,8 +127,8 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
             r1 = backend.call("erlide_scanner", "light_scan_string", "ba", string,
                     ENCODING);
         } catch (final Exception e) {
-            throw new ScannerException("Could not parse string \"" + string + "\": "
-                    + e.getMessage());
+            throw new ScannerException(
+                    "Could not parse string \"" + string + "\": " + e.getMessage());
         }
         if (r1 == null) {
             return null;
@@ -154,8 +154,8 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
             }
             throw new ScannerException("unexpected token format");
         }
-        throw new ScannerException("Could not parse string \"" + string + "\": "
-                + t1.toString());
+        throw new ScannerException(
+                "Could not parse string \"" + string + "\": " + t1.toString());
     }
 
     @Override

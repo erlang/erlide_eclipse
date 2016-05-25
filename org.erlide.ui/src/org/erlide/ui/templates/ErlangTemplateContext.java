@@ -20,8 +20,8 @@ public class ErlangTemplateContext extends DocumentTemplateContext {
     }
 
     @Override
-    public TemplateBuffer evaluate(final Template template) throws BadLocationException,
-            TemplateException {
+    public TemplateBuffer evaluate(final Template template)
+            throws BadLocationException, TemplateException {
         return evaluate(template, false);
     }
 

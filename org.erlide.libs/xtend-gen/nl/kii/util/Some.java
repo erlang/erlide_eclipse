@@ -57,21 +57,7 @@ public class Some<T extends Object> extends Opt<T> implements Function0<T> {
   
   @Override
   public boolean equals(final Object obj) {
-    boolean _or = false;
-    boolean _equals = Objects.equal(obj, this.value);
-    if (_equals) {
-      _or = true;
-    } else {
-      boolean _and = false;
-      if (!(obj instanceof Some<?>)) {
-        _and = false;
-      } else {
-        boolean _equals_1 = Objects.equal(((Some<?>) obj).value, this.value);
-        _and = _equals_1;
-      }
-      _or = _and;
-    }
-    return _or;
+    return (Objects.equal(obj, this.value) || ((obj instanceof Some<?>) && Objects.equal(((Some<?>) obj).value, this.value)));
   }
   
   @Override

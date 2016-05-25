@@ -20,12 +20,12 @@ public class ServiceLocator {
             Object service = services
                     .get(new Pair<Class<?>, Object>(interfaceClass, key));
             if (service == null) {
-                final Provider<?> provider = providers.get(new Pair<Class<?>, Object>(
-                        interfaceClass, key));
+                final Provider<?> provider = providers
+                        .get(new Pair<Class<?>, Object>(interfaceClass, key));
                 if (provider == null) {
                     try {
-                        final Class<?> implementingClass = interfaceClass.getAnnotation(
-                                Implementor.class).value();
+                        final Class<?> implementingClass = interfaceClass
+                                .getAnnotation(Implementor.class).value();
                         service = implementingClass.newInstance();
                     } catch (final Exception e) {
                         throw new RuntimeException(e);
@@ -43,8 +43,8 @@ public class ServiceLocator {
     public static <T> Provider<T> getProvider(final Class<T> interfaceClass,
             final Object key) {
         synchronized (interfaceClass) {
-            final Provider<?> provider = providers.get(new Pair<Class<?>, Object>(
-                    interfaceClass, key));
+            final Provider<?> provider = providers
+                    .get(new Pair<Class<?>, Object>(interfaceClass, key));
             return (Provider<T>) provider;
         }
     }

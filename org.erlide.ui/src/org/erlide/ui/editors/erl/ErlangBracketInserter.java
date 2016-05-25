@@ -74,8 +74,8 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
 
             final int eventOffset = event.getOffset();
             final int eventOldLength = event.getLength();
-            final int eventNewLength = event.getText() == null ? 0 : event.getText()
-                    .length();
+            final int eventNewLength = event.getText() == null ? 0
+                    : event.getText().length();
             final int deltaLength = eventNewLength - eventOldLength;
 
             try {
@@ -251,8 +251,8 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
         fBracketLevelStack.push(level);
 
         final LinkedPositionGroup group = new LinkedPositionGroup();
-        group.addPosition(new LinkedPosition(document, offset + 1, 0,
-                LinkedPositionGroup.NO_STOP));
+        group.addPosition(
+                new LinkedPosition(document, offset + 1, 0, LinkedPositionGroup.NO_STOP));
 
         final LinkedModeModel model = new LinkedModeModel();
         model.addLinkingListener(this);
@@ -287,8 +287,8 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
 
     private void updateDocument(final IDocument document, final int offset,
             final int length, final String selStr, final char character,
-            final char closingCharacter) throws BadLocationException,
-            BadPositionCategoryException {
+            final char closingCharacter)
+            throws BadLocationException, BadPositionCategoryException {
         final StringBuilder buffer = new StringBuilder();
         buffer.append(character);
         buffer.append(selStr);
@@ -304,8 +304,8 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
         final IRegion endLine = document.getLineInformationOfOffset(offset + length);
 
         List<ErlToken> tokens = null;
-        final int getOffset = offset + length, getLength = endLine.getOffset()
-                + endLine.getLength() - getOffset;
+        final int getOffset = offset + length,
+                getLength = endLine.getOffset() + endLine.getLength() - getOffset;
         final String str = document.get(getOffset, getLength);
         try {
             tokens = ErlangEngine.getInstance().getSimpleScannerService()
@@ -345,7 +345,8 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
                         @Override
                         public void perform(final IDocument d,
                                 final IDocumentListener owner) {
-                            if ((level.fFirstPosition.isDeleted || level.fFirstPosition.length == 0)
+                            if ((level.fFirstPosition.isDeleted
+                                    || level.fFirstPosition.length == 0)
                                     && !level.fSecondPosition.isDeleted
                                     && level.fSecondPosition.offset == level.fFirstPosition.offset) {
                                 try {
@@ -513,7 +514,8 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
         setCloseStringsEnabled(prefs.get(SmartTypingPreferencePage.STRINGS));
         setCloseBracesEnabled(prefs.get(SmartTypingPreferencePage.BRACES));
         setCloseParensEnabled(prefs.get(SmartTypingPreferencePage.PARENS));
-        setEmbraceSelectionEnabled(prefs.get(SmartTypingPreferencePage.EMBRACE_SELECTION));
+        setEmbraceSelectionEnabled(
+                prefs.get(SmartTypingPreferencePage.EMBRACE_SELECTION));
     }
 
     public void unconfigure() {
@@ -533,9 +535,8 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
         public void preferenceChange(final PreferenceChangeEvent event) {
             final String key = event.getKey();
             // ErlLogger.debug("event:: " + key);
-            if (key.indexOf('/') != -1
-                    && key.split("/")[0]
-                            .equals(SmartTypingPreferencePage.SMART_TYPING_KEY)) {
+            if (key.indexOf('/') != -1 && key.split("/")[0]
+                    .equals(SmartTypingPreferencePage.SMART_TYPING_KEY)) {
                 configurePreferences();
             }
         }

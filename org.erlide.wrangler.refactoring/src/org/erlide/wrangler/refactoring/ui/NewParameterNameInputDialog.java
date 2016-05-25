@@ -64,13 +64,14 @@ public class NewParameterNameInputDialog extends AbstractInputDialog {
         final GridData minToksData = new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_CENTER);
-        minToksData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        minToksData.widthHint = convertHorizontalDLUsToPixels(
+                IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
         newParameterNameLabel.setLayoutData(minToksData);
         newParameterNameLabel.setFont(parent.getFont());
 
         newParameterName = new Text(composite, getInputTextStyle());
-        newParameterName.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
+        newParameterName.setLayoutData(
+                new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         newParameterName.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
@@ -80,10 +81,10 @@ public class NewParameterNameInputDialog extends AbstractInputDialog {
         });
 
         errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
-        errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
-        errorMessageText.setBackground(errorMessageText.getDisplay().getSystemColor(
-                SWT.COLOR_WIDGET_BACKGROUND));
+        errorMessageText.setLayoutData(
+                new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+        errorMessageText.setBackground(errorMessageText.getDisplay()
+                .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 
         setErrorMessage("New parameter name must be a valid variable name!");
         newParameterName.setText("");

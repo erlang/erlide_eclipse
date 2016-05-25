@@ -47,11 +47,11 @@ public final class DefaultFailureInterpreter implements FailureInterpreter {
     /**
      * Constructor that allows a tolerance for a certain number of failures
      * within a given window of time without tripping.
-     * 
+     *
      * @param limit
      *            the number of failures that will be tolerated (i.e. the number
      *            of failures has to be strictly <em>greater
-     *   than</em> this number in order to trip the breaker). For example, if
+     *            than</em> this number in order to trip the breaker). For example, if
      *            the limit is 3, the fourth failure during the window will
      *            cause the breaker to trip.
      * @param windowMillis
@@ -68,7 +68,7 @@ public final class DefaultFailureInterpreter implements FailureInterpreter {
      * Constructor where we specify certain {@link Throwable} classes that will
      * be ignored by the breaker and not be treated as failures (they will be
      * passed through transparently without causing the breaker to trip).
-     * 
+     *
      * @param ignore
      *            an array of {@link Throwable} classes that will be ignored.
      *            Any given <code>Throwable</code> that is a subclass of one of
@@ -88,7 +88,7 @@ public final class DefaultFailureInterpreter implements FailureInterpreter {
      * @param limit
      *            the number of failures that will be tolerated (i.e. the number
      *            of failures has to be strictly <em>greater
-     *   than</em> this number in order to trip the breaker). For example, if
+     *            than</em> this number in order to trip the breaker). For example, if
      *            the limit is 3, the fourth failure during the window will
      *            cause the breaker to trip.
      * @param windowMillis
@@ -147,7 +147,7 @@ public final class DefaultFailureInterpreter implements FailureInterpreter {
 
     /**
      * Returns the set of currently ignored {@link Throwable} classes.
-     * 
+     *
      * @return {@link Set}
      */
     public Set<Class<? extends Throwable>> getIgnore() {
@@ -157,19 +157,18 @@ public final class DefaultFailureInterpreter implements FailureInterpreter {
     /**
      * Specifies an array of {@link Throwable} classes to ignore. These will not
      * be considered failures.
-     * 
+     *
      * @param ignore
      *            array of {@link Class} objects
      */
     public synchronized void setIgnore(final Class<? extends Throwable>[] ignore) {
-        this.ignore = new HashSet<Class<? extends Throwable>>(
-                Arrays.asList(ignore));
+        this.ignore = new HashSet<Class<? extends Throwable>>(Arrays.asList(ignore));
     }
 
     /**
      * Returns the current number of failures within the window that will be
      * tolerated without tripping the breaker.
-     * 
+     *
      * @return int
      */
     public int getLimit() {
@@ -181,7 +180,7 @@ public final class DefaultFailureInterpreter implements FailureInterpreter {
      * window. If limit is set to <em>n</em> then the <em>(n+1)</em>th failure
      * will trip the breaker. Mutating the limit at runtime can reset previous
      * failure counts.
-     * 
+     *
      * @param limit
      *            <code>int</code>
      */
@@ -193,7 +192,7 @@ public final class DefaultFailureInterpreter implements FailureInterpreter {
     /**
      * Returns the length of the currently configured tolerance window in
      * milliseconds.
-     * 
+     *
      * @return <code>long</code>
      */
     public long getWindowMillis() {
@@ -202,7 +201,7 @@ public final class DefaultFailureInterpreter implements FailureInterpreter {
 
     /**
      * Specifies the length of the tolerance window in milliseconds.
-     * 
+     *
      * @param windowMillis
      *            <code>long</code>
      */

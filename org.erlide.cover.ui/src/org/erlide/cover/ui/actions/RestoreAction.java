@@ -63,8 +63,8 @@ public class RestoreAction extends Action {
         }
 
         // open dialog
-        final ElementListSelectionDialog resDialog = new ElementListSelectionDialog(
-                shell, labelProvider);
+        final ElementListSelectionDialog resDialog = new ElementListSelectionDialog(shell,
+                labelProvider);
 
         resDialog.setElements(dir.listFiles());
         resDialog.setTitle("Restoring results");

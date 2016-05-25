@@ -32,7 +32,8 @@ public class ErlangHyperlinkDetector extends AbstractHyperlinkDetector {
     }
 
     private IHyperlink[] detectHyperlinks(final IDocument doc, final int offset) {
-        final AbstractErlangEditor editor = (AbstractErlangEditor) getAdapter(AbstractErlangEditor.class);
+        final AbstractErlangEditor editor = (AbstractErlangEditor) getAdapter(
+                AbstractErlangEditor.class);
         if (editor == null) {
             return null;
         }
@@ -80,7 +81,8 @@ public class ErlangHyperlinkDetector extends AbstractHyperlinkDetector {
         private final AbstractErlangEditor editor;
         private final ErlRegion region;
 
-        public ErlangHyperlink(final AbstractErlangEditor editor, final ErlRegion partion) {
+        public ErlangHyperlink(final AbstractErlangEditor editor,
+                final ErlRegion partion) {
             this.editor = editor;
             region = partion;
         }

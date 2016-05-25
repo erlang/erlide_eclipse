@@ -14,8 +14,9 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.ErlElementKind;
+import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.ISourceUnit;
 import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.engine.services.parsing.ScannerService;
@@ -128,8 +129,8 @@ public class IErlModuleTest extends ErlModelTestBase {
                 ErlElementKind.RECORD_DEF);
         final IErlPreprocessorDef def3 = preprocessorDefModule.findPreprocessorDef("B",
                 ErlElementKind.MACRO_DEF);
-        final IErlPreprocessorDef def4 = preprocessorDefModule.findPreprocessorDef(
-                "?MODULE", ErlElementKind.RECORD_DEF);
+        final IErlPreprocessorDef def4 = preprocessorDefModule
+                .findPreprocessorDef("?MODULE", ErlElementKind.RECORD_DEF);
         assertNotNull(def1);
         assertNull(def2);
         assertNotNull(def3);
@@ -258,8 +259,8 @@ public class IErlModuleTest extends ErlModelTestBase {
         final ErlangFunction f_1 = new ErlangFunction(f, 1);
         final IErlFunction function2 = module.findFunction(f_1);
         final IErlFunction function3 = module.findFunction(new ErlangFunction(f));
-        final IErlFunction function4 = module.findFunction(new ErlangFunction(f,
-                ErlangFunction.ANY_ARITY));
+        final IErlFunction function4 = module
+                .findFunction(new ErlangFunction(f, ErlangFunction.ANY_ARITY));
         assertNull(function);
         assertEquals(f_1, function2.getFunction());
         assertEquals(f_1, function3.getFunction());

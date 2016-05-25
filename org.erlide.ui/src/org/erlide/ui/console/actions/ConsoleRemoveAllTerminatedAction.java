@@ -27,8 +27,8 @@ import org.erlide.ui.console.ConsoleMessages;
  * ConsoleRemoveAllTerminatedAction
  */
 @SuppressWarnings("restriction")
-public class ConsoleRemoveAllTerminatedAction extends Action implements IUpdate,
-        ILaunchesListener2 {
+public class ConsoleRemoveAllTerminatedAction extends Action
+        implements IUpdate, ILaunchesListener2 {
 
     public void dispose() {
         DebugPlugin.getDefault().getLaunchManager().removeLaunchListener(this);
@@ -58,8 +58,8 @@ public class ConsoleRemoveAllTerminatedAction extends Action implements IUpdate,
 
     public ConsoleRemoveAllTerminatedAction() {
         super(ConsoleMessages.ConsoleRemoveAllTerminatedAction_0);
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(this, IDebugHelpContextIds.CONSOLE_REMOVE_ALL_TERMINATED);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+                IDebugHelpContextIds.CONSOLE_REMOVE_ALL_TERMINATED);
         setToolTipText(ConsoleMessages.ConsoleRemoveAllTerminatedAction_1);
         setImageDescriptor(DebugPluginImages
                 .getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE_ALL));

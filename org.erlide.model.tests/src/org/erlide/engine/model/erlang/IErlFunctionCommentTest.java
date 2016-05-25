@@ -2,6 +2,7 @@ package org.erlide.engine.model.erlang;
 
 import static org.junit.Assert.assertEquals;
 
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.Test;
 

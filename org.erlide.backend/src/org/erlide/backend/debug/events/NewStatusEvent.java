@@ -34,7 +34,8 @@ public class NewStatusEvent extends IntEvent {
         }
     }
 
-    private void handleIdleStatus(final ErlangProcess erlangProcess, final String status) {
+    private void handleIdleStatus(final ErlangProcess erlangProcess,
+            final String status) {
         // FIXME: this must be cleaned, but the status messages seem
         // to come out of order...
         // erlangProcess.removeStackFrames();
@@ -52,14 +53,16 @@ public class NewStatusEvent extends IntEvent {
         }
     }
 
-    private void handleExitStatus(final ErlangProcess erlangProcess, final String status) {
+    private void handleExitStatus(final ErlangProcess erlangProcess,
+            final String status) {
         erlangProcess.setStatus(status);
         final OtpErlangObject esa = cmds[3];
         erlangProcess.setExitStatus(esa.toString());
         erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
     }
 
-    private void handleBreakStatus(final ErlangProcess erlangProcess, final String status) {
+    private void handleBreakStatus(final ErlangProcess erlangProcess,
+            final String status) {
         erlangProcess.setStatus(status);
         if (!erlangProcess.isStepping()) {
             erlangProcess.fireSuspendEvent(DebugEvent.BREAKPOINT);

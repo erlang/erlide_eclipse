@@ -29,12 +29,12 @@ public class OutlineFilterUtils {
         final IEclipsePreferences prefsNode = ErlangOutlinePage.getPrefsNode();
         final boolean areUserDefinedPatternsEnabled = prefsNode.getBoolean(
                 PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS_ENABLED, false);
-        final String userDefinedPatternsString = prefsNode.get(
-                PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS, "");
-        userDefinedPatterns.addAll(ListsUtils.unpackList(userDefinedPatternsString,
-                SEPARATOR));
-        final String enabledFilterIDsString = prefsNode.get(
-                PreferenceConstants.OUTLINE_ENABLED_FILTERS, "");
+        final String userDefinedPatternsString = prefsNode
+                .get(PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS, "");
+        userDefinedPatterns
+                .addAll(ListsUtils.unpackList(userDefinedPatternsString, SEPARATOR));
+        final String enabledFilterIDsString = prefsNode
+                .get(PreferenceConstants.OUTLINE_ENABLED_FILTERS, "");
         enabledFilterIDs.addAll(ListsUtils.unpackList(enabledFilterIDsString, SEPARATOR));
         return areUserDefinedPatternsEnabled;
     }
@@ -57,14 +57,13 @@ public class OutlineFilterUtils {
 
     public static void updateViewerFilters(final StructuredViewer viewer,
             final List<String> oldUserDefinedPatterns,
-            final Set<String> oldEnabledFilterIDs,
-            final List<String> userDefinedPatterns, final Set<String> enabledFilterIDs,
-            final PatternFilter patternFilter) {
+            final Set<String> oldEnabledFilterIDs, final List<String> userDefinedPatterns,
+            final Set<String> enabledFilterIDs, final PatternFilter patternFilter) {
         SetView<String> intersection = Sets.intersection(oldEnabledFilterIDs,
                 enabledFilterIDs);
         SetView<String> difference = Sets.difference(enabledFilterIDs, intersection);
-        SetView<String> oldDifference = Sets
-                .difference(oldEnabledFilterIDs, intersection);
+        SetView<String> oldDifference = Sets.difference(oldEnabledFilterIDs,
+                intersection);
         final HashSet<String> oldPatterns = Sets.newHashSet(oldUserDefinedPatterns);
         final HashSet<String> patterns = Sets.newHashSet(userDefinedPatterns);
         for (final String id : oldDifference) {
@@ -132,8 +131,8 @@ public class OutlineFilterUtils {
 
     public static void setFilters(final Collection<FilterDescriptor> filterDescs,
             final Object activePart) {
-        final List<ViewerFilter> filters = Lists.newArrayListWithCapacity(filterDescs
-                .size());
+        final List<ViewerFilter> filters = Lists
+                .newArrayListWithCapacity(filterDescs.size());
         for (final FilterDescriptor desc : filterDescs) {
             final ViewerFilter filter = desc.getViewerFilter();
             if (filter == null) {

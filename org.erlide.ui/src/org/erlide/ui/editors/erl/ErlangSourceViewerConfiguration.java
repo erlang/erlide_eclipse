@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
 import org.erlide.ui.editors.erl.completion.ErlStringContentAssistProcessor;
@@ -116,8 +116,8 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
 
     public ICharacterPairMatcher getBracketMatcher() {
         if (fBracketMatcher == null) {
-            fBracketMatcher = new ErlangPairMatcher(new String[] { "(", ")", "{", "}",
-                    "[", "]", "<<", ">>" });
+            fBracketMatcher = new ErlangPairMatcher(
+                    new String[] { "(", ")", "{", "}", "[", "]", "<<", ">>" });
         }
         return fBracketMatcher;
     }
@@ -190,11 +190,12 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
     }
 
     @Override
-    public IQuickAssistAssistant getQuickAssistAssistant(final ISourceViewer sourceViewer) {
+    public IQuickAssistAssistant getQuickAssistAssistant(
+            final ISourceViewer sourceViewer) {
         final IQuickAssistAssistant assistant = new QuickAssistAssistant();
         assistant.setQuickAssistProcessor(new ErlangQuickAssistProcessor());
-        assistant
-                .setInformationControlCreator(getQuickAssistAssistantInformationControlCreator());
+        assistant.setInformationControlCreator(
+                getQuickAssistAssistantInformationControlCreator());
         return assistant;
     }
 
@@ -209,10 +210,8 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
     }
 
     static final String getAdditionalInfoAffordanceString() {
-        if (!EditorsUI
-                .getPreferenceStore()
-                .getBoolean(
-                        AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SHOW_TEXT_HOVER_AFFORDANCE)) {
+        if (!EditorsUI.getPreferenceStore().getBoolean(
+                AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SHOW_TEXT_HOVER_AFFORDANCE)) {
             return null;
         }
 
@@ -252,8 +251,8 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
         contentAssistant.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
 
         contentAssistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-        contentAssistant
-                .setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
+        contentAssistant.setContextInformationPopupOrientation(
+                IContentAssistant.CONTEXT_INFO_ABOVE);
         contentAssistant
                 .setInformationControlCreator(getInformationControlCreator(sourceViewer));
 

@@ -36,13 +36,12 @@ public class PerformanceMonitorFactory {
      * Create a new {@link PerformanceMonitor} and map it to the provided name.
      * If the PerformanceMonitor already exists, then the existing instance is
      * returned.
-     * 
+     *
      * @param name
      *            the name for the {@link PerformanceMonitor}
      * @return the created {@link PerformanceMonitor}
      */
-    public synchronized PerformanceMonitor createPerformanceMonitor(
-            final String name) {
+    public synchronized PerformanceMonitor createPerformanceMonitor(final String name) {
         PerformanceMonitor performanceMonitor = findPerformanceMonitor(name);
 
         if (performanceMonitor == null) {
@@ -54,7 +53,7 @@ public class PerformanceMonitorFactory {
 
     /**
      * Find an existing {@link PerformanceMonitor}
-     * 
+     *
      * @param name
      *            the name for the {@link PerformanceMonitor}
      * @return the found {@link PerformanceMonitor}, or null if it is not found.
@@ -65,7 +64,7 @@ public class PerformanceMonitorFactory {
 
     /**
      * Get the {@link Set} of created performance monitor names.
-     * 
+     *
      * @return the {@link Set} of names.
      */
     public Set<String> getPerformanceMonitorNames() {
@@ -74,7 +73,7 @@ public class PerformanceMonitorFactory {
 
     /**
      * Add a {@link PerformanceMonitor} to the map.
-     * 
+     *
      * @param name
      *            the name for the {@link PerformanceMonitor}
      * @param performanceMonitor

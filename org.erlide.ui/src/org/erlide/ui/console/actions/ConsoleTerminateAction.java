@@ -44,8 +44,8 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
      */
     public ConsoleTerminateAction(final ErlangConsole fConsole2) {
         super(ConsoleMessages.ConsoleTerminateAction_0);
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(this, IDebugHelpContextIds.CONSOLE_TERMINATE_ACTION);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+                IDebugHelpContextIds.CONSOLE_TERMINATE_ACTION);
         fConsole = fConsole2;
         setToolTipText(ConsoleMessages.ConsoleTerminateAction_1);
         setImageDescriptor(DebugPluginImages
@@ -54,8 +54,8 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
                 .getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_TERMINATE));
         setHoverImageDescriptor(DebugPluginImages
                 .getImageDescriptor(IInternalDebugUIConstants.IMG_LCL_TERMINATE));
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(this, IDebugHelpContextIds.CONSOLE_TERMINATE_ACTION);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+                IDebugHelpContextIds.CONSOLE_TERMINATE_ACTION);
         update();
     }
 
@@ -74,8 +74,8 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
             if (launch != null) {
                 terminate(launch);
 
-                final Collection<IProject> projects = Lists.newArrayList(backend
-                        .getData().getProjects());
+                final Collection<IProject> projects = Lists
+                        .newArrayList(backend.getData().getProjects());
                 final IBackendManager backendManager = BackendCore.getBackendManager();
                 for (final IProject project : projects) {
                     backendManager.removeExecutionBackend(project, backend);

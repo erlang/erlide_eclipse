@@ -18,8 +18,8 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.ui.actions.CompositeActionGroup;
@@ -149,8 +149,8 @@ public class ErlangScratchPad extends AbstractErlangEditor implements ISaveableP
         // menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, testAction);
         // }
         addCommonActions(menu);
-        final ActionContext context = new ActionContext(getSelectionProvider()
-                .getSelection());
+        final ActionContext context = new ActionContext(
+                getSelectionProvider().getSelection());
         fContextMenuGroup.setContext(context);
         fContextMenuGroup.fillContextMenu(menu);
         fContextMenuGroup.setContext(null);

@@ -153,9 +153,8 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
                     public void doAction() {
                         final int limit = Activator.getDefault().getPreferenceStore()
                                 .getInt(PreferenceNames.TRACES_LOAD_LIMIT);
-                        final long endIndex = Math
-                                .min(index + limit * 2 - 1, TraceBackend.getInstance()
-                                        .getActiveResultSet().getSize());
+                        final long endIndex = Math.min(index + limit * 2 - 1, TraceBackend
+                                .getInstance().getActiveResultSet().getSize());
                         final long startIndex = endIndex - limit + 1;
                         TraceBackend.getInstance().loadDataFromFile(startIndex, endIndex);
                     }
@@ -188,12 +187,11 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
                     correctInput = false;
                     final Long value = new Long(traceIndexField.getText());
 
-                    if (value >= 1
-                            && value <= TraceBackend.getInstance().getActiveResultSet()
-                                    .getSize()) {
+                    if (value >= 1 && value <= TraceBackend.getInstance()
+                            .getActiveResultSet().getSize()) {
                         index = value;
-                        showButton.setEnabled(nextButton.isEnabled()
-                                || previousButton.isEnabled());
+                        showButton.setEnabled(
+                                nextButton.isEnabled() || previousButton.isEnabled());
                         correctInput = true;
                     } else {
                         showButton.setEnabled(false);

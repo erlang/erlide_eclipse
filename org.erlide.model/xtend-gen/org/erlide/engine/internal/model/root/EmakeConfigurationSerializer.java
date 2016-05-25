@@ -16,8 +16,8 @@ import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfigurationSerializer;
 import org.erlide.engine.services.parsing.SimpleParserService;
-import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.OtpBindings;
+import org.erlide.util.erlang.OtpErlang;
 
 @SuppressWarnings("all")
 public class EmakeConfigurationSerializer implements ProjectConfigurationSerializer {
@@ -45,7 +45,7 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
         @Override
         public void apply(final OtpErlangObject erl_opts) {
           try {
-            final OtpBindings bindings = ErlUtils.match("{Src,Opts}", erl_opts);
+            final OtpBindings bindings = OtpErlang.match("{Src,Opts}", erl_opts);
             if ((bindings != null)) {
               final String src = bindings.getAtom("Src");
               String _xifexpression = null;
@@ -68,7 +68,7 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
                   @Override
                   public void apply(final OtpErlangObject opt) {
                     try {
-                      final OtpBindings b = ErlUtils.match("{Tag,Arg}", opt);
+                      final OtpBindings b = OtpErlang.match("{Tag,Arg}", opt);
                       if ((b != null)) {
                         EmakeConfigurationSerializer.this.parseOption(b, result);
                       }
@@ -95,20 +95,18 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
     try {
       String _atom = b.getAtom("Tag");
       boolean _matched = false;
-      if (!_matched) {
-        if (Objects.equal(_atom, "i")) {
-          _matched=true;
-          Collection<IPath> _includeDirs = result.getIncludeDirs();
-          final List<IPath> incs = new ArrayList<IPath>(_includeDirs);
-          String _string = b.getString("Arg");
-          final Path inc = new Path(_string);
-          boolean _contains = incs.contains(inc);
-          boolean _not = (!_contains);
-          if (_not) {
-            incs.add(inc);
-          }
-          result.setIncludeDirs(incs);
+      if (Objects.equal(_atom, "i")) {
+        _matched=true;
+        Collection<IPath> _includeDirs = result.getIncludeDirs();
+        final List<IPath> incs = new ArrayList<IPath>(_includeDirs);
+        String _string = b.getString("Arg");
+        final Path inc = new Path(_string);
+        boolean _contains = incs.contains(inc);
+        boolean _not = (!_contains);
+        if (_not) {
+          incs.add(inc);
         }
+        result.setIncludeDirs(incs);
       }
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);

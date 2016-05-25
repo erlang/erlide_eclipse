@@ -33,10 +33,8 @@ public class Activator extends AbstractUIPlugin {
         // loading images
         final URL baseUrl = FileLocator.find(getBundle(), new Path(ICONS_PATH), null);
         for (final Images image : Images.values()) {
-            getImageRegistry()
-                    .put(image.toString(),
-                            ImageDescriptor.createFromURL(new URL(baseUrl
-                                    + image.getFileName())));
+            getImageRegistry().put(image.toString(), ImageDescriptor
+                    .createFromURL(new URL(baseUrl + image.getFileName())));
         }
     }
 

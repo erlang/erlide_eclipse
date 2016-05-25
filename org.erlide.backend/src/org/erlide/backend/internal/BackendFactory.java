@@ -18,7 +18,7 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendFactory;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
-import org.erlide.runtime.OtpNodeProxy;
+import org.erlide.runtime.OtpNodeProxyProvider;
 import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -68,7 +68,7 @@ public class BackendFactory implements IBackendFactory {
     @Override
     @NonNull
     public IOtpNodeProxy createNodeProxy(final BackendData data) {
-        final OtpNodeProxy result = new OtpNodeProxy(data);
+        final IOtpNodeProxy result = OtpNodeProxyProvider.get(data);
         return result;
     }
 

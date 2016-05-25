@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
-import org.erlide.runtime.api.IOtpRpc;
-import org.erlide.runtime.rpc.RpcFuture;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
@@ -23,10 +23,9 @@ public class ErlideDialyze {
     // private static final int INCLUDE_TIMEOUT = 40000;
     private static final int UPDATE_TIMEOUT = LONG_TIMEOUT * 10;
 
-    public static RpcFuture dialyze(final IOtpRpc backend,
-            final Collection<String> files, final Collection<String> pltPaths,
-            final Collection<IPath> includeDirs, final boolean fromSource,
-            final Object noCheckPLT) throws RpcException {
+    public static RpcFuture dialyze(final IOtpRpc backend, final Collection<String> files,
+            final Collection<String> pltPaths, final Collection<IPath> includeDirs,
+            final boolean fromSource, final Object noCheckPLT) throws RpcException {
         final List<String> incs = Lists.newArrayList();
         for (final IPath p : includeDirs) {
             incs.add(p.toString());

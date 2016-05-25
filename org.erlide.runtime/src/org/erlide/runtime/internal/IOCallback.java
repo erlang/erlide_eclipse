@@ -17,7 +17,8 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 
 public interface IOCallback {
 
-    OtpErlangObject putChars(OtpErlangPid from, IOEncoding encoding, OtpErlangObject chars);
+    OtpErlangObject putChars(OtpErlangPid from, IOEncoding encoding,
+            OtpErlangObject chars);
 
     OtpErlangObject putChars(OtpErlangPid from, IOEncoding latin1, String module,
             String function, Collection<OtpErlangObject> args);

@@ -79,8 +79,8 @@ public class TypeConverterTest {
 
     @Test
     public void cvtListOk_1() throws SignatureException {
-        test(new String[] { "a" }, "ls", new OtpErlangList(
-                new OtpErlangObject[] { new OtpErlangString("a") }));
+        test(new String[] { "a" }, "ls",
+                new OtpErlangList(new OtpErlangObject[] { new OtpErlangString("a") }));
     }
 
     @SuppressWarnings("boxing")
@@ -92,8 +92,8 @@ public class TypeConverterTest {
 
     @Test(expected = SignatureException.class)
     public void cvtListFail_1() throws SignatureException {
-        test(new String[] { "a" }, "li", new OtpErlangList(
-                new OtpErlangObject[] { new OtpErlangString("a") }));
+        test(new String[] { "a" }, "li",
+                new OtpErlangList(new OtpErlangObject[] { new OtpErlangString("a") }));
     }
 
     @SuppressWarnings("boxing")
@@ -150,9 +150,9 @@ public class TypeConverterTest {
     public void cvtMapOk_2() throws SignatureException {
         final HashMap<OtpErlangObject, OtpErlangObject> map = new HashMap<OtpErlangObject, OtpErlangObject>();
         map.put(new OtpErlangAtom("foo"), new OtpErlangAtom("bar"));
-        test(map, "m", new OtpErlangMap(
-                new OtpErlangObject[] { new OtpErlangAtom("foo") },
-                new OtpErlangObject[] { new OtpErlangAtom("bar") }));
+        test(map, "m",
+                new OtpErlangMap(new OtpErlangObject[] { new OtpErlangAtom("foo") },
+                        new OtpErlangObject[] { new OtpErlangAtom("bar") }));
     }
 
     @Test

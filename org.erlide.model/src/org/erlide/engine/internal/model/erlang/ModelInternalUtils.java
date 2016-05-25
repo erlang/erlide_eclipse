@@ -21,21 +21,21 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.IErlImport;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.IErlPreprocessorDef;
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlExternal;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.IOpenable;
 import org.erlide.engine.services.search.ModelUtilService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.TypeConverter;
 
@@ -91,8 +91,8 @@ public class ModelInternalUtils implements ModelUtilService {
     @Override
     public IErlModule getModuleFromExternalModulePath(final IErlModel model,
             final String modulePath) throws ErlModelException {
-        final List<String> path = Lists.newArrayList(Splitter.on(DELIMITER).split(
-                modulePath));
+        final List<String> path = Lists
+                .newArrayList(Splitter.on(DELIMITER).split(modulePath));
         model.open(null);
         final IErlElement childNamed = model.getChildNamed(path.get(0));
         if (childNamed instanceof IParent) {
@@ -137,8 +137,8 @@ public class ModelInternalUtils implements ModelUtilService {
                 }
             }
             if (checkExternals) {
-                final Collection<IErlModule> externalUnits = includes ? project
-                        .getExternalIncludes() : project.getExternalModules();
+                final Collection<IErlModule> externalUnits = includes
+                        ? project.getExternalIncludes() : project.getExternalModules();
                 addUnitNamesWithPrefix(prefix, result, externalUnits, true, includes);
             }
         }
@@ -333,8 +333,8 @@ public class ModelInternalUtils implements ModelUtilService {
         final IFile beam = project.getWorkspaceProject().getFile(beamPath);
 
         try {
-            final OtpErlangObject info = backend.call("erlide_backend",
-                    "get_module_info", "s", beam.getLocation().toPortableString());
+            final OtpErlangObject info = backend.call("erlide_backend", "get_module_info",
+                    "s", beam.getLocation().toPortableString());
             return (String) TypeConverter.erlang2java(info, String.class);
         } catch (final Exception e) {
             ErlLogger.warn(e);

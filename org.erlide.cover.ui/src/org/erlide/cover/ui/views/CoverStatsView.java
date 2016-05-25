@@ -177,8 +177,8 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         viewer.setInput(StatsTreeModel.getInstance());
 
         // Create the help context id for the viewer's control
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(viewer.getControl(), "org.erlide.eunit.core.viewer");
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(),
+                "org.erlide.eunit.core.viewer");
 
         makeActions();
 
@@ -372,8 +372,8 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
             });
             break;
         case ERROR:
-            final IStatus executionStatus = new Status(IStatus.ERROR,
-                    Activator.PLUGIN_ID, e.getInfo(), null);
+            final IStatus executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                    e.getInfo(), null);
             StatusManager.getManager().handle(executionStatus, StatusManager.SHOW);
             break;
         default:

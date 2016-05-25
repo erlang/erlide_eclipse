@@ -5,7 +5,7 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.erlide.engine.model.builder.MarkerUtils;
+import org.erlide.engine.MarkerUtils;
 
 import com.google.common.base.Splitter;
 

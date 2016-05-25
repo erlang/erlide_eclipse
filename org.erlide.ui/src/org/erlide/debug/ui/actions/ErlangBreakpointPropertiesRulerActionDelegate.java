@@ -35,8 +35,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
  * @noinstantiate This class is not intended to be instantiated by clients.
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class ErlangBreakpointPropertiesRulerActionDelegate extends
-        AbstractRulerActionDelegate {
+public class ErlangBreakpointPropertiesRulerActionDelegate
+        extends AbstractRulerActionDelegate {
 
     /**
      * @see AbstractRulerActionDelegate#createAction(ITextEditor,

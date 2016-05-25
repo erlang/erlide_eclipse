@@ -18,11 +18,9 @@ public class OptExtensions {
   public static <T extends Object> boolean defined(final Object o) {
     boolean _switchResult = false;
     boolean _matched = false;
-    if (!_matched) {
-      if (Objects.equal(o, null)) {
-        _matched=true;
-        _switchResult = false;
-      }
+    if (Objects.equal(o, null)) {
+      _matched=true;
+      _switchResult = false;
     }
     if (!_matched) {
       if (o instanceof None) {
@@ -189,12 +187,10 @@ public class OptExtensions {
     Opt<I> _xblockexpression = null;
     {
       boolean _matched = false;
-      if (!_matched) {
-        if (o instanceof Err) {
-          _matched=true;
-          Throwable _exception = ((Err<I>)o).getException();
-          fn.apply(_exception);
-        }
+      if (o instanceof Err) {
+        _matched=true;
+        Throwable _exception = ((Err<I>)o).getException();
+        fn.apply(_exception);
       }
       _xblockexpression = o;
     }
@@ -387,11 +383,9 @@ public class OptExtensions {
   public static <T extends Object> Opt<T> flatten(final Opt<Opt<T>> option) {
     Opt<T> _switchResult = null;
     boolean _matched = false;
-    if (!_matched) {
-      if (option instanceof Some) {
-        _matched=true;
-        _switchResult = ((Some<Opt<T>>)option).value();
-      }
+    if (option instanceof Some) {
+      _matched=true;
+      _switchResult = ((Some<Opt<T>>)option).value();
     }
     if (!_matched) {
       if (option instanceof None) {
@@ -499,11 +493,9 @@ public class OptExtensions {
     try {
       T _switchResult = null;
       boolean _matched = false;
-      if (!_matched) {
-        if (o instanceof Err) {
-          _matched=true;
-          throw ((Err<T>)o).getException();
-        }
+      if (o instanceof Err) {
+        _matched=true;
+        throw ((Err<T>)o).getException();
       }
       if (!_matched) {
         if (o instanceof None) {

@@ -2,7 +2,7 @@ package org.erlide.engine.model.root;
 
 import java.util.Collection;
 
-import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
 
 public interface IErlLibrary extends IParent, IErlElement, IOpenable {

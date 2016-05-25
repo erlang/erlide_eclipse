@@ -97,7 +97,8 @@ public class ExpressionPosRpcMessage extends AbstractRpcMessage {
      *            the document which containing the module
      * @return selections
      */
-    public HashMap<IErlRange, OtpErlangTuple> getPositionDefinitions(final IDocument doc) {
+    public HashMap<IErlRange, OtpErlangTuple> getPositionDefinitions(
+            final IDocument doc) {
         final HashMap<IErlRange, OtpErlangTuple> ret = new HashMap<IErlRange, OtpErlangTuple>();
         for (final Entry<IRange, OtpErlangTuple> r : positionDefs.entrySet()) {
             ret.put(new ErlRange(r.getKey(), doc), r.getValue());

@@ -1,12 +1,12 @@
 package org.erlide.engine.services.search;
 
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.IErlAttribute;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
 import org.erlide.engine.model.erlang.IErlMacroDef;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.IErlRecordDef;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.util.StringUtils;
 import org.erlide.util.SystemConfiguration;
 import org.erlide.util.Util;
@@ -46,8 +46,8 @@ public class SearchPatternFactory {
             final IErlElement element, final LimitTo limitTo) {
         if (element instanceof IErlFunction) {
             final IErlFunction function = (IErlFunction) element;
-            final String withoutExtension = SystemConfiguration.withoutExtension(function
-                    .getModuleName());
+            final String withoutExtension = SystemConfiguration
+                    .withoutExtension(function.getModuleName());
             return new FunctionPattern(withoutExtension, function.getFunctionName(),
                     function.getArity(), limitTo, true,
                     modelUtilService.getModule(function), !function.isExported());

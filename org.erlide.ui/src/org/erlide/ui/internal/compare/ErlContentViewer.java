@@ -23,11 +23,11 @@ public class ErlContentViewer extends Viewer {
     private Object fInput;
 
     ErlContentViewer(final Composite parent) {
-        fSourceViewer = new SourceViewer(parent, null, SWT.LEFT_TO_RIGHT | SWT.H_SCROLL
-                | SWT.V_SCROLL);
+        fSourceViewer = new SourceViewer(parent, null,
+                SWT.LEFT_TO_RIGHT | SWT.H_SCROLL | SWT.V_SCROLL);
         final IPreferenceStore store = ErlideUIPlugin.getDefault().getPreferenceStore();
-        fSourceViewer.configure(new ErlangSourceViewerConfiguration(store,
-                new ColorManager()));
+        fSourceViewer.configure(
+                new ErlangSourceViewerConfiguration(store, new ColorManager()));
         fSourceViewer.setEditable(false);
 
         final String symbolicFontName = ErlMergeViewer.class.getName();

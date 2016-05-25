@@ -32,10 +32,10 @@ import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.builder.ErlangNature;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.NewProjectData;
 import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.NewProjectData;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.StatusUtil;
@@ -85,8 +85,8 @@ public class ProjectCreator {
             public void run(final IProgressMonitor monitor)
                     throws InvocationTargetException {
 
-                final CreateProjectOperation op1 = new CreateProjectOperation(
-                        description, WizardMessages.NewProject_windowTitle);
+                final CreateProjectOperation op1 = new CreateProjectOperation(description,
+                        WizardMessages.NewProject_windowTitle);
                 try {
                     // https://bugs.eclipse.org/bugs/show_bug.cgi?id=219901
                     // Making this undoable would be a bad idea
@@ -112,8 +112,8 @@ public class ProjectCreator {
                     erlProject.setConfigType(info.getConfigType());
                     final BuilderProperties builderProperties = new BuilderProperties();
                     builderProperties.setBuilderTool(builder);
-                    builderProperties.setCompileTarget(info.getBuilderData().get(
-                            "compile"));
+                    builderProperties
+                            .setCompileTarget(info.getBuilderData().get("compile"));
                     builderProperties.setCleanTarget(info.getBuilderData().get("clean"));
 
                     erlProject.setBuilderProperties(builderProperties);
@@ -132,13 +132,17 @@ public class ProjectCreator {
             return null;
         } catch (final InvocationTargetException e) {
             final Throwable t = e.getTargetException();
-            if (t instanceof ExecutionException && t.getCause() instanceof CoreException) {
+            if (t instanceof ExecutionException
+                    && t.getCause() instanceof CoreException) {
                 final CoreException cause = (CoreException) t.getCause();
                 StatusAdapter status;
                 if (cause.getStatus().getCode() == IResourceStatus.CASE_VARIANT_EXISTS) {
-                    status = new StatusAdapter(StatusUtil.newStatus(IStatus.WARNING, NLS
-                            .bind(WizardMessages.NewProject_caseVariantExistsError,
-                                    newProjectHandle.getName()), cause));
+                    status = new StatusAdapter(
+                            StatusUtil.newStatus(IStatus.WARNING,
+                                    NLS.bind(
+                                            WizardMessages.NewProject_caseVariantExistsError,
+                                            newProjectHandle.getName()),
+                                    cause));
                 } else {
                     status = new StatusAdapter(
                             StatusUtil.newStatus(cause.getStatus().getSeverity(),
@@ -148,9 +152,9 @@ public class ProjectCreator {
                         WizardMessages.NewProject_errorMessage);
                 StatusManager.getManager().handle(status, StatusManager.BLOCK);
             } else {
-                final StatusAdapter status = new StatusAdapter(new Status(
-                        IStatus.WARNING, ErlideUIPlugin.PLUGIN_ID, 0, NLS.bind(
-                                WizardMessages.NewProject_internalError, t.getMessage()),
+                final StatusAdapter status = new StatusAdapter(new Status(IStatus.WARNING,
+                        ErlideUIPlugin.PLUGIN_ID, 0,
+                        NLS.bind(WizardMessages.NewProject_internalError, t.getMessage()),
                         t));
                 status.setProperty(IStatusAdapterConstants.TITLE_PROPERTY,
                         WizardMessages.NewProject_errorMessage);

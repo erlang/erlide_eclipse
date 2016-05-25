@@ -27,8 +27,8 @@ public class ConfigurationSaveAsDialog extends InputDialog {
     public ConfigurationSaveAsDialog(final Shell parentShell, final String dialogTitle,
             final String dialogMessage, final String initialValue,
             final Set<String> existingNames) {
-        super(parentShell, dialogTitle, dialogMessage, initialValue, new Validator(
-                existingNames));
+        super(parentShell, dialogTitle, dialogMessage, initialValue,
+                new Validator(existingNames));
     }
 
     private static class Validator implements IInputValidator {

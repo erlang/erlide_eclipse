@@ -16,7 +16,8 @@ import org.erlide.engine.model.ErlModelException;
  * Common protocol for Erlang elements that have associated source code. This
  * set consists of <code>IErlModule</code>, <code>IErlAttribute</code>,
  * <code>IErlFunction</code>, <code>IErlFunctionClause</code> and
- * <code>IErlError</code>. </ul>
+ * <code>IErlError</code>.
+ * </ul>
  * <p>
  * Source reference elements may be working copies if they were created from a
  * compilation unit that is a working copy.

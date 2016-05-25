@@ -17,7 +17,7 @@ import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.util.ErlLogger;
 
@@ -41,8 +41,8 @@ public class ErlReconciler implements IReconciler {
     private Object fMutex;
 
     public ErlReconciler(final IErlReconcilingStrategy strategy,
-            final boolean isIncremental, final boolean chunkReconciler,
-            final String path, final IErlModule module, final ITextEditor editor) {
+            final boolean isIncremental, final boolean chunkReconciler, final String path,
+            final IErlModule module, final ITextEditor editor) {
 
         super();
         Assert.isNotNull(strategy);
@@ -262,7 +262,7 @@ public class ErlReconciler implements IReconciler {
                     if (fDocument != null && fDocument.getLength() > 0) {
                         // final DocumentEvent e = new DocumentEvent(fDocument,
                         // 0,
-                        //                                fDocument.getLength(), ""); //$NON-NLS-1$
+                        // fDocument.getLength(), ""); //$NON-NLS-1$
                         // createDirtyRegion(e);
                         fThread.reset();
                         fThread.suspendCallerWhileDirty();
@@ -413,7 +413,8 @@ public class ErlReconciler implements IReconciler {
             }
         }
 
-        final ErlReconcilingStrategy s = (ErlReconcilingStrategy) getReconcilingStrategy(IDocument.DEFAULT_CONTENT_TYPE);
+        final ErlReconcilingStrategy s = (ErlReconcilingStrategy) getReconcilingStrategy(
+                IDocument.DEFAULT_CONTENT_TYPE);
         s.uninstall();
         if (path != null) {
             ErlangEngine.getInstance().getModel().putEdited(path, null);

@@ -17,13 +17,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.util.ModelConfig;
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.ErlModelStatus;
 import org.erlide.engine.model.ErlModelStatusConstants;
-import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IOpenable;
 import org.erlide.util.ErlLogger;
 
 /**
@@ -92,7 +92,8 @@ public abstract class Openable extends ErlElement implements IOpenable {
 
         @Override
         public boolean visit(final IResource resource) {
-            if (resource.getType() == IResource.FILE && resource.getName().equals(aname)) {
+            if (resource.getType() == IResource.FILE
+                    && resource.getName().equals(aname)) {
                 findResult = resource;
                 return false;
             }
@@ -122,7 +123,8 @@ public abstract class Openable extends ErlElement implements IOpenable {
         // for packages and projects must check open buffers
         // to see if they have an child with unsaved changes
         final ErlElementKind elementType = getKind();
-        if (elementType == ErlElementKind.PROJECT || elementType == ErlElementKind.MODEL) {
+        if (elementType == ErlElementKind.PROJECT
+                || elementType == ErlElementKind.MODEL) {
             // final Enumeration openBuffers =
             // getBufferManager().getOpenBuffers();
             // while (openBuffers.hasMoreElements()) {
@@ -185,19 +187,17 @@ public abstract class Openable extends ErlElement implements IOpenable {
         if (workspace == null) {
             return false;
         }
-        return ErlangEngine
-                .getInstance()
-                .getModelUtilService()
-                .getTarget(workspace.getRoot(),
-                        getResource().getFullPath().makeRelative(), true) != null;
+        return ErlangEngine.getInstance().getModelUtilService().getTarget(
+                workspace.getRoot(), getResource().getFullPath().makeRelative(),
+                true) != null;
     }
 
     @Override
     public void save(final IProgressMonitor pm, final boolean force)
             throws ErlModelException {
         if (isReadOnly()) {
-            throw new ErlModelException(new ErlModelStatus(
-                    ErlModelStatusConstants.READ_ONLY, this));
+            throw new ErlModelException(
+                    new ErlModelStatus(ErlModelStatusConstants.READ_ONLY, this));
         }
         // final IBuffer buf = getBuffer();
         // if (buf != null) { // some Openables (like a ErlProject) don't have a

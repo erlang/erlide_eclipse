@@ -22,11 +22,11 @@ import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -34,8 +34,8 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame,
-        IDropToFrame {
+public class ErlangStackFrame extends ErlangDebugElement
+        implements IStackFrame, IDropToFrame {
 
     private final String fModuleName;
     private final ErlangProcess fParent;

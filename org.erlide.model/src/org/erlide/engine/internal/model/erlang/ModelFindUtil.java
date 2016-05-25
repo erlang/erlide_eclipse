@@ -7,20 +7,21 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.internal.model.SourceRange;
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.IErlFunction;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.IErlPreprocessorDef;
 import org.erlide.engine.model.erlang.IErlTypespec;
 import org.erlide.engine.model.erlang.ISourceRange;
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelFindService;
 import org.erlide.engine.services.search.OpenService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.util.StringUtils;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -135,9 +136,9 @@ public class ModelFindUtil implements ModelFindService {
     }
 
     @Override
-    public IErlPreprocessorDef findPreprocessorDef(
-            final Collection<IErlProject> projects, final String moduleName,
-            final String definedName, final ErlElementKind kind) throws CoreException {
+    public IErlPreprocessorDef findPreprocessorDef(final Collection<IErlProject> projects,
+            final String moduleName, final String definedName, final ErlElementKind kind)
+            throws CoreException {
         for (final IErlProject project : projects) {
             if (project != null) {
                 final IErlModule module = project.getModule(moduleName);

@@ -47,8 +47,8 @@ import org.erlide.backend.debug.model.TraceChangedEventData;
 import org.erlide.debug.ui.tracing.DebugTraceEvent;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElementLocator;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -62,8 +62,8 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class DebuggerTraceView extends AbstractDebugView implements
-        IDebugEventSetListener {
+public class DebuggerTraceView extends AbstractDebugView
+        implements IDebugEventSetListener {
 
     // Tree:
     // Launch
@@ -247,7 +247,8 @@ public class DebuggerTraceView extends AbstractDebugView implements
     }
 
     protected static final Object[] NO_CHILDREN = new Object[0];
-    //    private static final String DEBUG_TRACE_AS_LAUNCH = "DebugTraceAsLaunch"; //$NON-NLS-1$
+    // private static final String DEBUG_TRACE_AS_LAUNCH = "DebugTraceAsLaunch";
+    // //$NON-NLS-1$
     private TreeViewer viewer;
     private final List<ILaunch> launches = new ArrayList<ILaunch>();
     private final Map<ILaunch, List<IDebugTarget>> nodeMap = new HashMap<ILaunch, List<IDebugTarget>>();
@@ -260,8 +261,8 @@ public class DebuggerTraceView extends AbstractDebugView implements
 
     @Override
     protected Viewer createViewer(final Composite parent) {
-        viewer = new TreeViewer(new Tree(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI
-                | SWT.FULL_SELECTION));
+        viewer = new TreeViewer(new Tree(parent,
+                SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION));
         // setViewer(viewer);
         // super.createPartControl(parent);
         // parent.setLayout(new FillLayout());
@@ -406,7 +407,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
     // @Override
     // public void widgetSelected(final SelectionEvent e) {
     // final Object o = getSelectedInTree();
-    //                final String msg = o == null ? "" : o.toString(); //$NON-NLS-1$
+    // final String msg = o == null ? "" : o.toString(); //$NON-NLS-1$
     // getViewSite().getActionBars().getStatusLineManager()
     // .setMessage(msg);
     //
@@ -507,8 +508,9 @@ public class DebuggerTraceView extends AbstractDebugView implements
         final Tree tree = viewer.getTree();
         final TableLayout layout = new TableLayout();
         TreeViewerColumn column;
-        final String[] names = {
-                "Kind", "Function", org.erlide.debug.ui.views.ActionMessages.getString("DebuggerTraceView.5") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        final String[] names = { "Kind", "Function", //$NON-NLS-1$ //$NON-NLS-2$
+                org.erlide.debug.ui.views.ActionMessages
+                        .getString("DebuggerTraceView.5") };  //$NON-NLS-1$
         for (final String name : names) {
             column = new TreeViewerColumn(viewer, SWT.NONE);
             final TreeColumn treeColumn = column.getColumn();

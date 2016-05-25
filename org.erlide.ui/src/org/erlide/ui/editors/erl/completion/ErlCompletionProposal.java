@@ -17,6 +17,7 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
+import org.erlide.engine.services.codeassist.Location;
 import org.erlide.util.ErlLogger;
 
 public class ErlCompletionProposal implements ICompletionProposal {
@@ -60,7 +61,7 @@ public class ErlCompletionProposal implements ICompletionProposal {
     }
 
     /** List of offsets (x) and lengths (y) for linked mode replacements */
-    private final List<Point> offsetsAndLengths;
+    private final List<Location> offsetsAndLengths;
     /** The string to be displayed in the completion proposal popup. */
     private final String displayString;
     /** The replacement string. */
@@ -92,7 +93,7 @@ public class ErlCompletionProposal implements ICompletionProposal {
      * @param additionalProposalInfo
      * @param sourceViewer
      */
-    public ErlCompletionProposal(final List<Point> offsetsAndLengths,
+    public ErlCompletionProposal(final List<Location> offsetsAndLengths,
             final String displayString, final String replacementString,
             final int replacementOffset, final int replacementLength,
             final int cursorPosition, final Image image,
@@ -166,7 +167,8 @@ public class ErlCompletionProposal implements ICompletionProposal {
         if (offsetsAndLengths.isEmpty()) {
             return new Point(replacementOffset + cursorPosition, 0);
         }
-        return offsetsAndLengths.get(0);
+        final Location location = offsetsAndLengths.get(0);
+        return new Point(location.getOffset(), location.getLength());
     }
 
     /**
@@ -182,17 +184,19 @@ public class ErlCompletionProposal implements ICompletionProposal {
      *            list of offsets and lengths for linked groups
      */
     protected void setUpLinkedMode(final IDocument document, final char closingCharacter,
-            final List<Point> offsetsAndLengths) {
+            final List<Location> offsetsAndLengths) {
         if (sourceViewer != null && !offsetsAndLengths.isEmpty()) {
             try {
                 final LinkedModeModel model = new LinkedModeModel();
                 int last = 0, i = 0;
-                for (final Point offsetAndLength : offsetsAndLengths) {
+                for (final Location offsetAndLength : offsetsAndLengths) {
                     final LinkedPositionGroup group = new LinkedPositionGroup();
-                    group.addPosition(new LinkedPosition(document, offsetAndLength.x,
-                            offsetAndLength.y, ++i));
+                    group.addPosition(
+                            new LinkedPosition(document, offsetAndLength.getOffset(),
+                                    offsetAndLength.getLength(), ++i));
                     model.addGroup(group);
-                    final int l = offsetAndLength.x + offsetAndLength.y;
+                    final int l = offsetAndLength.getOffset()
+                            + offsetAndLength.getLength();
                     if (l > last) {
                         last = l;
                     }
@@ -202,7 +206,8 @@ public class ErlCompletionProposal implements ICompletionProposal {
                 final LinkedModeUI ui = new EditorLinkedModeUI(model, sourceViewer);
                 // ui.setSimpleMode(true);
                 ui.setExitPolicy(new ExitPolicy(closingCharacter, document));
-                ui.setExitPosition(sourceViewer, last + 1, 0, LinkedPositionGroup.NO_STOP);
+                ui.setExitPosition(sourceViewer, last + 1, 0,
+                        LinkedPositionGroup.NO_STOP);
                 ui.setCyclingMode(LinkedModeUI.CYCLE_ALWAYS);
                 ui.enter();
             } catch (final BadLocationException x) {

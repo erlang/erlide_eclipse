@@ -13,16 +13,16 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.cache.ErlModelCache;
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.ErlModelStatus;
 import org.erlide.engine.model.ErlModelStatusConstants;
-import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.SourceKind;
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlFolder;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelUtilService;
 import org.erlide.util.SystemConfiguration;
@@ -54,8 +54,8 @@ public class ErlFolder extends Openable implements IErlFolder {
                 model.create(resource);
             }
         } catch (final CoreException e) {
-            throw new ErlModelException(new ErlModelStatus(
-                    ErlModelStatusConstants.CORE_EXCEPTION, e));
+            throw new ErlModelException(
+                    new ErlModelStatus(ErlModelStatusConstants.CORE_EXCEPTION, e));
         }
         return true;
     }
@@ -85,15 +85,15 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public boolean isOnSourcePath() {
         final IErlProject project = modelUtilService.getProject(this);
-        return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(), project
-                .getProperties().getSourceDirs());
+        return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
+                project.getProperties().getSourceDirs());
     }
 
     @Override
     public boolean isOnIncludePath() {
         final IErlProject project = modelUtilService.getProject(this);
-        return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(), project
-                .getProperties().getIncludeDirs());
+        return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
+                project.getProperties().getIncludeDirs());
     }
 
     @Override
@@ -158,9 +158,8 @@ public class ErlFolder extends Openable implements IErlFolder {
             for (final IErlModule module : modules) {
                 final String name2 = module.getName();
                 final String moduleName = hasExtension ? name2 : module.getModuleName();
-                if (name.equals(moduleName)
-                        && (hasExtension || isInclude == SourceKind
-                                .hasHrlExtension(name2))) {
+                if (name.equals(moduleName) && (hasExtension
+                        || isInclude == SourceKind.hasHrlExtension(name2))) {
                     return module;
                 }
             }

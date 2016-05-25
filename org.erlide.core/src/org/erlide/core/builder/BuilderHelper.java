@@ -39,18 +39,17 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.debug.BeamUtil;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.internal.builder.BuildNotifier;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.MarkerUtils;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.engine.model.erlang.ErlangIncludeFile;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ResourceUtil;
 import org.erlide.runtime.api.BeamLoader;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.util.ErlLogger;
@@ -208,7 +207,8 @@ public final class BuilderHelper {
         }
     }
 
-    private void createMarkersForCodeClashes(final IOtpRpc backend, final IProject project) {
+    private void createMarkersForCodeClashes(final IOtpRpc backend,
+            final IProject project) {
         try {
             final OtpErlangList res = BuilderHelper.getCodeClashes(backend);
             for (final OtpErlangObject elem : res) {
@@ -220,8 +220,9 @@ public final class BuilderHelper {
                 final IResource r1 = project.findMember(f1);
                 final IResource r2 = project.findMember(f2);
                 if (r1 != null || r2 != null) {
-                    MarkerUtils.createProblemMarker(project, null, "code clash between "
-                            + f1 + " and " + f2, 0, IMarker.SEVERITY_WARNING);
+                    MarkerUtils.createProblemMarker(project, null,
+                            "code clash between " + f1 + " and " + f2, 0,
+                            IMarker.SEVERITY_WARNING);
                 }
             }
 
@@ -378,8 +379,9 @@ public final class BuilderHelper {
                     // br.touch() doesn't work...
                     final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                             .getErlangProject(project);
-                    compileErl(project, bbr, erlProject.getProperties().getOutputDir()
-                            .toString(), backend, compilerOptions);
+                    compileErl(project, bbr,
+                            erlProject.getProperties().getOutputDir().toString(), backend,
+                            compilerOptions);
                 }
             } catch (final CoreException e) {
                 ErlLogger.warn(e);
@@ -511,7 +513,8 @@ public final class BuilderHelper {
     }
 
     public void compileErl(final @NonNull IProject project, final BuildResource resource,
-            final String outputDir, final IOtpRpc b, final OtpErlangList compilerOptions) {
+            final String outputDir, final IOtpRpc b,
+            final OtpErlangList compilerOptions) {
         final RpcFuture res = startCompileErl(project, resource, outputDir, b,
                 compilerOptions, true);
         if (res == null) {
@@ -656,8 +659,8 @@ public final class BuilderHelper {
         }
     }
 
-    private static class BuilderVisitor implements IResourceDeltaVisitor,
-            IResourceVisitor {
+    private static class BuilderVisitor
+            implements IResourceDeltaVisitor, IResourceVisitor {
 
         private final Set<BuildResource> result;
         private final BuildNotifier notifier;

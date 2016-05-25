@@ -9,13 +9,13 @@ import org.eclipse.debug.core.DebugException;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.internal.BackendActivator;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 import org.erlide.util.erlang.OtpBindings;
-import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.OtpParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -145,8 +145,8 @@ public class ErlideDebug {
         try {
             final String a = action == ErlDebugConstants.REQUEST_INSTALL ? "add"
                     : "delete";
-            backend.getOtpRpc().call(ERLIDE_DEBUG, "line_breakpoint", "sia", module,
-                    line, a);
+            backend.getOtpRpc().call(ERLIDE_DEBUG, "line_breakpoint", "sia", module, line,
+                    a);
         } catch (final RpcTimeoutException e) {
             if (backend.isRunning()) {
                 ErlLogger.warn(e);
@@ -195,8 +195,8 @@ public class ErlideDebug {
     public static OtpErlangList getBindings(final IBackend backend,
             final OtpErlangPid meta) {
         try {
-            final OtpErlangObject res = backend.getOtpRpc().call(ERLIDE_DEBUG,
-                    "bindings", "x", meta);
+            final OtpErlangObject res = backend.getOtpRpc().call(ERLIDE_DEBUG, "bindings",
+                    "x", meta);
             return (OtpErlangList) res;
         } catch (final RpcTimeoutException e) {
             if (backend.isRunning()) {
@@ -261,8 +261,8 @@ public class ErlideDebug {
     public static List<String> getAllModulesOnStack(final IOtpRpc backend,
             final OtpErlangPid meta) {
         try {
-            final OtpErlangObject res = backend.call(ERLIDE_DEBUG,
-                    "all_modules_on_stack", "x", meta);
+            final OtpErlangObject res = backend.call(ERLIDE_DEBUG, "all_modules_on_stack",
+                    "x", meta);
             if (res instanceof OtpErlangList) {
                 final OtpErlangList modules = (OtpErlangList) res;
                 final List<String> result = new ArrayList<String>(modules.arity());
@@ -283,8 +283,8 @@ public class ErlideDebug {
     public static OtpErlangTuple tracing(final IOtpRpc backend, final boolean trace,
             final OtpErlangPid meta) {
         try {
-            final OtpErlangObject res = backend.call(ERLIDE_DEBUG, "tracing", "ox",
-                    trace, meta);
+            final OtpErlangObject res = backend.call(ERLIDE_DEBUG, "tracing", "ox", trace,
+                    meta);
             if (res instanceof OtpErlangTuple) {
                 return (OtpErlangTuple) res;
             }
@@ -320,7 +320,8 @@ public class ErlideDebug {
             final OtpErlangObject res = backend.call(ERLIDE_DEBUG, "set_variable_value",
                     "ssix", name, value, stackFrameNo + 1, meta);
             try {
-                final OtpBindings bind = ErlUtils.match("{eval_rsp, {'EXIT', Val}}", res);
+                final OtpBindings bind = OtpErlang.match("{eval_rsp, {'EXIT', Val}}",
+                        res);
                 if (bind == null) {
                     return null;
                 }

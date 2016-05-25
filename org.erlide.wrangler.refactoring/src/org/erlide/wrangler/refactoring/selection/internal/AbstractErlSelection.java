@@ -16,7 +16,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 
@@ -49,8 +49,8 @@ public abstract class AbstractErlSelection implements IErlSelection {
         final OtpErlangString[] searchPath = new OtpErlangString[sourcDirs.size()];
         int i = 0;
         for (final IPath src : sourcDirs) {
-            searchPath[i++] = new OtpErlangString(projectLocation.append(src)
-                    .toOSString());
+            searchPath[i++] = new OtpErlangString(
+                    projectLocation.append(src).toOSString());
         }
         return new OtpErlangList(searchPath);
     }

@@ -273,11 +273,11 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
     private void markLine(final ITextEditor editor, final LineResult lr) {
 
-        final IDocument doc = editor.getDocumentProvider().getDocument(
-                editor.getEditorInput());
+        final IDocument doc = editor.getDocumentProvider()
+                .getDocument(editor.getEditorInput());
 
-        final IAnnotationModel annMod = editor.getDocumentProvider().getAnnotationModel(
-                editor.getEditorInput());
+        final IAnnotationModel annMod = editor.getDocumentProvider()
+                .getAnnotationModel(editor.getEditorInput());
 
         log.info("mark line " + lr.getLineNum());
 

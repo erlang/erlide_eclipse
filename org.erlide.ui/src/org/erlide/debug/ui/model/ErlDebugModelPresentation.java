@@ -21,8 +21,8 @@ import org.erlide.backend.debug.model.ErlangProcess;
 import org.erlide.backend.debug.model.ErlangStackFrame;
 import org.erlide.backend.debug.model.ErlangUninterpretedStackFrame;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElementLocator;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.ui.ErlideUIDebugImages;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -32,8 +32,8 @@ import org.erlide.util.ErlLogger;
  * @author jakob
  *
  */
-public class ErlDebugModelPresentation extends LabelProvider implements
-        IDebugModelPresentation {
+public class ErlDebugModelPresentation extends LabelProvider
+        implements IDebugModelPresentation {
 
     @Override
     public Image getImage(final Object element) {
@@ -56,7 +56,8 @@ public class ErlDebugModelPresentation extends LabelProvider implements
             } else if (element instanceof ErlangProcess) {
                 return getErlangProcessText((ErlangProcess) element);
             } else if (element instanceof ErlangUninterpretedStackFrame) {
-                return getErlangUninterpretedStackFrameText((ErlangUninterpretedStackFrame) element);
+                return getErlangUninterpretedStackFrameText(
+                        (ErlangUninterpretedStackFrame) element);
             } else if (element instanceof ErlangStackFrame) {
                 return getErlangStackFrameText((ErlangStackFrame) element);
             } else if (element instanceof ErlangLineBreakpoint) {
@@ -92,8 +93,8 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         return null;
     }
 
-    private static String getErlangPositionText(final String module,
-            final int lineNumber, final String clauseHead) {
+    private static String getErlangPositionText(final String module, final int lineNumber,
+            final String clauseHead) {
         final StringBuilder sb = new StringBuilder();
         sb.append(module);
         if (lineNumber != -1) {
@@ -156,16 +157,14 @@ public class ErlDebugModelPresentation extends LabelProvider implements
             return new FileEditorInput((IFile) element);
         }
         if (element instanceof ILineBreakpoint) {
-            return new FileEditorInput((IFile) ((ILineBreakpoint) element).getMarker()
-                    .getResource());
+            return new FileEditorInput(
+                    (IFile) ((ILineBreakpoint) element).getMarker().getResource());
         }
         if (element instanceof LocalFileStorage) {
             final LocalFileStorage lfs = (LocalFileStorage) element;
             try {
                 final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-                final IErlModule module = ErlangEngine
-                        .getInstance()
-                        .getModelFindService()
+                final IErlModule module = ErlangEngine.getInstance().getModelFindService()
                         .findModule(model, null, null, lfs.getFullPath().toString(),
                                 IErlElementLocator.Scope.ALL_PROJECTS);
                 return EditorUtility.getEditorInput(module);

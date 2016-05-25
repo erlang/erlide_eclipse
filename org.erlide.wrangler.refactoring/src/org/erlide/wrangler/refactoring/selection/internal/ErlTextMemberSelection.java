@@ -17,9 +17,9 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.IErlMember;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.wrangler.refactoring.backend.SyntaxInfo;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
@@ -44,8 +44,8 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
      *            editor, where the text is selected
      * @throws WranglerException
      */
-    public ErlTextMemberSelection(final ITextSelection selection, final ITextEditor editor)
-            throws WranglerException {
+    public ErlTextMemberSelection(final ITextSelection selection,
+            final ITextEditor editor) throws WranglerException {
         final IEditorInput input = editor.getEditorInput();
         if (!(input instanceof IFileEditorInput)) {
             throw new WranglerException("Can not refactor external modules!");
@@ -76,8 +76,9 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
     }
 
     protected int getEndCol() {
-        return WranglerUtils.calculateColumnFromOffset(textSelection.getOffset()
-                + textSelection.getLength(), getEndLine() - 1, document);
+        return WranglerUtils.calculateColumnFromOffset(
+                textSelection.getOffset() + textSelection.getLength(), getEndLine() - 1,
+                document);
     }
 
     protected int getStartLine() {
@@ -110,10 +111,13 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
             sL = member.getLineStart() + 1;
             eL = member.getLineEnd() + 1;
 
-            sC = WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
-                    .getOffset(), sL - 1, document);
-            eC = WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
-                    .getOffset() + member.getSourceRange().getLength(), eL - 1, document);
+            sC = WranglerUtils.calculateColumnFromOffset(
+                    member.getSourceRange().getOffset(), sL - 1, document);
+            eC = WranglerUtils
+                    .calculateColumnFromOffset(
+                            member.getSourceRange().getOffset()
+                                    + member.getSourceRange().getLength(),
+                            eL - 1, document);
             range = new ErlRange(sL, sC, eL, eC, member.getSourceRange().getOffset(),
                     member.getSourceRange().getLength());
 

@@ -52,9 +52,9 @@ public class BuilderProperties {
       String _get = parts[0];
       final BuilderTool bt = BuilderTool.valueOf(_get);
       final String b = parts[1];
-      final String c = parts[2];
-      final String l = parts[3];
-      final String t = parts[4];
+      final String c = parts[1];
+      final String l = parts[2];
+      final String t = parts[3];
       this.builderTool = bt;
       this.buildTarget = b;
       this.compileTarget = c;

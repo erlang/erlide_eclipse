@@ -24,8 +24,8 @@ public class RemoveDialyzerWarningsHandler extends AbstractHandler {
                 }
             }
         } else {
-            DialyzerMarkerUtils.removeDialyzerMarkersFor(ResourcesPlugin.getWorkspace()
-                    .getRoot());
+            DialyzerMarkerUtils
+                    .removeDialyzerMarkersFor(ResourcesPlugin.getWorkspace().getRoot());
         }
         return null;
     }

@@ -43,8 +43,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public class GeneraliseFunctionRefactoring extends
-        CostumWorkflowRefactoringWithPositionsSelection {
+public class GeneraliseFunctionRefactoring
+        extends CostumWorkflowRefactoringWithPositionsSelection {
 
     /**
      * The state of the generalise function refactoring, after calling the first
@@ -138,8 +138,8 @@ public class GeneraliseFunctionRefactoring extends
         if (state == State.error) {
             return RefactoringStatus.createFatalErrorStatus(errorMessage);
         } else if (state == State.multi_instance) {
-            positions = createPositionList((OtpErlangList) message.getParameters().get(
-                    GenFunReturnParameterName.dupsInFun));
+            positions = createPositionList((OtpErlangList) message.getParameters()
+                    .get(GenFunReturnParameterName.dupsInFun));
         } else if (state == State.more_than_one_clause) {
             if (onlyInClause) {
                 positions = createPositionList((OtpErlangList) message.getParameters()
@@ -201,7 +201,8 @@ public class GeneraliseFunctionRefactoring extends
         } else {
             final HashMap<GenFunReturnParameterName, OtpErlangObject> p = message
                     .getParameters();
-            OtpErlangObject sideEffectPar, parName, funName, arity, funDefPos, exp, logCmd;
+            OtpErlangObject sideEffectPar, parName, funName, arity, funDefPos, exp,
+                    logCmd;
             sideEffectPar = p.get(GenFunReturnParameterName.sideEffect);
             parName = p.get(GenFunReturnParameterName.parName);
             funName = p.get(GenFunReturnParameterName.funName);

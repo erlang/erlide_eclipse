@@ -32,8 +32,8 @@ public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
             final DropTargetEvent dropTargetEvent, final Object target) {
         status = Status.CANCEL_STATUS;
         try {
-            final List<INavigatorDropHandler> handlers = ExtensionUtils.getExtensions(
-                    EXTENSION_POINT_ID, INavigatorDropHandler.class);
+            final List<INavigatorDropHandler> handlers = ExtensionUtils
+                    .getExtensions(EXTENSION_POINT_ID, INavigatorDropHandler.class);
             for (final INavigatorDropHandler handler : handlers) {
                 final ISafeRunnable runnable = new ISafeRunnable() {
 

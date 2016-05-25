@@ -34,12 +34,9 @@ public class UserAdhocRefactoring {
                 return false;
             }
 
-            final IErlProject project = ErlangEngine
-                    .getInstance()
-                    .getModelUtilService()
-                    .getProject(
-                            ErlangEngine.getInstance().getModel()
-                                    .findModule(refac.getCallbackModule()));
+            final IErlProject project = ErlangEngine.getInstance().getModelUtilService()
+                    .getProject(ErlangEngine.getInstance().getModel()
+                            .findModule(refac.getCallbackModule()));
             callbackPath = project.getWorkspaceProject().getLocation()
                     .append(project.getProperties().getOutputDir()).toString();
         } catch (final ErlModelException e) {

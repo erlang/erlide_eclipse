@@ -44,8 +44,8 @@ public class ErlangConsole extends TextConsole implements IErlangConsole {
     public IPageBookViewPage createPage(final IConsoleView view) {
         final ErlangConsolePage erlangConsolePage = new ErlangConsolePage(view, this,
                 backend);
-        ErlideUIPlugin.getDefault().getErlConsoleManager()
-                .addPage(this, erlangConsolePage);
+        ErlideUIPlugin.getDefault().getErlConsoleManager().addPage(this,
+                erlangConsolePage);
         return erlangConsolePage;
     }
 

@@ -67,7 +67,7 @@ public class CoverBackend implements ICoverBackend {
      * @throws CoverException
      */
     public void initialize(/* final ErlLaunchData data, */
-    final CoverLaunchData coverData) throws CoverException {
+            final CoverLaunchData coverData) throws CoverException {
 
         // this.coverData = coverData;
 

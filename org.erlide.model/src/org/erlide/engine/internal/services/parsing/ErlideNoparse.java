@@ -1,10 +1,10 @@
 package org.erlide.engine.internal.services.parsing;
 
 import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.IErlFunction;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.engine.model.root.IErlModule;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.util.ErlLogger;
@@ -33,8 +33,8 @@ public class ErlideNoparse {
         return res;
     }
 
-    public static OtpErlangTuple reparse(final IOtpRpc b,
-            final String scannerModuleName, final boolean updateSearchServer) {
+    public static OtpErlangTuple reparse(final IOtpRpc b, final String scannerModuleName,
+            final boolean updateSearchServer) {
         OtpErlangTuple res = null;
         try {
             res = (OtpErlangTuple) b.call(20000, ERLIDE_NOPARSE, "reparse", "ao",

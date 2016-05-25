@@ -25,8 +25,8 @@ import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.navigator.CommonDropAdapter;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
-import org.erlide.engine.model.root.IErlElement;
 import org.erlide.ui.navigator.dnd.INavigatorDropHandler;
 import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.core.internal.MoveFunctionRefactoring;
@@ -94,8 +94,8 @@ public class MoveFunctionDropHandler implements INavigatorDropHandler {
 
         final MoveFunctionRefactoring refactoring = new MoveFunctionRefactoring();
         refactoring.setUserInput(moduleName);
-        final RefactoringWizard wizard = new DefaultWranglerRefactoringWizard(
-                refactoring, RefactoringWizard.DIALOG_BASED_USER_INTERFACE,
+        final RefactoringWizard wizard = new DefaultWranglerRefactoringWizard(refactoring,
+                RefactoringWizard.DIALOG_BASED_USER_INTERFACE,
                 new ArrayList<WranglerPage>());
 
         final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();

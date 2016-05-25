@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.services.ErlangService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -36,7 +36,7 @@ public interface OpenService extends ErlangService {
         private final boolean isModule;
 
         public ExternalTreeEntry(final String parentPath, final String path,
-        // final String name,
+                // final String name,
                 final boolean isModule) {
             super();
             this.parentPath = parentPath;

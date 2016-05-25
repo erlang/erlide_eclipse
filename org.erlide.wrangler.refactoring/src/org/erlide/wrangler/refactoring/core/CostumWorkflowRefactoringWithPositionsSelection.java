@@ -27,8 +27,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public abstract class CostumWorkflowRefactoringWithPositionsSelection extends
-        CostumWorkflowRefactoring {
+public abstract class CostumWorkflowRefactoringWithPositionsSelection
+        extends CostumWorkflowRefactoring {
 
     protected HashMap<IErlRange, OtpErlangTuple> positions;
     protected ArrayList<IErlRange> selectedPositions;

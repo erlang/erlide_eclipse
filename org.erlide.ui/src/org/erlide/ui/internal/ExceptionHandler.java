@@ -162,8 +162,8 @@ public class ExceptionHandler {
         fgInstance.perform(e, shell, title, message);
     }
 
-    public static void handle(final RpcException e, final Shell shell,
-            final String title, final String message) {
+    public static void handle(final RpcException e, final Shell shell, final String title,
+            final String message) {
         fgInstance.perform(e, shell, title, message);
     }
 

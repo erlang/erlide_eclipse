@@ -44,11 +44,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.services.IDisposable;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
+import org.erlide.engine.model.root.IOpenable;
 import org.erlide.ui.editors.erl.ErlangDocumentSetupParticipant;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -152,8 +152,8 @@ public class ErlStructureCreator extends StructureCreator {
         return null;
     }
 
-    private ErlNode recursiveMakeErlNodes(final IErlElement element,
-            final ErlNode parent, final IDocument doc) throws ErlModelException {
+    private ErlNode recursiveMakeErlNodes(final IErlElement element, final ErlNode parent,
+            final IDocument doc) throws ErlModelException {
         final ErlNode n = ErlNode.createErlNode(parent, element, doc);
         if (element instanceof IOpenable) {
             final IOpenable o = (IOpenable) element;
@@ -231,8 +231,7 @@ public class ErlStructureCreator extends StructureCreator {
 
     @Override
     protected IStructureComparator createStructureComparator(final Object element,
-            final IDocument document0,
-            final ISharedDocumentAdapter sharedDocumentAdapter,
+            final IDocument document0, final ISharedDocumentAdapter sharedDocumentAdapter,
             final IProgressMonitor monitor) throws CoreException {
         IErlModule module = null;
         final IErlModel model = ErlangEngine.getInstance().getModel();

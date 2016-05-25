@@ -85,9 +85,8 @@ public abstract class AbstractDuplicatesSearcherAction extends AbstractHandler {
         DuplicatesUIManager.setRefactoringResults(duplicatedCode);
     }
 
-    protected abstract IResultParser callRefactoring()
-            throws WranglerRpcParsingException, CoreException, IOException,
-            WranglerWarningException;
+    protected abstract IResultParser callRefactoring() throws WranglerRpcParsingException,
+            CoreException, IOException, WranglerWarningException;
 
     /**
      * Handles the event when a selectino is changed in the workbench
@@ -103,8 +102,9 @@ public abstract class AbstractDuplicatesSearcherAction extends AbstractHandler {
      */
 
     void displayErrorNotification(final String errorMsg) {
-        MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                .getShell(), "Refactoring error", errorMsg);
+        MessageDialog.openError(
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                "Refactoring error", errorMsg);
 
     }
 

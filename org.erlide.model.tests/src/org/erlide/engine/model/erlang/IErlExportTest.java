@@ -5,8 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.ErlElementKind;
+import org.erlide.engine.model.IErlElement;
 import org.junit.Test;
 
 public class IErlExportTest extends ErlModelTestBase2 {

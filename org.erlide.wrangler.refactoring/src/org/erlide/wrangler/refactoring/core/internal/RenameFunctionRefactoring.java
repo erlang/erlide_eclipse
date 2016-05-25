@@ -71,10 +71,10 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
         final IErlRange memberRange = sel.getMemberRange();
 
-        return WranglerBackendManager.getRefactoringBackend().call(
-                "rename_fun_1_eclipse", "siisxi", sel.getFilePath(),
-                memberRange.getStartLine(), memberRange.getStartCol(), userInput,
-                sel.getSearchPath(), GlobalParameters.getTabWidth());
+        return WranglerBackendManager.getRefactoringBackend().call("rename_fun_1_eclipse",
+                "siisxi", sel.getFilePath(), memberRange.getStartLine(),
+                memberRange.getStartCol(), userInput, sel.getSearchPath(),
+                GlobalParameters.getTabWidth());
     }
 
     @Override
@@ -94,15 +94,15 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
                         if (message.getRefactoringState() == RefactoringState.OK) {
                             status = new RefactoringStatus();
                         } else {
-                            status = RefactoringStatus.createFatalErrorStatus(message
-                                    .getMessageString());
+                            status = RefactoringStatus
+                                    .createFatalErrorStatus(message.getMessageString());
                         }
                     } else {
                         stop();
                     }
                 } else {
-                    status = RefactoringStatus.createFatalErrorStatus(message
-                            .getMessageString());
+                    status = RefactoringStatus
+                            .createFatalErrorStatus(message.getMessageString());
                 }
             }
 

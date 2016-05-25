@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Lukas Larsson and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Lukas Larsson and others. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Lukas Larsson
+ * Contributors: Lukas Larsson
  *******************************************************************************/
 
 package org.erlide.ui.wizards.templates;
@@ -31,6 +30,7 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 
     @Override
     public void resolve(final TemplateVariable variable, final TemplateContext context) {
+        @SuppressWarnings("unchecked")
         final Iterator<TemplateVariableResolver> it = ErlangSourceContextTypeLayout
                 .getDefault().resolvers();
         FunctionNameVariableResolver name_var = null;
@@ -67,9 +67,9 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
                     .getTemplate();
 
             DocumentTemplateContext commentContext = new DocumentTemplateContext(
-                    ErlangSourceContextTypeLayout.getDefault(), new Document(
-                            commentTemplate.getPattern()), 0, commentTemplate
-                            .getPattern().length());
+                    ErlangSourceContextTypeLayout.getDefault(),
+                    new Document(commentTemplate.getPattern()), 0,
+                    commentTemplate.getPattern().length());
             TemplateBuffer tb = null;
             try {
                 tb = commentContext.evaluate(commentTemplate);
@@ -92,8 +92,9 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
                     .getTemplate();
 
             commentContext = new DocumentTemplateContext(
-                    ErlangSourceContextTypeLayout.getDefault(), new Document(
-                            template.getPattern()), 0, template.getPattern().length());
+                    ErlangSourceContextTypeLayout.getDefault(),
+                    new Document(template.getPattern()), 0,
+                    template.getPattern().length());
             try {
                 tb = commentContext.evaluate(template);
             } catch (final BadLocationException e) {

@@ -26,8 +26,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 
-public class FileProjectConfigurator implements IProjectConfigurator,
-        IResourceChangeListener, IDisposable {
+public class FileProjectConfigurator
+        implements IProjectConfigurator, IResourceChangeListener, IDisposable {
 
     private final String filePath;
     @NonNull

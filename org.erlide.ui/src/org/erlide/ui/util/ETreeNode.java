@@ -60,7 +60,7 @@ public class ETreeNode {
     @Override
     public boolean equals(final Object object) {
         if (object instanceof ETreeNode) {
-            return Util.equals(this.value, ((ETreeNode) object).value);
+            return Util.equals(value, ((ETreeNode) object).value);
         }
 
         return false;

@@ -15,10 +15,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.NewProjectData;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.IProjectConfiguratorFactory;
-import org.erlide.engine.model.root.NewProjectData;
 import org.erlide.ui.tests.util.DummyRunnableContext;
 import org.erlide.ui.tests.util.WorkbenchHelper;
 import org.junit.After;
@@ -33,14 +32,12 @@ public class ProjectCreatorTest {
     private static IRunnableContext context;
     private static String name;
     private IProject prj = null;
-    static IProjectConfiguratorFactory factory;
 
     @BeforeClass
     public static void init() {
         name = "demo111";
         location = null;
         context = new DummyRunnableContext();
-        factory = ErlangEngine.getInstance().getProjectConfiguratorFactory();
 
         WorkbenchHelper.waitForWorkbench();
     }
@@ -69,7 +66,7 @@ public class ProjectCreatorTest {
 
     @Test
     public void createSimpleProject() throws CoreException {
-        final NewProjectData info = new NewProjectData(factory);
+        final NewProjectData info = new NewProjectData();
         info.copyFrom(ErlangProjectProperties.DEFAULT);
         creator = new ProjectCreator(name, location, new IProject[] {}, info, context,
                 null);
@@ -86,7 +83,7 @@ public class ProjectCreatorTest {
 
     @Test(expected = CoreException.class)
     public void createExistingProjectShouldCrash() throws CoreException {
-        final NewProjectData info = new NewProjectData(factory);
+        final NewProjectData info = new NewProjectData();
         info.copyFrom(ErlangProjectProperties.DEFAULT);
         creator = new ProjectCreator(name, location, new IProject[] {}, info, context,
                 null);

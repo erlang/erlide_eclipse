@@ -21,18 +21,18 @@ import org.eclipse.ui.navigator.SaveablesProvider;
 import org.eclipse.ui.progress.UIJob;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.IErlModelChangeListener;
-import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModelChangeListener;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.IOpenable;
 import org.erlide.util.ErlLogger;
 
-public class ErlangFileContentProvider implements ITreeContentProvider,
-        IResourceChangeListener, IResourceDeltaVisitor, IErlModelChangeListener,
-        IAdaptable {
+public class ErlangFileContentProvider
+        implements ITreeContentProvider, IResourceChangeListener, IResourceDeltaVisitor,
+        IErlModelChangeListener, IAdaptable {
 
     private static final Object[] NO_CHILDREN = new Object[0];
 
@@ -41,8 +41,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
     /**
      * Create the PropertiesContentProvider instance.
      *
-     * Adds the content provider as a resource change listener to track changes
-     * on disk.
+     * Adds the content provider as a resource change listener to track changes on disk.
      *
      */
     public ErlangFileContentProvider() {
@@ -196,7 +195,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
     }
 
     @Override
-    public Object getAdapter(final Class required) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
         if (SaveablesProvider.class.equals(required)) {
             // TODO return something useful
             return null;

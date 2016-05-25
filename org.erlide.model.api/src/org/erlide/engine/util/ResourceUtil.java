@@ -131,7 +131,8 @@ public class ResourceUtil {
             return true;
         }
 
-        private boolean compare(final IResource resource, final String s, final int theHow) {
+        private boolean compare(final IResource resource, final String s,
+                final int theHow) {
             if (theHow == FIND_BY_NAME) {
                 return ResourceUtil.samePath(resource.getName(), s);
             } else if (theHow == FIND_BY_LOCATION) {

@@ -1,12 +1,12 @@
 package org.erlide.engine.internal.model.erlang;
 
 import org.erlide.engine.internal.model.root.ErlElement;
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlRecordDef;
 import org.erlide.engine.model.erlang.IErlRecordField;
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
 
 import com.google.common.base.Objects;
 

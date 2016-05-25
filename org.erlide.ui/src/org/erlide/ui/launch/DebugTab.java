@@ -45,9 +45,9 @@ import org.erlide.backend.api.ErlRuntimeAttributes;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
 import org.erlide.debug.ui.views.InterpretedModuleListContentProvider;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.runtime.api.ErlDebugFlags;
 import org.erlide.ui.dialogs.AddInterpretedModulesSelectionDialog;
 import org.erlide.ui.util.SWTUtil;
@@ -125,7 +125,11 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         // SWT.WRAP);
         // anyModuleHavingLabel.setLayoutData(new GridData(279, SWT.DEFAULT));
         // anyModuleHavingLabel
-        // .setText("Any module having breakpoints enabled will be dynamically added to the list.\n\nThis widget is disabled for now, it takes 100%CPU for large projects. If you need to use \"attach on first call\" or \"attach on exit\", please mark the modules by setting a dummy breakpoint in them. Sorry for the inconvenience!");
+        // .setText("Any module having breakpoints enabled will be dynamically added to
+        // the list.\n\nThis widget is disabled for now, it takes 100%CPU for large
+        // projects. If you need to use \"attach on first call\" or \"attach on exit\",
+        // please mark the modules by setting a dummy breakpoint in them. Sorry for the
+        // inconvenience!");
 
         listViewer = new ListViewer(interpretedModulesGroup, SWT.BORDER | SWT.MULTI);
         listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -163,7 +167,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         addButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                final List<IErlModule> result = getModulesFromAddModulesDialog(getShell());
+                final List<IErlModule> result = getModulesFromAddModulesDialog(
+                        getShell());
                 contentProvider.addModules(result);
                 listViewer.refresh();
                 updateLaunchConfigurationDialog();
@@ -267,8 +272,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         for (final Object o : contentProvider.getElements(null)) {
             final IErlModule module = (IErlModule) o;
             r.add(ErlangEngine.getInstance().getModelUtilService().getProject(module)
-                    .getName()
-                    + ":" + module.getName());
+                    .getName() + ":" + module.getName());
         }
         config.setAttribute(ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, r);
     }
@@ -294,13 +298,13 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
             // I don't know why these are null sometimes...
             return;
         }
-        attachOnFirstCallCheck.setSelection(debugFlags
-                .contains(ErlDebugFlags.ATTACH_ON_FIRST_CALL));
-        attachOnBreakpointCheck.setSelection(debugFlags
-                .contains(ErlDebugFlags.ATTACH_ON_BREAKPOINT));
+        attachOnFirstCallCheck
+                .setSelection(debugFlags.contains(ErlDebugFlags.ATTACH_ON_FIRST_CALL));
+        attachOnBreakpointCheck
+                .setSelection(debugFlags.contains(ErlDebugFlags.ATTACH_ON_BREAKPOINT));
         attachOnExitCheck.setSelection(debugFlags.contains(ErlDebugFlags.ATTACH_ON_EXIT));
-        distributedDebugCheck.setSelection(debugFlags
-                .contains(ErlDebugFlags.DISTRIBUTED_DEBUG));
+        distributedDebugCheck
+                .setSelection(debugFlags.contains(ErlDebugFlags.DISTRIBUTED_DEBUG));
     }
 
     /**

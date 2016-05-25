@@ -27,8 +27,8 @@ public class DebuggerEventDaemon implements IBackendListener {
     private final DebugEventHandler handler;
     private OtpMbox mbox;
 
-    final static boolean DEBUG = Boolean.parseBoolean(System
-            .getProperty("erlide.event.daemon"));
+    final static boolean DEBUG = Boolean
+            .parseBoolean(System.getProperty("erlide.event.daemon"));
 
     private final class HandlerJob implements Runnable {
         private final IBackend myBackend;

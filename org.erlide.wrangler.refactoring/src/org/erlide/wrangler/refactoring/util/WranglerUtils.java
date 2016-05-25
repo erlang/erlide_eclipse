@@ -38,10 +38,10 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.ChangedFile;
@@ -447,7 +447,8 @@ public final class WranglerUtils {
     public static IFile getFileFromPath(final IPath path) {
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         final IFile[] files = // root.findFilesForLocation(path);
-        root.findFilesForLocationURI(org.eclipse.core.filesystem.URIUtil.toURI(path));
+                root.findFilesForLocationURI(
+                        org.eclipse.core.filesystem.URIUtil.toURI(path));
 
         if (files.length > 0) {
             return files[0];// else

@@ -281,8 +281,8 @@ public final class TypeConverter {
             }
             return res.toString();
         }
-        throw new SignatureException(WRONG_ARG_TYPE + obj.getClass().getName()
-                + CANT_CONVERT_TO + "String");
+        throw new SignatureException(
+                WRONG_ARG_TYPE + obj.getClass().getName() + CANT_CONVERT_TO + "String");
     }
 
     private static Object cvtArray(final OtpErlangObject obj, final Class<?> cls)
@@ -368,8 +368,8 @@ public final class TypeConverter {
                 @SuppressWarnings("unchecked")
                 final Map<OtpErlangObject, OtpErlangObject> map = (Map<OtpErlangObject, OtpErlangObject>) obj;
                 final int size = map.keySet().size();
-                final OtpErlangObject[] keys = map.keySet().toArray(
-                        new OtpErlangObject[size]);
+                final OtpErlangObject[] keys = map.keySet()
+                        .toArray(new OtpErlangObject[size]);
                 final OtpErlangObject[] values = new OtpErlangObject[size];
                 for (int i = 0; i < size; i++) {
                     values[i] = map.get(keys[i]);
@@ -445,7 +445,8 @@ public final class TypeConverter {
         }
     }
 
-    private static StackTraceElement findRpcStacktraceElement(final StackTraceElement[] st) {
+    private static StackTraceElement findRpcStacktraceElement(
+            final StackTraceElement[] st) {
         boolean found = false;
         for (final StackTraceElement ste : st) {
             if (found) {
@@ -463,10 +464,10 @@ public final class TypeConverter {
     private static boolean isRelevantMethod(final StackTraceElement ste) {
         return (ste.getMethodName().equals("send")
                 || ste.getMethodName().equals("sendRpc")
-                || ste.getMethodName().equals("rpc")
-                || ste.getMethodName().equals("rpct")
-                || ste.getMethodName().equals("rpcx") || ste.getMethodName()
-                .equals("rpcxt")) && ste.getClassName().endsWith("Backend");
+                || ste.getMethodName().equals("rpc") || ste.getMethodName().equals("rpct")
+                || ste.getMethodName().equals("rpcx")
+                || ste.getMethodName().equals("rpcxt"))
+                && ste.getClassName().endsWith("Backend");
     }
 
     private static OtpErlangObject cvtNumber(final Object obj, final Signature type)
@@ -601,9 +602,8 @@ public final class TypeConverter {
 
     private static void failConversion(final Object obj, final Signature type)
             throws SignatureException {
-        throw new SignatureException(String.format(
-                "Bad conversion required: %s(%s) - %s", obj.getClass().getName(),
-                obj.toString(), type.toString()));
+        throw new SignatureException(String.format("Bad conversion required: %s(%s) - %s",
+                obj.getClass().getName(), obj.toString(), type.toString()));
     }
 
     public static boolean willCheckConversion() {

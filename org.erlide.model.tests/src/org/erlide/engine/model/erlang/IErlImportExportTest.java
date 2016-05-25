@@ -7,8 +7,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import java.util.List;
 
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.ErlElementKind;
+import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,8 +41,8 @@ public class IErlImportExportTest extends ErlModelTestBase {
     public void hasFunction() throws Exception {
         assertTrue(import1.hasFunction(new ErlangFunction("reverse", 1)));
         assertTrue(import1.hasFunction(new ErlangFunction("reverse", 2)));
-        assertTrue(import1.hasFunction(new ErlangFunction("reverse",
-                ErlangFunction.ANY_ARITY)));
+        assertTrue(import1
+                .hasFunction(new ErlangFunction("reverse", ErlangFunction.ANY_ARITY)));
         assertFalse(import1.hasFunction(new ErlangFunction("reverse", 3)));
         assertTrue(export.hasFunction(new ErlangFunction("f", 0)));
         assertTrue(export.hasFunction(new ErlangFunction("f", ErlangFunction.ANY_ARITY)));

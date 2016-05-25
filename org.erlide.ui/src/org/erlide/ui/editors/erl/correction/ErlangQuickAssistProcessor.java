@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2008 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.editors.erl.correction;
 
@@ -24,13 +22,13 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolutionGenerator;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
-import org.erlide.engine.model.builder.MarkerUtils;
+import org.erlide.engine.MarkerUtils;
 import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;
 
-public class ErlangQuickAssistProcessor implements IQuickAssistProcessor,
-        IMarkerResolutionGenerator {
+public class ErlangQuickAssistProcessor
+        implements IQuickAssistProcessor, IMarkerResolutionGenerator {
 
     private final ErlangQuickFixCollector collector = new ErlangQuickFixCollector();
 
@@ -64,6 +62,7 @@ public class ErlangQuickAssistProcessor implements IQuickAssistProcessor,
     private List<ICompletionProposal> computeProposals(
             final IQuickAssistInvocationContext invocationContext) {
         final ISourceViewer sourceViewer = invocationContext.getSourceViewer();
+        @SuppressWarnings("unchecked")
         final Iterator<Annotation> iter = sourceViewer.getAnnotationModel()
                 .getAnnotationIterator();
         final List<ICompletionProposal> result = Lists.newArrayList();
@@ -78,7 +77,8 @@ public class ErlangQuickAssistProcessor implements IQuickAssistProcessor,
                     }
                     final int invocationLine = sourceViewer.getDocument()
                             .getLineOfOffset(invocationContext.getOffset());
-                    final int markerLine = marker.getAttribute(IMarker.LINE_NUMBER, -1) - 1;
+                    final int markerLine = marker.getAttribute(IMarker.LINE_NUMBER, -1)
+                            - 1;
 
                     if (invocationLine == markerLine) {
                         final IMarkerResolution[] qfixes = getResolutions(marker);

@@ -54,8 +54,8 @@ public final class ErlToken {
     }
 
     private int int24(final byte[] bytes, final int index) {
-        return (0xff & bytes[index]) << 16 | (0xff & bytes[index + 1]) << 8 | 0xff
-                & bytes[index + 2];
+        return (0xff & bytes[index]) << 16 | (0xff & bytes[index + 1]) << 8
+                | 0xff & bytes[index + 2];
     }
 
     public ErlToken(final OtpErlangTuple e) {
@@ -122,8 +122,8 @@ public final class ErlToken {
               // }
               //
             if (TRACE) {
-                ErlLogger.debug("mkTok " + kind + " - " + line + "/" + offset + ":"
-                        + length);
+                ErlLogger.debug(
+                        "mkTok " + kind + " - " + line + "/" + offset + ":" + length);
                 // ErlLogger.debug("mkTok " + kind + " - " + text + " " + line +
                 // "/"
                 // + offset + ": '" + text + "' ");

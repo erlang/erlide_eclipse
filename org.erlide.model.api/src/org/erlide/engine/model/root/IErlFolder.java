@@ -14,9 +14,8 @@ package org.erlide.engine.model.root;
 import java.util.Collection;
 
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
-import org.erlide.engine.model.erlang.IErlModule;
 
 /**
  * An Erlang folder is a collection of colder with erlang files. It knows

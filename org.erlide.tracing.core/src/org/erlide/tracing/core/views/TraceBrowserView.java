@@ -82,8 +82,9 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         loadAction = new Action() {
             @Override
             public void run() {
-                final DirectoryDialog dialog = new DirectoryDialog(PlatformUI
-                        .getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
+                final DirectoryDialog dialog = new DirectoryDialog(
+                        PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+                        SWT.OPEN);
                 dialog.setFilterPath(ResourcesPlugin.getWorkspace().getRoot()
                         .getLocation().toString());
                 // dialog.setFilterExtensions(new String[] { "*.*" });
@@ -123,8 +124,8 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
                 }
             }
         };
-        removeAction.setImageDescriptor(DebugUITools
-                .getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE));
+        removeAction.setImageDescriptor(
+                DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE));
         removeAction.setToolTipText("Remove selected");
 
         removeAllAction = new Action() {
@@ -133,8 +134,8 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
                 TraceBackend.getInstance().clearTraceLists();
             }
         };
-        removeAllAction.setImageDescriptor(DebugUITools
-                .getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE_ALL));
+        removeAllAction.setImageDescriptor(
+                DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE_ALL));
         removeAllAction.setToolTipText("Remove all");
 
         final IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
@@ -189,8 +190,8 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
             task = new RunnableWithProgress("Loading trace results...") {
                 @Override
                 public void doAction() {
-                    TraceBackend.getInstance().setActiveResultSet(
-                            (TracingResultsNode) treeNode);
+                    TraceBackend.getInstance()
+                            .setActiveResultSet((TracingResultsNode) treeNode);
                     final int limit = Activator.getDefault().getPreferenceStore()
                             .getInt(PreferenceNames.TRACES_LOAD_LIMIT);
                     TraceBackend.getInstance().loadDataFromFile(1, limit);

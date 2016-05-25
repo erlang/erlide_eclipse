@@ -21,10 +21,10 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.ISourceReference;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.services.search.OpenService;
@@ -125,11 +125,8 @@ public class OpenAction extends SelectionDispatchAction {
                 final String scannerName = editor.getScannerName();
                 module = editor.getModule();
                 project = editor.getProject();
-                openResult = ErlangEngine
-                        .getInstance()
-                        .getService(OpenService.class)
-                        .open(scannerName,
-                                offset,
+                openResult = ErlangEngine.getInstance().getService(OpenService.class)
+                        .open(scannerName, offset,
                                 ErlangEngine.getInstance().getModelUtilService()
                                         .getImportsAsList(module),
                                 project.getProperties().getExternalModules(),
@@ -142,8 +139,8 @@ public class OpenAction extends SelectionDispatchAction {
                         .getDocument(textEditor.getEditorInput()).get();
                 openResult = ErlangEngine.getInstance().getService(OpenService.class)
                         .openText(text, offset);
-                final IFile file = (IFile) textEditor.getEditorInput().getAdapter(
-                        IFile.class);
+                final IFile file = (IFile) textEditor.getEditorInput()
+                        .getAdapter(IFile.class);
                 if (file != null) {
                     final IProject p = file.getProject();
                     if (p != null) {

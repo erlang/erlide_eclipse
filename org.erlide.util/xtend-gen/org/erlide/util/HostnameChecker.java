@@ -59,15 +59,7 @@ public class HostnameChecker {
   }
   
   public boolean isThisHost(final String host) {
-    boolean _or = false;
-    boolean _equal = Objects.equal(host, this.longName);
-    if (_equal) {
-      _or = true;
-    } else {
-      boolean _equal_1 = Objects.equal(host, this.shortName);
-      _or = _equal_1;
-    }
-    return _or;
+    return (Objects.equal(host, this.longName) || Objects.equal(host, this.shortName));
   }
   
   public boolean canUseLongNames() {
@@ -140,15 +132,7 @@ public class HostnameChecker {
     String _hostsFileName = this.getHostsFileName();
     final boolean loaded = this.loadErlideHosts(_hostsFileName);
     if (loaded) {
-      boolean _or = false;
-      boolean _canConnect = retriever.canConnect(this.shortName, false);
-      if (_canConnect) {
-        _or = true;
-      } else {
-        boolean _canConnect_1 = retriever.canConnect(this.longName, true);
-        _or = _canConnect_1;
-      }
-      if (_or) {
+      if ((retriever.canConnect(this.shortName, false) || retriever.canConnect(this.longName, true))) {
         return true;
       }
     }
@@ -180,14 +164,7 @@ public class HostnameChecker {
     final Function1<String, Boolean> _function_4 = new Function1<String, Boolean>() {
       @Override
       public Boolean apply(final String it) {
-        boolean _and = false;
-        if (!(it != null)) {
-          _and = false;
-        } else {
-          boolean _canConnect = retriever.canConnect(it, true);
-          _and = _canConnect;
-        }
-        return Boolean.valueOf(_and);
+        return Boolean.valueOf(((it != null) && retriever.canConnect(it, true)));
       }
     };
     String _findFirstValue = this.findFirstValue(longValues, _function_4);
@@ -220,28 +197,13 @@ public class HostnameChecker {
     final Function1<String, Boolean> _function_9 = new Function1<String, Boolean>() {
       @Override
       public Boolean apply(final String it) {
-        boolean _and = false;
-        if (!(it != null)) {
-          _and = false;
-        } else {
-          boolean _canConnect = retriever.canConnect(it, false);
-          _and = _canConnect;
-        }
-        return Boolean.valueOf(_and);
+        return Boolean.valueOf(((it != null) && retriever.canConnect(it, false)));
       }
     };
     String _findFirstValue_1 = this.findFirstValue(shortValues, _function_9);
     this.shortName = _findFirstValue_1;
     ErlLogger.debug("Detected:: \'%s\' && \'%s\'", this.shortName, this.longName);
-    boolean _or_1 = false;
-    boolean _canUseLongNames = this.canUseLongNames();
-    if (_canUseLongNames) {
-      _or_1 = true;
-    } else {
-      boolean _canUseShortNames = this.canUseShortNames();
-      _or_1 = _canUseShortNames;
-    }
-    return _or_1;
+    return (this.canUseLongNames() || this.canUseShortNames());
   }
   
   public boolean getErlideHostsFromProperties() {
@@ -249,15 +211,7 @@ public class HostnameChecker {
     this.shortName = _property;
     String _property_1 = System.getProperty("erlide.host.long");
     this.longName = _property_1;
-    boolean _or = false;
-    boolean _canUseLongNames = this.canUseLongNames();
-    if (_canUseLongNames) {
-      _or = true;
-    } else {
-      boolean _canUseShortNames = this.canUseShortNames();
-      _or = _canUseShortNames;
-    }
-    return _or;
+    return (this.canUseLongNames() || this.canUseShortNames());
   }
   
   public List<List<Function0<? extends String>>> getAllHostNameValues(final String otpHome) {
@@ -321,14 +275,7 @@ public class HostnameChecker {
   private String findFirstValue(final Iterable<Function0<? extends String>> list, final Function1<? super String, ? extends Boolean> predicate) {
     String _xblockexpression = null;
     {
-      boolean _or = false;
-      if ((list == null)) {
-        _or = true;
-      } else {
-        boolean _isEmpty = IterableExtensions.isEmpty(list);
-        _or = _isEmpty;
-      }
-      if (_or) {
+      if (((list == null) || IterableExtensions.isEmpty(list))) {
         return null;
       }
       Function0<? extends String> _head = IterableExtensions.<Function0<? extends String>>head(list);
@@ -347,17 +294,7 @@ public class HostnameChecker {
   }
   
   private void notifyDeprecatedUsage() {
-    boolean _or = false;
-    String _property = System.getProperty("erlide.long.name");
-    boolean _tripleNotEquals = (_property != null);
-    if (_tripleNotEquals) {
-      _or = true;
-    } else {
-      String _property_1 = System.getProperty("erlide.short.name");
-      boolean _tripleNotEquals_1 = (_property_1 != null);
-      _or = _tripleNotEquals_1;
-    }
-    if (_or) {
+    if (((System.getProperty("erlide.long.name") != null) || (System.getProperty("erlide.short.name") != null))) {
       final Job job = ((Job) new Job("") {
         @Override
         protected IStatus run(final IProgressMonitor monitor) {
@@ -408,21 +345,7 @@ public class HostnameChecker {
       this.longName = _property;
       String _property_1 = props.getProperty("short", null);
       this.shortName = _property_1;
-      boolean _and = false;
-      if (!loaded) {
-        _and = false;
-      } else {
-        boolean _or = false;
-        boolean _canUseLongNames = this.canUseLongNames();
-        if (_canUseLongNames) {
-          _or = true;
-        } else {
-          boolean _canUseShortNames = this.canUseShortNames();
-          _or = _canUseShortNames;
-        }
-        _and = _or;
-      }
-      _xblockexpression = _and;
+      _xblockexpression = (loaded && (this.canUseLongNames() || this.canUseShortNames()));
     }
     return _xblockexpression;
   }

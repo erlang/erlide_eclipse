@@ -38,8 +38,8 @@ public class AnnotationSupport {
         final IPreferenceStore preferences = EditorsUI.getPreferenceStore();
         final AnnotationPreference preference = annotationPreferenceLookup
                 .getAnnotationPreference(annotation);
-        final String key = preference == null ? null : preference
-                .getIsGoToNextNavigationTargetKey();
+        final String key = preference == null ? null
+                : preference.getIsGoToNextNavigationTargetKey();
         return key != null && preferences.getBoolean(key);
     }
 
@@ -73,13 +73,13 @@ public class AnnotationSupport {
         Position containingAnnotationPosition = null;
         boolean currentAnnotation = false;
 
-        final IDocument document = editor.getDocumentProvider().getDocument(
-                editor.getEditorInput());
+        final IDocument document = editor.getDocumentProvider()
+                .getDocument(editor.getEditorInput());
         final int endOfDocument = document.getLength();
         int distance = Integer.MAX_VALUE;
 
-        final IAnnotationModel model = editor.getDocumentProvider().getAnnotationModel(
-                editor.getEditorInput());
+        final IAnnotationModel model = editor.getDocumentProvider()
+                .getAnnotationModel(editor.getEditorInput());
         final Iterator<Annotation> e = new ErlangAnnotationIterator(model, true, true);
         while (e.hasNext()) {
             final Annotation a = e.next();
@@ -93,13 +93,13 @@ public class AnnotationSupport {
                 continue;
             }
 
-            if (forward && p.offset == offset || !forward
-                    && p.offset + p.getLength() == offset + length) {
+            if (forward && p.offset == offset
+                    || !forward && p.offset + p.getLength() == offset + length) {
                 // || p.includes(offset))
-                if (containingAnnotation == null
-                        || containingAnnotationPosition != null
-                        && (forward && p.length >= containingAnnotationPosition.length || !forward
-                                && p.length < containingAnnotationPosition.length)) {
+                if (containingAnnotation == null || containingAnnotationPosition != null
+                        && (forward && p.length >= containingAnnotationPosition.length
+                                || !forward
+                                        && p.length < containingAnnotationPosition.length)) {
                     containingAnnotation = a;
                     containingAnnotationPosition = p;
                     currentAnnotation = p.length == length;

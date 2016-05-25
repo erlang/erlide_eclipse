@@ -16,7 +16,7 @@ import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.ObjectType;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 import org.erlide.util.ErlLogger;
 
@@ -51,8 +51,9 @@ public class StatsViewLabelProvider extends LabelProvider implements ITableLabel
                     ErlLogger.error(e);
                     return null;
                 }
-                img = ErlangElementImageProvider.getErlImageDescriptor(m,
-                        ErlangElementImageProvider.SMALL_ICONS).createImage();
+                img = ErlangElementImageProvider
+                        .getErlImageDescriptor(m, ErlangElementImageProvider.SMALL_ICONS)
+                        .createImage();
                 break;
             case FOLDER:
                 img = PlatformUI.getWorkbench().getSharedImages()

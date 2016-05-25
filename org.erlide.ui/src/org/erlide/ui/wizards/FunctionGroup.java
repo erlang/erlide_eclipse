@@ -79,8 +79,8 @@ public class FunctionGroup implements SelectionListener {
     }
 
     private void createTable(final Composite parent) {
-        fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.FULL_SELECTION
-                | SWT.CHECK);
+        fTable = new Table(parent,
+                SWT.SINGLE | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.CHECK);
         fTable.showSelection();
         fTable.setHeaderVisible(true);
         fTable.setLinesVisible(true);
@@ -188,8 +188,8 @@ public class FunctionGroup implements SelectionListener {
 
     void addFunction(final String name, final int arity, final int type,
             final boolean exported) {
-        final TableItem item = fEditingItem != null ? fEditingItem : new TableItem(
-                fTable, SWT.NULL, 0);
+        final TableItem item = fEditingItem != null ? fEditingItem
+                : new TableItem(fTable, SWT.NULL, 0);
         item.setChecked(exported);
         item.setText(0, name + getPostfix(type));
         item.setText(1, "" + arity);
@@ -274,8 +274,8 @@ public class FunctionGroup implements SelectionListener {
                 functionList.add(f);
             }
         }
-        final Function[] functions = functionList.toArray(new Function[functionList
-                .size()]);
+        final Function[] functions = functionList
+                .toArray(new Function[functionList.size()]);
 
         return functions;
     }

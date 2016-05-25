@@ -31,8 +31,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.backend.debug.ErlDebugConstants;
 import org.erlide.backend.launch.IErlangLaunchDelegateConstants;
-import org.erlide.engine.model.IBeamLocator;
 import org.erlide.engine.model.erlang.SourceKind;
+import org.erlide.engine.model.root.IBeamLocator;
 import org.erlide.runtime.api.ErlDebugFlags;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -53,6 +53,7 @@ public final class BackendData extends RuntimeData {
     private Collection<IProject> projects;
     private CodeContext context = CodeContext.COMMON;
 
+    @SuppressWarnings("unchecked")
     public BackendData(@NonNull final RuntimeInfo info,
             @NonNull final ILaunchConfiguration config, final String mode,
             final boolean toBeManaged) {

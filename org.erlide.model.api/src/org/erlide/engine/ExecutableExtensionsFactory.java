@@ -29,8 +29,8 @@ import org.osgi.framework.Bundle;
  * </code>
  * </pre>
  */
-public class ExecutableExtensionsFactory implements IExecutableExtensionFactory,
-        IExecutableExtension {
+public class ExecutableExtensionsFactory
+        implements IExecutableExtensionFactory, IExecutableExtension {
 
     private String className;
     private Bundle bundle;
@@ -81,7 +81,8 @@ public class ExecutableExtensionsFactory implements IExecutableExtensionFactory,
         }
     }
 
-    private void assignParameters(final Class<?>[] parameterTypes, final Object[] initargs) {
+    private void assignParameters(final Class<?>[] parameterTypes,
+            final Object[] initargs) {
         for (int i = 0; i < parameterTypes.length; i++) {
             final Class<?> paramType = parameterTypes[i];
             if (ErlangService.class.isAssignableFrom(paramType)) {

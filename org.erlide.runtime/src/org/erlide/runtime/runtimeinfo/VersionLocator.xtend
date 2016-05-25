@@ -1,7 +1,6 @@
 package org.erlide.runtime.runtimeinfo
 
 import java.util.Collection
-import java.util.Collections
 import java.util.List
 
 class VersionLocator {
@@ -13,13 +12,12 @@ class VersionLocator {
     def static Collection<RuntimeInfo> locateVersion(RuntimeVersion vsn, Collection<RuntimeInfo> runtimes,
         boolean strict) {
         val List<RuntimeInfo> result = newArrayList()
-        for (info : runtimes) {
+        for (info : runtimes.sortWith[a, b | a.version.compareTo(b.version)]) {
             val v = info.getVersion()
             if (v.isReleaseCompatible(vsn)) {
                 result.add(info)
             }
         }
-        Collections.reverse(result)
         // at the end, first newer versions
         for (info : runtimes) {
             val v = info.getVersion()

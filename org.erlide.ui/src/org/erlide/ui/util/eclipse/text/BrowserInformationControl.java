@@ -76,8 +76,8 @@ import org.eclipse.swt.widgets.Slider;
  *
  * @since 3.2
  */
-public class BrowserInformationControl extends AbstractInformationControl implements
-        IInformationControlExtension2, IDelayedInputChangeProvider {
+public class BrowserInformationControl extends AbstractInformationControl
+        implements IInformationControlExtension2, IDelayedInputChangeProvider {
 
     /**
      * Tells whether the SWT Browser widget and hence this information control
@@ -170,7 +170,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
      *
      * @since 3.4
      */
-    private final ListenerList/* <IInputChangedListener> */fInputChangeListeners = new ListenerList(
+    private final ListenerList/* <IInputChangedListener> */ fInputChangeListeners = new ListenerList(
             ListenerList.IDENTITY);
 
     /**
@@ -303,10 +303,8 @@ public class BrowserInformationControl extends AbstractInformationControl implem
     @Override
     public void setInput(final Object input) {
         assertThat(input, is(not(nullValue())));
-        assertThat(
-                input,
-                is(either(instanceOf(String.class)).or(
-                        instanceOf(BrowserInformationControlInput.class))));
+        assertThat(input, is(either(instanceOf(String.class))
+                .or(instanceOf(BrowserInformationControlInput.class))));
 
         if (input instanceof String) {
             setInformation((String) input);
@@ -334,17 +332,17 @@ public class BrowserInformationControl extends AbstractInformationControl implem
         // and the re-wrapping would cause visual noise
         String[] styles = null;
         if (RTL && resizable) {
-            styles = new String[] {
-                    "direction:rtl;", "overflow:scroll;", "word-wrap:break-word;" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            styles = new String[] { "direction:rtl;", "overflow:scroll;", //$NON-NLS-1$ //$NON-NLS-2$
+                    "word-wrap:break-word;" };  //$NON-NLS-1$
         } else if (RTL && !resizable) {
-            styles = new String[] {
-                    "direction:rtl;", "overflow:hidden;", "word-wrap:break-word;" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            styles = new String[] { "direction:rtl;", "overflow:hidden;", //$NON-NLS-1$ //$NON-NLS-2$
+                    "word-wrap:break-word;" };  //$NON-NLS-1$
         } else if (!resizable) {
             // In IE, "word-wrap: break-word;" causes bogus wrapping even
             // in non-broken words :-(see e.g. Javadoc of String).
             // Re-check whether we really still need this now that the Javadoc
             // Hover header already sets this style.
-            styles = new String[] { "overflow:hidden;"/*, "word-wrap: break-word;"*/}; //$NON-NLS-1$
+            styles = new String[] { "overflow:hidden;"/* , "word-wrap: break-word;" */ }; //$NON-NLS-1$
         } else {
             styles = new String[] { "overflow:scroll;" }; //$NON-NLS-1$
         }
@@ -445,8 +443,8 @@ public class BrowserInformationControl extends AbstractInformationControl implem
         fTextLayout = new TextLayout(fBrowser.getDisplay());
 
         // Initialize fonts
-        final String symbolicFontName = fSymbolicFontName == null ? JFaceResources.DIALOG_FONT
-                : fSymbolicFontName;
+        final String symbolicFontName = fSymbolicFontName == null
+                ? JFaceResources.DIALOG_FONT : fSymbolicFontName;
         Font font = JFaceResources.getFont(symbolicFontName);
         fTextLayout.setFont(font);
         fTextLayout.setWidth(-1);
@@ -490,8 +488,8 @@ public class BrowserInformationControl extends AbstractInformationControl implem
         // Furthermore, the indentation of <dl><dd> elements is too small (e.g
         // with a long @see line)
         final TextPresentation presentation = new TextPresentation();
-        final HTML2TextReader reader = new HTML2TextReader(new StringReader(
-                fInput.getHtml()), presentation);
+        final HTML2TextReader reader = new HTML2TextReader(
+                new StringReader(fInput.getHtml()), presentation);
         String text;
         try {
             try {
@@ -507,8 +505,8 @@ public class BrowserInformationControl extends AbstractInformationControl implem
         }
 
         fTextLayout.setText(text);
-        fTextLayout.setWidth(sizeConstraints == null ? SWT.DEFAULT : sizeConstraints.x
-                - trim.width);
+        fTextLayout.setWidth(
+                sizeConstraints == null ? SWT.DEFAULT : sizeConstraints.x - trim.width);
         @SuppressWarnings("rawtypes")
         final Iterator iter = presentation.getAllStyleRangeIterator();
         while (iter.hasNext()) {
@@ -634,7 +632,8 @@ public class BrowserInformationControl extends AbstractInformationControl implem
      *            the listener to remove
      * @since 3.4
      */
-    public void removeInputChangeListener(final IInputChangedListener inputChangeListener) {
+    public void removeInputChangeListener(
+            final IInputChangedListener inputChangeListener) {
         fInputChangeListeners.remove(inputChangeListener);
     }
 
@@ -682,7 +681,8 @@ public class BrowserInformationControl extends AbstractInformationControl implem
      */
     @Override
     public String toString() {
-        final String style = (getShell().getStyle() & SWT.RESIZE) == 0 ? "fixed" : "resizeable"; //$NON-NLS-1$ //$NON-NLS-2$
+        final String style = (getShell().getStyle() & SWT.RESIZE) == 0 ? "fixed" //$NON-NLS-1$
+                : "resizeable";  //$NON-NLS-1$
         return super.toString() + " -  style: " + style; //$NON-NLS-1$
     }
 

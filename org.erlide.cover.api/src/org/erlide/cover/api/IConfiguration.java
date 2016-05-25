@@ -3,7 +3,7 @@ package org.erlide.cover.api;
 import java.util.Collection;
 
 import org.eclipse.core.runtime.IPath;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 
 /**

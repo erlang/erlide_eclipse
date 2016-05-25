@@ -59,8 +59,8 @@ class DuplicatesViewLabelProvider extends LabelProvider {
 
     public static ImageDescriptor getImageDescriptor(final String name) {
 
-        final ImageDescriptor descriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
-                Activator.PLUGIN_ID, name);
+        final ImageDescriptor descriptor = AbstractUIPlugin
+                .imageDescriptorFromPlugin(Activator.PLUGIN_ID, name);
 
         return descriptor;
     }

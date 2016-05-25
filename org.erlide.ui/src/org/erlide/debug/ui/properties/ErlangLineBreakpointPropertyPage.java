@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.backend.debug.IErlangBreakpoint;
 import org.erlide.debug.ui.utils.BreakpointUtils;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.util.ErlLogger;
 
@@ -80,8 +80,8 @@ public class ErlangLineBreakpointPropertyPage extends ErlangBreakpointPropertyPa
     protected void createTypeSpecificLabels(final Composite parent) {
         createLabel(parent, "Module:");
         final String moduleName = getBreakpoint().getMarker().getResource().getName();
-        createText(parent, SWT.READ_ONLY, moduleName).setBackground(
-                parent.getBackground());
+        createText(parent, SWT.READ_ONLY, moduleName)
+                .setBackground(parent.getBackground());
         // Line number
         final ILineBreakpoint breakpoint = (ILineBreakpoint) getBreakpoint();
         final StringBuffer lineNumber = new StringBuffer(4);
@@ -96,16 +96,16 @@ public class ErlangLineBreakpointPropertyPage extends ErlangBreakpointPropertyPa
         if (lineNumber.length() > 0) {
             createLabel(parent, "&Line Number:");
             final String string = lineNumber.toString();
-            createText(parent, SWT.READ_ONLY, string).setBackground(
-                    parent.getBackground());
+            createText(parent, SWT.READ_ONLY, string)
+                    .setBackground(parent.getBackground());
         }
         final IErlElement element = BreakpointUtils.getElement(breakpoint);
         if (element == null) {
             return;
         }
         createLabel(parent, "Function:");
-        createText(parent, SWT.READ_ONLY, element.toString()).setBackground(
-                parent.getBackground());
+        createText(parent, SWT.READ_ONLY, element.toString())
+                .setBackground(parent.getBackground());
     }
 
     /**
@@ -114,7 +114,8 @@ public class ErlangLineBreakpointPropertyPage extends ErlangBreakpointPropertyPa
      * @see org.eclipse.jdt.internal.debug.ui.propertypages.JavaBreakpointPage#createTypeSpecificEditors(org.eclipse.swt.widgets.Composite)
      */
     @Override
-    protected void createTypeSpecificEditors(final Composite parent) throws CoreException {
+    protected void createTypeSpecificEditors(final Composite parent)
+            throws CoreException {
         setTitle("Line Breakpoint");
         final IErlangBreakpoint breakpoint = getBreakpoint();
         if (breakpoint.supportsCondition()) {
@@ -179,6 +180,7 @@ public class ErlangLineBreakpointPropertyPage extends ErlangBreakpointPropertyPa
     /**
      * Validates the method breakpoint, if we are one
      */
+
     // private void validateMethodBreakpoint() {
     // boolean valid = true;
     // if (fEnabledButton.getSelection()
@@ -282,10 +284,7 @@ public class ErlangLineBreakpointPropertyPage extends ErlangBreakpointPropertyPa
     @Override
     public void createControl(final Composite parent) {
         super.createControl(parent);
-        PlatformUI
-                .getWorkbench()
-                .getHelpSystem()
-                .setHelp(getControl(),
-                        IErlangHelpContextIds.ERLANG_LINE_BREAKPOINT_PROPERTY_PAGE);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(),
+                IErlangHelpContextIds.ERLANG_LINE_BREAKPOINT_PROPERTY_PAGE);
     }
 }

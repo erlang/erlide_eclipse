@@ -29,7 +29,8 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
      *            the key into <code>store</code> where to store custom
      *            templates
      */
-    public ErlideContributionTemplateStore(final IPreferenceStore store, final String key) {
+    public ErlideContributionTemplateStore(final IPreferenceStore store,
+            final String key) {
         super(store, key);
     }
 
@@ -109,11 +110,11 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
 
         if (getRegistry() != null) {
             try {
-                getRegistry().getContextType(contextTypeId).validate(
-                        template.getPattern());
+                getRegistry().getContextType(contextTypeId)
+                        .validate(template.getPattern());
             } catch (final TemplateException e) {
-                ErlideUIPlugin.logErrorMessage("bad formed template: "
-                        + template.getName());
+                ErlideUIPlugin
+                        .logErrorMessage("bad formed template: " + template.getName());
                 ErlideUIPlugin.log(e);
                 return false;
             }
@@ -132,7 +133,7 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
      *         specified
      */
     private boolean contextExists(final String contextTypeId) {
-        return contextTypeId != null
-                && (getRegistry() == null || getRegistry().getContextType(contextTypeId) != null);
+        return contextTypeId != null && (getRegistry() == null
+                || getRegistry().getContextType(contextTypeId) != null);
     }
 }

@@ -33,8 +33,8 @@ import org.erlide.util.ErlLogger;
 /**
  * Property page used to set the project's edoc location
  */
-public class EdocConfigurationPropertyPage extends PropertyPage implements
-        IPreferenceChangeListener, IPropertyChangeListener {
+public class EdocConfigurationPropertyPage extends PropertyPage
+        implements IPreferenceChangeListener, IPropertyChangeListener {
 
     public static final String PROP_ID = "org.eclipse.jdt.ui.propertyPages.EdocConfigurationPropertyPage"; //$NON-NLS-1$
 
@@ -61,11 +61,8 @@ public class EdocConfigurationPropertyPage extends PropertyPage implements
     public void createControl(final Composite parent) {
         super.createControl(parent);
         setDescription("Specify the location of the generated edoc (in HTML format).");
-        PlatformUI
-                .getWorkbench()
-                .getHelpSystem()
-                .setHelp(getControl(),
-                        IErlangHelpContextIds.EDOC_CONFIGURATION_PROPERTY_PAGE);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(),
+                IErlangHelpContextIds.EDOC_CONFIGURATION_PROPERTY_PAGE);
     }
 
     /*

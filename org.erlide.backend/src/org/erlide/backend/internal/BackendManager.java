@@ -39,9 +39,9 @@ import org.erlide.backend.api.ICodeBundle;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.backend.api.IProjectCodeLoader;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
@@ -81,8 +81,8 @@ public final class BackendManager implements IBackendManager {
 
         loadCodepathExtensions();
 
-        launchListener = new BackendManagerLaunchListener(this, DebugPlugin.getDefault()
-                .getLaunchManager());
+        launchListener = new BackendManagerLaunchListener(this,
+                DebugPlugin.getDefault().getLaunchManager());
     }
 
     @Override
@@ -104,8 +104,8 @@ public final class BackendManager implements IBackendManager {
     public IBackend getBuildBackend(@NonNull final IErlProject project) {
         final RuntimeInfo info = project.getRuntimeInfo();
         if (info == null) {
-            ErlLogger
-                    .info("Project %s has no runtime info, using ide", project.getName());
+            ErlLogger.info("Project %s has no runtime info, using ide",
+                    project.getName());
             return getIdeBackend();
         }
         final String version = info.getVersion().asMajor().toString();
@@ -166,7 +166,8 @@ public final class BackendManager implements IBackendManager {
         }
     }
 
-    private void remoteNodeStatus(final String node, final boolean up, final Object info) {
+    private void remoteNodeStatus(final String node, final boolean up,
+            final Object info) {
         if (!up) {
             for (final Entry<IProject, Set<IBackend>> e : executionBackends.entrySet()) {
                 for (final IBackend be : e.getValue()) {
@@ -324,7 +325,8 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public synchronized Set<IBackend> getExecutionBackends(final @NonNull IProject project) {
+    public synchronized Set<IBackend> getExecutionBackends(
+            final @NonNull IProject project) {
         final Set<IBackend> bs = executionBackends.get(project);
         if (bs == null) {
             return Collections.emptySet();
@@ -343,7 +345,8 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public synchronized void addExecutionBackend(final IProject project, final IBackend b) {
+    public synchronized void addExecutionBackend(final IProject project,
+            final IBackend b) {
         Set<IBackend> list = executionBackends.get(project);
         if (list == null) {
             list = Sets.newHashSet();
@@ -405,6 +408,6 @@ public final class BackendManager implements IBackendManager {
 
     @Override
     public IBackendFactory getFactory() {
-        return this.factory;
+        return factory;
     }
 }

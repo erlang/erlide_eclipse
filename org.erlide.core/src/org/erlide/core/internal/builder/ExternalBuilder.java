@@ -7,12 +7,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.builder.BuildNotifier;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.executor.ProgressCallback;
 import org.erlide.core.executor.ToolExecutor;
 import org.erlide.core.executor.ToolExecutor.ToolResults;
+import org.erlide.engine.MarkerUtils;
 import org.erlide.engine.model.builder.BuilderTool;
-import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.util.ErlLogger;
 
@@ -82,8 +83,9 @@ public abstract class ExternalBuilder extends ErlangBuilder {
                 final boolean noMarkersOnProject = project.findMarkers(IMarker.PROBLEM,
                         true, IResource.DEPTH_INFINITE).length == 0;
                 if (noMarkersOnProject && result.exit > 0) {
-                    MarkerUtils.createProblemMarker(project, null, "Builder error: "
-                            + getOsCommand(erlProject), 0, IMarker.SEVERITY_ERROR);
+                    MarkerUtils.createProblemMarker(project, null,
+                            "Builder error: " + getOsCommand(erlProject), 0,
+                            IMarker.SEVERITY_ERROR);
                 }
             }
 
@@ -93,8 +95,8 @@ public abstract class ExternalBuilder extends ErlangBuilder {
 
         } catch (final Error e) {
             e.printStackTrace();
-            throw new CoreException(new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
-                    "builder error", e));
+            throw new CoreException(
+                    new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID, "builder error", e));
         }
         notifier.done();
         return null;
@@ -122,8 +124,8 @@ public abstract class ExternalBuilder extends ErlangBuilder {
             public void stderr(final String line) {
             }
         };
-        ex.run(getOsCommand(erlProject), getCleanTarget(), project.getLocation()
-                .toPortableString(), callback, notifier);
+        ex.run(getOsCommand(erlProject), getCleanTarget(),
+                project.getLocation().toPortableString(), callback, notifier);
         notifier.worked(9);
     }
 

@@ -22,8 +22,10 @@ public abstract class ErlangSearchPattern {
     static final OtpErlangAtom INCLUDE_REF_ATOM = new OtpErlangAtom("include_ref");
     protected static final OtpErlangAtom MACRO_DEF_ATOM = new OtpErlangAtom("macro_def");
     protected static final OtpErlangAtom MACRO_REF_ATOM = new OtpErlangAtom("macro_ref");
-    protected static final OtpErlangAtom RECORD_DEF_ATOM = new OtpErlangAtom("record_def");
-    protected static final OtpErlangAtom RECORD_REF_ATOM = new OtpErlangAtom("record_ref");
+    protected static final OtpErlangAtom RECORD_DEF_ATOM = new OtpErlangAtom(
+            "record_def");
+    protected static final OtpErlangAtom RECORD_REF_ATOM = new OtpErlangAtom(
+            "record_ref");
     protected static final OtpErlangAtom TYPE_DEF_ATOM = new OtpErlangAtom("type_def");
     protected static final OtpErlangAtom TYPE_REF_ATOM = new OtpErlangAtom("type_ref");
     protected static final OtpErlangAtom VARIABLE_PATTERN_ATOM = new OtpErlangAtom(
@@ -60,8 +62,8 @@ public abstract class ErlangSearchPattern {
     }
 
     protected static OtpErlangObject makeIncludePatternObject(final String s) {
-        return new OtpErlangTuple(new OtpErlangObject[] { INCLUDE_REF_ATOM,
-                new OtpErlangString(s) });
+        return new OtpErlangTuple(
+                new OtpErlangObject[] { INCLUDE_REF_ATOM, new OtpErlangString(s) });
     }
 
     protected OtpErlangObject makeMFAPatternObject(final OtpErlangAtom defAtom,
@@ -133,8 +135,8 @@ public abstract class ErlangSearchPattern {
             return new OtpErlangTuple(new OtpErlangObject[] { atom, new OtpErlangAtom(s),
                     new OtpErlangLong(a) });
         }
-        return new OtpErlangTuple(new OtpErlangObject[] { atom, new OtpErlangAtom(s),
-                UNDEFINED });
+        return new OtpErlangTuple(
+                new OtpErlangObject[] { atom, new OtpErlangAtom(s), UNDEFINED });
 
     }
 
@@ -147,8 +149,8 @@ public abstract class ErlangSearchPattern {
     private static OtpErlangObject make4Tuple(final OtpErlangAtom atom, final String s1,
             final String s2, final int a) {
         if (a >= 0) {
-            return new OtpErlangTuple(new OtpErlangObject[] { atom,
-                    new OtpErlangAtom(s1), new OtpErlangAtom(s2), new OtpErlangLong(a) });
+            return new OtpErlangTuple(new OtpErlangObject[] { atom, new OtpErlangAtom(s1),
+                    new OtpErlangAtom(s2), new OtpErlangLong(a) });
         }
         return new OtpErlangTuple(new OtpErlangObject[] { atom, new OtpErlangAtom(s1),
                 new OtpErlangAtom(s2), UNDEFINED });

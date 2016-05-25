@@ -93,8 +93,8 @@ public class HyperlinkDetector extends AbstractHyperlinkDetector {
 
             final int slash = function.indexOf('/');
             if (function.matches("'-[^/]+/[0-9]+-fun-.*")) {
-                arity = Integer.parseInt(function.substring(slash + 1,
-                        function.indexOf('-', slash)));
+                arity = Integer.parseInt(
+                        function.substring(slash + 1, function.indexOf('-', slash)));
                 function = function.substring(2, slash);
             } else {
                 if (slash < 0) {

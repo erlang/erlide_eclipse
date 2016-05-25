@@ -2,7 +2,7 @@ package org.erlide.runtime.internal;
 
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.google.common.base.Objects;
-import org.erlide.runtime.OtpNodeProxy;
+import org.erlide.runtime.internal.OtpNodeProxy;
 
 @SuppressWarnings("all")
 public class ErlideNodeStatus extends OtpNodeStatus {
@@ -14,15 +14,7 @@ public class ErlideNodeStatus extends OtpNodeStatus {
   
   @Override
   public void remoteStatus(final String node, final boolean up, final Object info) {
-    boolean _and = false;
-    String _nodeName = this.runtime.getNodeName();
-    boolean _equals = Objects.equal(node, _nodeName);
-    if (!_equals) {
-      _and = false;
-    } else {
-      _and = (!up);
-    }
-    if (_and) {
+    if ((Objects.equal(node, this.runtime.getNodeName()) && (!up))) {
     }
   }
 }

@@ -79,8 +79,8 @@ class MessageDialogPage extends DialogPage {
 
             messageText = new Text(messageComposite, SWT.NONE);
             messageText.setEditable(false);
-            messageText.setBackground(parent.getDisplay().getSystemColor(
-                    SWT.COLOR_WIDGET_BACKGROUND));
+            messageText.setBackground(
+                    parent.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 
             final GridData textData = new GridData(GridData.GRAB_HORIZONTAL
                     | GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_CENTER);
@@ -143,12 +143,12 @@ class MessageDialogPage extends DialogPage {
             messageImageLabel.setImage(newImage);
             messageText.setText(newMessage);
             if (showingError) {
-                setMessageColors(JFaceColors.getErrorBackground(messageComposite
-                        .getDisplay()));
+                setMessageColors(
+                        JFaceColors.getErrorBackground(messageComposite.getDisplay()));
             } else {
                 lastMessageText = newMessage;
-                setMessageColors(JFaceColors.getBannerBackground(messageComposite
-                        .getDisplay()));
+                setMessageColors(
+                        JFaceColors.getBannerBackground(messageComposite.getDisplay()));
             }
 
         }
@@ -206,8 +206,8 @@ class MessageDialogPage extends DialogPage {
         composite1.setLayout(layout);
         fMessageRegion = new MessageRegion();
         fMessageRegion.createContents(composite1);
-        final GridData messageData = new GridData(GridData.FILL_HORIZONTAL
-                | GridData.GRAB_HORIZONTAL);
+        final GridData messageData = new GridData(
+                GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
         fMessageRegion.setMessageLayoutData(messageData);
         setControl(composite1);
     }

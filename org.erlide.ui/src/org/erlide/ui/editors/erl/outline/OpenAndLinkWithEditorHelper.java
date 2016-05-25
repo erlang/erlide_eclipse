@@ -35,8 +35,8 @@ public class OpenAndLinkWithEditorHelper {
     private final ErlangEditor fEditor;
     private final IWorkbenchPage page;
 
-    private final class InternalListener implements IOpenListener,
-            ISelectionChangedListener, IDoubleClickListener {
+    private final class InternalListener
+            implements IOpenListener, ISelectionChangedListener, IDoubleClickListener {
 
         @Override
         public final void open(final OpenEvent event) {

@@ -3,14 +3,48 @@
 <plugin>
    <extension
          point="org.erlide.runtime.codepath">
-      <beam_dir
-            context="common"
-            path="/common">
-      </beam_dir>
-      <beam_dir
-            context="ide"
-            path="/ide">
-      </beam_dir>
-   </extension>
 
+     <beam_dir
+            path="ide"
+            context="ide"
+            otp_version="18">
+      </beam_dir>
+
+     <beam_dir
+            path="common"
+            context="common"
+            otp_version="R16">
+      </beam_dir>
+
+     <beam_dir
+            path="debugger"
+            context="debugger"
+            otp_version="R16">
+      </beam_dir>
+
+     <beam_dir
+            path="debugger/17"
+            context="debugger"
+            otp_version="17">
+      </beam_dir>
+
+     <beam_dir
+            path="debugger/18"
+            context="debugger"
+            otp_version="18">
+      </beam_dir>
+
+     <beam_dir
+            path="debugger/19"
+            context="debugger"
+            otp_version="19">
+      </beam_dir>
+
+     <beam_dir
+            path="debugger/r16"
+            context="debugger"
+            otp_version="R16">
+      </beam_dir>
+
+​   </extension>
 </plugin>

@@ -21,7 +21,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.codeinspection.view.CodeInspectionResultsView;
 import org.erlide.wrangler.refactoring.codeinspection.view.GraphImageView;
@@ -64,8 +64,8 @@ public class CodeInspectionViewsManager {
      * @param e
      *            Erlang elements
      */
-    static public void showErlElements(final String title,
-            final ArrayList<IErlElement> e, final String secId) {
+    static public void showErlElements(final String title, final ArrayList<IErlElement> e,
+            final String secId) {
         try {
             final CodeInspectionResultsView v = (CodeInspectionResultsView) showView(
                     CODE_INSPECTION_VIEW, secId);

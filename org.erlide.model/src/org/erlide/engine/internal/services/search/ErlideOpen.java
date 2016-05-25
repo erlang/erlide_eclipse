@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.model.SourcePathUtils;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.services.search.OpenService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
@@ -113,8 +113,8 @@ public class ErlideOpen implements OpenService {
             if (Util.isOk(res)) {
                 OtpErlangTuple t = (OtpErlangTuple) res;
                 final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-                final List<ExternalTreeEntry> result = Lists.newArrayListWithCapacity(l
-                        .arity());
+                final List<ExternalTreeEntry> result = Lists
+                        .newArrayListWithCapacity(l.arity());
                 for (final OtpErlangObject i : l) {
                     t = (OtpErlangTuple) i;
                     final String parentPath = Util.stringValue(t.elementAt(0));
@@ -142,8 +142,8 @@ public class ErlideOpen implements OpenService {
     }
 
     @Override
-    public String getExternalInclude(final String filePath,
-            final String externalIncludes, final OtpErlangList pathVars) {
+    public String getExternalInclude(final String filePath, final String externalIncludes,
+            final OtpErlangList pathVars) {
         try {
             final OtpErlangObject res = ideBackend.call(ERLIDE_OPEN,
                     "get_external_include", "sx", filePath,
@@ -161,8 +161,8 @@ public class ErlideOpen implements OpenService {
     @Override
     public OtpErlangList getOtpLibStructure(final IOtpRpc backend) {
         try {
-            final OtpErlangObject res = backend.call(ERLIDE_OPEN,
-                    "get_otp_lib_structure", "s", stateDir);
+            final OtpErlangObject res = backend.call(ERLIDE_OPEN, "get_otp_lib_structure",
+                    "s", stateDir);
             if (Util.isOk(res)) {
                 final OtpErlangTuple tres = (OtpErlangTuple) res;
                 final OtpErlangList lot = (OtpErlangList) tres.elementAt(1);

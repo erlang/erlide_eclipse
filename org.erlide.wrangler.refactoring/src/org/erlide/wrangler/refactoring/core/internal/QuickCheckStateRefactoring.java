@@ -32,7 +32,8 @@ import com.ericsson.otp.erlang.OtpErlangString;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public abstract class QuickCheckStateRefactoring extends SimpleOneStepWranglerRefactoring {
+public abstract class QuickCheckStateRefactoring
+        extends SimpleOneStepWranglerRefactoring {
 
     protected OtpErlangObject stateFuns;
     protected int fieldCount = 0;

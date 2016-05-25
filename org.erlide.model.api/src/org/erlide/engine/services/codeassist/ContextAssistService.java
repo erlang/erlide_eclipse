@@ -2,7 +2,7 @@ package org.erlide.engine.services.codeassist;
 
 import java.util.Collection;
 
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 

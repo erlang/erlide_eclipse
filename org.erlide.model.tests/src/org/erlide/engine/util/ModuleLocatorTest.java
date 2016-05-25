@@ -11,8 +11,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,8 +42,8 @@ public class ModuleLocatorTest {
 
     @Test
     public void demoProjectsShouldBeConfiguredProperly() {
-        checkProjectDirectories(p1, new IPath[] { new Path("src") }, new IPath[] {
-                new Path("include"), new Path("T_ROOT/p3/include") });
+        checkProjectDirectories(p1, new IPath[] { new Path("src") },
+                new IPath[] { new Path("include"), new Path("T_ROOT/p3/include") });
         checkProjectDirectories(p2, new IPath[] { new Path("src") },
                 new IPath[] { new Path("include") });
     }

@@ -94,6 +94,8 @@
                   </enumeration>
                   <enumeration value="18">
                   </enumeration>
+                  <enumeration value="19">
+                  </enumeration>
                </restriction>
             </simpleType>
          </attribute>

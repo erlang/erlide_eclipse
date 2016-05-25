@@ -144,26 +144,26 @@ public class UserRefactoringsManager {
         ErlLogger.info("Refac modules found " + res.toString());
 
         // user's own refactoring
-        final Enumeration userModules = coreBundle.findEntries(
-                "wrangler/ebin/my_gen_refac", "*.beam", false);
+        final Enumeration userModules = coreBundle
+                .findEntries("wrangler/ebin/my_gen_refac", "*.beam", false);
         while (userModules != null && userModules.hasMoreElements()) {
             final String next = userModules.nextElement().toString();
-            myElementaryRefacs.add(new UserRefactoringInfo(next.substring(
-                    next.lastIndexOf('/') + 1, next.lastIndexOf('.'))));
+            myElementaryRefacs.add(new UserRefactoringInfo(
+                    next.substring(next.lastIndexOf('/') + 1, next.lastIndexOf('.'))));
 
         }
         // user's own composite refactorings
-        final Enumeration userCompositeModules = coreBundle.findEntries(
-                "wrangler/ebin/my_gen_composite_refac", "*.beam", false);
+        final Enumeration userCompositeModules = coreBundle
+                .findEntries("wrangler/ebin/my_gen_composite_refac", "*.beam", false);
         while (userCompositeModules != null && userCompositeModules.hasMoreElements()) {
             final String next = userCompositeModules.nextElement().toString();
-            myCompositeRefacs.add(new UserRefactoringInfo(next.substring(
-                    next.lastIndexOf('/') + 1, next.lastIndexOf('.'))));
+            myCompositeRefacs.add(new UserRefactoringInfo(
+                    next.substring(next.lastIndexOf('/') + 1, next.lastIndexOf('.'))));
         }
 
         // load refactorings
-        res = WranglerBackendManager.getRefactoringBackend().callWithoutParser(
-                "load_user_refactorings", "s", getEbinPath());
+        res = WranglerBackendManager.getRefactoringBackend()
+                .callWithoutParser("load_user_refactorings", "s", getEbinPath());
         ErlLogger.debug(res.toString());
 
     }
@@ -171,8 +171,8 @@ public class UserRefactoringsManager {
     // path to ebin directory
     private String getEbinPath() {
         final Bundle coreBundle = Platform.getBundle(Activator.CORE_ID);
-        String path = new Path(coreBundle.getLocation()).append("wrangler")
-                .append("ebin").toOSString();
+        String path = new Path(coreBundle.getLocation()).append("wrangler").append("ebin")
+                .toOSString();
         path = path.substring(path.lastIndexOf(':') + 1);
         return path;
     }

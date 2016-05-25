@@ -22,8 +22,8 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.dialyzer.builder.DialyzerMarkerUtils;
 import org.erlide.dialyzer.builder.DialyzerUtils;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElementLocator;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.After;
@@ -99,9 +99,9 @@ public class DialyzerUtilsTest {
             final String projectName = "testproject";
             erlProject = ErlideTestUtils.createTmpErlProject(projectName);
             final String moduleName = "test.erl";
-            final IErlModule erlModule = ErlideTestUtils
-                    .createModule(erlProject, moduleName,
-                            "-module(test).\n-export([f/0]).\n-f() ->\n    atom_to_list(\"hej\").\n");
+            final IErlModule erlModule = ErlideTestUtils.createModule(erlProject,
+                    moduleName,
+                    "-module(test).\n-export([f/0]).\n-f() ->\n    atom_to_list(\"hej\").\n");
             IMarker[] markers = erlProject.getWorkspaceProject().findMarkers(
                     DialyzerMarkerUtils.DIALYZE_WARNING_MARKER, true,
                     IResource.DEPTH_INFINITE);
@@ -111,8 +111,9 @@ public class DialyzerUtilsTest {
             final int lineNumber = 3;
             final String message = "test message";
             final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-            DialyzerMarkerUtils.addDialyzerWarningMarker(model, erlModule.getResource()
-                    .getLocation().toPortableString(), lineNumber, message);
+            DialyzerMarkerUtils.addDialyzerWarningMarker(model,
+                    erlModule.getResource().getLocation().toPortableString(), lineNumber,
+                    message);
             // then
             // there should be a marker with proper file name and the proper
             // line number
@@ -197,13 +198,11 @@ public class DialyzerUtilsTest {
             final String projectName = "testproject";
             erlProject = ErlideTestUtils.createTmpErlProject(projectName);
             assertNotNull(erlProject);
-            final IErlModule a = ErlideTestUtils
-                    .createModule(erlProject, "a.erl",
-                            "-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
+            final IErlModule a = ErlideTestUtils.createModule(erlProject, "a.erl",
+                    "-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
             assertNotNull(a);
-            final IErlModule b = ErlideTestUtils
-                    .createModule(erlProject, "b.erl",
-                            "-module(b).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
+            final IErlModule b = ErlideTestUtils.createModule(erlProject, "b.erl",
+                    "-module(b).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
             assertNotNull(b);
             ErlideTestUtils.invokeBuilderOn(erlProject);
             // when
@@ -280,7 +279,7 @@ public class DialyzerUtilsTest {
     // .createErlModule(
     // erlProject,
     // "f.erl",
-    // "-module(a).\n-export([t/0]).\n-include(\"i.hrl\").\nt() ->\n    p(#a{b=b, c=c}).\n");
+    // "-module(a).\n-export([t/0]).\n-include(\"i.hrl\").\nt() ->\n p(#a{b=b, c=c}).\n");
     // assertNotNull(f);
     // ErlideTestUtils.invokeBuilderOn(erlProject);
     // // when
@@ -316,13 +315,11 @@ public class DialyzerUtilsTest {
             final String projectName = "testproject";
             erlProject = ErlideTestUtils.createTmpErlProject(projectName);
             assertNotNull(erlProject);
-            final IErlModule a = ErlideTestUtils
-                    .createModule(erlProject, "a.erl",
-                            "-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
+            final IErlModule a = ErlideTestUtils.createModule(erlProject, "a.erl",
+                    "-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
             assertNotNull(a);
-            final IErlModule b = ErlideTestUtils
-                    .createModule(erlProject, "b.erl",
-                            "-module(b).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    fel som tusan.\n");
+            final IErlModule b = ErlideTestUtils.createModule(erlProject, "b.erl",
+                    "-module(b).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    fel som tusan.\n");
             assertNotNull(b);
             ErlideTestUtils.invokeBuilderOn(erlProject);
             // when

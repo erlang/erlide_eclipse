@@ -109,10 +109,14 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
         // create a composite with standard margins and spacing
         final Composite composite = new Composite(parent, SWT.NONE);
         final GridLayout layout = new GridLayout();
-        layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-        layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-        layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-        layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+        layout.marginHeight = convertVerticalDLUsToPixels(
+                IDialogConstants.VERTICAL_MARGIN);
+        layout.marginWidth = convertHorizontalDLUsToPixels(
+                IDialogConstants.HORIZONTAL_MARGIN);
+        layout.verticalSpacing = convertVerticalDLUsToPixels(
+                IDialogConstants.VERTICAL_SPACING);
+        layout.horizontalSpacing = convertHorizontalDLUsToPixels(
+                IDialogConstants.HORIZONTAL_SPACING);
         composite.setLayout(layout);
         composite.setLayoutData(new GridData(GridData.FILL_BOTH));
         composite.setFont(parent.getFont());
@@ -126,8 +130,8 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
 
         // Pattern field
         fUserDefinedPatterns = new Text(group, SWT.SINGLE | SWT.BORDER);
-        final GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL
-                | GridData.GRAB_HORIZONTAL);
+        final GridData data = new GridData(
+                GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
         data.widthHint = convertWidthInCharsToPixels(59);
         fUserDefinedPatterns.setLayoutData(data);
         final String patterns = convertToString(fPatterns, SEPARATOR);
@@ -135,7 +139,8 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
 
         // Info text
         final Label info = new Label(group, SWT.LEFT);
-        info.setText("The patterns are separated by comma, where\n* = any string, ? = any character, ,, = ,");
+        info.setText(
+                "The patterns are separated by comma, where\n* = any string, ? = any character, ,, = ,");
 
         // Enabling / disabling of pattern group
         fEnableUserDefinedPatterns.setSelection(fEnablePatterns);
@@ -205,16 +210,15 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
                     final Object selectedElement = ((IStructuredSelection) selection)
                             .getFirstElement();
                     if (selectedElement instanceof FilterDescriptor) {
-                        description.setText(((FilterDescriptor) selectedElement)
-                                .getDescription());
+                        description.setText(
+                                ((FilterDescriptor) selectedElement).getDescription());
                     }
                 }
             }
         });
         fCheckBoxList.addCheckStateListener(new ICheckStateListener() {
             /*
-             * @see
-             * org.eclipse.jface.viewers.ICheckStateListener#checkStateChanged
+             * @see org.eclipse.jface.viewers.ICheckStateListener#checkStateChanged
              * (org.eclipse.jface.viewers.CheckStateChangedEvent)
              */
             @Override
@@ -238,8 +242,8 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
         final GridLayout layout = new GridLayout();
         layout.numColumns = 2;
         buttonComposite.setLayout(layout);
-        final GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END
-                | GridData.GRAB_HORIZONTAL);
+        final GridData data = new GridData(
+                GridData.HORIZONTAL_ALIGN_END | GridData.GRAB_HORIZONTAL);
         data.grabExcessHorizontalSpace = true;
         composite.setData(data);
 
@@ -315,7 +319,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
     // ---------- result handling ----------
 
     @Override
-    protected void setResult(final List newResult) {
+    protected void setResult(@SuppressWarnings("rawtypes") final List newResult) {
         super.setResult(newResult);
         if (fUserDefinedPatterns.getText().length() > 0) {
             fEnablePatterns = fEnableUserDefinedPatterns.getSelection();
@@ -366,8 +370,8 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
 
     private List<FilterDescriptor> getEnabledFilterDescriptors() {
         final List<FilterDescriptor> filterDescs = fBuiltInFilters;
-        final List<FilterDescriptor> result = Lists.newArrayListWithCapacity(filterDescs
-                .size());
+        final List<FilterDescriptor> result = Lists
+                .newArrayListWithCapacity(filterDescs.size());
         for (final FilterDescriptor desc : filterDescs) {
             if (fEnabledFilterIds.contains(desc.getId())) {
                 result.add(desc);

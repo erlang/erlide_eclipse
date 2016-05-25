@@ -2,13 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.core; singleton:=true
-Bundle-Version: 0.32.1.qualifier
+Bundle-Version: 0.32.2.qualifier
 Bundle-Activator: org.erlide.core.ErlangPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.erlide.core,
  org.erlide.core.builder,
  org.erlide.core.executor,
+ org.erlide.core.internal;x-internal:=true,
  org.erlide.core.internal.builder;x-friends:="org.erlide.ui.tests,org.erlide.ui,org.erlide.testing.libs",
  org.erlide.core.internal.builder.external;x-internal:=true,
  org.erlide.core.internal.dev;x-internal:=true,

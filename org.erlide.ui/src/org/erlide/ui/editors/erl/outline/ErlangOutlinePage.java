@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- * Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 
 package org.erlide.ui.editors.erl.outline;
@@ -52,10 +51,10 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.erlide.core.ErlangCore;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.IErlModelChangeListener;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.ISourceReference;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlModelChangeListener;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.actions.CompositeActionGroup;
@@ -82,8 +81,8 @@ import com.google.common.collect.Sets;
  *
  */
 
-public class ErlangOutlinePage extends ContentOutlinePage implements
-        IErlModelChangeListener, ISortableContentOutlinePage {
+public class ErlangOutlinePage extends ContentOutlinePage
+        implements IErlModelChangeListener, ISortableContentOutlinePage {
 
     IErlModule fModule;
     private ErlangEditor fEditor;
@@ -167,8 +166,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         final Set<String> enabledFilterIDs = Sets.newHashSet();
         final List<String> emptyList = Lists.newArrayList();
         final Set<String> emptySet = Sets.newHashSet();
-        final boolean userFiltersEnabled = OutlineFilterUtils.loadViewDefaults(
-                userDefinedPatterns, enabledFilterIDs);
+        final boolean userFiltersEnabled = OutlineFilterUtils
+                .loadViewDefaults(userDefinedPatterns, enabledFilterIDs);
         if (!userFiltersEnabled) {
             userDefinedPatterns.clear();
         }
@@ -294,7 +293,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
          */
         @Override
-        public Object getAdapter(final Class clas) {
+        public Object getAdapter(@SuppressWarnings("rawtypes") final Class clas) {
             if (clas == IWorkbenchAdapter.class) {
                 return this;
             }
@@ -341,16 +340,16 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
      */
     private void registerToolbarActions(final IActionBars actionBars) {
         final IToolBarManager toolBarManager = actionBars.getToolBarManager();
-        fSortAction = new SortAction(getTreeViewer(), "Sort", new ErlElementSorter(
-                ErlElementSorter.SORT_ON_NAME), new ErlElementSorter(
-                ErlElementSorter.SORT_ON_EXPORT), null, false, ErlideUIPlugin
-                .getDefault().getPreferenceStore());
+        fSortAction = new SortAction(getTreeViewer(), "Sort",
+                new ErlElementSorter(ErlElementSorter.SORT_ON_NAME),
+                new ErlElementSorter(ErlElementSorter.SORT_ON_EXPORT), null, false,
+                ErlideUIPlugin.getDefault().getPreferenceStore());
         toolBarManager.add(fSortAction);
 
         final IMenuManager viewMenuManager = actionBars.getMenuManager();
         fToggleLinkingAction = new ToggleLinkingAction();
-        fToggleLinkingAction
-                .setActionDefinitionId(IWorkbenchCommandConstants.NAVIGATE_TOGGLE_LINK_WITH_EDITOR);
+        fToggleLinkingAction.setActionDefinitionId(
+                IWorkbenchCommandConstants.NAVIGATE_TOGGLE_LINK_WITH_EDITOR);
         viewMenuManager.add(fToggleLinkingAction);
     }
 
@@ -367,8 +366,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     }
 
     /**
-     * This action toggles whether this Erlang Outline page links its selection
-     * to the active editor.
+     * This action toggles whether this Erlang Outline page links its selection to the
+     * active editor.
      *
      * @since 3.0
      */
@@ -382,8 +381,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             setDescription(ActionMessages.ToggleLinkingAction_description);
             setToolTipText(ActionMessages.ToggleLinkingAction_tooltip);
             ErlideImage.setLocalImageDescriptors(this, "synced.gif");
-            PlatformUI.getWorkbench().getHelpSystem()
-                    .setHelp(this, IErlangHelpContextIds.LINK_EDITOR_ACTION);
+            PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+                    IErlangHelpContextIds.LINK_EDITOR_ACTION);
             final IEclipsePreferences prefsNode = ErlangOutlinePage.getPrefsNode();
             final boolean isLinkingEnabled = prefsNode.getBoolean(
                     PreferenceConstants.ERLANG_OUTLINE_LINK_WITH_EDITOR, true);

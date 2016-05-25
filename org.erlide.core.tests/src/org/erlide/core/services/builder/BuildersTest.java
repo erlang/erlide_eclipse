@@ -14,7 +14,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
-import org.erlide.core.internal.builder.BuildNotifier;
+import org.erlide.core.builder.BuildNotifier;
 import org.erlide.core.internal.builder.ErlangBuilder;
 import org.erlide.core.internal.builder.ErlangBuilder.BuildKind;
 import org.erlide.core.internal.builder.ErlangBuilderFactory;
@@ -70,7 +70,8 @@ public class BuildersTest {
         app.create(new StringBufferInputStream(
                 "{application, builders,[{description, \"\"},{vsn, \"1\"},"
                         + "{registered, []},{applications, [kernel,stdlib]},"
-                        + "{mod, { mod, []}},{env, []}]}."), true, null);
+                        + "{mod, { mod, []}},{env, []}]}."),
+                true, null);
         try {
             testBuilder(BuilderTool.MAKE);
         } finally {
@@ -90,7 +91,8 @@ public class BuildersTest {
         app.create(new StringBufferInputStream(
                 "{application, builders,[{description, \"\"},{vsn, \"1\"},"
                         + "{registered, []},{applications, [kernel,stdlib]},"
-                        + "{mod, { mod, []}},{env, []}]}."), true, null);
+                        + "{mod, { mod, []}},{env, []}]}."),
+                true, null);
         try {
             testBuilder(BuilderTool.REBAR);
         } finally {

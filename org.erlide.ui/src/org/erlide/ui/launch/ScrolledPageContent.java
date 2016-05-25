@@ -19,13 +19,13 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 
 public class ScrolledPageContent extends SharedScrolledComposite {
 
-    private FormToolkit fToolkit;
+    private final FormToolkit fToolkit;
 
-    public ScrolledPageContent(Composite parent) {
+    public ScrolledPageContent(final Composite parent) {
         this(parent, SWT.V_SCROLL | SWT.H_SCROLL);
     }
 
-    public ScrolledPageContent(Composite parent, int style) {
+    public ScrolledPageContent(final Composite parent, final int style) {
         super(parent, style);
 
         setFont(parent.getFont());
@@ -35,18 +35,17 @@ public class ScrolledPageContent extends SharedScrolledComposite {
         setExpandHorizontal(true);
         setExpandVertical(true);
 
-        Composite body = new Composite(this, SWT.NONE);
+        final Composite body = new Composite(this, SWT.NONE);
         body.setFont(parent.getFont());
         setContent(body);
     }
 
-    public void adaptChild(Control childControl) {
+    public void adaptChild(final Control childControl) {
         fToolkit.adapt(childControl, true, true);
     }
 
     public Composite getBody() {
         return (Composite) getContent();
     }
-
 
 }

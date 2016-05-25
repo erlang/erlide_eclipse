@@ -1,8 +1,8 @@
 package org.erlide.engine.internal.model.erlang;
 
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.erlang.IErlRecordDef;
 import org.erlide.engine.model.erlang.IErlRecordField;
-import org.erlide.engine.model.root.ErlElementKind;
 
 public class ErlRecordField extends ErlMember implements IErlRecordField {
 

@@ -45,9 +45,9 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangEventHandler;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.ui.util.DisplayUtils;
 import org.erlide.ui.views.BackendContentProvider;
 import org.erlide.ui.views.BackendLabelProvider;
@@ -199,8 +199,8 @@ public class ProcessListView extends ViewPart {
         backends.setContentProvider(new BackendContentProvider());
         backends.setLabelProvider(new BackendLabelProvider());
         backends.setInput(BackendCore.getBackendManager());
-        viewer = new TableViewer(container, SWT.SINGLE | SWT.V_SCROLL
-                | SWT.FULL_SELECTION);
+        viewer = new TableViewer(container,
+                SWT.SINGLE | SWT.V_SCROLL | SWT.FULL_SELECTION);
         final Table table = viewer.getTable();
         final GridData layoutData = new GridData(SWT.FILL, SWT.FILL, false, true, 2, 1);
         table.setLayoutData(layoutData);
@@ -336,8 +336,8 @@ public class ProcessListView extends ViewPart {
     }
 
     void showMessage(final String message) {
-        MessageDialog.openInformation(viewer.getControl().getShell(),
-                "Process list view", message);
+        MessageDialog.openInformation(viewer.getControl().getShell(), "Process list view",
+                message);
     }
 
     /**

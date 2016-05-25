@@ -24,12 +24,12 @@ import org.eclipse.compare.IEncodedStreamContentAccessor;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.erlide.engine.model.ErlElementKind;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.IErlAttribute;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
 import org.erlide.engine.model.erlang.IErlPreprocessorDef;
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
 
 class ErlangCompareUtilities {
 
@@ -70,7 +70,8 @@ class ErlangCompareUtilities {
             if (a.getValue() != null) {
                 sb.append(a.getValue().toString());
             }
-        } else if (kind == ErlElementKind.RECORD_DEF || kind == ErlElementKind.MACRO_DEF) {
+        } else if (kind == ErlElementKind.RECORD_DEF
+                || kind == ErlElementKind.MACRO_DEF) {
             final IErlPreprocessorDef pd = (IErlPreprocessorDef) e;
             sb.append(pd.getDefinedName());
         }
@@ -119,7 +120,8 @@ class ErlangCompareUtilities {
         return null;
     }
 
-    public static String readString(final IStreamContentAccessor sa) throws CoreException {
+    public static String readString(final IStreamContentAccessor sa)
+            throws CoreException {
         final InputStream is = sa.getContents();
         if (is != null) {
             String encoding = null;

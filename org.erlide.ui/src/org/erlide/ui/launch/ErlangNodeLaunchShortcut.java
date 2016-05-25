@@ -36,8 +36,8 @@ import org.erlide.backend.api.ErlRuntimeAttributes;
 import org.erlide.backend.launch.IErlangLaunchDelegateConstants;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.util.ErlLogger;
@@ -143,7 +143,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
 
     private ILaunchConfiguration getLaunchConfiguration(
             final Collection<IErlProject> projects, final String mode)
-                    throws CoreException {
+            throws CoreException {
         final ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
         final List<String> projectNames = getProjectNames(projects);
         String name = ListsUtils.packList(projectNames, "_");

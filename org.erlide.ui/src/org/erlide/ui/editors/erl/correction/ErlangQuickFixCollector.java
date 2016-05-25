@@ -20,10 +20,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.builder.MarkerUtils;
+import org.erlide.engine.MarkerUtils;
 import org.erlide.engine.model.builder.ProblemData;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.util.ErlLogger;
 
 import com.google.common.base.Splitter;

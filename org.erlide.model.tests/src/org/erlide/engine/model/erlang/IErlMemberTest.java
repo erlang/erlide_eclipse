@@ -2,7 +2,7 @@ package org.erlide.engine.model.erlang;
 
 import static org.junit.Assert.assertEquals;
 
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
 import org.junit.Test;
 
 public class IErlMemberTest extends ErlModelTestBase {

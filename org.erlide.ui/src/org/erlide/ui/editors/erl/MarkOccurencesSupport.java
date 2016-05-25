@@ -37,7 +37,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.services.search.ErlSearchScope;
 import org.erlide.engine.services.search.ErlangSearchPattern;
 import org.erlide.engine.services.search.LimitTo;
@@ -62,7 +62,8 @@ public class MarkOccurencesSupport implements IDisposable {
     /**
      * Tells whether the occurrence annotations are sticky i.e. whether they
      * stay even if there's no valid erlang element at the current caret
-     * position. Only valid if {@link #markOccurencesHandler.fMarkOccurrenceAnnotations} is
+     * position. Only valid if {@link #markOccurencesHandler.fMarkOccurrenceAnnotations}
+     * is
      * <code>true</code>.
      */
     public boolean fStickyOccurrenceAnnotations;
@@ -233,8 +234,8 @@ public class MarkOccurencesSupport implements IDisposable {
 
         synchronized (editor.getLockObject(annotationModel)) {
             if (annotationModel instanceof IAnnotationModelExtension) {
-                ((IAnnotationModelExtension) annotationModel).replaceAnnotations(
-                        fOccurrenceAnnotations, null);
+                ((IAnnotationModelExtension) annotationModel)
+                        .replaceAnnotations(fOccurrenceAnnotations, null);
             } else {
                 for (int i = 0, length = fOccurrenceAnnotations.length; i < length; i++) {
                     annotationModel.removeAnnotation(fOccurrenceAnnotations[i]);
@@ -249,9 +250,9 @@ public class MarkOccurencesSupport implements IDisposable {
         final List<MarkOccurencesSupport.ErlangRef> result = new ArrayList<MarkOccurencesSupport.ErlangRef>(
                 findRefs.size());
         for (final ModuleLineFunctionArityRef ref : findRefs) {
-            result.add(new MarkOccurencesSupport.ErlangRef(SearchUtil
-                    .createSearchElement(ref, module), ref.getOffset(), ref.getLength(),
-                    ref.isDef()));
+            result.add(new MarkOccurencesSupport.ErlangRef(
+                    SearchUtil.createSearchElement(ref, module), ref.getOffset(),
+                    ref.getLength(), ref.isDef()));
         }
         return result;
     }
@@ -303,8 +304,8 @@ public class MarkOccurencesSupport implements IDisposable {
             fHasChanged = hasChanged;
         }
 
-        private void findRefs(final IErlModule theModule,
-                final ITextSelection aSelection, final boolean hasChanged) {
+        private void findRefs(final IErlModule theModule, final ITextSelection aSelection,
+                final boolean hasChanged) {
             fRefs = null;
 
             if (fCanceled) {
@@ -312,14 +313,12 @@ public class MarkOccurencesSupport implements IDisposable {
             }
             try {
                 final int offset = aSelection.getOffset();
-                final OpenResult res = ErlangEngine
-                        .getInstance()
-                        .getService(OpenService.class)
-                        .open(theModule.getScannerName(),
+                final OpenResult res = ErlangEngine.getInstance()
+                        .getService(OpenService.class).open(theModule.getScannerName(),
                                 offset,
                                 ErlangEngine.getInstance().getModelUtilService()
-                                        .getImportsAsList(theModule), "",
-                                ErlangEngine.getInstance().getModel().getPathVars());
+                                        .getImportsAsList(theModule),
+                                "", ErlangEngine.getInstance().getModel().getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil
                         .getSearchPatternFromOpenResultAndLimitTo(theModule, offset, res,
                                 LimitTo.ALL_OCCURRENCES, false);
@@ -332,10 +331,8 @@ public class MarkOccurencesSupport implements IDisposable {
                     final List<ModuleLineFunctionArityRef> findRefs = Lists
                             .newArrayList();
                     // TODO: should run in background
-                    final OtpErlangObject refs = ErlangEngine
-                            .getInstance()
-                            .getSearchServerService()
-                            .findRefs(pattern, scope,
+                    final OtpErlangObject refs = ErlangEngine.getInstance()
+                            .getSearchServerService().findRefs(pattern, scope,
                                     ErlangEngine.getInstance().getStateDir(), true);
                     if (refs != null) {
                         SearchUtil.addSearchResult(findRefs, refs);
@@ -368,10 +365,10 @@ public class MarkOccurencesSupport implements IDisposable {
         }
 
         private boolean isCanceled(final IProgressMonitor progressMonitor) {
-            return fCanceled
-                    || progressMonitor.isCanceled()
+            return fCanceled || progressMonitor.isCanceled()
                     || fPostSelectionValidator != null
-                    && !(fPostSelectionValidator.isValid(selection) || editor.markOccurencesHandler.fForcedMarkOccurrencesSelection == selection)
+                            && !(fPostSelectionValidator.isValid(selection)
+                                    || editor.markOccurencesHandler.fForcedMarkOccurrencesSelection == selection)
                     || LinkedModeModel.hasInstalledModel(fDocument);
         }
 
@@ -421,7 +418,8 @@ public class MarkOccurencesSupport implements IDisposable {
                 final Position position = new Position(ref.getOffset(), ref.getLength());
 
                 final String description = ref.getDescription();
-                final String annotationType = ref.isDef() ? "org.erlide.ui.occurrences.definition" //$NON-NLS-1$
+                final String annotationType = ref.isDef()
+                        ? "org.erlide.ui.occurrences.definition" //$NON-NLS-1$
                         : "org.erlide.ui.occurrences";
 
                 annotationMap.put(new Annotation(annotationType, false, description),
@@ -482,8 +480,8 @@ public class MarkOccurencesSupport implements IDisposable {
 
             final IDocumentProvider documentProvider = editor.getDocumentProvider();
             if (documentProvider != null) {
-                final IDocument document = documentProvider.getDocument(editor
-                        .getEditorInput());
+                final IDocument document = documentProvider
+                        .getDocument(editor.getEditorInput());
                 if (document != null) {
                     document.removeDocumentListener(this);
                 }

@@ -3,7 +3,7 @@ package org.erlide.engine.internal.services.parsing;
 import java.util.List;
 
 import org.erlide.engine.services.parsing.SimpleParserService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcResult;
 
 import com.ericsson.otp.erlang.OtpErlangList;

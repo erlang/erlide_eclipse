@@ -18,8 +18,8 @@ import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfigurationSerializer;
 import org.erlide.engine.services.parsing.SimpleParserService;
-import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.OtpBindings;
+import org.erlide.util.erlang.OtpErlang;
 
 @SuppressWarnings("all")
 public class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
@@ -46,7 +46,7 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
         @Override
         public void apply(final OtpErlangObject erl_opts) {
           try {
-            final OtpBindings bindings = ErlUtils.match("{erl_opts,Opts}", erl_opts);
+            final OtpBindings bindings = OtpErlang.match("{erl_opts,Opts}", erl_opts);
             if ((bindings != null)) {
               final Collection<OtpErlangObject> opts = bindings.getList("Opts");
               if ((opts != null)) {
@@ -54,7 +54,7 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
                   @Override
                   public void apply(final OtpErlangObject opt) {
                     try {
-                      final OtpBindings b = ErlUtils.match("{Tag,Arg}", opt);
+                      final OtpBindings b = OtpErlang.match("{Tag,Arg}", opt);
                       if ((b != null)) {
                         RebarConfigurationSerializer.this.parseOption(result, b);
                       }
@@ -81,20 +81,18 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
     try {
       String _atom = b.getAtom("Tag");
       boolean _matched = false;
-      if (!_matched) {
-        if (Objects.equal(_atom, "i")) {
-          _matched=true;
-          String _string = b.getString("Arg");
-          final Path inc = new Path(_string);
-          Collection<IPath> _includeDirs = result.getIncludeDirs();
-          boolean _contains = _includeDirs.contains(inc);
-          boolean _not = (!_contains);
-          if (_not) {
-            Collection<IPath> _includeDirs_1 = result.getIncludeDirs();
-            final List<IPath> incs = CollectionLiterals.<IPath>newArrayList(((IPath[])Conversions.unwrapArray(_includeDirs_1, IPath.class)));
-            incs.add(inc);
-            result.setIncludeDirs(incs);
-          }
+      if (Objects.equal(_atom, "i")) {
+        _matched=true;
+        String _string = b.getString("Arg");
+        final Path inc = new Path(_string);
+        Collection<IPath> _includeDirs = result.getIncludeDirs();
+        boolean _contains = _includeDirs.contains(inc);
+        boolean _not = (!_contains);
+        if (_not) {
+          Collection<IPath> _includeDirs_1 = result.getIncludeDirs();
+          final List<IPath> incs = CollectionLiterals.<IPath>newArrayList(((IPath[])Conversions.unwrapArray(_includeDirs_1, IPath.class)));
+          incs.add(inc);
+          result.setIncludeDirs(incs);
         }
       }
       if (!_matched) {
@@ -106,7 +104,13 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
             public Path apply(final OtpErlangObject it) {
               Path _xblockexpression = null;
               {
-                final String s = ((OtpErlangString) it).stringValue();
+                String _xifexpression = null;
+                if ((it instanceof OtpErlangString)) {
+                  _xifexpression = ((OtpErlangString)it).stringValue();
+                } else {
+                  _xifexpression = it.toString();
+                }
+                final String s = _xifexpression;
                 _xblockexpression = new Path(s);
               }
               return _xblockexpression;

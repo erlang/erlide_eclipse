@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.dialogs.fields;
 
@@ -53,9 +51,9 @@ import org.erlide.ui.util.PixelConverter;
 import org.erlide.ui.util.SWTUtil;
 
 /**
- * A list with a button bar. Typical buttons are 'Add', 'Remove', 'Up' and
- * 'Down'. List model is independent of widget creation. DialogFields controls
- * are: Label, List and Composite containing buttons.
+ * A list with a button bar. Typical buttons are 'Add', 'Remove', 'Up' and 'Down'. List
+ * model is independent of widget creation. DialogFields controls are: Label, List and
+ * Composite containing buttons.
  */
 public class ListDialogField<Element> extends DialogField {
 
@@ -134,8 +132,8 @@ public class ListDialogField<Element> extends DialogField {
      *            A listener for button invocation, selection changes. Can be
      *            <code>null</code>.
      * @param buttonLabels
-     *            The labels of all buttons: <code>null</code> is a valid array
-     *            entry and marks a separator.
+     *            The labels of all buttons: <code>null</code> is a valid array entry and
+     *            marks a separator.
      * @param lprovider
      *            The label provider to render the table entries
      */
@@ -170,10 +168,9 @@ public class ListDialogField<Element> extends DialogField {
     }
 
     /**
-     * Sets the index of the 'remove' button in the button label array passed in
-     * the constructor. The behaviour of the button marked as the 'remove'
-     * button will then be handled internally. (enable state, button invocation
-     * behaviour)
+     * Sets the index of the 'remove' button in the button label array passed in the
+     * constructor. The behaviour of the button marked as the 'remove' button will then be
+     * handled internally. (enable state, button invocation behaviour)
      */
     public void setRemoveButtonIndex(final int removeButtonIndex) {
         assertThat(removeButtonIndex, is(lessThan(fButtonLabels.length)));
@@ -182,8 +179,8 @@ public class ListDialogField<Element> extends DialogField {
 
     /**
      * Sets the index of the 'up' button in the button label array passed in the
-     * constructor. The behaviour of the button marked as the 'up' button will
-     * then be handled internally. (enable state, button invocation behaviour)
+     * constructor. The behaviour of the button marked as the 'up' button will then be
+     * handled internally. (enable state, button invocation behaviour)
      */
     public void setUpButtonIndex(final int upButtonIndex) {
         assertThat(upButtonIndex, is(lessThan(fButtonLabels.length)));
@@ -191,10 +188,9 @@ public class ListDialogField<Element> extends DialogField {
     }
 
     /**
-     * Sets the index of the 'down' button in the button label array passed in
-     * the constructor. The behaviour of the button marked as the 'down' button
-     * will then be handled internally. (enable state, button invocation
-     * behaviour)
+     * Sets the index of the 'down' button in the button label array passed in the
+     * constructor. The behaviour of the button marked as the 'down' button will then be
+     * handled internally. (enable state, button invocation behaviour)
      */
     public void setDownButtonIndex(final int downButtonIndex) {
         assertThat(downButtonIndex, is(lessThan(fButtonLabels.length)));
@@ -296,8 +292,7 @@ public class ListDialogField<Element> extends DialogField {
     }
 
     /**
-     * Sets the minimal width of the buttons. Must be called after widget
-     * creation.
+     * Sets the minimal width of the buttons. Must be called after widget creation.
      */
     public void setButtonsMinWidth(final int minWidth) {
         if (fLastSeparator != null) {
@@ -308,12 +303,11 @@ public class ListDialogField<Element> extends DialogField {
     // ------ ui creation
 
     /**
-     * Returns the list control. When called the first time, the control will be
-     * created.
+     * Returns the list control. When called the first time, the control will be created.
      *
      * @param parent
-     *            The parent composite when called the first time, or
-     *            <code>null</code> after.
+     *            The parent composite when called the first time, or <code>null</code>
+     *            after.
      */
     public Control getListControl(final Composite parent) {
         if (fTableControl == null) {
@@ -426,12 +420,12 @@ public class ListDialogField<Element> extends DialogField {
     }
 
     /**
-     * Returns the composite containing the buttons. When called the first time,
-     * the control will be created.
+     * Returns the composite containing the buttons. When called the first time, the
+     * control will be created.
      *
      * @param parent
-     *            The parent composite when called the first time, or
-     *            <code>null</code> after.
+     *            The parent composite when called the first time, or <code>null</code>
+     *            after.
      */
     public Composite getButtonBox(final Composite parent) {
         if (fButtonsControl == null) {
@@ -491,8 +485,8 @@ public class ListDialogField<Element> extends DialogField {
     }
 
     /**
-     * Handles key events in the table viewer. Specifically when the delete key
-     * is pressed.
+     * Handles key events in the table viewer. Specifically when the delete key is
+     * pressed.
      */
     protected void handleKeyPressed(final KeyEvent event) {
         if (event.character == SWT.DEL && event.stateMask == 0) {
@@ -590,8 +584,8 @@ public class ListDialogField<Element> extends DialogField {
     }
 
     /**
-     * Gets the elements shown in the list. The list returned is a copy, so it
-     * can be modified by the user.
+     * Gets the elements shown in the list. The list returned is a copy, so it can be
+     * modified by the user.
      */
     public List<Element> getElements() {
         return new ArrayList<Element>(fElements);
@@ -868,6 +862,7 @@ public class ListDialogField<Element> extends DialogField {
         if (isOkToUse(fTableControl)) {
             final ISelection selection = fTable.getSelection();
             if (selection instanceof IStructuredSelection) {
+                @SuppressWarnings("unchecked")
                 final Iterator<Element> iter = ((IStructuredSelection) selection)
                         .iterator();
                 while (iter.hasNext()) {

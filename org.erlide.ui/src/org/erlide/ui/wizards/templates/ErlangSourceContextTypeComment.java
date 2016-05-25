@@ -84,11 +84,8 @@ public class ErlangSourceContextTypeComment extends TemplateContextType {
             try {
                 fStore.load();
             } catch (final IOException e) {
-                ErlideUIPlugin
-                        .getDefault()
-                        .getLog()
-                        .log(new Status(IStatus.ERROR,
-                                "org.erlide.ui.erlangsource.template", IStatus.OK, "", e)); //$NON-NLS-1$ //$NON-NLS-2$
+                ErlideUIPlugin.getDefault().getLog().log(new Status(IStatus.ERROR,
+                        "org.erlide.ui.erlangsource.template", IStatus.OK, "", e)); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return fStore;

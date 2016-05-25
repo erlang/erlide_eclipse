@@ -1,6 +1,6 @@
 package org.erlide.engine.services.parsing;
 
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 
 public interface ParserService {
 

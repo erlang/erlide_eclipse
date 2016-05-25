@@ -67,8 +67,8 @@ public class BreakpointConditionEditor {
             fErrorMessage = "Enter a condition";
             fOldValue = ""; //$NON-NLS-1$
 
-            fViewer = new SourceViewer(parent, null, SWT.BORDER | SWT.V_SCROLL
-                    | SWT.H_SCROLL | SWT.LEFT_TO_RIGHT);
+            fViewer = new SourceViewer(parent, null,
+                    SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.LEFT_TO_RIGHT);
             fViewer.setInput(parent);
             final IDocument document = new Document();
             fViewer.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
@@ -157,8 +157,8 @@ public class BreakpointConditionEditor {
                     return null;
                 }
             };
-            fHandlerService = (IHandlerService) PlatformUI.getWorkbench().getAdapter(
-                    IHandlerService.class);
+            fHandlerService = (IHandlerService) PlatformUI.getWorkbench()
+                    .getAdapter(IHandlerService.class);
         } catch (final CoreException exception) {
             ErlLogger.warn(exception);
         }

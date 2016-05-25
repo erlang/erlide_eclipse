@@ -8,7 +8,8 @@ import org.erlide.ui.prefs.IPreferenceConfigurationBlock;
 import org.erlide.ui.prefs.plugin.PreferencesMessages;
 import org.erlide.ui.util.OverlayPreferenceStore;
 
-public final class FoldingPreferencePage extends AbstractConfigurationBlockPreferencePage {
+public final class FoldingPreferencePage
+        extends AbstractConfigurationBlockPreferencePage {
 
     /*
      * @seeorg.eclipse.ui.internal.editors.text.

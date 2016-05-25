@@ -11,8 +11,8 @@ import org.erlide.backend.api.ErlRuntimeAttributes;
 import org.erlide.debug.ui.utils.ModuleListContentProvider;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.util.ErlLogger;
@@ -26,6 +26,7 @@ public class InterpretedModuleListContentProvider extends ModuleListContentProvi
         if (newInput instanceof ILaunchConfiguration) {
             final ILaunchConfiguration launchConfiguration = (ILaunchConfiguration) newInput;
             try {
+                @SuppressWarnings("unchecked")
                 final List<String> interpret = launchConfiguration.getAttribute(
                         ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES,
                         new ArrayList<String>());

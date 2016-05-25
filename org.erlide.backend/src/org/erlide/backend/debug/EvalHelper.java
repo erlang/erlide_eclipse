@@ -1,6 +1,6 @@
 package org.erlide.backend.debug;
 
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -21,8 +21,8 @@ public class EvalHelper {
             }
             // value may be something else if exception is thrown...
             final OtpErlangTuple t = (OtpErlangTuple) r1;
-            final boolean ok = !"error".equals(((OtpErlangAtom) t.elementAt(0))
-                    .atomValue());
+            final boolean ok = !"error"
+                    .equals(((OtpErlangAtom) t.elementAt(0)).atomValue());
             if (ok) {
                 result.setValue(t.elementAt(1), t.elementAt(2));
             } else {

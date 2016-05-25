@@ -122,13 +122,13 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
 
         createMessageArea(composite);
 
-        fTableViewer = new TableViewer(composite, SWT.H_SCROLL | SWT.V_SCROLL
-                | SWT.BORDER);
+        fTableViewer = new TableViewer(composite,
+                SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         fTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(final SelectionChangedEvent event) {
-                doSelectionChanged(((IStructuredSelection) event.getSelection())
-                        .toArray());
+                doSelectionChanged(
+                        ((IStructuredSelection) event.getSelection()).toArray());
             }
         });
         fTableViewer.addDoubleClickListener(new IDoubleClickListener() {

@@ -30,8 +30,8 @@ import org.erlide.ui.internal.ErlideUIPlugin;
  *
  * @author Jakob
  */
-public class EditorPreferencePage extends ErlidePreferencePage implements
-        IWorkbenchPreferencePage {
+public class EditorPreferencePage extends ErlidePreferencePage
+        implements IWorkbenchPreferencePage {
 
     /**
      * Initialize the system preferences
@@ -59,8 +59,8 @@ public class EditorPreferencePage extends ErlidePreferencePage implements
         final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
         final Integer i = node.getInt(indentWidthKey, DEFAULT_INDENT_WIDTH);
         indentWidthText.setText(i.toString());
-        enableHoverCheckBox.setSelection(node.getBoolean(enableHoverKey,
-                DEFAULT_ENABLE_HOVER));
+        enableHoverCheckBox
+                .setSelection(node.getBoolean(enableHoverKey, DEFAULT_ENABLE_HOVER));
     }
 
     @Override

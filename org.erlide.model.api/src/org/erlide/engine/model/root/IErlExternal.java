@@ -3,7 +3,7 @@
  */
 package org.erlide.engine.model.root;
 
-import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
 
 /**

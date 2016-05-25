@@ -35,8 +35,8 @@ public final class PreferencesUtils {
                 result.append(s.trim()).append(SEP);
             }
         }
-        final String r = result.length() == 0 ? "" : result.substring(0, result.length()
-                - SEP.length());
+        final String r = result.length() == 0 ? ""
+                : result.substring(0, result.length() - SEP.length());
         return r;
     }
 

@@ -11,6 +11,7 @@
 package org.erlide.engine.model.root;
 
 import org.eclipse.core.resources.IResourceDelta;
+import org.erlide.engine.model.IErlElement;
 
 /**
  * A Erlang element delta describes changes in Erlang element between two

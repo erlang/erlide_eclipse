@@ -126,11 +126,11 @@ public class SendToConsoleAction extends SelectionDispatchAction {
     }
 
     public void addMessage(final int offset, final String message) {
-        final IDocument document = editor.getDocumentProvider().getDocument(
-                editor.getEditorInput());
+        final IDocument document = editor.getDocumentProvider()
+                .getDocument(editor.getEditorInput());
         try {
-            final String delimiter = document.getLineDelimiter(document
-                    .getLineOfOffset(offset - 1));
+            final String delimiter = document
+                    .getLineDelimiter(document.getLineOfOffset(offset - 1));
             String nl = "";
             if (delimiter == null) {
                 if (document instanceof IDocumentExtension4) {
@@ -161,8 +161,8 @@ public class SendToConsoleAction extends SelectionDispatchAction {
     protected ITextSelection getLineSelection(final ITextSelection selection0,
             final boolean beginningOfNextLine) {
         ITextSelection selection = selection0;
-        final IDocument document = editor.getDocumentProvider().getDocument(
-                editor.getEditorInput());
+        final IDocument document = editor.getDocumentProvider()
+                .getDocument(editor.getEditorInput());
         if (selection.getLength() == 0) { // don't use isEmpty()!
             selection = ErlangAbstractHandler.extendSelectionToWholeLines(document,
                     selection);

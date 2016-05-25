@@ -21,9 +21,9 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.util.ErlLogger;
 
 public class ErlangLineBreakpoint extends LineBreakpoint implements IErlangBreakpoint {

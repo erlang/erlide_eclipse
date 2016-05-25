@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlang backend support (no eclipse dependencies)
 Bundle-SymbolicName: org.erlide.runtime;singleton:=true
-Bundle-Version: 0.32.0.qualifier
+Bundle-Version: 0.32.1.qualifier
 Bundle-Vendor: erlide.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.erlide.libs,
@@ -15,6 +15,7 @@ Export-Package: org.erlide.runtime,
  org.erlide.runtime.internal.rpc;x-internal:=true,
  org.erlide.runtime.rpc,
  org.erlide.runtime.runtimeinfo,
+ org.erlide.runtime.service,
  org.erlide.runtime.shell
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.runtime

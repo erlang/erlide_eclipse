@@ -74,8 +74,8 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
             @Override
             public void run(final IProgressMonitor monitor) throws CoreException {
                 final IErlangBreakpoint breakpoint = getBreakpoint();
-                final boolean delOnCancel = breakpoint.getMarker().getAttribute(
-                        ATTR_DELETE_ON_CANCEL) != null;
+                final boolean delOnCancel = breakpoint.getMarker()
+                        .getAttribute(ATTR_DELETE_ON_CANCEL) != null;
                 if (delOnCancel) {
                     // if this breakpoint is being created, remove the
                     // "delete on cancel" attribute
@@ -190,7 +190,8 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     // // IStatus.ERROR,
     // // MessageFormat
     // // .format(
-    //				//												"ErlangBreakpointPage allowed input of invalid string for hit count value: {0}.", new String[] { fHitCountText.getText() }), e)); //$NON-NLS-1$
+    // // "ErlangBreakpointPage allowed input of invalid string for hit count value:
+    // {0}.", new String[] { fHitCountText.getText() }), e)); //$NON-NLS-1$
     // }
     // }
     // breakpoint.setHitCount(hitCount);
@@ -393,7 +394,8 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
      * @param parent
      * @throws CoreException
      */
-    protected void createTypeSpecificEditors(final Composite parent) throws CoreException {
+    protected void createTypeSpecificEditors(final Composite parent)
+            throws CoreException {
     }
 
     /**
@@ -534,10 +536,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     @Override
     public void createControl(final Composite parent) {
         super.createControl(parent);
-        PlatformUI
-                .getWorkbench()
-                .getHelpSystem()
-                .setHelp(getControl(),
-                        IErlangHelpContextIds.ERLANG_BREAKPOINT_PROPERTY_PAGE);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(),
+                IErlangHelpContextIds.ERLANG_BREAKPOINT_PROPERTY_PAGE);
     }
 }

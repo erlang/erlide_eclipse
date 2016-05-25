@@ -7,18 +7,18 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlImport;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.IErlRecordDef;
 import org.erlide.engine.model.erlang.ISourceRange;
 import org.erlide.engine.model.erlang.ISourceReference;
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelFindService;
 import org.erlide.engine.services.search.OpenResult;
@@ -41,9 +41,9 @@ public class OpenUtils {
 
     public void openOpenResult(final ITextEditor editor, final IErlModule module,
             final int offset, final IErlProject erlProject, final OpenResult openResult,
-            final IErlElement element) throws CoreException, ErlModelException,
-            PartInitException, BadLocationException, OtpErlangRangeException,
-            RpcException {
+            final IErlElement element)
+            throws CoreException, ErlModelException, PartInitException,
+            BadLocationException, OtpErlangRangeException, RpcException {
         if (editor == null) {
             return;
         }
@@ -62,7 +62,7 @@ public class OpenUtils {
             OtpErlangRangeException, RpcException, BadLocationException {
         final IErlElementLocator.Scope scope = NavigationPreferencePage
                 .getCheckAllProjects() ? IErlElementLocator.Scope.ALL_PROJECTS
-                : IErlElementLocator.Scope.REFERENCED_PROJECTS;
+                        : IErlElementLocator.Scope.REFERENCED_PROJECTS;
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         Object found = null;
         if (openResult.isExternalCall()) {
@@ -97,9 +97,8 @@ public class OpenUtils {
     }
 
     private IErlElement findLocalCall(final IErlModule module,
-            final IErlProject erlProject, final OpenResult res,
-            final IErlElement element, final IErlElementLocator.Scope scope)
-            throws RpcException, CoreException {
+            final IErlProject erlProject, final OpenResult res, final IErlElement element,
+            final IErlElementLocator.Scope scope) throws RpcException, CoreException {
         if (isTypeDefOrRecordDef(element, res)) {
             return modelFindService.findTypespec(module, res.getFun());
         }
@@ -114,9 +113,7 @@ public class OpenUtils {
         if (ei != null) {
             final IErlModel model = ErlangEngine.getInstance().getModel();
             moduleName = ei.getImportModule();
-            res2 = ErlangEngine
-                    .getInstance()
-                    .getService(OpenService.class)
+            res2 = ErlangEngine.getInstance().getService(OpenService.class)
                     .getSourceFromModule(model.getPathVars(), moduleName,
                             erlProject.getProperties().getExternalModules());
         }
@@ -168,8 +165,8 @@ public class OpenUtils {
             return result;
         }
         return modelFindService.findFunction(model, project, module, res.getName(),
-                res.getPath(),
-                new ErlangFunction(res.getFun(), ErlangFunction.ANY_ARITY), scope);
+                res.getPath(), new ErlangFunction(res.getFun(), ErlangFunction.ANY_ARITY),
+                scope);
     }
 
 }

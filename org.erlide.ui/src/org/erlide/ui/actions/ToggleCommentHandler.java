@@ -24,8 +24,8 @@ public class ToggleCommentHandler extends ErlangAbstractHandler {
 
     @Override
     protected void doAction(final ISelection sel, final ITextEditor textEditor) {
-        final IDocument document = textEditor.getDocumentProvider().getDocument(
-                textEditor.getEditorInput());
+        final IDocument document = textEditor.getDocumentProvider()
+                .getDocument(textEditor.getEditorInput());
         final ITextSelection selection = extendSelectionToWholeLines(document,
                 (ITextSelection) sel);
         final ITextSelection getSelection = getTextSelection(document, selection,
@@ -63,8 +63,8 @@ public class ToggleCommentHandler extends ErlangAbstractHandler {
                     try {
                         if (!document.get(selection.getOffset(), selection.getLength())
                                 .equals(newText)) {
-                            document.replace(selection.getOffset(),
-                                    selection.getLength(), newText);
+                            document.replace(selection.getOffset(), selection.getLength(),
+                                    newText);
                             textViewer.setSelectedRange(selection.getOffset(),
                                     newText.length());
                         }

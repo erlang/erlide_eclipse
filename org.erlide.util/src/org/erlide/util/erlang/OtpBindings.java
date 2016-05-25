@@ -134,7 +134,7 @@ public final class OtpBindings implements Map<String, OtpErlangObject> {
 
     public String getAsString(final String name) {
         final OtpErlangObject r = get(name);
-        return ErlUtils.asString(r);
+        return OtpErlang.asString(r);
     }
 
     @Override

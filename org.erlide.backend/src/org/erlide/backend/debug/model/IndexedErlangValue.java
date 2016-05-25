@@ -16,13 +16,13 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IIndexedValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.IErlPreprocessorDef;
 import org.erlide.engine.model.erlang.IErlRecordDef;
 import org.erlide.engine.model.erlang.IErlRecordField;
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -84,8 +84,8 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         String name;
         if (record != null) {
             try {
-                final IErlRecordField recordField = (IErlRecordField) record
-                        .getChildren().get(offset);
+                final IErlRecordField recordField = (IErlRecordField) record.getChildren()
+                        .get(offset);
                 name = recordField.getFieldName();
             } catch (final ErlModelException e) {
                 name = varName + ":" + offset;
@@ -116,9 +116,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
                 final ErlangDebugTarget target = getErlangDebugTarget();
                 IErlPreprocessorDef pd;
                 try {
-                    pd = ErlangEngine
-                            .getInstance()
-                            .getModelFindService()
+                    pd = ErlangEngine.getInstance().getModelFindService()
                             .findPreprocessorDef(getErlProjects(target.getProjects()),
                                     moduleName, a.atomValue(), ErlElementKind.RECORD_DEF);
                     if (pd instanceof IErlRecordDef) {

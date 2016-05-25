@@ -14,7 +14,7 @@
             adaptableType="org.eclipse.core.resources.IResource"
             class="org.erlide.engine.internal.util.ElementAdapterFactory">
          <adapter
-               type="org.erlide.engine.model.root.IErlElement">
+               type="org.erlide.engine.model.IErlElement">
          </adapter>
       </factory>
    </extension>

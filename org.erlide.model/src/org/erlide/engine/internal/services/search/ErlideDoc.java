@@ -6,7 +6,7 @@ import java.util.List;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.services.search.OtpDocService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.ErlangFunctionCall;
@@ -22,14 +22,16 @@ public class ErlideDoc implements OtpDocService {
 
     private static final String ERLIDE_OTP_DOC = "erlide_otp_doc";
     private final IOtpRpc backend;
+    private final String stateDir;
 
-    public ErlideDoc(final IOtpRpc backend) {
+    public ErlideDoc(final IOtpRpc backend, final String stateDir) {
         this.backend = backend;
+        this.stateDir = stateDir;
     }
 
     @Override
     public OtpErlangObject getProposalsWithDoc(final IOtpRpc b, final String mod,
-            final String prefix, final String stateDir) {
+            final String prefix) {
         OtpErlangObject res = null;
         try {
             res = b.call(ERLIDE_OTP_DOC, "get_proposals", "ass", mod, prefix, stateDir);
@@ -55,7 +57,7 @@ public class ErlideDoc implements OtpDocService {
 
     @Override
     public OtpErlangObject getOtpDoc(final IOtpRpc b,
-            final ErlangFunctionCall functionCall, final String stateDir) {
+            final ErlangFunctionCall functionCall) {
         OtpErlangObject res = null;
         final OtpErlangTuple input = new OtpErlangTuple(new OtpErlangObject[] {
                 new OtpErlangAtom("external"),
@@ -74,17 +76,12 @@ public class ErlideDoc implements OtpDocService {
     @Override
     @SuppressWarnings("boxing")
     public OtpErlangObject getOtpDoc(final IOtpRpc b, final int offset,
-            final String stateDir, final String module,
-            final Collection<OtpErlangObject> imports, final String externalModules,
-            final OtpErlangList pathVars) {
+            final String module, final Collection<OtpErlangObject> imports,
+            final String externalModules, final OtpErlangList pathVars) {
         OtpErlangObject res = null;
         try {
-            final OtpErlangObject input = backend.call(
-                    "erlide_open",
-                    "open",
-                    "aix",
-                    module,
-                    offset,
+            final OtpErlangObject input = backend.call("erlide_open", "open", "aix",
+                    module, offset,
                     ErlangEngine.getInstance().getService(OpenService.class)
                             .mkContext(externalModules, null, pathVars, null, imports));
             res = b.call(ERLIDE_OTP_DOC, "get_doc", "sxs", module, input, stateDir);

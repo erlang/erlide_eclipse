@@ -27,11 +27,11 @@ public class GotoAnnotationAction extends TextEditorAction {
 
         fForward = forward;
         if (forward) {
-            PlatformUI.getWorkbench().getHelpSystem()
-                    .setHelp(this, IErlangHelpContextIds.GOTO_NEXT_ERROR_ACTION);
+            PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+                    IErlangHelpContextIds.GOTO_NEXT_ERROR_ACTION);
         } else {
-            PlatformUI.getWorkbench().getHelpSystem()
-                    .setHelp(this, IErlangHelpContextIds.GOTO_PREVIOUS_ERROR_ACTION);
+            PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+                    IErlangHelpContextIds.GOTO_PREVIOUS_ERROR_ACTION);
         }
     }
 

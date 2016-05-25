@@ -1,6 +1,6 @@
 package org.erlide.engine.services.search;
 
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -29,7 +29,8 @@ public class FunctionPattern extends ErlangSearchPattern {
     @Override
     public OtpErlangObject getSearchObject() {
         if (moduleName == null || moduleName.length() == 0) {
-            return makeFAPatternObject(FUNCTION_DEF_ATOM, FUNCTION_CALL_ATOM, name, arity);
+            return makeFAPatternObject(FUNCTION_DEF_ATOM, FUNCTION_CALL_ATOM, name,
+                    arity);
         }
         final OtpErlangAtom defA = matchAnyFunctionDefinition ? FUNCTION_DEF_ATOM
                 : FUNCTION_DEF_MOD_ATOM;

@@ -48,7 +48,7 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
     @SuppressWarnings("boxing")
     @Override
     protected IResultParser callRefactoring() throws WranglerRpcParsingException,
-    CoreException, IOException, WranglerWarningException {
+            CoreException, IOException, WranglerWarningException {
         String functionName;
         RpcResult result;
 
@@ -86,16 +86,16 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
     }
 
     private String getSuffixPath() throws IOException {
-        final Bundle[] bs = Platform.getFragments(Platform
-                .getBundle(org.erlide.wrangler.refactoring.Activator.PLUGIN_ID));
+        final Bundle[] bs = Platform.getFragments(
+                Platform.getBundle(org.erlide.wrangler.refactoring.Activator.PLUGIN_ID));
         if (bs.length < 1) {
             ErlLogger.warn("Fragment is not loaded?! No C binary is run.");
             return "";
         }
         Bundle fragment = null;
         for (int i = 0; i < bs.length; ++i) {
-            if (bs[i].getSymbolicName().equals(
-                    "org.erlide.wrangler.refactoring.duplicatedcode")) {
+            if (bs[i].getSymbolicName()
+                    .equals("org.erlide.wrangler.refactoring.duplicatedcode")) {
                 fragment = bs[i];
                 break;
             }

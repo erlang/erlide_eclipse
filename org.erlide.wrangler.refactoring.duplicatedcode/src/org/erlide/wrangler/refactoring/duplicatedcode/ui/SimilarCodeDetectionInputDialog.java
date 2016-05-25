@@ -87,13 +87,14 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
         final GridData minLenData = new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_CENTER);
-        minLenData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        minLenData.widthHint = convertHorizontalDLUsToPixels(
+                IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
         minLenlabel.setLayoutData(minLenData);
         minLenlabel.setFont(parent.getFont());
 
         minLenText = new Text(composite, getInputTextStyle());
-        minLenText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
+        minLenText.setLayoutData(
+                new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         minLenText.setText("5");
         minLenText.addModifyListener(new ModifyListener() {
             @Override
@@ -107,13 +108,14 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
         final GridData minToksData = new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_CENTER);
-        minToksData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        minToksData.widthHint = convertHorizontalDLUsToPixels(
+                IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
         minTokslabel.setLayoutData(minToksData);
         minTokslabel.setFont(parent.getFont());
 
         minToksText = new Text(composite, getInputTextStyle());
-        minToksText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
+        minToksText.setLayoutData(
+                new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         minToksText.setText("40");
         minToksText.addModifyListener(new ModifyListener() {
             @Override
@@ -127,13 +129,14 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
         final GridData minFreqData = new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_CENTER);
-        minFreqData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        minFreqData.widthHint = convertHorizontalDLUsToPixels(
+                IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
         minFreqLabel.setLayoutData(minFreqData);
         minFreqLabel.setFont(parent.getFont());
 
         minFreqText = new Text(composite, getInputTextStyle());
-        minFreqText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
+        minFreqText.setLayoutData(
+                new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         minFreqText.setText("2");
         minFreqText.addModifyListener(new ModifyListener() {
             @Override
@@ -143,18 +146,19 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
         });
 
         final Label maxNewVarsLabel = new Label(composite, SWT.WRAP);
-        maxNewVarsLabel
-        .setText("Maximum number of new parameters of the least-general abstraction:");
+        maxNewVarsLabel.setText(
+                "Maximum number of new parameters of the least-general abstraction:");
         final GridData maxNewVarsData = new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_CENTER);
-        maxNewVarsData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        maxNewVarsData.widthHint = convertHorizontalDLUsToPixels(
+                IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
         maxNewVarsLabel.setLayoutData(maxNewVarsData);
         maxNewVarsLabel.setFont(parent.getFont());
 
         maxNewVarsText = new Text(composite, getInputTextStyle());
-        maxNewVarsText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
+        maxNewVarsText.setLayoutData(
+                new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         maxNewVarsText.setText("4");
         maxNewVarsText.addModifyListener(new ModifyListener() {
             @Override
@@ -168,13 +172,14 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
         final GridData simScoreData = new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_CENTER);
-        simScoreData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        simScoreData.widthHint = convertHorizontalDLUsToPixels(
+                IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
         simScoreLabel.setLayoutData(simScoreData);
         simScoreLabel.setFont(parent.getFont());
 
         simScoreText = new Text(composite, getInputTextStyle());
-        simScoreText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
+        simScoreText.setLayoutData(
+                new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         simScoreText.setText("0.8");
         simScoreText.addModifyListener(new ModifyListener() {
 
@@ -208,10 +213,10 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
         });
 
         errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
-        errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
-        errorMessageText.setBackground(errorMessageText.getDisplay().getSystemColor(
-                SWT.COLOR_WIDGET_BACKGROUND));
+        errorMessageText.setLayoutData(
+                new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+        errorMessageText.setBackground(errorMessageText.getDisplay()
+                .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 
         setErrorMessage("");
 

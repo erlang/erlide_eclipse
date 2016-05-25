@@ -14,13 +14,14 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.root.ErlProject;
+import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
-import org.erlide.engine.model.root.IErlElement.AcceptFlags;
+import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.IErlElement.AcceptFlags;
+import org.erlide.engine.model.IErlElementVisitor;
 import org.erlide.engine.model.root.IErlElementLocator;
-import org.erlide.engine.model.root.IErlElementVisitor;
 import org.erlide.engine.model.root.IErlExternal;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.Test;
 
@@ -65,14 +66,14 @@ public class IErlElementTest extends ErlModelTestBase {
     // IErlProject getProject();
     @Test
     public void getProject() throws Exception {
-        assertEquals(project, ErlangEngine.getInstance().getModelUtilService()
-                .getProject(module));
-        assertEquals(project, ErlangEngine.getInstance().getModelUtilService()
-                .getProject(project));
+        assertEquals(project,
+                ErlangEngine.getInstance().getModelUtilService().getProject(module));
+        assertEquals(project,
+                ErlangEngine.getInstance().getModelUtilService().getProject(project));
         module.open(null);
         final IErlElement element = module.getElementAtLine(3);
-        assertEquals(project, ErlangEngine.getInstance().getModelUtilService()
-                .getProject(element));
+        assertEquals(project,
+                ErlangEngine.getInstance().getModelUtilService().getProject(element));
     }
 
     // IErlModule getModule();
@@ -123,8 +124,8 @@ public class IErlElementTest extends ErlModelTestBase {
         assertEquals(ErlElementKind.PROJECT, project.getKind());
         assertEquals(ErlElementKind.FUNCTION, element.getKind());
         assertEquals(ErlElementKind.ATTRIBUTE, element2.getKind());
-        assertEquals(ErlElementKind.MODEL, ErlangEngine.getInstance().getModel()
-                .getKind());
+        assertEquals(ErlElementKind.MODEL,
+                ErlangEngine.getInstance().getModel().getKind());
     }
 
     // IErlModel getModel();
@@ -247,7 +248,8 @@ public class IErlElementTest extends ErlModelTestBase {
                 ErlElementKind.MODULE);
         final List<IErlElement> childrenFirst = Lists.newArrayList(elements);
         elements.clear();
-        project.accept(visitor, EnumSet.of(AcceptFlags.LEAFS_ONLY), ErlElementKind.MODULE);
+        project.accept(visitor, EnumSet.of(AcceptFlags.LEAFS_ONLY),
+                ErlElementKind.MODULE);
         final List<IErlElement> leafsOnly = Lists.newArrayList(elements);
         elements.clear();
         // assertEquals(4, kindModuleElementsVisited.size());
@@ -285,7 +287,7 @@ public class IErlElementTest extends ErlModelTestBase {
 
     // void clearCaches();
     /**
-     * @see org.erlide.engine.model.root.IErlElement#clearCaches()
+     * @see org.erlide.engine.model.IErlElement#clearCaches()
      */
     // TODO check more than source dir cache
     @Test

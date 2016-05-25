@@ -30,7 +30,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 
 public class TraceLogView extends ViewPart {
 
@@ -68,7 +68,7 @@ public class TraceLogView extends ViewPart {
         }
 
         @Override
-        public Object getAdapter(final Class key) {
+        public Object getAdapter(@SuppressWarnings("rawtypes") final Class key) {
             return null;
         }
     }
@@ -206,8 +206,7 @@ public class TraceLogView extends ViewPart {
     }
 
     /**
-     * This is a callback that will allow us to create the viewer and initialize
-     * it.
+     * This is a callback that will allow us to create the viewer and initialize it.
      */
     @Override
     public void createPartControl(final Composite parent) {

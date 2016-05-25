@@ -23,8 +23,8 @@ import org.eclipse.jface.util.PropertyChangeEvent;
  *
  * @since 3.3
  */
-public abstract class ShowWhenContentChangesAction extends Action implements
-        IPropertyChangeListener {
+public abstract class ShowWhenContentChangesAction extends Action
+        implements IPropertyChangeListener {
 
     /**
      * Constructs an action to toggle console auto activation preferences

@@ -44,7 +44,7 @@ public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
 
     @Override
     protected IResultParser callRefactoring() throws WranglerRpcParsingException,
-    CoreException, IOException, WranglerWarningException {
+            CoreException, IOException, WranglerWarningException {
         final WranglerRefactoringBackend backend = WranglerBackendManager
                 .getRefactoringBackend();
         final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
@@ -66,9 +66,8 @@ public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
         } else {
             result = backend.callWithoutParser(
                     WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName,
-                    "xiiiidxi", sel.getSearchPath(), minLen, minToks, minFreq,
-                    maxNewVars, simScore, sel.getSearchPath(),
-                    GlobalParameters.getTabWidth());
+                    "xiiiidxi", sel.getSearchPath(), minLen, minToks, minFreq, maxNewVars,
+                    simScore, sel.getSearchPath(), GlobalParameters.getTabWidth());
         }
 
         if (!result.isOk()) {

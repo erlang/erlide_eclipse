@@ -124,8 +124,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
         // Browse
         final Composite composite = new Composite(parent, SWT.NULL);
         composite.setLayout(new GridLayout());
-        composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
-                | GridData.HORIZONTAL_ALIGN_FILL));
+        composite.setLayoutData(new GridData(
+                GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
         composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         composite.setFont(parent.getFont());
 
@@ -200,8 +200,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
         final Group optionsGroup = new Group(parent, SWT.NONE);
         final GridLayout layout = new GridLayout();
         optionsGroup.setLayout(layout);
-        optionsGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-                | GridData.GRAB_HORIZONTAL));
+        optionsGroup.setLayoutData(
+                new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
         optionsGroup.setText(WizardMessages.WizardExportPage_options);
         optionsGroup.setFont(parent.getFont());
 
@@ -371,8 +371,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      */
     protected void handleTypesEditButtonPressed() {
 
-        final TypeFilteringDialog dialog = new TypeFilteringDialog(getContainer()
-                .getShell(), getTypesToImport());
+        final TypeFilteringDialog dialog = new TypeFilteringDialog(
+                getContainer().getShell(), getTypesToImport());
         dialog.open();
         final Object[] newSelectedTypes = dialog.getResult();
         if (newSelectedTypes != null) { // ie.- did not press Cancel

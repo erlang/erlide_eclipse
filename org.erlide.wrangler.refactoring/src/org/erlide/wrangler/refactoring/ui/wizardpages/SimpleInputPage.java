@@ -56,7 +56,8 @@ public class SimpleInputPage extends InputPage {
      *            validator object
      */
     public SimpleInputPage(final String name, final String description,
-            final String labelText, final String inputErrorMsg, final IValidator validator) {
+            final String labelText, final String inputErrorMsg,
+            final IValidator validator) {
         super(name);
         setDescription(description);
         this.inputErrorMsg = inputErrorMsg;
@@ -108,8 +109,8 @@ public class SimpleInputPage extends InputPage {
     @Override
     protected boolean isInputValid() {
         if (validator.isValid(inputText.getText())) {
-            ((SimpleWranglerRefactoring) getRefactoring()).setUserInput(inputText
-                    .getText());
+            ((SimpleWranglerRefactoring) getRefactoring())
+                    .setUserInput(inputText.getText());
             setErrorMessage(null);
             setPageComplete(true);
             return true;

@@ -26,8 +26,8 @@ public class ErlTemplatePreferencePage extends TemplatePreferencePage {
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                ErlTemplateCompletionPreferences.setIndentCode(fIndentCodeCheckBox
-                        .getSelection());
+                ErlTemplateCompletionPreferences
+                        .setIndentCode(fIndentCodeCheckBox.getSelection());
             }
         });
         getPrefs();
@@ -82,8 +82,8 @@ public class ErlTemplatePreferencePage extends TemplatePreferencePage {
 
     @Override
     protected SourceViewer createViewer(final Composite parent) {
-        final SourceViewer viewer = ErlangSourceViewer.createErlangPreviewer(parent,
-                null, null, null, "");
+        final SourceViewer viewer = ErlangSourceViewer.createErlangPreviewer(parent, null,
+                null, null, "");
         // new SourceViewer(parent, null, null, false, SWT.BORDER | SWT.V_SCROLL
         // | SWT.H_SCROLL);
         // final SourceViewerConfiguration configuration= new

@@ -90,14 +90,14 @@ public final class DialyzerPreferences {
     public void load() {
         pltPaths = helper.getString(DialyzerPreferencesConstants.PLT_PATHS, "");
         pltPathsFromPrefs = getPLTPathsFromPreferences();
-        enabledPltPaths = helper.getString(
-                DialyzerPreferencesConstants.ENABLED_PLT_PATHS, pltPaths);
+        enabledPltPaths = helper.getString(DialyzerPreferencesConstants.ENABLED_PLT_PATHS,
+                pltPaths);
         setFromSource(helper.getBoolean(DialyzerPreferencesConstants.FROM_SOURCE, true));
-        setDialyzeOnCompile(helper.getBoolean(
-                DialyzerPreferencesConstants.DIALYZE_ON_COMPILE, false));
+        setDialyzeOnCompile(helper
+                .getBoolean(DialyzerPreferencesConstants.DIALYZE_ON_COMPILE, false));
         noCheckPLT = helper.getBoolean(DialyzerPreferencesConstants.NO_CHECK_PLT, true);
-        removeWarningsOnClean = helper.getBoolean(
-                DialyzerPreferencesConstants.REMOVE_WARNINGS_ON_CLEAN, true);
+        removeWarningsOnClean = helper
+                .getBoolean(DialyzerPreferencesConstants.REMOVE_WARNINGS_ON_CLEAN, true);
     }
 
     @Override

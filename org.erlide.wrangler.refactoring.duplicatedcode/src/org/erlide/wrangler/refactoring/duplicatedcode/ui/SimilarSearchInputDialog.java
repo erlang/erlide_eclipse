@@ -59,13 +59,14 @@ public class SimilarSearchInputDialog extends AbstractInputDialog {
         final GridData simScoreData = new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_CENTER);
-        simScoreData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        simScoreData.widthHint = convertHorizontalDLUsToPixels(
+                IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
         simScoreLabel.setLayoutData(simScoreData);
         simScoreLabel.setFont(parent.getFont());
 
         simScoreText = new Text(composite, getInputTextStyle());
-        simScoreText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
+        simScoreText.setLayoutData(
+                new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         simScoreText.setText("0.8");
         simScoreText.addModifyListener(new ModifyListener() {
 
@@ -99,10 +100,10 @@ public class SimilarSearchInputDialog extends AbstractInputDialog {
         });
 
         errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
-        errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
-        errorMessageText.setBackground(errorMessageText.getDisplay().getSystemColor(
-                SWT.COLOR_WIDGET_BACKGROUND));
+        errorMessageText.setLayoutData(
+                new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+        errorMessageText.setBackground(errorMessageText.getDisplay()
+                .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 
         setErrorMessage("");
 

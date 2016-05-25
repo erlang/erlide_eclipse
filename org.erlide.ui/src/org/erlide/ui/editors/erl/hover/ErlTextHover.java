@@ -39,14 +39,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.backend.BackendCore;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlPreprocessorDef;
+import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.services.search.OtpDocService;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.engine.services.text.DocumentationFormatter;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.ui.actions.OpenUtils;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -270,8 +271,6 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
         if (debuggerVar.length() > 0) {
             result.append(debuggerVar);
         }
-        final String stateDir = ErlangEngine.getInstance().getStateDir();
-
         final IErlProject erlProject = editor.getProject();
 
         String docPath = "";
@@ -289,7 +288,7 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
             final String externalModulesString = erlProject.getProperties()
                     .getExternalModules();
             final OtpErlangTuple t = (OtpErlangTuple) ErlangEngine.getInstance()
-                    .getService(OtpDocService.class).getOtpDoc(backend, offset, stateDir,
+                    .getService(OtpDocService.class).getOtpDoc(backend, offset,
                             editor.getScannerName(), fImports, externalModulesString,
                             model.getPathVars());
             if (Util.isOk(t)) {
@@ -307,7 +306,7 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
                         editor.getElementAt(offset, false));
                 if (found instanceof IErlFunction) {
                     final IErlFunction function = (IErlFunction) found;
-                    final String comment = HoverUtil.getDocumentationString(
+                    final String comment = DocumentationFormatter.getDocumentationString(
                             function.getComments(), function.getTypespec());
                     if (comment.length() == 0) {
                         return null;

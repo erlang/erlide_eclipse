@@ -2,7 +2,7 @@ package org.erlide.ui.internal.information;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.PartInitException;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.actions.OpenUtils;

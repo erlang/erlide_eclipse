@@ -14,8 +14,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
-import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.model.root.IErlElement;
 
 /**
  * Common protocol for Erlang elements that contain other Erlang elements.

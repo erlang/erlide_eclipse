@@ -16,13 +16,13 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.util.ErlLogger;
 
-public class ErlReconcilingStrategy implements IErlReconcilingStrategy,
-        IReconcilingStrategyExtension {
+public class ErlReconcilingStrategy
+        implements IErlReconcilingStrategy, IReconcilingStrategyExtension {
 
     private IErlModule fModule;
     private final AbstractErlangEditor fEditor;

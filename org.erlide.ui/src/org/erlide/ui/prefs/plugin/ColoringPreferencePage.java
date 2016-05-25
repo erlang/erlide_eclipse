@@ -65,8 +65,8 @@ import com.google.common.collect.Lists;
  *
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
-public class ColoringPreferencePage extends PreferencePage implements
-        IWorkbenchPreferencePage {
+public class ColoringPreferencePage extends PreferencePage
+        implements IWorkbenchPreferencePage {
 
     public static final String COLORS_QUALIFIER = "editor_colors_";
     public static final String STYLE_KEY = "style";
@@ -100,8 +100,9 @@ public class ColoringPreferencePage extends PreferencePage implements
     @Override
     public void init(final IWorkbench workbench) {
         fColorManager = new ColorManager();
-        fOverlayStore = new OverlayPreferenceStore(ErlideUIPlugin.getDefault()
-                .getPreferenceStore(), new OverlayPreferenceStore.OverlayKey[] {});
+        fOverlayStore = new OverlayPreferenceStore(
+                ErlideUIPlugin.getDefault().getPreferenceStore(),
+                new OverlayPreferenceStore.OverlayKey[] {});
         fOverlayStore.addKeys(createOverlayStoreKeys());
         fOverlayStore.load();
         fOverlayStore.start();
@@ -143,7 +144,7 @@ public class ColoringPreferencePage extends PreferencePage implements
         @Override
         public Object[] getElements(final Object inputElement) {
             return new String[] { fErlangCategory
-            // , fEdocCategory
+                    // , fEdocCategory
             };
         }
 
@@ -332,8 +333,8 @@ public class ColoringPreferencePage extends PreferencePage implements
         gd.heightHint = convertHeightInCharsToPixels(9);
         int maxWidth = 0;
         for (final TokenHighlight item : fColors) {
-            maxWidth = Math.max(maxWidth, convertWidthInCharsToPixels(item.getName()
-                    .length()));
+            maxWidth = Math.max(maxWidth,
+                    convertWidthInCharsToPixels(item.getName().length()));
         }
         final ScrollBar vBar = ((Scrollable) fListViewer.getControl()).getVerticalBar();
         if (vBar != null) {
@@ -565,8 +566,8 @@ public class ColoringPreferencePage extends PreferencePage implements
         final StringBuilder buffer = new StringBuilder(512);
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(
-                    clazz.getResourceAsStream(filename)));
+            reader = new BufferedReader(
+                    new InputStreamReader(clazz.getResourceAsStream(filename)));
             while ((line = reader.readLine()) != null) {
                 buffer.append(line);
                 buffer.append(separator);

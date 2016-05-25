@@ -8,8 +8,8 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.epmd.IEpmdListener;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 
 public interface IBackendManager extends IEpmdListener {

@@ -2,9 +2,7 @@
  * Code borrowed from PyDev
  */
 /*
- * @author Fabio Zadrozny
- * Created: June 2004
- * License: Common Public License v1.0
+ * @author Fabio Zadrozny Created: June 2004 License: Common Public License v1.0
  */
 
 package org.erlide.ui.internal.information;
@@ -31,8 +29,8 @@ import org.erlide.util.StringUtils;
  *
  * @author Fabio
  */
-public class ErlInformationPresenter implements
-        DefaultInformationControl.IInformationPresenter,
+public class ErlInformationPresenter
+        implements DefaultInformationControl.IInformationPresenter,
         DefaultInformationControl.IInformationPresenterExtension {
 
     public static final String LINE_DELIM = System.getProperty("line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -63,9 +61,9 @@ public class ErlInformationPresenter implements
     }
 
     /**
-     * The line delimiters must match the platform for the bolds to be correct,
-     * so, in this function we remove the ones existing and add the ones
-     * dependent on the platform
+     * The line delimiters must match the platform for the bolds to be correct, so, in
+     * this function we remove the ones existing and add the ones dependent on the
+     * platform
      */
     private String correctLineDelimiters(final String str) {
         final StringBuffer buf = new StringBuffer();
@@ -108,8 +106,8 @@ public class ErlInformationPresenter implements
                 break;
             }
             lastIndex = end;
-            presentation.addStyleRange(new StyleRange(start, end - start, null, null,
-                    SWT.BOLD));
+            presentation.addStyleRange(
+                    new StyleRange(start, end - start, null, null, SWT.BOLD));
         }
 
         // return the input (this one doesn't change the string)
@@ -123,6 +121,7 @@ public class ErlInformationPresenter implements
         int yoursEnd = offset + insertLength - 1;
         yoursEnd = Math.max(yoursStart, yoursEnd);
 
+        @SuppressWarnings("unchecked")
         final Iterator<StyleRange> e = presentation.getAllStyleRangeIterator();
         while (e.hasNext()) {
 
@@ -171,20 +170,22 @@ public class ErlInformationPresenter implements
     @Deprecated
     @Override
     public String updatePresentation(final Display display, final String hoverInfo,
-            final TextPresentation presentation, final int maxWidth, final int maxHeight) {
+            final TextPresentation presentation, final int maxWidth,
+            final int maxHeight) {
         return updatePresentation((Drawable) display, hoverInfo, presentation, maxWidth,
                 maxHeight);
     }
 
     /*
-     * @see IHoverInformationPresenterExtension#updatePresentation(Drawable
-     * drawable, String, TextPresentation, int, int)
+     * @see IHoverInformationPresenterExtension#updatePresentation(Drawable drawable,
+     * String, TextPresentation, int, int)
      *
      * @since 3.2
      */
     @Override
     public String updatePresentation(final Drawable drawable, final String hoverInfo,
-            final TextPresentation presentation, final int maxWidth, final int maxHeight) {
+            final TextPresentation presentation, final int maxWidth,
+            final int maxHeight) {
 
         if (hoverInfo == null) {
             return null;
@@ -194,12 +195,12 @@ public class ErlInformationPresenter implements
         try {
 
             final StringBuffer buffer = new StringBuffer();
-            int maxNumberOfLines = Math.round((float) maxHeight
-                    / (float) gc.getFontMetrics().getHeight());
+            int maxNumberOfLines = Math
+                    .round((float) maxHeight / (float) gc.getFontMetrics().getHeight());
 
             fCounter = 0;
-            final LineBreakingReader reader = new LineBreakingReader(createReader(
-                    hoverInfo, presentation), gc, maxWidth);
+            final LineBreakingReader reader = new LineBreakingReader(
+                    createReader(hoverInfo, presentation), gc, maxWidth);
 
             boolean lastLineFormatted = false;
             String lastLineIndent = null;

@@ -19,10 +19,10 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorExtension;
 import org.eclipse.ui.texteditor.ITextEditorExtension2;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.ISourceRange;
 import org.erlide.engine.model.erlang.ISourceReference;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.util.ErlLogger;
@@ -58,8 +58,8 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
             final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) editor;
             final IErlModule module = erlangEditor.getModule();
             if (module != null) {
-                final int offset1 = selection.getOffset(), offset2 = offset1
-                        + selection.getLength();
+                final int offset1 = selection.getOffset(),
+                        offset2 = offset1 + selection.getLength();
                 try {
                     final IErlElement e1 = module.getElementAt(offset1);
                     final IErlElement e2 = module.getElementAt(offset2);
@@ -76,16 +76,16 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
                             return extendSelectionToWholeLines(document,
                                     new TextSelection(document, offset, length));
                         } else if (e2 == null) {
-                            return extendSelectionToWholeLines(
-                                    document,
-                                    new TextSelection(document, offset, selection
-                                            .getLength() + selection.getOffset() - offset));
+                            return extendSelectionToWholeLines(document,
+                                    new TextSelection(document, offset,
+                                            selection.getLength() + selection.getOffset()
+                                                    - offset));
                         } else if (e2 instanceof ISourceReference) {
                             final ISourceReference ref2 = (ISourceReference) e2;
                             final ISourceRange r2 = ref2.getSourceRange();
                             return extendSelectionToWholeLines(document,
-                                    new TextSelection(document, offset, r2.getOffset()
-                                            - offset + r2.getLength()));
+                                    new TextSelection(document, offset,
+                                            r2.getOffset() - offset + r2.getLength()));
                         }
                     }
                 } catch (final ErlModelException e) {
@@ -114,8 +114,8 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
                     final IProgressMonitor monitor = monitor0 != null ? monitor0
                             : new NullProgressMonitor();
                     try {
-                        monitor.beginTask("Processing "
-                                + textEditor.getEditorInput().getName(),
+                        monitor.beginTask(
+                                "Processing " + textEditor.getEditorInput().getName(),
                                 IProgressMonitor.UNKNOWN);
                         doAction(sel, textEditor);
                     } finally {
@@ -156,8 +156,8 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
             startLineOffset = document.getLineOffset(startLine);
             final int endTextOffset = document.getLineOffset(endLine)
                     + document.getLineLength(endLine);
-            return new TextSelection(document, startLineOffset, endTextOffset
-                    - startLineOffset);
+            return new TextSelection(document, startLineOffset,
+                    endTextOffset - startLineOffset);
         } catch (final BadLocationException e) {
             ErlLogger.error(e);
         }

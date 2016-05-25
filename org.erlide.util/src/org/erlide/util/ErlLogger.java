@@ -142,7 +142,8 @@ public class ErlLogger {
     private void addConsoleHandler(final ErlSimpleFormatter formatter) {
         consoleHandler = new ConsoleHandler();
         consoleHandler.setFormatter(formatter);
-        final Level lvl = java.util.logging.Level.WARNING;
+        final Level lvl = "true".equals(System.getProperty("erlide.logger.console.debug"))
+                ? java.util.logging.Level.FINEST : java.util.logging.Level.WARNING;
         consoleHandler.setLevel(lvl);
         logger.addHandler(consoleHandler);
     }

@@ -32,10 +32,10 @@ public class ErlangSourcePathComputerDelegate implements ISourcePathComputerDele
         if (containers.isEmpty()) {
             containers.add(new WorkspaceSourceContainer());
         }
-        final String runtimeName = configuration.getAttribute(
-                ErlRuntimeAttributes.RUNTIME_NAME, "").trim();
-        final RuntimeInfo info = BackendCore.getRuntimeInfoCatalog().getRuntime(
-                runtimeName);
+        final String runtimeName = configuration
+                .getAttribute(ErlRuntimeAttributes.RUNTIME_NAME, "").trim();
+        final RuntimeInfo info = BackendCore.getRuntimeInfoCatalog()
+                .getRuntime(runtimeName);
         containers.add(new ErlangOtpSourceContainer(new Path(info.getOtpHome())));
         return containers.toArray(new ISourceContainer[containers.size()]);
     }

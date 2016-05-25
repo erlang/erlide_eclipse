@@ -13,9 +13,9 @@ package org.erlide.wrangler.refactoring.selection.internal;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.IDocument;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.IErlMember;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.wrangler.refactoring.util.ErlRange;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
@@ -52,9 +52,9 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
     }
 
     protected int getEndCol() {
-        return WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
-                .getOffset() + member.getSourceRange().getLength(), getEndLine() - 1,
-                document);
+        return WranglerUtils.calculateColumnFromOffset(
+                member.getSourceRange().getOffset() + member.getSourceRange().getLength(),
+                getEndLine() - 1, document);
     }
 
     protected int getEndLine() {
@@ -67,8 +67,8 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
     }
 
     protected int getStartCol() {
-        return WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
-                .getOffset(), getStartLine() - 1, document);
+        return WranglerUtils.calculateColumnFromOffset(
+                member.getSourceRange().getOffset(), getStartLine() - 1, document);
 
     }
 

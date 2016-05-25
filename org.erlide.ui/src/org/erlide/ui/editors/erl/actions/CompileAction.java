@@ -19,9 +19,9 @@ import org.erlide.core.builder.BuildResource;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.CompilerOptions;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlEditorActionBarContributor;
 
@@ -66,15 +66,17 @@ public class CompileAction extends Action {
                 .getErlangProject(project);
 
         if ("erl".equals(resource.getFileExtension())) {
-            helper.compileErl(project, bres, erlProject.getProperties().getOutputDir()
-                    .toString(), b, compilerOptions);
+            helper.compileErl(project, bres,
+                    erlProject.getProperties().getOutputDir().toString(), b,
+                    compilerOptions);
         }
         if ("yrl".equals(resource.getFileExtension())) {
             helper.compileYrl(project, bres, b, compilerOptions);
         }
         final ErlEditorActionBarContributor status = (ErlEditorActionBarContributor) editor
                 .getEditorSite().getActionBarContributor();
-        status.displayMessage(String.format("File '%s' was compiled.", resource.getName()));
+        status.displayMessage(
+                String.format("File '%s' was compiled.", resource.getName()));
     }
 
     public IWorkbenchSite getSite() {

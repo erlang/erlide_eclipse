@@ -11,11 +11,11 @@ import java.util.Map;
 import org.eclipse.core.resources.IResourceDelta;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.root.ErlElementDelta;
-import org.erlide.engine.model.ElementChangedEvent;
-import org.erlide.engine.model.IElementChangedListener;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.root.ElementChangedEvent;
+import org.erlide.engine.model.root.IElementChangedListener;
 import org.erlide.engine.model.root.IErlElementDelta;
+import org.erlide.engine.model.root.IErlModule;
 
 public class ErlModelDeltaManager {
     public static final int DEFAULT_CHANGE_EVENT = 0;
@@ -73,7 +73,8 @@ public class ErlModelDeltaManager {
             case DEFAULT_CHANGE_EVENT:
                 // firePreAutoBuildDelta(deltaToNotify, listeners, listenerMask,
                 // listenerCount);
-                firePostChangeDelta(deltaToNotify, listeners, listenerMask, listenerCount);
+                firePostChangeDelta(deltaToNotify, listeners, listenerMask,
+                        listenerCount);
                 fireReconcileDelta(listeners, listenerMask, listenerCount);
                 break;
             // case ElementChangedEvent.PRE_AUTO_BUILD :
@@ -81,7 +82,8 @@ public class ErlModelDeltaManager {
             // listenerCount);
             // break;
             case ElementChangedEvent.POST_CHANGE:
-                firePostChangeDelta(deltaToNotify, listeners, listenerMask, listenerCount);
+                firePostChangeDelta(deltaToNotify, listeners, listenerMask,
+                        listenerCount);
                 fireReconcileDelta(listeners, listenerMask, listenerCount);
                 break;
             case ElementChangedEvent.POST_RECONCILE:
@@ -100,8 +102,8 @@ public class ErlModelDeltaManager {
 
         // post change deltas
         if (verbose) {
-            System.out
-                    .println("FIRING POST_CHANGE Delta [" + Thread.currentThread() + "]:"); //$NON-NLS-1$//$NON-NLS-2$
+            System.out.println(
+                    "FIRING POST_CHANGE Delta [" + Thread.currentThread() + "]:"); //$NON-NLS-1$//$NON-NLS-2$
             System.out
                     .println(deltaToNotify == null ? "<NONE>" : deltaToNotify.toString()); //$NON-NLS-1$
         }
@@ -119,8 +121,8 @@ public class ErlModelDeltaManager {
             final int[] listenerMask, final int listenerCount) {
         final IErlElementDelta deltaToNotify = mergeDeltas(reconcileDeltas.values());
         if (verbose) {
-            System.out
-                    .println("FIRING POST_RECONCILE Delta [" + Thread.currentThread() + "]:"); //$NON-NLS-1$//$NON-NLS-2$
+            System.out.println(
+                    "FIRING POST_RECONCILE Delta [" + Thread.currentThread() + "]:"); //$NON-NLS-1$//$NON-NLS-2$
             System.out
                     .println(deltaToNotify == null ? "<NONE>" : deltaToNotify.toString()); //$NON-NLS-1$
         }
@@ -181,8 +183,8 @@ public class ErlModelDeltaManager {
                             .getChildren(IErlElementDelta.ALL);
                     for (final IErlElementDelta element0 : children) {
                         final ErlElementDelta projectDelta = (ErlElementDelta) element0;
-                        rootDelta
-                                .insertDeltaTree(projectDelta.getElement(), projectDelta);
+                        rootDelta.insertDeltaTree(projectDelta.getElement(),
+                                projectDelta);
                         insertedTree = true;
                     }
                     final IResourceDelta[] resourceDeltas = delta.getResourceDeltas();

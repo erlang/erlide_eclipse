@@ -11,7 +11,7 @@ import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.api.ICoveragePerformer;
 import org.erlide.cover.constants.CoverConstants;
 import org.erlide.cover.views.model.StatsTreeModel;
-import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModule;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 
@@ -89,12 +89,9 @@ public class CoveragePerformer implements ICoveragePerformer {
                     names.toArray(new OtpErlangObject[0]));
 
             try {
-                CoverBackend
-                        .getInstance()
-                        .getBackend()
-                        .getOtpRpc()
-                        .call(CoverConstants.COVER_ERL_BACKEND, CoverConstants.FUN_START,
-                                "x", nodesList);
+                CoverBackend.getInstance().getBackend().getOtpRpc().call(
+                        CoverConstants.COVER_ERL_BACKEND, CoverConstants.FUN_START, "x",
+                        nodesList);
 
             } catch (final RpcException e) {
                 ErlLogger.error(e);
@@ -118,20 +115,17 @@ public class CoveragePerformer implements ICoveragePerformer {
         final IPath ppath = config.getProject().getWorkspaceProject().getLocation();
 
         // set include files
-        final List<OtpErlangObject> includes = new ArrayList<OtpErlangObject>(config
-                .getModules().size());
+        final List<OtpErlangObject> includes = new ArrayList<OtpErlangObject>(
+                config.getModules().size());
         for (final IPath include : config.getIncludeDirs()) {
             log.info(ppath.append(include));
             includes.add(new OtpErlangList(ppath.append(include).toString()));
         }
 
         try {
-            CoverBackend
-                    .getInstance()
-                    .getBackend()
-                    .getOtpRpc()
-                    .call(CoverConstants.COVER_ERL_BACKEND,
-                            CoverConstants.FUN_SET_INCLUDES, "x", includes);
+            CoverBackend.getInstance().getBackend().getOtpRpc().call(
+                    CoverConstants.COVER_ERL_BACKEND, CoverConstants.FUN_SET_INCLUDES,
+                    "x", includes);
         } catch (final RpcException e1) {
             e1.printStackTrace();
             throw new CoverException(e1);
@@ -142,8 +136,8 @@ public class CoveragePerformer implements ICoveragePerformer {
 
     // cover compilation of chosen modules
     private void recompileModules() throws CoverException {
-        final List<OtpErlangObject> paths = new ArrayList<OtpErlangObject>(config
-                .getModules().size());
+        final List<OtpErlangObject> paths = new ArrayList<OtpErlangObject>(
+                config.getModules().size());
         for (final IErlModule module : config.getModules()) {
             if (module == null) {
                 final String msg = "No such module at given project. Check your configuration";
@@ -155,12 +149,9 @@ public class CoveragePerformer implements ICoveragePerformer {
         }
 
         try {
-            CoverBackend
-                    .getInstance()
-                    .getBackend()
-                    .getOtpRpc()
-                    .call(CoverConstants.COVER_ERL_BACKEND, CoverConstants.FUN_PREP, "x",
-                            paths);
+            CoverBackend.getInstance().getBackend().getOtpRpc().call(
+                    CoverConstants.COVER_ERL_BACKEND, CoverConstants.FUN_PREP, "x",
+                    paths);
 
         } catch (final RpcException e) {
             ErlLogger.error(e);
@@ -174,20 +165,17 @@ public class CoveragePerformer implements ICoveragePerformer {
     @Override
     public synchronized void analyse() throws CoverException {
 
-        final List<OtpErlangObject> modules = new ArrayList<OtpErlangObject>(config
-                .getModules().size());
+        final List<OtpErlangObject> modules = new ArrayList<OtpErlangObject>(
+                config.getModules().size());
         for (final IErlModule module : config.getModules()) {
             log.info(module.getModuleName());
             modules.add(new OtpErlangList(module.getModuleName()));
         }
 
         try {
-            CoverBackend
-                    .getInstance()
-                    .getBackend()
-                    .getOtpRpc()
-                    .call(CoverConstants.COVER_ERL_BACKEND, CoverConstants.FUN_ANALYSE,
-                            "x", modules);
+            CoverBackend.getInstance().getBackend().getOtpRpc().call(
+                    CoverConstants.COVER_ERL_BACKEND, CoverConstants.FUN_ANALYSE, "x",
+                    modules);
 
         } catch (final RpcException e) {
             ErlLogger.error(e);
