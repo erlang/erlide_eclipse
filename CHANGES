@@ -1,5 +1,19 @@
+List of user visible changes between 0.32.1 and 0.33.0 (20160524)
+
+******* last version supporting Java 6
+354292f remove debug printout in ErlModule
+93ce234 configure logger output: erlide.logger.console.debug
+fe55657 add support for OTP 19 (+kernel)
+7b941f4 fix problem reading rebar config
+8e971de fix problem with reading builder configuration
+ae553c1 return the right version for a project's OTP library
+40452cf update supported versions
+b787df0 fix target and deps for indigo
+d114d97 use single kernel plugin
+
 List of user visible changes between 0.32.0 and 0.32.1 (20160422)
 
+******* last version supporting OTP R15
 1287de8 configure erlide log via system property
 
 List of user visible changes between 0.31.0 and 0.32.0 (20160414)
