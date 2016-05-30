@@ -4,8 +4,12 @@ Bundle-Name: Testing Support Libraries
 Bundle-SymbolicName: org.erlide.testing.libs;singleton:=true
 Bundle-Version: 1.2.2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.erlide.libs;bundle-version="1.16.0",
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.10.0",
+ org.eclipse.core.resources;bundle-version="3.9.1",
+ org.erlide.model.api;bundle-version="0.50.0",
+ org.erlide.libs;bundle-version="[1.16.0,2.0.0)",
  org.erlide.libs2;bundle-version="[1.16.1,2.0.0)",
+ org.erlide.libs.annotations;bundle-version="1.0.0",
  org.junit;bundle-version="4.11.0"
 Bundle-ClassPath: truth-0.28.jar
 Export-Package: com.google.common.truth
