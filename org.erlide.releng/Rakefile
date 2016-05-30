@@ -77,7 +77,16 @@ task :make_github_release, [:file, :description, :tools_dir] do |t, args|
 
 end
 
-desc "build help from erlide.github.io"
+desc "build help"
 task :build_help do
   system "bash -c 'chmod u+x org.erlide.help/gen_eclipse_help.sh' && bash -c 'org.erlide.help/gen_eclipse_help.sh'"
+end
+
+desc "publish help to erlide.github.io"
+task :publish_help do
+  dest = "buildroot/erlide.github.io"
+  system "bash -c 'rm -rf #{dest} && mkdir -p #{dest}'"
+  system "bash -c 'git clone --depth 1 git@github.com:erlide/erlide.github.io -b master #{dest}'"
+  system "bash -c 'cp -R org.erlide.help/articles/* #{dest}/articles/eclipse'"
+  system "bash -cx 'cd #{dest} && git add . && git commit -a -m \"autoupdate eclipse docs\" && git push origin master'"
 end
