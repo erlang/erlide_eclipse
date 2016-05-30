@@ -106,6 +106,8 @@ public class BuildersTest {
     }
 
     private void testBuilder(final BuilderTool builderTool) throws CoreException {
+        assertThat(prj, notNullValue());
+
         ErlangNature.setErlangProjectBuilder(prj, builderTool);
         final String targetBeamPath = "ebin/mod.beam";
 
