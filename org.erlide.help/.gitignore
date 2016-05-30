@@ -1,4 +1,12 @@
-tmp
+.bundle
+.DS_Store
+.rvmrc
+_site
+bin
+.sass-cache
+*.sassc
+*\#*
+~*
+_cache
+.idea/
 *.pdf
-*.fo
-.idea
