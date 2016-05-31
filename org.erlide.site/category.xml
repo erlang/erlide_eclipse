@@ -3,9 +3,10 @@
    <feature id="org.erlide">
       <category name="erlide"/>
    </feature>
-   <feature id="org.erlide.wrangler" >
+   <feature id="org.erlide.wrangler">
       <category name="extras"/>
    </feature>
-   <category-def name="erlide" label="erlide"/>
-   <category-def name="extras" label="extras"/>
+   <category-def name="erlide" label="erlide - Erlang development tools"/>
+   <category-def name="extras" label="erlide - optional plugins"/>
+   <repository-reference location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository" enabled="true" />
 </site>
