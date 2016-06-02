@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<local-project language="java" version="4.1.5350" xml-version="3" flavor="j2se">
+  <property name="parse-archive-in-archive" value="false" />
+  <property name="include-injected-dependency" value="true" />
+  <property name="show-as-module" value="false" />
+  <property name="relative-to" value="const(THIS_FILE)" />
+  <property name="action-set-mod" value="1" />
+  <property name="detail-mode" value="true" />
+  <property name="hide-deprecated" value="false" />
+  <property name="project-excluded" />
+  <property name="show-needs-to-compile" value="false" />
+  <property name="project-type" value="classpath" />
+  <property name="hide-externals" value="true" />
+  <classpath>
+    <classpathentry kind="lib" path="../../erlide/org.erlide.backend/bin" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.core/bin" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.libs/bin" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.model/bin" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.model.api/bin" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.runtime/bin" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.test_support/bin" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.ui/bin" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.util/bin" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.util_eclipse/bin" />
+  </classpath>
+  <pom-root-files />
+  <transformations>
+    <transformation in="*" out="{jar}.*" />
+  </transformations>
+  <restructuring>
+    <set version="3" name="Model 1" hiview="Codemap" active="true" todo="false" list="0" />
+  </restructuring>
+</local-project>
+

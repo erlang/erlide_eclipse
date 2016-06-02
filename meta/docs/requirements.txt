@@ -1,0 +1,73 @@
+Erlide requirements
+===================
+
+Overview
+--------
+
+We need to capture the functionality implemented by erlide in a structured manner, 
+so that we can convert them into tests. Here we only refer to functionality 
+visible to the user.
+
+Editor
+------
+
+Autocompletion
+++++++++++++++ 
+
+We define requirements in terms of the syntactic context surrounding the location 
+of the cursor (marked | below). More specific context take precedence over more 
+general ones. 
+
+#. 	The result list is sorted so that recently used matches are placed first. 
+	The order is otherwise according to relevance to the context. 
+   
+	* matching is case insensitive
+	* a match is defined by 
+		- an exact match of the pattern at the beginning or inside the result
+		- "underscore match" where for example ``g_tr_co`` matches ``get_tree_content``; 
+			the pattern is equivalent to the unanchored regular expression 
+			``g[^_]*_tr[^_]*_co*`` 
+	* exact matches at the beginning are ranked before matches inside the text
+	* the relative sorting of the different lexical categories is not specified (yet)
+	* ``name`` below means an atom or a macro that can be resolved at compile time.
+	* an empty ``atom`` below means ``anything``
+	
+#. 	Context: ``--empty--``
+
+	Result: everything that can be matched
+	
+#.  Context: ``varname|``
+
+    Result: variables in scope, matching ``varname``
+
+#.  Context: ``?atom|`` or ``?varname``
+
+    Result: macros in scope, matching ``atom`` or ``varname``
+
+#.  Context: ``#atom|``
+
+    Result: record names in scope, matching ``atom``
+
+#.  Context: ``#name.atom|``
+
+    Result: fields in record ``name``, matching ``atom``
+
+#.  Context: ``#name{atom|``
+
+    Result: fields in record ``name``, matching ``atom``
+
+#.  Context: ``#name{<fielddefs>, atom|``
+
+    Result: fields in record ``name``, matching ``atom`` but not already 
+    defined in <fielddefs>
+
+#.  Context: ``atom|``
+
+    Result: module names matching ``atom``
+
+#.  Context: ``name:atom|``
+
+    Result: if ``name`` can be resolved at compile time to a module name, 
+    exported functions from that module matching ``atom``  
+
+	

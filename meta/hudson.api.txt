@@ -1,0 +1,9 @@
+(use http basic authentication)
+
+HUDSON=$user:$pass@ci.erlide.org:52825
+
+curl http://$HUDSON/job/$JOB1/config.xml 
+# do something with configuration
+curl -v -H "Content-Type: text/xml" -d - "http://$HUDSON/createItem?name=$JOB2"
+
+

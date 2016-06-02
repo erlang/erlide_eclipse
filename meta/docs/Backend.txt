@@ -1,0 +1,21 @@
+Definitions
+1) Backend: a Java interface towards an Erlang node, allowing thread-safe RPCs to Erlang and also creating an event sink (also per Java thread) where asynchronous notifications from Erlang are received.
+2) A backend may be Erlide managed (“managed”) or standalone (“standalone”).
+3) There are three kinds of backends: 
+    ide: used by erlide for all IDE related tasks
+	build: where compiling the projects' code 
+	execution: where the code is run/debugged
+
+Requirements
+1) Each Erlang project is linked to a specific backend, where its code is built. 
+2) Backends may be shared between projects. It is the developer's responsibility to ensure that there are no module name clashes.
+3) Opening/closing the project will start/stop the backend node (if not used anymore).
+4) Erlide specific code must be loaded on all backends, to provide a framework for interacting with Erlide and Eclipse.  
+
+Issues
+* How to manage consoles and other views/functionality that are backend-specific in the UI? 
+* How to find the nodes that correspond to child Erlide projects? 
+o naming convention, search all nodes registered with epmd
+o 
+
+

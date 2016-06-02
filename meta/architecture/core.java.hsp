@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<local-project language="java" version="4.2.10130" xml-version="3" flavor="j2se">
+  <property name="parse-archive-in-archive" value="false" />
+  <property name="include-injected-dependency" value="true" />
+  <property name="show-as-module" value="false" />
+  <property name="relative-to" value="const(THIS_FILE)" />
+  <property name="action-set-mod" value="1" />
+  <property name="detail-mode" value="true" />
+  <property name="hide-deprecated" value="false" />
+  <property name="project-excluded" />
+  <property name="show-needs-to-compile" value="false" />
+  <property name="project-type" value="classpath" />
+  <property name="hide-externals" value="true" />
+  <classpath>
+    <classpathentry kind="lib" path="C:/Users/vlad/projects/erlide/org.erlide.backend/bin" />
+    <classpathentry kind="lib" path="C:/Users/vlad/projects/erlide/org.erlide.core/bin" />
+    <classpathentry kind="lib" path="C:/Users/vlad/projects/erlide/org.erlide.runtime/bin" />
+    <classpathentry kind="lib" path="C:/Users/vlad/projects/erlide/org.erlide.util/bin" />
+    <classpathentry kind="lib" path="C:/Users/vlad/projects/erlide/org.erlide.model/bin" />
+    <classpathentry kind="lib" path="C:/Users/vlad/projects/erlide/org.erlide.model.api/bin" />
+    <classpathentry kind="lib" path="C:/Users/vlad/projects/erlide/org.erlide.ui/bin" />
+    <classpathentry kind="lib" path="C:/Users/vlad/projects/erlide/org.erlide.util_eclipse/bin" />
+    <classpathentry kind="lib" path="C:/Users/vlad/projects/erlide/org.erlide.cover.api/bin" />
+    <classpathentry kind="lib" path="C:/Users/vlad/projects/erlide/org.erlide.cover.core/bin" />
+    <classpathentry kind="lib" path="C:/Users/vlad/projects/erlide/org.erlide.cover.ui/bin" />
+    <classpathentry kind="lib" path="C:/Users/vlad/projects/erlide/org.erlide.dialyzer.core/bin" />
+    <classpathentry kind="lib" path="C:/Users/vlad/projects/erlide/org.erlide.dialyzer.ui/bin" />
+    <classpathentry kind="lib" path="C:/Users/vlad/projects/erlide/org.erlide.tracing.core/bin" />
+  </classpath>
+  <pom-root-files />
+  <transformations>
+    <transformation in="org.erlide.*" out="*" />
+    <transformation in="*" out="{jar}.*" />
+  </transformations>
+  <restructuring>
+    <set version="3" name="Model 1" hiview="Codemap" active="true" todo="false" list="0">
+      <hide>
+        <item-fqn fqn="org_erlide_runtime" type="jar">
+          <node name="org_erlide_runtime" type="jar" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_util_eclipse" type="jar">
+          <node name="org_erlide_util_eclipse" type="jar" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_tracing_core" type="jar">
+          <node name="org_erlide_tracing_core" type="jar" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model" type="jar">
+          <node name="org_erlide_model" type="jar" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_cover_core" type="jar">
+          <node name="org_erlide_cover_core" type="jar" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_backend" type="jar">
+          <node name="org_erlide_backend" type="jar" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_dialyzer_core" type="jar">
+          <node name="org_erlide_dialyzer_core" type="jar" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_cover_ui" type="jar">
+          <node name="org_erlide_cover_ui" type="jar" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_ui" type="jar">
+          <node name="org_erlide_ui" type="jar" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_util" type="jar">
+          <node name="org_erlide_util" type="jar" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_cover_api" type="jar">
+          <node name="org_erlide_cover_api" type="jar" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_dialyzer_ui" type="jar">
+          <node name="org_erlide_dialyzer_ui" type="jar" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_core" type="jar">
+          <node name="org_erlide_core" type="jar" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.ExecutableExtensionsFactory" type="class" path="org.erlide.engine.ExecutableExtensionsFactory">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="ExecutableExtensionsFactory" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.util" type="package">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="util" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.NewProjectData" type="class" path="org.erlide.engine.NewProjectData">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="NewProjectData" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.IErlangEngine" type="class" path="org.erlide.engine.IErlangEngine">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="IErlangEngine" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.IResourceChangeListener" type="class" path="org.erlide.engine.IResourceChangeListener">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="IResourceChangeListener" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.ResourceChange" type="class" path="org.erlide.engine.ResourceChange">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="ResourceChange" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.services" type="package">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="services" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.IEngineInput" type="class" path="org.erlide.engine.IEngineInput">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="IEngineInput" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.MarkerUtils" type="class" path="org.erlide.engine.MarkerUtils">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="MarkerUtils" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.IModelProvider" type="class" path="org.erlide.engine.IModelProvider">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="IModelProvider" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.TextChange" type="class" path="org.erlide.engine.TextChange">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="TextChange" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.ErlangEngine" type="class" path="org.erlide.engine.ErlangEngine">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="ErlangEngine" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.IErlangEngineFactory" type="class" path="org.erlide.engine.IErlangEngineFactory">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="IErlangEngineFactory" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.InjectionException" type="class" path="org.erlide.engine.InjectionException">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="InjectionException" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.ModelActivator" type="class" path="org.erlide.engine.ModelActivator">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="ModelActivator" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.model.IErlElementVisitor" type="class" path="org.erlide.engine.model.IErlElementVisitor">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="model" type="package" />
+          <node name="IErlElementVisitor" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.model.SourcePathUtils" type="class" path="org.erlide.engine.model.SourcePathUtils">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="model" type="package" />
+          <node name="SourcePathUtils" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.model.ErlModelException" type="class" path="org.erlide.engine.model.ErlModelException">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="model" type="package" />
+          <node name="ErlModelException" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.model.IErlModelStatus" type="class" path="org.erlide.engine.model.IErlModelStatus">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="model" type="package" />
+          <node name="IErlModelStatus" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.model.erlang" type="package">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="model" type="package" />
+          <node name="erlang" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.model.root" type="package">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="model" type="package" />
+          <node name="root" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.model.ErlModelStatus" type="class" path="org.erlide.engine.model.ErlModelStatus">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="model" type="package" />
+          <node name="ErlModelStatus" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.model.builder" type="package">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="model" type="package" />
+          <node name="builder" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.model.ErlElementKind" type="class" path="org.erlide.engine.model.ErlElementKind">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="model" type="package" />
+          <node name="ErlElementKind" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.model.IErlElement" type="class" path="org.erlide.engine.model.IErlElement">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="model" type="package" />
+          <node name="IErlElement" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.model.ErlModelStatusConstants" type="class" path="org.erlide.engine.model.ErlModelStatusConstants">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="model" type="package" />
+          <node name="ErlModelStatusConstants" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.model.OtpRpcFactory" type="class" path="org.erlide.engine.model.OtpRpcFactory">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="model" type="package" />
+          <node name="OtpRpcFactory" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org_erlide_model_api.engine.model.IParent" type="class" path="org.erlide.engine.model.IParent">
+          <node name="org_erlide_model_api" type="jar" />
+          <node name="engine" type="package" />
+          <node name="model" type="package" />
+          <node name="IParent" type="class" />
+        </item-fqn>
+      </hide>
+    </set>
+  </restructuring>
+</local-project>
+
