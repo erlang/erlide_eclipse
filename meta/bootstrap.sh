@@ -35,7 +35,7 @@ cd ~
 rm -rf erlide
 
 # which branch?
-git clone http://github.com/erlide/erlide.git
+git clone http://github.com/erlang/erlide_eclipse.git
 
 #sh -c erlide/org.erlide.releng/setup_tools.sh
 
