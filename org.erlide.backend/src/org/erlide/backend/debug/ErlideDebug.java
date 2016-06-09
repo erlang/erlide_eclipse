@@ -27,6 +27,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ErlideDebug {
 
     private static final String ERLIDE_DEBUG = "erlide_debug";
+    private static final OtpErlangAtom PARENT_ATOM = new OtpErlangAtom("parent");
 
     @SuppressWarnings("boxing")
     public static OtpErlangList getProcesses(final IOtpRpc backend,
@@ -42,8 +43,8 @@ public class ErlideDebug {
     }
 
     @SuppressWarnings("boxing")
-    public static OtpErlangPid startDebug(final IOtpRpc backend, final int debugFlags)
-            throws DebugException {
+    public static OtpErlangPid startDebug(final IOtpRpc backend, final int debugFlags,
+            OtpErlangPid parentPid) throws DebugException {
         OtpErlangObject res = null;
         try {
             res = backend.call(ERLIDE_DEBUG, "start_debug", "i", debugFlags);
@@ -58,6 +59,8 @@ public class ErlideDebug {
             throw new DebugException(s);
         }
         final OtpErlangPid pid = (OtpErlangPid) res;
+        // TODO bake in this in start_debug
+        backend.send(pid, OtpErlang.mkTuple(PARENT_ATOM, parentPid));
         return pid;
     }
 

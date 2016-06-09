@@ -68,8 +68,6 @@ import com.google.common.collect.Lists;
 public class ErlangDebugTarget extends ErlangDebugElement
         implements IDebugTarget, IErlangDebugNode, IDisposable {
 
-    private static final OtpErlangAtom PARENT_ATOM = new OtpErlangAtom("parent");
-
     public static final IThread[] NO_PROCS = new IThread[] {};
 
     public static final int INTERPRETED_MODULES_CHANGED = 0;
@@ -117,10 +115,8 @@ public class ErlangDebugTarget extends ErlangDebugElement
         }
 
         final OtpErlangPid pid = ErlideDebug.startDebug(backend.getOtpRpc(),
-                ErlDebugFlags.getFlag(debugFlags));
+                ErlDebugFlags.getFlag(debugFlags), debuggerDaemon.getMBox());
         ErlLogger.debug("debug started " + pid);
-        backend.getOtpRpc().send(pid,
-                OtpErlang.mkTuple(PARENT_ATOM, debuggerDaemon.getMBox()));
 
         DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
 
