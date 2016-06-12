@@ -95,10 +95,10 @@ public class Backend implements IStreamListener, IBackend {
     protected boolean startErlideApps(final OtpErlangPid jRex, final boolean watch) {
         try {
             final IOtpRpc site = getOtpRpc();
+            final SystemConfiguration sysconf = SystemConfiguration.getInstance();
             site.call("erlide_common_app", "init", "poiii", jRex, watch,
-                    SystemConfiguration.getInstance().getWarnProcessSizeLimitMB(),
-                    SystemConfiguration.getInstance().getKillProcessSizeLimitMB(),
-                    SystemConfiguration.getInstance().getMaxParallelBuilds());
+                    sysconf.getWarnProcessSizeLimitMB(),
+                    sysconf.getKillProcessSizeLimitMB(), sysconf.getMaxParallelBuilds());
             // TODO should use extension point!
             switch (data.getContext()) {
             case BUILDER:
@@ -106,9 +106,7 @@ public class Backend implements IStreamListener, IBackend {
                 break;
             case IDE:
                 site.call("erlide_builder_app", "init", "");
-                if (!SystemConfiguration.isHeadless()) {
-                    site.call("erlide_ide_app", "init", "");
-                }
+                site.call("erlide_ide_app", "init", "");
                 break;
             default:
             }

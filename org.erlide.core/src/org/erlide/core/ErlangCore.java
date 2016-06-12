@@ -68,11 +68,6 @@ public final class ErlangCore {
         if (SystemConfiguration.getInstance().isTest()) {
             dev += " test ***";
         }
-        if (SystemConfiguration.isHeadless()) {
-            dev += " headless";
-        } else {
-            dev += " ui";
-        }
 
         final String versionBanner = "*** starting Erlide v" + version + " *** " + dev;
         logger.log(Level.INFO, versionBanner);
