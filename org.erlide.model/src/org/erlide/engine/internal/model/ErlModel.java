@@ -832,8 +832,8 @@ public class ErlModel extends Openable implements IErlModel {
             public boolean visit(final IResourceDelta delta) {
                 final IResource resource = delta.getResource();
                 if (ModelConfig.verbose) {
-                    ErlLogger.debug("delta " + delta.getKind() + " for "
-                            + resource.getLocation());
+                    // ErlLogger.debug("delta " + delta.getKind() + " for "
+                    // + resource.getLocation());
                 }
                 final boolean erlangFile = resource.getType() == IResource.FILE
                         && CommonUtils.isErlangFileContentFileName(resource.getName());

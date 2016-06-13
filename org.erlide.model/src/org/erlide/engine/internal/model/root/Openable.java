@@ -65,9 +65,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
     @Override
     public synchronized void open(final IProgressMonitor monitor)
             throws ErlModelException {
-        if (ModelConfig.verbose) {
-            ErlLogger.debug("open " + isStructureKnown() + " > " + this);
-        }
         // open the parent if necessary
         openParent(monitor);
         if (monitor != null && monitor.isCanceled()) {
@@ -77,6 +74,9 @@ public abstract class Openable extends ErlElement implements IOpenable {
         // build the structure of the openable (this will open the buffer if
         // needed)
         if (!isStructureKnown()) {
+            if (ModelConfig.verbose) {
+                ErlLogger.debug("open " + isStructureKnown() + " > " + this);
+            }
             final boolean knownStructure = buildStructure(monitor);
             setStructureKnown(knownStructure);
         }
