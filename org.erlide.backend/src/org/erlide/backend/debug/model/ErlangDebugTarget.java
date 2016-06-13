@@ -494,15 +494,11 @@ public class ErlangDebugTarget extends ErlangDebugElement
     private void distributeDebuggerCode() {
         final List<String> debuggerModules = getDebuggerModules();
 
-        final List<OtpErlangTuple> modules = new ArrayList<>(
-                debuggerModules.size());
+        final List<OtpErlangTuple> modules = new ArrayList<>(debuggerModules.size());
         final String ver = backend.getRuntime().getVersion().asMajor().toString()
                 .toLowerCase();
         for (final String module : debuggerModules) {
-            OtpErlangBinary b = getDebuggerBeam(module, "org.erlide.kernel.debugger.otp");
-            if (b == null) {
-                b = getDebuggerBeam(module, "org.erlide.kernel.debugger");
-            }
+            final OtpErlangBinary b = getDebuggerBeam(module, "org.erlide.kernel");
             if (b != null) {
                 final OtpErlangString filename = new OtpErlangString(module + ".erl");
                 final OtpErlangTuple t = OtpErlang.mkTuple(new OtpErlangAtom(module),
@@ -577,21 +573,16 @@ public class ErlangDebugTarget extends ErlangDebugElement
     }
 
     private List<String> getDebuggerModules() {
-        final Bundle debugger = Platform.getBundle("org.erlide.kernel.debugger");
+        final Bundle debugger = Platform.getBundle("org.erlide.kernel");
         if (debugger == null) {
-            ErlLogger.warn("debugger bundle was not found...");
+            ErlLogger.warn("engine bundle was not found...");
             return new ArrayList<>();
         }
         final List<String> dbg_modules = getModulesFromBundle(debugger, null);
 
-        final Bundle debugger_otp = Platform.getBundle("org.erlide.kernel.debugger.otp");
-        if (debugger_otp == null) {
-            ErlLogger.error("debugger bundle was not found!");
-            return dbg_modules;
-        }
         final String ver = backend.getRuntime().getVersion().asMajor().toString()
                 .toLowerCase();
-        final List<String> dbg_otp_modules = getModulesFromBundle(debugger_otp, ver);
+        final List<String> dbg_otp_modules = getModulesFromBundle(debugger, ver);
 
         dbg_modules.addAll(dbg_otp_modules);
         return dbg_modules;
