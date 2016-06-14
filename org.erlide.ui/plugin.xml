@@ -2071,4 +2071,21 @@
               </includes>
         </viewerContentBinding>
     </extension>
+    <extension point="org.eclipse.e4.ui.css.swt.theme">
+      <stylesheet uri="css/dark_highlighting.css">
+        <themeid refid="org.eclipse.e4.ui.css.theme.e4_dark">
+        </themeid>
+      </stylesheet>
+      <stylesheet uri="css/light_highlighting.css">
+        <themeid refid="org.eclipse.e4.ui.css.theme.e4_default">
+        </themeid>
+      </stylesheet>
+      <stylesheet
+            uri="css/light_highlighting.css">
+         <themeid
+               refid="org.eclipse.e4.ui.css.theme.e4_classic">
+         </themeid>
+      </stylesheet>
+   </extension>
+
 </plugin>
