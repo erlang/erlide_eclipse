@@ -16,10 +16,10 @@ Require-Bundle: org.eclipse.ui,
  org.erlide.util,
  org.erlide.model.api,
  org.erlide.libs,
+ org.erlide.libs2;bundle-version="[1.16.1,2.0.0)",
  org.erlide.cover.core,
  org.erlide.cover.api,
- org.erlide.ui,
- org.apache.commons.io;bundle-version="2.2.0"
+ org.erlide.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,

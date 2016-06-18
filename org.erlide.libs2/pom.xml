@@ -10,7 +10,7 @@
 		<relativePath>../org.erlide.parent</relativePath>
 	</parent>
 
-	<artifactId>org.erlide.libs</artifactId>
+	<artifactId>org.erlide.libs2</artifactId>
 	<version>1.16.1-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 
@@ -24,6 +24,10 @@
 						<arg>-warn:none</arg>
 					</compilerArgs>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>

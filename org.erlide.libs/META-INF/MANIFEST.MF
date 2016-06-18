@@ -1,14 +1,17 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries
-Bundle-SymbolicName: org.erlide.libs;singleton:=true
+Bundle-SymbolicName: org.erlide.libs
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.16.1.qualifier
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ClassPath: libs.jar,javax.inject-1.jar,guava-17.0.jar,org.eclipse.xtend.lib-2.9.1.jar,org.eclipse.xtend.lib.macro-2.9.1.jar,org.eclipse.xtext.xbase.lib-2.9.1.jar
-Export-Package: com.ericsson.otp.erlang,
- com.google.common.annotations;version="14.0.1",
+Bundle-ClassPath: javax.inject-1.jar,
+ guava-17.0.jar,
+ org.eclipse.xtend.lib-2.9.1.jar,
+ org.eclipse.xtend.lib.macro-2.9.1.jar,
+ org.eclipse.xtext.xbase.lib-2.9.1.jar
+Export-Package: com.google.common.annotations;version="14.0.1",
  com.google.common.base;version="14.0.1",
  com.google.common.base.internal;version="14.0.1";x-internal:=true,
  com.google.common.cache;version="14.0.1",
@@ -26,8 +29,6 @@ Export-Package: com.ericsson.otp.erlang,
  com.google.common.xml,
  com.google.thirdparty.publicsuffix,
  javax.inject,
- nl.kii.util,
- org.eclipse.jdt.annotation,
  org.eclipse.xtend.lib,
  org.eclipse.xtend.lib.annotations;version="2.9.1",
  org.eclipse.xtend.lib.macro;version="2.9.1",
@@ -38,8 +39,4 @@ Export-Package: com.ericsson.otp.erlang,
  org.eclipse.xtend2.lib,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtext.xbase.lib.internal,
- org.eclipse.xtext.xbase.lib.util,
- org.erlide.annotations,
- org.fishwife.jrugged,
- org.incava.util.diff
-
+ org.eclipse.xtext.xbase.lib.util

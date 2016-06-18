@@ -21,6 +21,11 @@
 			<url>http://download.eclipse.org/releases/luna</url>
 		</repository>
 		<repository>
+			<id>luna updates</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/eclipse/updates/4.4</url>
+		</repository>
+		<repository>
 			<id>graphviz</id>
 			<layout>p2</layout>
 			<url>http://download.erlide.org/update/graphviz</url>
@@ -49,6 +54,7 @@
 		<module>../org.erlide.help</module>
 		<module>../org.erlide.kernel</module>
 		<module>../org.erlide.libs</module>
+		<module>../org.erlide.libs2</module>
 		<module>../org.erlide.licenses</module>
 		<module>../org.erlide.model</module>
 		<module>../org.erlide.model.api</module>
@@ -263,11 +269,13 @@
 						<execution>
 							<goals>
 								<goal>compile</goal>
+								<goal>xtend-install-debug-info</goal>
 								<goal>testCompile</goal>
+								<goal>xtend-test-install-debug-info</goal>
 							</goals>
 							<configuration>
-								<outputDirectory>${project.basedir}/xtend-gen</outputDirectory>
-								<testOutputDirectory>${project.basedir}/xtend-gen</testOutputDirectory>
+								<outputDirectory>${basedir}/xtend-gen</outputDirectory>
+								<testOutputDirectory>${basedir}/xtend-gen</testOutputDirectory>
 							</configuration>
 						</execution>
 					</executions>

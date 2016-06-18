@@ -6,7 +6,8 @@ Bundle-Version: 0.50.0.qualifier
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
- org.erlide.libs;bundle-version="1.12.0"
+ org.erlide.libs;bundle-version="1.12.0",
+ org.erlide.libs2;bundle-version="[1.16.1,2.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.util,
