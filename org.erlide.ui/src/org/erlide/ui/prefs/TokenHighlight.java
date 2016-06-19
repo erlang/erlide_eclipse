@@ -10,32 +10,36 @@ import org.osgi.service.prefs.Preferences;
 
 public enum TokenHighlight {
     //@formatter:off
-    DEFAULT,
-    KEYWORD,
-    ATOM,
-    MACRO,
-    ARROW,
-    CHAR,
-    VARIABLE,
-    INTEGER,
-    FLOAT,
+    DEFAULT(new RGB(0,0,0),0),
+    KEYWORD(new RGB(160,32,240),1),
+    ATOM(new RGB(0,0,0),0),
+    MACRO(new RGB(95,158,160),0),
+    ARROW(new RGB(0,0,255),0),
+    CHAR(new RGB(188,143,143),0),
+    VARIABLE(new RGB(184,134,11),0),
+    INTEGER(new RGB(90,90,180),0),
+    FLOAT(new RGB(0,0,128),0),
 
-    COMMENT,
-    EDOC_TAG("EDoc tag (in comments)"),
-    HTML_TAG("HTML tag (in comments)"),
+    COMMENT(new RGB(130,34,34),0),
+    EDOC_TAG(new RGB(130,34,34),1,"EDoc tag (in comments)"),
+    HTML_TAG(new RGB(179,106,106),0,"HTML tag (in comments)"),
 
-    STRING,
-    ESCAPE_TAG("Escaped chars (in strings)"),
-    TILDE_TAG("Format specifiers (in strings)");
+    STRING(new RGB(183,143,143),0),
+    ESCAPE_TAG(new RGB(183,143,143),1,"Escaped chars (in strings)"),
+    TILDE_TAG(new RGB(183,143,143),1,"Format specifiers (in strings)");
     //@formatter:on
 
+    private final RGB defaultColor;
+    int defaultStyle;
     private final String displayName;
 
-    private TokenHighlight() {
-        this(null);
+    private TokenHighlight(RGB defaultColor, int defaultStyle) {
+        this(defaultColor, defaultStyle, null);
     }
 
-    private TokenHighlight(final String displayName) {
+    private TokenHighlight(RGB defaultColor, int defaultStyle, final String displayName) {
+        this.defaultColor = defaultColor;
+        this.defaultStyle = defaultStyle;
         this.displayName = displayName;
     }
 
@@ -82,8 +86,15 @@ public enum TokenHighlight {
         }
 
         final String colorString = store.getString(getColorKey());
-        final RGB color = StringConverter.asRGB(colorString);
-        final int styles = store.getInt(getStylesKey());
+        RGB color;
+        int styles;
+        try {
+            color = StringConverter.asRGB(colorString);
+            styles = store.getInt(getStylesKey());
+        } catch (final Exception e) {
+            color = defaultColor;
+            styles = defaultStyle;
+        }
         return new HighlightStyle(color, styles);
     }
 
