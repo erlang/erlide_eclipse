@@ -6,6 +6,8 @@ deps/
 *.plt
 erl_crash.dump
 target/
+xtend-gen/
+!xtend-gen/.keep
 
 .vagrant
 *.class
@@ -51,4 +53,3 @@ junit.xml
 *.xtendbin
 .gradle
 build/
-xtend-gen/
