@@ -69,7 +69,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
 
         RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoCatalog()
                 .getRuntime(config.getAttribute(ErlRuntimeAttributes.RUNTIME_NAME, ""));
-        if (runtimeInfo == null) {
+        if (runtimeInfo == null || !runtimeInfo.isValid()) {
             runtimeInfo = BackendCore.getRuntimeInfoCatalog().getDefaultRuntime();
         }
         if (runtimeInfo == null) {

@@ -5,6 +5,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.erlide.backend.api.BackendData;
+import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.backend.launch.ErlangLaunchDelegate;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.core.CoverBackend;
@@ -52,6 +53,7 @@ public class CoverLaunchConfigurationDelegate extends ErlangLaunchDelegate {
         myData.setReportErrors(true);
         myData.setNodeName(CoverBackend.NODE_NAME);
         myData.setUseStartShell(true);
+        myData.setContext(CodeContext.DEBUGGER);
         return myData;
     }
 
