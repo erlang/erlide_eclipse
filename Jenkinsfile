@@ -10,7 +10,7 @@ node {
 		stage 'Compile'
 			wrap([$class: 'Xvfb', additionalOptions: '', assignedLabels: '', displayNameOffset: 1, installationName: 'xvfb', screen: '1024x768x24']) {
 				dir('org.erlide.parent') {
-					sh "mvn -B clean verify -fn -Dmaven.test.failure.ignore"
+					sh "./mvnw -B -U clean verify -P help -Dmaven.test.failure.ignore=true"
 				}
 			}
 
