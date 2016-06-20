@@ -16,11 +16,7 @@
 
 	<profiles>
 		<profile>
-			<activation>
-				<os>
-					<family>!windows</family>
-				</os>
-			</activation>
+			<id>help</id>
 			<build>
 				<plugins>
 					<plugin>
