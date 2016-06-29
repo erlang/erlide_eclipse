@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
-import java.util.List;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
@@ -24,14 +22,13 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.erlide.ui.editors.erl.scanner.ErlDamagerRepairer;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.prefs.SyntaxColorPreviewHighlightScanner;
-import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.util.IColorManager;
 
 public class SyntaxColorPreviewEditorConfiguration
         extends ErlangSourceViewerConfiguration {
 
     public SyntaxColorPreviewEditorConfiguration(final IPreferenceStore store,
-            final IColorManager lcolorManager, final List<TokenHighlight> styles) {
+            final IColorManager lcolorManager) {
         super(store, lcolorManager);
         codeScanner = new SyntaxColorPreviewHighlightScanner(colorManager, store);
     }

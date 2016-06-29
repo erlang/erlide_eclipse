@@ -42,8 +42,8 @@ public class BackendShell implements IBackendShell {
         this.backend = backend;
         fId = id;
         this.server = server;
-        requests = new ArrayList<IoRequest>(1000);
-        listeners = new ArrayList<BackendShellListener>();
+        requests = new ArrayList<>(1000);
+        listeners = new ArrayList<>();
     }
 
     @Override
@@ -177,7 +177,7 @@ public class BackendShell implements IBackendShell {
 
     @Override
     public List<IoRequest> getAllFrom(final OtpErlangPid sender) {
-        final List<IoRequest> result = new ArrayList<IoRequest>();
+        final List<IoRequest> result = new ArrayList<>();
         synchronized (requests) {
             for (final IoRequest element : requests) {
                 if (element.getSender().equals(sender)) {

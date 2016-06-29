@@ -120,7 +120,7 @@ public class RefactoringHandler extends AbstractHandler {
         WranglerRefactoring refactoring = null;
         final String actionId = event.getCommand().getId();
 
-        final ArrayList<WranglerPage> pages = new ArrayList<WranglerPage>();
+        final ArrayList<WranglerPage> pages = new ArrayList<>();
 
         // apply ad hoc refactoring
         if (actionId.equals("org.erlide.wrangler.refactoring.adhoc")) {

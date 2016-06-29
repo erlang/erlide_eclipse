@@ -44,7 +44,7 @@ public class RpcMonitor {
             this.node = node;
             this.module = module;
             this.fun = fun;
-            this.args = new SoftReference<Collection<OtpErlangObject>>(
+            this.args = new SoftReference<>(
                     Collections.unmodifiableCollection(Lists.newArrayList(args)));
             this.size = size;
         }
@@ -70,7 +70,7 @@ public class RpcMonitor {
             args = data.args;
             final Collection<OtpErlangObject> collection = args.get();
             argsSize = collection == null ? 0 : collection.size();
-            this.result = new SoftReference<OtpErlangObject>(result);
+            this.result = new SoftReference<>(result);
             callTime = data.startTime;
             this.answerTime = answerTime;
             callSize = data.size;
@@ -170,13 +170,9 @@ public class RpcMonitor {
     }
 
     public static void dump(final String fileName, final int n, final boolean full) {
-        try {
-            final PrintStream os = new PrintStream(new FileOutputStream(fileName, true));
-            try {
-                dump(os, n, full);
-            } finally {
-                os.close();
-            }
+        try (final PrintStream os = new PrintStream(
+                new FileOutputStream(fileName, true))) {
+            dump(os, n, full);
         } catch (final FileNotFoundException e) {
             ErlLogger.error(e);
         }

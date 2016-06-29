@@ -1,7 +1,5 @@
 package org.erlide.util;
 
-import org.eclipse.core.runtime.Platform;
-
 public final class SystemConfiguration {
 
     private static SystemConfiguration instance = new SystemConfiguration();
@@ -135,9 +133,5 @@ public final class SystemConfiguration {
 
     public int getMaxParallelBuilds() {
         return maxParallelBuilds;
-    }
-
-    public static boolean isHeadless() {
-        return Platform.getBundle("org.erlide.ui") == null;
     }
 }

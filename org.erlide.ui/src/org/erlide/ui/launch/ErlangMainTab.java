@@ -72,7 +72,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
         Collection<IErlProject> projects;
         try {
             projects = ErlangEngine.getInstance().getModel().getErlangProjects();
-            final List<String> ps = new ArrayList<String>();
+            final List<String> ps = new ArrayList<>();
             for (final IErlProject p : projects) {
                 ps.add(p.getName());
             }
@@ -161,7 +161,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
         @Override
         public Object[] getElements(final Object inputElement) {
-            final java.util.List<String> ps = new ArrayList<String>();
+            final java.util.List<String> ps = new ArrayList<>();
 
             final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
                     .getProjects();
@@ -305,7 +305,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
     public List<IProject> getSelectedProjects() {
         final Object[] sel = projectsTable.getCheckedElements();
-        final List<IProject> result = new ArrayList<IProject>();
+        final List<IProject> result = new ArrayList<>();
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         for (final Object o : sel) {
             final String p = (String) o;

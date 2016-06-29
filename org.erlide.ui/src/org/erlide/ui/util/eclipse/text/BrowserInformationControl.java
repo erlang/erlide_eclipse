@@ -10,18 +10,12 @@
  *******************************************************************************/
 package org.erlide.ui.util.eclipse.text;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.either;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.AbstractInformationControl;
@@ -52,15 +46,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Slider;
 
 /**
- * Displays HTML information in a {@link org.eclipse.swt.browser.Browser}
- * widget.
+ * Displays HTML information in a {@link org.eclipse.swt.browser.Browser} widget.
  * <p>
- * This {@link IInformationControlExtension2} expects {@link #setInput(Object)}
- * to be called with an argument of type {@link BrowserInformationControlInput}.
+ * This {@link IInformationControlExtension2} expects {@link #setInput(Object)} to be
+ * called with an argument of type {@link BrowserInformationControlInput}.
  * </p>
  * <p>
- * Moved into this package from
- * <code>org.eclipse.jface.internal.text.revisions</code>.
+ * Moved into this package from <code>org.eclipse.jface.internal.text.revisions</code>.
  * </p>
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -80,12 +72,11 @@ public class BrowserInformationControl extends AbstractInformationControl
         implements IInformationControlExtension2, IDelayedInputChangeProvider {
 
     /**
-     * Tells whether the SWT Browser widget and hence this information control
-     * is available.
+     * Tells whether the SWT Browser widget and hence this information control is
+     * available.
      *
      * @param parent
-     *            the parent component used for checking or <code>null</code> if
-     *            none
+     *            the parent component used for checking or <code>null</code> if none
      * @return <code>true</code> if this control is available
      */
     public static boolean isAvailable(final Composite parent) {
@@ -150,16 +141,15 @@ public class BrowserInformationControl extends AbstractInformationControl
     private BrowserInformationControlInput fInput;
 
     /**
-     * <code>true</code> iff the browser has completed loading of the last input
-     * set via {@link #setInformation(String)}.
+     * <code>true</code> iff the browser has completed loading of the last input set via
+     * {@link #setInformation(String)}.
      *
      * @since 3.4
      */
     private boolean fCompleted = false;
 
     /**
-     * The listener to be notified when a delayed location changing event
-     * happened.
+     * The listener to be notified when a delayed location changing event happened.
      *
      * @since 3.4
      */
@@ -174,8 +164,8 @@ public class BrowserInformationControl extends AbstractInformationControl
             ListenerList.IDENTITY);
 
     /**
-     * The symbolic name of the font used for size computations, or
-     * <code>null</code> to use dialog font.
+     * The symbolic name of the font used for size computations, or <code>null</code> to
+     * use dialog font.
      *
      * @since 3.4
      */
@@ -207,8 +197,8 @@ public class BrowserInformationControl extends AbstractInformationControl
      * @param symbolicFontName
      *            the symbolic name of the font used for size computations
      * @param statusFieldText
-     *            the text to be used in the optional status field or
-     *            <code>null</code> if the status field should be hidden
+     *            the text to be used in the optional status field or <code>null</code> if
+     *            the status field should be hidden
      * @since 3.4
      */
     public BrowserInformationControl(final Shell parent, final String symbolicFontName,
@@ -237,8 +227,7 @@ public class BrowserInformationControl extends AbstractInformationControl
     }
 
     /*
-     * @see
-     * org.eclipse.jface.text.AbstractInformationControl#createContent(org.eclipse
+     * @see org.eclipse.jface.text.AbstractInformationControl#createContent(org.eclipse
      * .swt.widgets.Composite)
      */
     @Override
@@ -302,10 +291,6 @@ public class BrowserInformationControl extends AbstractInformationControl
      */
     @Override
     public void setInput(final Object input) {
-        assertThat(input, is(not(nullValue())));
-        assertThat(input, is(either(instanceOf(String.class))
-                .or(instanceOf(BrowserInformationControlInput.class))));
-
         if (input instanceof String) {
             setInformation((String) input);
             return;
@@ -352,9 +337,9 @@ public class BrowserInformationControl extends AbstractInformationControl
         content = buffer.toString();
 
         /*
-         * Should add some JavaScript here that shows something like
-         * "(continued...)" or "..." at the end of the visible area when the
-         * page overflowed with "overflow:hidden;".
+         * Should add some JavaScript here that shows something like "(continued...)" or
+         * "..." at the end of the visible area when the page overflowed with
+         * "overflow:hidden;".
          */
 
         fCompleted = false;
@@ -382,10 +367,9 @@ public class BrowserInformationControl extends AbstractInformationControl
         }
 
         /*
-         * The Browser widget flickers when made visible while it is not
-         * completely loaded. The fix is to delay the call to setVisible until
-         * either loading is completed (see ProgressListener in constructor), or
-         * a timeout has been reached.
+         * The Browser widget flickers when made visible while it is not completely
+         * loaded. The fix is to delay the call to setVisible until either loading is
+         * completed (see ProgressListener in constructor), or a timeout has been reached.
          */
         final Display display = shell.getDisplay();
 
@@ -411,8 +395,8 @@ public class BrowserInformationControl extends AbstractInformationControl
         }
 
         /*
-         * Avoids flickering when replacing hovers, especially on Vista in
-         * ON_CLICK mode. Causes flickering on GTK. Carbon does not care.
+         * Avoids flickering when replacing hovers, especially on Vista in ON_CLICK mode.
+         * Causes flickering on GTK. Carbon does not care.
          */
         if ("win32".equals(SWT.getPlatform())) {
             shell.moveAbove(null);
@@ -488,20 +472,12 @@ public class BrowserInformationControl extends AbstractInformationControl
         // Furthermore, the indentation of <dl><dd> elements is too small (e.g
         // with a long @see line)
         final TextPresentation presentation = new TextPresentation();
-        final HTML2TextReader reader = new HTML2TextReader(
-                new StringReader(fInput.getHtml()), presentation);
         String text;
-        try {
-            try {
-                text = reader.getString();
-            } catch (final IOException e) {
-                text = ""; //$NON-NLS-1$
-            }
-        } finally {
-            try {
-                reader.close();
-            } catch (final IOException e) {
-            }
+        try (final HTML2TextReader reader = new HTML2TextReader(
+                new StringReader(fInput.getHtml()), presentation)) {
+            text = reader.getString();
+        } catch (final IOException e) {
+            text = ""; //$NON-NLS-1$
         }
 
         fTextLayout.setText(text);
@@ -574,8 +550,8 @@ public class BrowserInformationControl extends AbstractInformationControl
     }
 
     /**
-     * Adds the listener to the collection of listeners who will be notified
-     * when the current location has changed or is about to change.
+     * Adds the listener to the collection of listeners who will be notified when the
+     * current location has changed or is about to change.
      *
      * @param listener
      *            the location listener
@@ -612,21 +588,21 @@ public class BrowserInformationControl extends AbstractInformationControl
     }
 
     /**
-     * Adds a listener for input changes to this input change provider. Has no
-     * effect if an identical listener is already registered.
+     * Adds a listener for input changes to this input change provider. Has no effect if
+     * an identical listener is already registered.
      *
      * @param inputChangeListener
      *            the listener to add
      * @since 3.4
      */
-    public void addInputChangeListener(final IInputChangedListener inputChangeListener) {
-        assertThat(inputChangeListener, is(not(nullValue())));
+    public void addInputChangeListener(
+            @NonNull final IInputChangedListener inputChangeListener) {
         fInputChangeListeners.add(inputChangeListener);
     }
 
     /**
-     * Removes the given input change listener from this input change provider.
-     * Has no effect if an identical listener is not registered.
+     * Removes the given input change listener from this input change provider. Has no
+     * effect if an identical listener is not registered.
      *
      * @param inputChangeListener
      *            the listener to remove
@@ -639,8 +615,7 @@ public class BrowserInformationControl extends AbstractInformationControl
 
     /*
      * @see org.eclipse.jface.text.IDelayedInputChangeProvider#
-     * setDelayedInputChangeListener
-     * (org.eclipse.jface.text.IInputChangedListener)
+     * setDelayedInputChangeListener (org.eclipse.jface.text.IInputChangedListener)
      *
      * @since 3.4
      */
@@ -653,8 +628,8 @@ public class BrowserInformationControl extends AbstractInformationControl
     /**
      * Tells whether a delayed input change listener is registered.
      *
-     * @return <code>true</code> iff a delayed input change listener is
-     *         currently registered
+     * @return <code>true</code> iff a delayed input change listener is currently
+     *         registered
      * @since 3.4
      */
     public boolean hasDelayedInputChangeListener() {
@@ -694,8 +669,7 @@ public class BrowserInformationControl extends AbstractInformationControl
     }
 
     /*
-     * @see
-     * org.eclipse.jface.text.IInformationControlExtension5#computeSizeConstraints
+     * @see org.eclipse.jface.text.IInformationControlExtension5#computeSizeConstraints
      * (int, int)
      */
     @Override

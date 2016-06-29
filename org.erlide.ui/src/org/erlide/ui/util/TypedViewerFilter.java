@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
@@ -37,8 +32,8 @@ public class TypedViewerFilter extends ViewerFilter {
     }
 
     /**
-     * Creates a filter that only allows elements of gives types, but not from a
-     * list of rejected elements.
+     * Creates a filter that only allows elements of gives types, but not from a list of
+     * rejected elements.
      *
      * @param acceptedTypes
      *            Accepted elements must be of this types
@@ -47,14 +42,13 @@ public class TypedViewerFilter extends ViewerFilter {
      */
     public TypedViewerFilter(final Class<?>[] acceptedTypes,
             final Object[] rejectedElements) {
-        assertThat(acceptedTypes, is(not(nullValue())));
         fAcceptedTypes = acceptedTypes;
         fRejectedElements = rejectedElements;
     }
 
     /**
-     * @see ViewerFilter#select(org.eclipse.jface.viewers.Viewer,
-     *      java.lang.Object, java.lang.Object)
+     * @see ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object,
+     *      java.lang.Object)
      */
     @Override
     public boolean select(final Viewer viewer, final Object parentElement,

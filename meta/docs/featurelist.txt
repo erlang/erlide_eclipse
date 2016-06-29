@@ -1,0 +1,121 @@
+Editors
+
+To a large extend, editors are the main feature of the Eclipse platform.
+Most of the complexity of the Eclipse platform centers on the functionality of
+editors. Most editors are pure text editors and an editor usually corresponds
+to a specific content type (e.g. Java, XML or properties). This is not a
+requirement though. An editor can be purely graphical or property-sheet like
+or it can handle a number of files at a time. One such example is the
+plugin.xml editor of PDE.
+
+New editors are typically constructed for internal languages that are important
+in the development environment.
+
+For a non-trivial language there are a clear relationship between the
+functionality of the editor and the increased productivity. The typical Eclipse
+editor plug-in has a number of functions.
+
+Syntax-based coloring
+    This is the ability to color the different parts of the text of an editor
+    according to the syntactical meaning. E.g. strings, comments and keywords
+    are each colored using a different color. The level of syntax-based
+    coloring that can be performed depends on the language.
+Syntax parsing along with reporting of problems (in the Problems view).
+    The text of the editor is parsed with a very forgiving parser that builds
+    an abstract syntax tree (AST) as the result. This AST is essential for
+    most of the functionality listed below. As a by product any syntax errors
+    are registered in the Eclipse platform so they show up in the existing
+    "Problems" view.
+Semantics analysis of the AST
+    When the text of an editor has been completely parsed, the resulting AST
+    can be analyzed further to find semantics errors. This can be as simple
+    as undefined names but also complex issues with constants of wrong type or
+    other issues involving more than one statement of the text.
+Semantics-based coloring
+    This is an extension of the syntax-based coloring, where the coloring of
+    specific tokens (e.g. identifiers) is based on the actual use of the token
+    (e.g. whether it is a class, a variable, a method, etc).
+Outline view
+    Most non-trivial languages have a concept of nesting –
+    e.g. in Java the individual method declarations are enclosed in classes and
+    in SQL the individual attributes are in table definitions. The actual
+    nesting in an editor can be presented in the "Outline" view. Even for
+    languages without nesting, the Outline view can be used to navigate the
+    editor in a easy manner. Outline views can be extended in various manners
+    to include filtering and sorting of the items in the view.
+Folding based on syntax
+    The nesting information used for the Outline view can also be used to
+    support folding in the editor. This way it is possible to hide specific
+    sections of the text and by this ease the understanding of the rest of
+    the text. Folding can also including comments and strings if these take up
+    a larger part of the text.
+Hover help
+    Hover help is the help that shows up when the pointer hovers above a token
+    with some associated help. The help can be any relevant string, but often
+    is a comment that is specified in connection with the definition of the
+    token. Hover help often also includes information about any relevant
+    problems that are detected at this point in the editor.
+Templates
+    The use of templates can enhance the productivity a lot when the text
+    contains many sections that are very similar. It is possible for the user
+    to create new templates as needed. Templates can include substitutions,
+    including substitutions based on the specific position where the template
+    is inserted - e.g. the name of the class in Java.
+Quick fixes
+    Many errors found during the syntax parsing and the subsequent semantics
+    checks are due to minor and trivial errors and can easily be fixed
+    semi-automatically. Trivial examples are many spelling errors (e.g. missing
+    letters in keywords) and missing punctuation, but also many cases with
+    missing declarations of names, constants of wrong type and similar global
+    issues.
+Content Assist
+    Content Assist is an extension to the quick fixes where no error needs to
+    be present. This is primary used to assist the user in choosing the correct
+    changes to the text of the editor.
+Refactoring
+    The refactoring support is a safe way to make changes to an existing
+    (correct) text. A trivial example is to change an identifier across
+    multiple files (possibly even for different languages). More complex
+    examples can be to exact certain parts of the text to exteanal files or
+    changes to the signature of classes or functions.
+Content Sensitive Search
+    The Eclipse platform has a built-in text search command that can search
+    for a specific string in any number of files. This command can be enhanced
+    to only search specific types of information - e.g. only class names or
+    method names.
+Preference Pages
+    All of the above functionality can be handled in a number of ways and in
+    some cases it is beneficial to allow the user to customize the exact
+    behavior. This is done via preference pages. Properly formatted preference
+    pages allow the user to search for specific options across all preference
+    pages.
+
+The functionality of an editor is divided into the simple functionality and
+the more complex functionality depending on whether it is necessary to parse
+the text or not.
+
+
+Views
+
+Views in Eclipse are used to display non-modal information. Most views are
+either tied into a specific type of editor and shows information about the
+active editor or the views show global information pertaining to the complete
+Eclipse platform or some running tasks.
+
+The following is some of the more important views from the Eclipse platform
+that all can be extended.
+
+Problems
+    Shows the found problems. The view includes some very advanced filtering
+    capabilities to limit the shown problems.
+Outline
+    Shows an outline of the current active editor (usually) in terms of the
+    nested structure of the language of the editor - e.g. classes, methods and
+    fields for Java.
+Search
+    Shows the results of the current set of active searches. Again, can
+    filtering be used to limit the found occurrences.
+Tasks
+    Shows the identified tasks in the currently opened projects. As before,
+    can filtering be used to limit the shown items.
+

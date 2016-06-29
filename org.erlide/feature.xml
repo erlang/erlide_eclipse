@@ -2,7 +2,7 @@
 <feature
       id="org.erlide"
       label="Erlang language tools IDE"
-      version="0.33.0.qualifier"
+      version="0.50.0.qualifier"
       provider-name="%vendorName"
       plugin="org.erlide.branding"
       image="erlang-64.gif"
@@ -14,7 +14,7 @@
       This feature provides Erlang IDE support for Eclipse.
 
 For bug reports and feature requests, please use the tracker
-at https://github.com/erlide/erlide/issues.
+at https://github.com/erlang/erlide_eclipse/issues.
    </description>
 
    <copyright>
@@ -152,12 +152,6 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.erlide.cover.erlang"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.erlide.cover.ui"
          download-size="0"
          install-size="0"
@@ -166,6 +160,13 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.erlide.tracing.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.libs2"
          download-size="0"
          install-size="0"
          version="0.0.0"

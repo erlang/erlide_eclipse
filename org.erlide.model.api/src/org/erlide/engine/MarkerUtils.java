@@ -329,31 +329,26 @@ public final class MarkerUtils {
     }
 
     public static void getScanMarkersFor(final IResource resource) {
-        try {
-            final BufferedReader reader = new BufferedReader(
-                    new FileReader(resource.getLocation().toPortableString()));
-            try {
-                String line = reader.readLine();
-                final List<Pair<String, Integer>> cl = new ArrayList<Pair<String, Integer>>();
-                int numline = 0;
-                while (line != null) {
-                    if (line.matches(TODO_XXX_FIXME_PATTERN)) {
-                        cl.add(new Pair<String, Integer>(line, numline));
-                    }
-                    numline++;
-                    line = reader.readLine();
+        try (final BufferedReader reader = new BufferedReader(
+                new FileReader(resource.getLocation().toPortableString()))) {
+            String line = reader.readLine();
+            final List<Pair<String, Integer>> cl = new ArrayList<>();
+            int numline = 0;
+            while (line != null) {
+                if (line.matches(TODO_XXX_FIXME_PATTERN)) {
+                    cl.add(new Pair<>(line, numline));
                 }
+                numline++;
+                line = reader.readLine();
+            }
 
-                for (final Pair<String, Integer> c : cl) {
-                    createTaskMarkerAtText(resource, c.getValue(), c.getKey(), TODO_TAG,
-                            IMarker.PRIORITY_NORMAL);
-                    createTaskMarkerAtText(resource, c.getValue(), c.getKey(), XXX_TAG,
-                            IMarker.PRIORITY_NORMAL);
-                    createTaskMarkerAtText(resource, c.getValue(), c.getKey(), FIXME_TAG,
-                            IMarker.PRIORITY_HIGH);
-                }
-            } finally {
-                reader.close();
+            for (final Pair<String, Integer> c : cl) {
+                createTaskMarkerAtText(resource, c.getValue(), c.getKey(), TODO_TAG,
+                        IMarker.PRIORITY_NORMAL);
+                createTaskMarkerAtText(resource, c.getValue(), c.getKey(), XXX_TAG,
+                        IMarker.PRIORITY_NORMAL);
+                createTaskMarkerAtText(resource, c.getValue(), c.getKey(), FIXME_TAG,
+                        IMarker.PRIORITY_HIGH);
             }
         } catch (final IOException e) {
         }

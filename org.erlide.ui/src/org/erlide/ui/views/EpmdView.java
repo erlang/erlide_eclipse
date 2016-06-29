@@ -49,7 +49,7 @@ public class EpmdView extends ViewPart implements IEpmdListener {
             if (parentElement instanceof String) {
                 final String host = (String) parentElement;
                 final List<String> h = model.get(host);
-                final List<String> res = new ArrayList<String>();
+                final List<String> res = new ArrayList<>();
                 if (h != null) {
                     for (final String s : h) {
                         if (!s.startsWith("jerlide_")) {

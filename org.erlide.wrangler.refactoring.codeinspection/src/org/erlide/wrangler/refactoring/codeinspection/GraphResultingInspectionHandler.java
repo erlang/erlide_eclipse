@@ -134,8 +134,7 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
             final Boolean b = WranglerBackendManager.getRefactoringBackend()
                     .callSimpleInspection(functionName, signature, parameters);
             if (b) {
-                final FileInputStream fis = new FileInputStream(tmpFile);
-                try {
+                try (final FileInputStream fis = new FileInputStream(tmpFile)) {
                     if (fis.available() > 0) {
 
                         final Image img = GraphViz.load(fis, "png", new Point(0, 0));
@@ -146,8 +145,6 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
                                 GlobalParameters.getEditor().getSite().getShell(),
                                 viewtTitle, noResultMessage);
                     }
-                } finally {
-                    fis.close();
                 }
             } else {
                 MessageDialog.openError(GlobalParameters.getEditor().getSite().getShell(),

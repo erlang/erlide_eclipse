@@ -358,6 +358,7 @@ public class ErlModel extends Openable implements IErlModel {
             }
             return findProject(project);
         } catch (final CoreException e) {
+            e.printStackTrace();
             throw new ErlModelException(e, new ErlModelStatus(e));
         }
     }
@@ -489,8 +490,8 @@ public class ErlModel extends Openable implements IErlModel {
         // | ElementChangedEvent.POST_RECONCILE);
     }
 
-    private static Map<Object, IErlModule> moduleMap = new HashMap<Object, IErlModule>();
-    private static Map<IErlModule, Object> mapModule = new HashMap<IErlModule, Object>();
+    private static Map<Object, IErlModule> moduleMap = new HashMap<>();
+    private static Map<IErlModule, Object> mapModule = new HashMap<>();
 
     @Override
     public IErlModule getModuleFromFile(final IParent parent, final String name,
@@ -832,8 +833,8 @@ public class ErlModel extends Openable implements IErlModel {
             public boolean visit(final IResourceDelta delta) {
                 final IResource resource = delta.getResource();
                 if (ModelConfig.verbose) {
-                    ErlLogger.debug("delta " + delta.getKind() + " for "
-                            + resource.getLocation());
+                    // ErlLogger.debug("delta " + delta.getKind() + " for "
+                    // + resource.getLocation());
                 }
                 final boolean erlangFile = resource.getType() == IResource.FILE
                         && CommonUtils.isErlangFileContentFileName(resource.getName());

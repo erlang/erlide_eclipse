@@ -32,7 +32,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
 
     protected static List<String> getPreferences(final String dialogKey,
             final String[] keys, final String[] defaults) {
-        final List<String> l = new ArrayList<String>(keys.length);
+        final List<String> l = new ArrayList<>(keys.length);
         final Preferences node = ErlideUIPlugin.getPrefsNode();
         for (int i = 0; i < keys.length; ++i) {
             final String s = node.get(dialogKey + "/" + keys[i], //$NON-NLS-1$
@@ -62,7 +62,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
 
     @SuppressWarnings("boxing")
     protected static List<Boolean> getBooleanPreferences(final List<String> p) {
-        final List<Boolean> l = new ArrayList<Boolean>(p.size());
+        final List<Boolean> l = new ArrayList<>(p.size());
         for (final String i : p) {
             l.add(!"0".equals(i) && !"false".equals(i)); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -198,7 +198,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
         gd.horizontalSpan = 2;
         checkBox.setLayoutData(gd);
 
-        return new Pair<Button, String>(checkBox, getDialogPreferenceKey() + "/" + key);
+        return new Pair<>(checkBox, getDialogPreferenceKey() + "/" + key);
     }
 
     protected abstract String getDialogPreferenceKey();
@@ -222,7 +222,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
             textControl.addModifyListener(getNumberFieldListener());
             fNumberFields.add(textControl);
         }
-        return new Pair<Text, String>(textControl, getDialogPreferenceKey() + "/" + key);
+        return new Pair<>(textControl, getDialogPreferenceKey() + "/" + key);
     }
 
     protected void numberFieldChanged(final Text textControl) {

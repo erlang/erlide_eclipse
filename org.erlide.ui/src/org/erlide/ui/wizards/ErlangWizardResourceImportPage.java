@@ -44,7 +44,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     // initial value stores
     // private String initialContainerFieldValue;
 
-    protected java.util.List<Object> selectedTypes = new ArrayList<Object>();
+    protected java.util.List<Object> selectedTypes = new ArrayList<>();
 
     // widgets
     private String containerNameField;
@@ -376,7 +376,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
         dialog.open();
         final Object[] newSelectedTypes = dialog.getResult();
         if (newSelectedTypes != null) { // ie.- did not press Cancel
-            selectedTypes = new ArrayList<Object>(newSelectedTypes.length);
+            selectedTypes = new ArrayList<>(newSelectedTypes.length);
             for (int i = 0; i < newSelectedTypes.length; i++) {
                 selectedTypes.add(newSelectedTypes[i]);
             }
@@ -577,7 +577,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      *            the entry to add to the history
      */
     protected String[] addToHistory(final String[] history, final String newEntry) {
-        final java.util.ArrayList<String> l = new java.util.ArrayList<String>(
+        final java.util.ArrayList<String> l = new java.util.ArrayList<>(
                 Arrays.asList(history));
         addToHistory(l, newEntry);
         final String[] r = new String[l.size()];

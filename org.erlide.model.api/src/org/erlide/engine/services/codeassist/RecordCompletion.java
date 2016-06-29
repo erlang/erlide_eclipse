@@ -36,7 +36,7 @@ public class RecordCompletion {
                 prefix = prefix.substring(0, prefix.length() - 1);
             }
         }
-        fields = new ArrayList<String>(fieldL.arity());
+        fields = new ArrayList<>(fieldL.arity());
         for (final OtpErlangObject object : fieldL) {
             final OtpErlangAtom f = (OtpErlangAtom) object;
             getFields().add(f.atomValue());

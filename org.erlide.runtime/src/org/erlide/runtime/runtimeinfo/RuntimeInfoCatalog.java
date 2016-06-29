@@ -192,7 +192,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
     }
 
     private void setDefaultRuntimes() {
-        final List<RuntimeInfo> list = new ArrayList<RuntimeInfo>(getRuntimes());
+        final List<RuntimeInfo> list = new ArrayList<>(getRuntimes());
         Collections.sort(list, new Comparator<RuntimeInfo>() {
             @Override
             public int compare(final RuntimeInfo o1, final RuntimeInfo o2) {

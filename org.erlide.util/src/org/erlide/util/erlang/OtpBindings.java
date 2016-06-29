@@ -32,7 +32,7 @@ public final class OtpBindings implements Map<String, OtpErlangObject> {
     private final Map<String, OtpErlangObject> bindings;
 
     public OtpBindings() {
-        bindings = new HashMap<String, OtpErlangObject>();
+        bindings = new HashMap<>();
     }
 
     public OtpBindings(final OtpBindings binds) {

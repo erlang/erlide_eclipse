@@ -260,7 +260,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
 
     private ArrayList<IErlElement> processFunctionResult(final Shell shell,
             final RpcResult result) throws OtpErlangRangeException {
-        final ArrayList<IErlElement> elements = new ArrayList<IErlElement>();
+        final ArrayList<IErlElement> elements = new ArrayList<>();
         final OtpErlangObject obj = result.getValue();
         final OtpErlangTuple restuple = (OtpErlangTuple) obj;
         final OtpErlangAtom resindicator = (OtpErlangAtom) restuple.elementAt(0);
@@ -353,8 +353,8 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
                             wranglerSelection.getFilePath(),
                             wranglerSelection.getSearchPath());
 
-            ArrayList<IErlElement> modules1 = new ArrayList<IErlElement>();
-            ArrayList<IErlElement> modules2 = new ArrayList<IErlElement>();
+            ArrayList<IErlElement> modules1 = new ArrayList<>();
+            ArrayList<IErlElement> modules2 = new ArrayList<>();
 
             final OtpErlangObject obj = res.getValue();
             final OtpErlangTuple restuple = (OtpErlangTuple) obj;
@@ -392,7 +392,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
     }
 
     private ArrayList<IErlElement> createErlModuleList(final OtpErlangList modList) {
-        final ArrayList<IErlElement> modules = new ArrayList<IErlElement>();
+        final ArrayList<IErlElement> modules = new ArrayList<>();
         for (int i = 0; i < modList.arity(); ++i) {
             IErlModule m;
             try {
@@ -436,7 +436,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
                         wranglerSelection.getSearchPath(),
                         GlobalParameters.getTabWidth());
 
-        ArrayList<IErlElement> modules = new ArrayList<IErlElement>();
+        ArrayList<IErlElement> modules = new ArrayList<>();
         try {
             final OtpErlangObject obj = res.getValue();
             final OtpErlangTuple restuple = (OtpErlangTuple) obj;

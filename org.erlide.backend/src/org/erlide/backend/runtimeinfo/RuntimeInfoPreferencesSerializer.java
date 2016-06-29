@@ -97,7 +97,7 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
     private RuntimeInfoCatalogData loadPrefs(final RuntimeInfoCatalogData data,
             final IEclipsePreferences root) {
         String[] children;
-        final Collection<RuntimeInfo> runtimes = new ArrayList<RuntimeInfo>(
+        final Collection<RuntimeInfo> runtimes = new ArrayList<>(
                 data.runtimes);
         try {
             children = root.childrenNames();

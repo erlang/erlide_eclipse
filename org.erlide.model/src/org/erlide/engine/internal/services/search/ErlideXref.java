@@ -26,7 +26,7 @@ public class ErlideXref {
     }
 
     public static List<String> modules(final IOtpRpc backend) {
-        final ArrayList<String> result = new ArrayList<String>();
+        final ArrayList<String> result = new ArrayList<>();
         try {
             final OtpErlangObject res = backend.call(ERLIDE_XREF, "modules", "");
             if (Util.isOk(res)) {

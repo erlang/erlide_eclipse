@@ -1,0 +1,8 @@
+B=$(git branch | grep "*" | cut -c 3-)
+git checkout next
+git push upstream next
+git checkout pu
+git push upstream +pu
+git checkout later
+git push upstream +later
+git checkout $B

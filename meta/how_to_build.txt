@@ -1,0 +1,17 @@
+install buckminster
+in buckminster install erlide headless
+install target, with erlide
+
+todo:
+add hudson scripts/commands to git
+make sure there are no hardcoded paths to buckminster/target/erlang
+
+----
+hudson:
+
+job to fetch and publish target (install manually, not from update site)
+job to do the build
+
+todo: 
+describe the setup of these jobs
+

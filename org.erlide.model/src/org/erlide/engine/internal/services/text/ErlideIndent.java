@@ -24,7 +24,7 @@ public class ErlideIndent implements IndentService {
     }
 
     private List<OtpErlangTuple> fixIndentPrefs(final Map<String, String> m) {
-        final List<OtpErlangTuple> result = new ArrayList<OtpErlangTuple>(m.size());
+        final List<OtpErlangTuple> result = new ArrayList<>(m.size());
         for (final Map.Entry<String, String> e : m.entrySet()) {
             final OtpErlangAtom a = new OtpErlangAtom(e.getKey());
             final String s = e.getValue();

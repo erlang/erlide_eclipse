@@ -28,7 +28,7 @@ public class BackendShellManager implements IDisposable {
 
     public BackendShellManager(final IBackend backend) {
         this.backend = backend;
-        fShells = new HashMap<String, BackendShell>();
+        fShells = new HashMap<>();
     }
 
     public BackendShell getShell(final String id) {

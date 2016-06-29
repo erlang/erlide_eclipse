@@ -260,15 +260,10 @@ public final class RuntimeInfo {
     private static String readStartBoot(final String path) {
         String result = null;
         final File file = new File(path + "/bin/start.boot");
-        try {
-            final FileInputStream is = new FileInputStream(file);
-            try {
-                is.skip(14);
-                readstring(is);
-                result = readstring(is);
-            } finally {
-                is.close();
-            }
+        try (final FileInputStream is = new FileInputStream(file)) {
+            is.skip(14);
+            readstring(is);
+            result = readstring(is);
         } catch (final IOException e) {
         }
         return result;

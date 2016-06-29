@@ -76,12 +76,14 @@ public class ModelInternalUtils implements ModelUtilService {
     }
 
     private IErlExternal getElementWithExternalName(final IParent parent,
-            final String segment) throws ErlModelException {
-        for (final IErlElement i : parent.getChildrenOfKind(ErlElementKind.EXTERNAL_ROOT,
+            final String name) throws ErlModelException {
+        System.out.println(" ?? " + name);
+        for (final IErlElement e : parent.getChildrenOfKind(ErlElementKind.EXTERNAL_ROOT,
                 ErlElementKind.EXTERNAL_APP, ErlElementKind.EXTERNAL_FOLDER)) {
-            final IErlExternal external = (IErlExternal) i;
+            final IErlExternal external = (IErlExternal) e;
             final String externalName = external.getName();
-            if (externalName.equals(segment)) {
+            System.out.println("   ? " + externalName);
+            if (externalName.equals(name)) {
                 return external;
             }
         }
@@ -91,6 +93,7 @@ public class ModelInternalUtils implements ModelUtilService {
     @Override
     public IErlModule getModuleFromExternalModulePath(final IErlModel model,
             final String modulePath) throws ErlModelException {
+        System.out.println(">> modulePath=" + modulePath);
         final List<String> path = Lists
                 .newArrayList(Splitter.on(DELIMITER).split(modulePath));
         model.open(null);
@@ -168,8 +171,7 @@ public class ModelInternalUtils implements ModelUtilService {
         if (imports.isEmpty()) {
             return NO_IMPORTS;
         }
-        final List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(
-                imports.size());
+        final List<OtpErlangObject> result = new ArrayList<>(imports.size());
         for (final IErlImport i : imports) {
             final Collection<ErlangFunction> functions = i.getFunctions();
             final OtpErlangObject funsT[] = new OtpErlangObject[functions.size()];
@@ -198,8 +200,7 @@ public class ModelInternalUtils implements ModelUtilService {
         return result;
     }
 
-    public static final List<OtpErlangObject> NO_IMPORTS = new ArrayList<OtpErlangObject>(
-            0);
+    public static final List<OtpErlangObject> NO_IMPORTS = new ArrayList<>(0);
 
     private void addUnitNamesWithPrefix(final String prefix, final List<String> result,
             final Collection<IErlModule> modules, final boolean external,

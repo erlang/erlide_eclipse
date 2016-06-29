@@ -18,7 +18,7 @@ public class TestTreeObject {
 
     private final String name;
     private String description = "";
-    private final List<TestTreeObject> children = new LinkedList<TestTreeObject>();
+    private final List<TestTreeObject> children = new LinkedList<>();
     private TestTreeObject parent = null;
     private int type; // type of node
 

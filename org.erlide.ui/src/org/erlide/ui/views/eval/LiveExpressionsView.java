@@ -320,7 +320,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
 
         if (!restoreState()) {
             /* Fill LiveExpressions for first time */
-            exprs = new ArrayList<LiveExpr>(10);
+            exprs = new ArrayList<>(10);
             addExpr(new LiveExpr(backend, "erlide_time_compat:timestamp()"));
         }
         viewer.setInput(exprs);
@@ -373,7 +373,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
         if (memento != null) {
             final IMemento[] expressions = memento.getChildren("expression");
             if (expressions.length > 0) {
-                exprs = new ArrayList<LiveExpr>(expressions.length);
+                exprs = new ArrayList<>(expressions.length);
                 for (final IMemento element : expressions) {
                     exprs.add(new LiveExpr(backend, element.getTextData()));
                 }

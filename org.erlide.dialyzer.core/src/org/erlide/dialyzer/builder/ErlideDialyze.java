@@ -34,20 +34,6 @@ public class ErlideDialyze {
                 incs, fromSource, noCheckPLT);
     }
 
-    public static void startDialyzer(final IOtpRpc backend,
-            final Collection<String> files, final Collection<String> pltPaths,
-            final Collection<IPath> includeDirs, final boolean fromSource,
-            final Object noCheckPLT, final IRpcResultCallback callback)
-            throws RpcException {
-        final List<String> incs = Lists.newArrayList();
-        for (final IPath p : includeDirs) {
-            incs.add(p.toString());
-        }
-        backend.async_call_result(callback, ERLIDE_DIALYZE, "start_dialyze", "xlslslsoo",
-                files, pltPaths, incs, fromSource, noCheckPLT);
-        // ErlLogger.debug("result %s", result.toString());
-    }
-
     public static List<String> formatWarnings(final IOtpRpc backend,
             final OtpErlangList warnings) {
         final List<String> result = Lists.newArrayList();

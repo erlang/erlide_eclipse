@@ -34,9 +34,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
 
     private String callbackModule; // callback module
-    private final List<String> parPrompts = new LinkedList<String>(); // parameter
+    private final List<String> parPrompts = new LinkedList<>(); // parameter
     // prompts
-    private List<String> parValues = new ArrayList<String>(0); // parameter
+    private List<String> parValues = new ArrayList<>(0); // parameter
     // values
     // submited by
     // user

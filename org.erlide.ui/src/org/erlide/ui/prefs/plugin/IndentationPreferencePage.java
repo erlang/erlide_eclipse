@@ -9,9 +9,6 @@
  *******************************************************************************/
 package org.erlide.ui.prefs.plugin;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +66,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage
     public void init(final IWorkbench workbench) {
     }
 
-    private final List<Text> textFields = new ArrayList<Text>();
+    private final List<Text> textFields = new ArrayList<>();
 
     /*
      * @see PreferencePage#createContents(Composite)
@@ -134,8 +131,6 @@ public class IndentationPreferencePage extends ErlidePreferencePage
     }
 
     public static void addKeysAndPrefs(final Map<String, String> map) {
-        assertThat(INDENT_KEYS.length, is(INDENT_FIELDS.length));
-        assertThat(INDENT_FIELDS.length, is(INDENT_DEFAULTS.length));
         addKeysAndPrefs(INDENT_KEY, INDENT_KEYS, INDENT_DEFAULTS, map);
     }
 

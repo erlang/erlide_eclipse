@@ -1,11 +1,13 @@
 .eunit
-deps
+deps/
 *.o
 *.beam
 !org.erlide.kernel/**/*.beam
 *.plt
 erl_crash.dump
 target/
+xtend-gen/
+!xtend-gen/.keep
 
 .vagrant
 *.class
@@ -13,7 +15,7 @@ hs_err_pid*
 
 workspaces
 **/bin/
-**/ebin/*.app
+**/ebin/
 *.orig
 *.rej
 hs_err*.log
@@ -50,4 +52,4 @@ junit.xml
 *.pmd
 *.xtendbin
 .gradle
-build
+build/

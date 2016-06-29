@@ -1,7 +1,6 @@
 package org.erlide.ui.editors.erl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
@@ -18,12 +17,15 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
+import org.erlide.ui.prefs.HighlightStyle;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.prefs.plugin.internal.ErlangSourceViewerUpdater;
 import org.erlide.ui.util.ColorManager;
 import org.erlide.ui.util.IColorManager;
 import org.erlide.util.IDisposable;
+
+import com.google.common.collect.Maps;
 
 public class ErlangSourceViewer extends ProjectionViewer implements IDisposable {
 
@@ -56,17 +58,17 @@ public class ErlangSourceViewer extends ProjectionViewer implements IDisposable 
 
     public static SourceViewer createErlangPreviewer(final Composite parent,
             final IColorManager colorManager0, final IPreferenceStore topStore,
-            final List<TokenHighlight> colors0, final String content) {
+            final Map<TokenHighlight, HighlightStyle> colors0, final String content) {
         // TODO we should move this method, to a utility class (or maybe create
         // an ErlangPreviewSourceViewer class)
         final IColorManager colorManager = colorManager0 != null ? colorManager0
                 : new ColorManager();
 
-        List<TokenHighlight> colors;
+        Map<TokenHighlight, HighlightStyle> colors;
         if (colors0 == null) {
-            colors = new ArrayList<TokenHighlight>();
+            colors = Maps.newHashMap();
             for (final TokenHighlight th : TokenHighlight.values()) {
-                colors.add(th);
+                colors.put(th, null);
             }
         } else {
             colors = colors0;
@@ -87,7 +89,7 @@ public class ErlangSourceViewer extends ProjectionViewer implements IDisposable 
         setupParticipant.setup(document);
 
         final ErlangSourceViewerConfiguration configuration = new SyntaxColorPreviewEditorConfiguration(
-                store, colorManager, colors);
+                store, colorManager);
         viewer.configure(configuration);
 
         final Font font = JFaceResources.getFont(PreferenceConstants.EDITOR_TEXT_FONT);

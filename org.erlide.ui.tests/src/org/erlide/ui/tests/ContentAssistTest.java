@@ -1,5 +1,8 @@
 package org.erlide.ui.tests;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -37,8 +40,6 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ErlideTestUtils;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
 import org.erlide.ui.editors.erl.completion.ErlStringContentAssistProcessor;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -185,14 +186,13 @@ public class ContentAssistTest {
         final ICompletionProposal[] completionProposals = p
                 .computeCompletionProposals(sourceViewer, offset);
 
-        MatcherAssert
-                .assertThat(ListExtensions.map(Lists.newArrayList(completionProposals),
+        assertThat(ListExtensions.map(Lists.newArrayList(completionProposals),
                         new Functions.Function1<ICompletionProposal, String>() {
                             @Override
                             public String apply(final ICompletionProposal cp) {
                                 return cp.getDisplayString();
                             }
-                        }), Matchers.is(expected));
+                }), is(expected));
     }
 
     // http://www.assembla.com/spaces/erlide/tickets/947

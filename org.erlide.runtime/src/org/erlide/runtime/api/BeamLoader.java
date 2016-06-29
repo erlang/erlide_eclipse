@@ -49,7 +49,7 @@ public class BeamLoader {
         try {
             final OtpErlangList loaded = (OtpErlangList) backend.call("code",
                     "all_loaded", "");
-            final List<OtpErlangAtom> mine = new ArrayList<OtpErlangAtom>();
+            final List<OtpErlangAtom> mine = new ArrayList<>();
             for (final OtpErlangObject elem : loaded) {
                 final OtpErlangTuple t = (OtpErlangTuple) elem;
                 final OtpErlangAtom mod = (OtpErlangAtom) t.elementAt(0);

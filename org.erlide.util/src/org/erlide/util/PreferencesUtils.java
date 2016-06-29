@@ -45,18 +45,13 @@ public final class PreferencesUtils {
     }
 
     public static List<String> readFile(final String file) {
-        final List<String> res = new ArrayList<String>();
-        try {
-            final BufferedReader reader = new BufferedReader(new FileReader(file));
-            try {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (line.length() > 0) {
-                        res.add(line);
-                    }
+        final List<String> res = new ArrayList<>();
+        try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.length() > 0) {
+                    res.add(line);
                 }
-            } finally {
-                reader.close();
             }
         } catch (final IOException e) {
         }

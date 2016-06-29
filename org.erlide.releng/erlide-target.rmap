@@ -6,6 +6,7 @@
     <rm:property key="eclipse.download" value="http://download.eclipse.org" />
     <!--rm:property key="eclipse.download" value="file:///home/jenkins/erlide_tools/mirrors" /-->
     <rm:property key="eclipse.target.platform" value="${eclipse.download}/releases/${eclipse.release}" />
+    <rm:property key="eclipse.updates.target.platform" value="${eclipse.download}/eclipse/updates/4.4"/>
     <!--rm:property key="eclipse.target.platform" value="${eclipse.download}/eclipse/updates/3.8" /-->
     <rm:property key="eclipse.orbit" value="${eclipse.download}/tools/orbit/downloads/drops/R20130517111416/repository" />
     <rm:property key="graphviz" value="http://download.erlide.org/update/graphviz" />
@@ -24,6 +25,14 @@
             <rm:property key="buckminster.mutable" value="false" />
             <rm:uri format="{0}">
                 <bc:propertyRef key="eclipse.target.platform" />
+            </rm:uri>
+        </rm:provider>
+        <rm:provider componentTypes="eclipse.feature,osgi.bundle"
+            readerType="p2" source="false" mutable="false">
+            <rm:property key="buckminster.source" value="false" />
+            <rm:property key="buckminster.mutable" value="false" />
+            <rm:uri format="{0}">
+                <bc:propertyRef key="eclipse.updates.target.platform" />
             </rm:uri>
         </rm:provider>
         <rm:provider componentTypes="eclipse.feature,osgi.bundle"

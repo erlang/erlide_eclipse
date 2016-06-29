@@ -78,7 +78,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
         fBackend = backend;
         fStatus = STATUS_UNKNOWN;
         fExitStatus = null;
-        stackFrames = new ArrayList<IStackFrame>();
+        stackFrames = new ArrayList<>();
         stepping = false;
         fTracing = false;
     }
@@ -253,12 +253,12 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public void removeStackFrames() {
-        stackFrames = new ArrayList<IStackFrame>();
+        stackFrames = new ArrayList<>();
     }
 
     public void setStackFrames(final String module, final int line,
             final OtpErlangList erlStackFrames, final OtpErlangList bs) {
-        stackFrames = new ArrayList<IStackFrame>();
+        stackFrames = new ArrayList<>();
         final IDebugTarget target = getDebugTarget();
         stackFrames.add(new ErlangStackFrame(module, this, target, line, null, bs,
                 erlStackFrames.arity() + 2));

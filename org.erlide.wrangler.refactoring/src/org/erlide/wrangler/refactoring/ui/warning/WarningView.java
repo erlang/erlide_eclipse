@@ -43,7 +43,7 @@ public class WarningView extends ViewPart implements IWarningHandler {
 
     private TableViewer viewer;
 
-    private final ArrayList<WarningMessage> warningMessages = new ArrayList<WarningMessage>();
+    private final ArrayList<WarningMessage> warningMessages = new ArrayList<>();
 
     protected final class RemoveAction extends Action {
         protected RemoveAction() {

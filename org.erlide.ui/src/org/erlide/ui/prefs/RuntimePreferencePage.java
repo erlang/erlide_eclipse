@@ -331,7 +331,7 @@ public class RuntimePreferencePage extends PreferencePage implements
      * @return Runtimes currently being displayed in this block
      */
     public List<RuntimeInfo> getRuntimes() {
-        return new ArrayList<RuntimeInfo>(runtimes);
+        return new ArrayList<>(runtimes);
     }
 
     /**
@@ -812,7 +812,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 
     @Override
     public void performDefaults() {
-        runtimes = new ArrayList<RuntimeInfo>(catalog.getRuntimes());
+        runtimes = new ArrayList<>(catalog.getRuntimes());
         defaultRuntime = catalog.getDefaultRuntime();
         erlideRuntime = catalog.getErlideRuntime();
     }

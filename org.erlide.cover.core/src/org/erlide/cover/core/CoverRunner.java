@@ -1,6 +1,6 @@
 package org.erlide.cover.core;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -23,18 +23,15 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
  */
 public class CoverRunner extends AbstractCoverRunner {
 
-    private final Logger log; // logger
     private static Semaphore semaphore = new Semaphore(1);
 
     public CoverRunner() {
-        log = Activator.getDefault();
     }
 
     @Override
     public void run() {
         final CoverBackend backend = CoverBackend.getInstance();
         try {
-
             semaphore.acquireUninterruptibly();
             final IConfiguration config = backend.getSettings().getConfig();
             CoverageAnalysis.prepareAnalysis(config);
@@ -65,9 +62,9 @@ public class CoverRunner extends AbstractCoverRunner {
                 new OtpErlangAtom(
                         CoverBackend.getInstance().getSettings().getFramework()));
 
-        log.info(config.getProject().getWorkspaceProject().getLocation());
+        ErlLogger.info(config.getProject().getWorkspaceProject().getLocation().toPortableString());
         final IPath ppath = config.getProject().getWorkspaceProject().getLocation();
-        log.info(ppath.append(config.getOutputDir()));
+        ErlLogger.info(ppath.append(config.getOutputDir()).toPortableString());
 
         CoverBackend.getInstance().getBackend().getOtpRpc().call(
                 TestConstants.TEST_ERL_BACKEND, TestConstants.FUN_OUTPUT_DIR, "s",
@@ -76,7 +73,7 @@ public class CoverRunner extends AbstractCoverRunner {
         switch (CoverBackend.getInstance().getSettings().getType()) {
         case MODULE:
 
-            log.info(config.getModules().iterator().next().getFilePath());
+            ErlLogger.info(config.getModules().iterator().next().getFilePath());
 
             CoverBackend.getInstance().getBackend().getOtpRpc().call(
                     TestConstants.TEST_ERL_BACKEND, TestConstants.FUN_TEST, "ss",
@@ -85,9 +82,9 @@ public class CoverRunner extends AbstractCoverRunner {
                     config.getModules().iterator().next().getFilePath());
             break;
         case ALL:
-            final List<String> testDirs = new LinkedList<String>();
+            final List<String> testDirs = new ArrayList<>();
             for (final IPath p : config.getSourceDirs()) {
-                log.info(p);
+                ErlLogger.info(p.toPortableString());
                 if (!p.toString().endsWith("test")) {
                     testDirs.add(ppath.append(p).append("test").toString());
                 }
@@ -95,7 +92,7 @@ public class CoverRunner extends AbstractCoverRunner {
             testDirs.add(ppath.append("test").toString());
 
             for (final String path : testDirs) {
-                log.info(path);
+                ErlLogger.info(path);
 
                 CoverBackend.getInstance().getBackend().getOtpRpc()
                         .call(TestConstants.TEST_ERL_BACKEND,

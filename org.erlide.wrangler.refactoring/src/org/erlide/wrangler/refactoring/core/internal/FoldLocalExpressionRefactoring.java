@@ -26,7 +26,6 @@ import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection.SelectionKind;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
-import org.erlide.wrangler.refactoring.util.IErlRange;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
@@ -67,7 +66,7 @@ public class FoldLocalExpressionRefactoring
         if (m.isSuccessful()) {
             syntaxTree = m.getSyntaxTree();
             positions = m.getPositionDefinitions(sel.getDocument());
-            selectedPositions = new ArrayList<IErlRange>();
+            selectedPositions = new ArrayList<>();
         } else {
             return RefactoringStatus.createFatalErrorStatus(m.getMessageString());
         }

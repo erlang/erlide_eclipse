@@ -23,7 +23,7 @@ public class ErlangSourcePathComputerDelegate implements ISourcePathComputerDele
     public ISourceContainer[] computeSourceContainers(
             final ILaunchConfiguration configuration, final IProgressMonitor monitor)
             throws CoreException {
-        final List<ISourceContainer> containers = new ArrayList<ISourceContainer>();
+        final List<ISourceContainer> containers = new ArrayList<>();
         final IProject[] projects = LaunchUtils
                 .getErlangLaunchConfigurationProjects(configuration);
         for (final IProject p : projects) {

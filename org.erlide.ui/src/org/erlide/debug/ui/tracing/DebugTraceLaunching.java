@@ -27,7 +27,7 @@ public class DebugTraceLaunching {
                             "org.erlide.runtime.debug.launchDebugTrace");
             final String name = target.toString();
             final ILaunchConfigurationWorkingCopy wc = lcType.newInstance(null, name);
-            final Set<String> modes = new HashSet<String>();
+            final Set<String> modes = new HashSet<>();
             modes.add(ILaunchManager.DEBUG_MODE);
             final ILaunchDelegate[] delegates = lcType.getDelegates(modes);
             final ILaunchConfigurationDelegate delegate = delegates[0].getDelegate();

@@ -85,8 +85,8 @@ public class DirectoryTreeGroup extends Composite {
                 }
             }
         });
-        allDirs = new ArrayList<String>();
-        checkedDirs = new HashSet<String>();
+        allDirs = new ArrayList<>();
+        checkedDirs = new HashSet<>();
         checkboxTableViewer.setInput(allDirs);
         // final GridData data = new GridData(GridData.FILL_BOTH);
         // data.horizontalSpan = 2;

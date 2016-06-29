@@ -257,7 +257,7 @@ public class FunctionGroup implements SelectionListener {
         removeEdit();
 
         final TableItem[] function = fTable.getItems();
-        final ArrayList<Function> functionList = new ArrayList<Function>();
+        final ArrayList<Function> functionList = new ArrayList<>();
         for (final TableItem element : function) {
             if (!"".equals(element.getText(0))) {
                 final Function f = new Function();

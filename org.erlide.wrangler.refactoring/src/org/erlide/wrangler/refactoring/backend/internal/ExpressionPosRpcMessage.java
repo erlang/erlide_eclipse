@@ -56,7 +56,7 @@ public class ExpressionPosRpcMessage extends AbstractRpcMessage {
                     posDefList = (OtpErlangList) wranglerResult;
                 }
 
-                positionDefs = new HashMap<IRange, OtpErlangTuple>();
+                positionDefs = new HashMap<>();
                 final OtpErlangObject[] elements = posDefList.elements();
                 for (final OtpErlangObject o : elements) {
                     final OtpErlangTuple value = (OtpErlangTuple) o;
@@ -99,7 +99,7 @@ public class ExpressionPosRpcMessage extends AbstractRpcMessage {
      */
     public HashMap<IErlRange, OtpErlangTuple> getPositionDefinitions(
             final IDocument doc) {
-        final HashMap<IErlRange, OtpErlangTuple> ret = new HashMap<IErlRange, OtpErlangTuple>();
+        final HashMap<IErlRange, OtpErlangTuple> ret = new HashMap<>();
         for (final Entry<IRange, OtpErlangTuple> r : positionDefs.entrySet()) {
             ret.put(new ErlRange(r.getKey(), doc), r.getValue());
         }

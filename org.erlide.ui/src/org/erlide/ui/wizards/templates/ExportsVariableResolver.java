@@ -19,7 +19,7 @@ import org.eclipse.jface.text.templates.TemplateVariable;
 
 public class ExportsVariableResolver extends FunctionVariableResolver {
 
-    private static final List<FunctionVariableResolver> fInstances = new ArrayList<FunctionVariableResolver>();
+    private static final List<FunctionVariableResolver> fInstances = new ArrayList<>();
 
     public ExportsVariableResolver() {
         fInstances.add(this);

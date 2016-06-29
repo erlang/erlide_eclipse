@@ -1,8 +1,5 @@
 package org.erlide.core.builder;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -188,7 +185,6 @@ public abstract class CompilerOption {
                 final String description, final String tooltip) {
             super(name, description, tooltip);
             this.fieldLabels = fieldLabels;
-            assertThat(fieldLabels.length, is(2));
         }
 
         public String[] getFieldLabels() {

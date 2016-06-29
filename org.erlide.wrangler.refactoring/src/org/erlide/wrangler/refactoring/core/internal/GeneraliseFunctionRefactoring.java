@@ -170,7 +170,7 @@ public class GeneraliseFunctionRefactoring
     protected HashMap<IErlRange, OtpErlangTuple> createPositionList(
             final OtpErlangList thePositions) {
         try {
-            final HashMap<IErlRange, OtpErlangTuple> ret = new HashMap<IErlRange, OtpErlangTuple>();
+            final HashMap<IErlRange, OtpErlangTuple> ret = new HashMap<>();
             final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
                     .getWranglerSelection();
             for (final OtpErlangObject o : thePositions) {

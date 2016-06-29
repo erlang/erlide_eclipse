@@ -125,7 +125,7 @@ public class CompilerOptions {
             } else {
                 if (value != null) {
                     final String[] str = value.split(",");
-                    options.put(option, new Pair<String, String>(str[0], str[1]));
+                    options.put(option, new Pair<>(str[0], str[1]));
                 }
             }
         }
@@ -134,7 +134,7 @@ public class CompilerOptions {
 
     @SuppressWarnings("unchecked")
     public OtpErlangList export() {
-        final List<OtpErlangObject> result = new ArrayList<OtpErlangObject>();
+        final List<OtpErlangObject> result = new ArrayList<>();
         for (final CompilerOption option : CompilerOption.ALL_OPTIONS) {
             final Object optionValue = options.get(option);
             if (optionValue != null) {
@@ -223,7 +223,7 @@ public class CompilerOptions {
     }
 
     public void setListOption(final CompilerOption opt,
-            final Pair<String, String>... values) {
+            @SuppressWarnings("unchecked") final Pair<String, String>... values) {
         if (values == null || values.length == 0) {
             removeOption(opt);
         } else {

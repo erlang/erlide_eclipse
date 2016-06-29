@@ -87,7 +87,7 @@ public abstract class QuickCheckStateRefactoring
     }
 
     protected OtpErlangList getFieldsName() {
-        final ArrayList<OtpErlangString> f = new ArrayList<OtpErlangString>();
+        final ArrayList<OtpErlangString> f = new ArrayList<>();
         for (final String s : fieldsNames) {
             f.add(new OtpErlangString(s));
         }

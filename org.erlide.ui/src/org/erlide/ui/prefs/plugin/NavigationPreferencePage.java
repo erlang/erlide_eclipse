@@ -17,7 +17,7 @@ public class NavigationPreferencePage extends ErlidePreferencePage
         implements IWorkbenchPreferencePage {
 
     private static Boolean fCachedCheckAllProjects = null;
-    private final List<Button> buttons = new ArrayList<Button>();
+    private final List<Button> buttons = new ArrayList<>();
 
     private void addCheckAllSection(final Composite composite) {
         final String[] ss = { "Consider all projects on open" };

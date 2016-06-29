@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.actions;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
@@ -27,13 +22,13 @@ import org.eclipse.ui.IWorkbenchSite;
 
 /**
  * Action that dispatches the <code>IAction#run()</code> and the
- * <code>ISelectionChangedListener#selectionChanged</code> according to the type
- * of the selection.
+ * <code>ISelectionChangedListener#selectionChanged</code> according to the type of the
+ * selection.
  *
  * <ul>
  * <li>if selection is of type <code>ITextSelection</code> then
- * <code>run(ITextSelection)</code> and
- * <code>selectionChanged(ITextSelection)</code> is called.</li>
+ * <code>run(ITextSelection)</code> and <code>selectionChanged(ITextSelection)</code> is
+ * called.</li>
  * <li>if selection is of type <code>IStructuredSelection</code> then
  * <code>run(IStructuredSelection)</code> and <code>
  *  selectionChanged(IStructuredSelection)</code> is called.</li>
@@ -63,7 +58,6 @@ public abstract class SelectionDispatchAction extends Action
      *            the site this action is working on
      */
     protected SelectionDispatchAction(final IWorkbenchSite site) {
-        assertThat(site, is(not(nullValue())));
         fSite = site;
         fSpecialSelectionProvider = null;
     }
@@ -111,10 +105,9 @@ public abstract class SelectionDispatchAction extends Action
     }
 
     /**
-     * Updates the action's enablement state according to the given selection.
-     * This default implementation calls one of the
-     * <code>selectionChanged</code> methods depending on the type of the passed
-     * selection.
+     * Updates the action's enablement state according to the given selection. This
+     * default implementation calls one of the <code>selectionChanged</code> methods
+     * depending on the type of the passed selection.
      *
      * @param selection
      *            the selection this action is working on
@@ -124,9 +117,8 @@ public abstract class SelectionDispatchAction extends Action
     }
 
     /**
-     * Notifies this action that the given structured selection has changed.
-     * This default implementation calls
-     * <code>selectionChanged(ISelection selection)</code>.
+     * Notifies this action that the given structured selection has changed. This default
+     * implementation calls <code>selectionChanged(ISelection selection)</code>.
      *
      * @param selection
      *            the new selection
@@ -147,9 +139,8 @@ public abstract class SelectionDispatchAction extends Action
     }
 
     /**
-     * Notifies this action that the given text selection has changed. This
-     * default implementation calls
-     * <code>selectionChanged(ISelection selection)</code>.
+     * Notifies this action that the given text selection has changed. This default
+     * implementation calls <code>selectionChanged(ISelection selection)</code>.
      *
      * @param selection
      *            the new selection
@@ -159,8 +150,8 @@ public abstract class SelectionDispatchAction extends Action
     }
 
     /**
-     * Executes this actions with the given text selection. This default
-     * implementation calls <code>run(ISelection selection)</code>.
+     * Executes this actions with the given text selection. This default implementation
+     * calls <code>run(ISelection selection)</code>.
      *
      * @param selection
      *            the selection
@@ -181,8 +172,8 @@ public abstract class SelectionDispatchAction extends Action
     }
 
     /**
-     * Executes this actions with the given selection. This default
-     * implementation does nothing.
+     * Executes this actions with the given selection. This default implementation does
+     * nothing.
      *
      * @param selection
      *            the selection

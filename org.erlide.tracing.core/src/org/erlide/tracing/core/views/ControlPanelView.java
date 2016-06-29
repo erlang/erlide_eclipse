@@ -513,7 +513,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 final String[] configurations = ConfigurationManager.getTPConfigs();
-                final Set<String> existingNames = new HashSet<String>(
+                final Set<String> existingNames = new HashSet<>(
                         Arrays.asList(configurations));
                 final InputDialog dialog = new ConfigurationSaveAsDialog(
                         parent.getShell(), "Save trace pattern configuration",
@@ -743,7 +743,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 final String[] configurations = ConfigurationManager.getNodesConfig();
-                final Set<String> existingNames = new HashSet<String>(
+                final Set<String> existingNames = new HashSet<>(
                         Arrays.asList(configurations));
                 final InputDialog dialog = new ConfigurationSaveAsDialog(
                         parent.getShell(), "Save nodes configuration",

@@ -38,10 +38,10 @@ public final class EpmdWatcher {
         }
     }
 
-    private final List<String> hosts = new ArrayList<String>();
-    private final Map<String, List<String>> nodeMap = new HashMap<String, List<String>>();
-    private final List<IEpmdListener> listeners = new ArrayList<IEpmdListener>();
-    private final Map<String, List<IErlNodeMonitor>> monitors = new HashMap<String, List<IErlNodeMonitor>>();
+    private final List<String> hosts = new ArrayList<>();
+    private final Map<String, List<String>> nodeMap = new HashMap<>();
+    private final List<IEpmdListener> listeners = new ArrayList<>();
+    private final Map<String, List<IErlNodeMonitor>> monitors = new HashMap<>();
     private boolean epmdStarted = false;
 
     public synchronized void addHost(final String host) {
@@ -128,7 +128,7 @@ public final class EpmdWatcher {
     }
 
     public static List<String> clean(final List<String> list) {
-        final List<String> result = new ArrayList<String>();
+        final List<String> result = new ArrayList<>();
         for (final String label : list) {
             if ("".equals(label)) {
                 continue;
@@ -147,7 +147,7 @@ public final class EpmdWatcher {
     }
 
     private List<String> getDiff(final List<String> list1, final List<String> list2) {
-        final List<String> result = new ArrayList<String>(list1);
+        final List<String> result = new ArrayList<>(list1);
         result.removeAll(list2);
         return result;
     }
@@ -165,7 +165,7 @@ public final class EpmdWatcher {
     public void addNodeMonitor(final String node, final IErlNodeMonitor monitor) {
         List<IErlNodeMonitor> mons = monitors.get(node);
         if (mons == null) {
-            mons = new ArrayList<IErlNodeMonitor>();
+            mons = new ArrayList<>();
         }
         if (mons.contains(monitor)) {
             return;

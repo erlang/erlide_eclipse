@@ -52,7 +52,7 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
         final TemplateContextType type = ErlideUIPlugin.getDefault()
                 .getContextTypeRegistry().getContextType(contextTypeId);
         if (type instanceof ErlangTemplateContextType) {
-            final List<Template> result = new ArrayList<Template>(templates.length);
+            final List<Template> result = new ArrayList<>(templates.length);
             final ErlangTemplateContext etc = new ErlangTemplateContext(type, fDocument,
                     offset, length);
             for (final Template template : templates) {

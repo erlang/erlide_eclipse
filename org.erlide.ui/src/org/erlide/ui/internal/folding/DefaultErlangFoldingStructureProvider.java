@@ -768,12 +768,12 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
                 return;
             }
 
-            final Map<ErlangProjectionAnnotation, Position> additions = new HashMap<ErlangProjectionAnnotation, Position>();
-            final List<ErlangProjectionAnnotation> deletions = new ArrayList<ErlangProjectionAnnotation>();
-            final List<ErlangProjectionAnnotation> updates = new ArrayList<ErlangProjectionAnnotation>();
+            final Map<ErlangProjectionAnnotation, Position> additions = new HashMap<>();
+            final List<ErlangProjectionAnnotation> deletions = new ArrayList<>();
+            final List<ErlangProjectionAnnotation> updates = new ArrayList<>();
 
             // use a linked map to maintain ordering of comments
-            final Map<ErlangProjectionAnnotation, Position> updated = new LinkedHashMap<ErlangProjectionAnnotation, Position>();
+            final Map<ErlangProjectionAnnotation, Position> updated = new LinkedHashMap<>();
 
             computeAdditions(fModule, updated);
             final Map<Object, List<Tuple>> previous = createAnnotationMap(model);
@@ -855,8 +855,8 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
             return;
         }
 
-        final List<ErlangProjectionAnnotation> newDeletions = new ArrayList<ErlangProjectionAnnotation>();
-        final List<ErlangProjectionAnnotation> newChanges = new ArrayList<ErlangProjectionAnnotation>();
+        final List<ErlangProjectionAnnotation> newDeletions = new ArrayList<>();
+        final List<ErlangProjectionAnnotation> newChanges = new ArrayList<>();
 
         final Iterator<ErlangProjectionAnnotation> deletionIterator = deletions
                 .iterator();
@@ -947,7 +947,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
     }
 
     private Map<Object, List<Tuple>> createAnnotationMap(final IAnnotationModel model) {
-        final Map<Object, List<Tuple>> map = new HashMap<Object, List<Tuple>>();
+        final Map<Object, List<Tuple>> map = new HashMap<>();
         final Iterator<?> e = model.getAnnotationIterator();
         while (e.hasNext()) {
             final Object annotation = e.next();
@@ -956,7 +956,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
                 final Position position = model.getPosition(epa);
                 List<Tuple> list = map.get(epa.getElement());
                 if (list == null) {
-                    list = new ArrayList<Tuple>(2);
+                    list = new ArrayList<>(2);
                     map.put(epa.getElement(), list);
                 }
                 list.add(new Tuple(epa, position));
@@ -994,13 +994,13 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
 
     @Override
     public void collapseElements(final IErlElement[] elements) {
-        final Set<IErlElement> set = new HashSet<IErlElement>(Arrays.asList(elements));
+        final Set<IErlElement> set = new HashSet<>(Arrays.asList(elements));
         modifyFiltered(new ErlangElementSetFilter(set, false), false);
     }
 
     @Override
     public void expandElements(final IErlElement[] elements) {
-        final Set<IErlElement> set = new HashSet<IErlElement>(Arrays.asList(elements));
+        final Set<IErlElement> set = new HashSet<>(Arrays.asList(elements));
         modifyFiltered(new ErlangElementSetFilter(set, true), true);
     }
 
@@ -1025,7 +1025,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
             return;
         }
 
-        final List<ErlangProjectionAnnotation> modified = new ArrayList<ErlangProjectionAnnotation>();
+        final List<ErlangProjectionAnnotation> modified = new ArrayList<>();
         final Iterator<?> iter = model.getAnnotationIterator();
         while (iter.hasNext()) {
             final Object annotation = iter.next();

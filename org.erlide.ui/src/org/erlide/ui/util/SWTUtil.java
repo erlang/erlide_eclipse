@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DragSource;
@@ -42,9 +37,9 @@ public final class SWTUtil {
     }
 
     /**
-     * Returns the standard display to be used. The method first checks, if the
-     * thread calling this method has an associated disaply. If so, this display
-     * is returned. Otherwise the method returns the default display.
+     * Returns the standard display to be used. The method first checks, if the thread
+     * calling this method has an associated disaply. If so, this display is returned.
+     * Otherwise the method returns the default display.
      */
     public static Display getStandardDisplay() {
         Display display;
@@ -56,8 +51,8 @@ public final class SWTUtil {
     }
 
     /**
-     * Returns the shell for the given widget. If the widget doesn't represent a
-     * SWT object that manage a shell, <code>null</code> is returned.
+     * Returns the shell for the given widget. If the widget doesn't represent a SWT
+     * object that manage a shell, <code>null</code> is returned.
      *
      * @return the shell for the given widget
      */
@@ -102,15 +97,13 @@ public final class SWTUtil {
     }
 
     /**
-     * Sets width and height hint for the button control. <b>Note:</b> This is a
-     * NOP if the button's layout data is not an instance of
-     * <code>GridData</code>.
+     * Sets width and height hint for the button control. <b>Note:</b> This is a NOP if
+     * the button's layout data is not an instance of <code>GridData</code>.
      *
      * @param the
      *            button for which to set the dimension hint
      */
     public static void setButtonDimensionHint(final Button button) {
-        assertThat(button, is(not(nullValue())));
         final Object gd = button.getLayoutData();
         if (gd instanceof GridData) {
             final GridData gridData = (GridData) gd;
@@ -194,8 +187,7 @@ public final class SWTUtil {
      * @param numColumns
      *            number of columns in group layout
      * @param fill
-     *            {@link GridData} fill style, horizontal, vertical, both or
-     *            none
+     *            {@link GridData} fill style, horizontal, vertical, both or none
      *
      * @return the group created
      */

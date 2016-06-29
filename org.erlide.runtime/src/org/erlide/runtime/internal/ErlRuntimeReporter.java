@@ -47,7 +47,7 @@ public class ErlRuntimeReporter {
                     + "_<timestamp>.txt' has been created in your home directory, "
                     + "please consider reporting the problem. \n"
                     + (SystemConfiguration.hasFeatureEnabled("erlide.ericsson.user") ? ""
-                            : "http://github.com/erlide/erlide/issues");
+                            : "http://github.com/erlang/erlide_eclipse/issues");
             MessageReporter.showError(msg, msg1 + "\n\n" + details);
         }
         return msg;
@@ -75,7 +75,7 @@ public class ErlRuntimeReporter {
                             + ". Please report the problem so that we can fix it.\n"
                             + (SystemConfiguration
                                     .hasFeatureEnabled("erlide.ericsson.user") ? ""
-                                            : "https://github.com/erlide/erlide/issues")
+                                            : "https://github.com/erlang/erlide_eclipse/issues")
                     : "";
             MessageReporter.showError(
                     msg + "\n\n"
@@ -102,19 +102,15 @@ public class ErlRuntimeReporter {
         final File report = new File(reportFile);
         try {
             report.createNewFile();
-            final OutputStream out = new FileOutputStream(report);
-            final PrintWriter pw = new PrintWriter(out);
-            try {
+            try (final OutputStream out = new FileOutputStream(report);
+                    final PrintWriter pw = new PrintWriter(out)) {
                 pw.println(String.format(msg, nodeName, v));
                 pw.println(System.getProperty("user.name"));
                 pw.println(delim);
                 pw.println(plog);
                 pw.println(delim);
                 pw.println(elog);
-            } finally {
                 pw.flush();
-                pw.close();
-                out.close();
             }
         } catch (final IOException e) {
             ErlLogger.warn(e);

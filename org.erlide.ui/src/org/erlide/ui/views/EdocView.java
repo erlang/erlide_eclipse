@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.views;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,8 +59,8 @@ public class EdocView extends AbstractInfoView {
 
     public static final String ID = "org.erlide.ui.views.EdocView";
     /**
-     * Preference key for the preference whether to show a dialog when the SWT
-     * Browser widget is not available.
+     * Preference key for the preference whether to show a dialog when the SWT Browser
+     * widget is not available.
      *
      * @since 3.0
      */
@@ -114,8 +109,6 @@ public class EdocView extends AbstractInfoView {
                 final SelectionProvider selectionProvider) {
             super("selectAll");
 
-            assertThat(control, is(not(nullValue())));
-            assertThat(selectionProvider, is(not(nullValue())));
             fControl = control;
             fSelectionProvider = selectionProvider;
 
@@ -150,7 +143,7 @@ public class EdocView extends AbstractInfoView {
     private static class SelectionProvider implements ISelectionProvider {
 
         /** The selection changed listeners. */
-        private final List<ISelectionChangedListener> fListeners = new ArrayList<ISelectionChangedListener>(
+        private final List<ISelectionChangedListener> fListeners = new ArrayList<>(
                 0);
 
         /** The widget. */
@@ -163,7 +156,6 @@ public class EdocView extends AbstractInfoView {
          *            the widget
          */
         public SelectionProvider(final Control control) {
-            assertThat(control, is(not(nullValue())));
             fControl = control;
             if (fControl instanceof StyledText) {
                 ((StyledText) fControl).addSelectionListener(new SelectionAdapter() {
@@ -198,8 +190,7 @@ public class EdocView extends AbstractInfoView {
         }
 
         /*
-         * @see
-         * org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
+         * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
          * (org.eclipse.jface.viewers.ISelectionChangedListener)
          */
         @Override
@@ -233,8 +224,7 @@ public class EdocView extends AbstractInfoView {
         }
 
         /*
-         * @see
-         * org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
+         * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
          * .jface.viewers.ISelection)
          */
         @Override
@@ -373,8 +363,7 @@ public class EdocView extends AbstractInfoView {
     }
 
     /*
-     * @see
-     * org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#getHelpContextId()
+     * @see org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#getHelpContextId()
      *
      * @since 3.1
      */

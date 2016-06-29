@@ -127,7 +127,7 @@ public final class StringUtils {
      * @note the new line characters are also added to the returned string.
      */
     public static List<String> splitLines(final String string) {
-        final ArrayList<String> ret = new ArrayList<String>();
+        final ArrayList<String> ret = new ArrayList<>();
         final int len = string.length();
 
         char c;
@@ -191,7 +191,7 @@ public final class StringUtils {
      * Splits some string given many chars
      */
     public static List<String> split(final String string, final char... toSplit) {
-        final ArrayList<String> ret = new ArrayList<String>();
+        final ArrayList<String> ret = new ArrayList<>();
         final int len = string.length();
 
         int last = 0;
@@ -241,10 +241,10 @@ public final class StringUtils {
             final char toSplit) {
         final int i = fullRep.indexOf(toSplit);
         if (i != -1) {
-            return new Pair<String, String>(fullRep.substring(0, i),
+            return new Pair<>(fullRep.substring(0, i),
                     fullRep.substring(i + 1));
         }
-        return new Pair<String, String>(fullRep, "");
+        return new Pair<>(fullRep, "");
 
     }
 

@@ -32,11 +32,9 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.text.templates.ContextTypeRegistry;
 import org.eclipse.jface.text.templates.persistence.TemplateStore;
 import org.eclipse.jface.window.Window;
@@ -67,8 +65,6 @@ import org.erlide.ui.console.ErlConsoleManager;
 import org.erlide.ui.editors.erl.actions.ClearAllCachesAction;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.perspectives.ErlangPerspective;
-import org.erlide.ui.prefs.HighlightStyle;
-import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.templates.ErlangSourceContextTypeModule;
 import org.erlide.ui.templates.ErlangSourceContextTypeModuleElement;
 import org.erlide.ui.templates.ErlangTemplateContextType;
@@ -83,6 +79,7 @@ import org.erlide.util.ErlideEventBus;
 import org.erlide.util.HostnameChecker;
 import org.erlide.util.SystemConfiguration;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -136,8 +133,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         if (SystemConfiguration.getInstance().isDeveloper()) {
             BackendManagerPopup.init();
         }
-
-        loadDefaultEditorColors();
 
         ErlLogger.info("Started UI");
 
@@ -208,17 +203,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                 }
             }
         });
-    }
-
-    private void loadDefaultEditorColors() {
-        final IPreferenceStore rootStore = getPreferenceStore();
-
-        for (final TokenHighlight th : TokenHighlight.values()) {
-            final HighlightStyle data = th.getDefaultStyle();
-            rootStore.setDefault(th.getColorKey(),
-                    StringConverter.asString(data.getColor()));
-            rootStore.setDefault(th.getStylesKey(), data.getStyles());
-        }
     }
 
     public ErlConsoleManager getErlConsoleManager() {
@@ -563,5 +547,13 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             fDialogsFormToolkit = new FormToolkit(colors);
         }
         return fDialogsFormToolkit;
+    }
+
+    public static void flushInstanceScope() {
+        try {
+            InstanceScope.INSTANCE.getNode(PLUGIN_ID).flush();
+        } catch (final BackingStoreException e) {
+            ErlLogger.warn(e);
+        }
     }
 }

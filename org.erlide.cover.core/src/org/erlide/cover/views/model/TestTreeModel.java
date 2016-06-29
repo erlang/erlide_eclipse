@@ -21,7 +21,7 @@ public class TestTreeModel {
     private int cancel; // number of canceled tests
 
     private TestTreeModel() {
-        rootLevel = new LinkedList<TestTreeObject>();
+        rootLevel = new LinkedList<>();
     }
 
     public static synchronized TestTreeModel getInstance() {

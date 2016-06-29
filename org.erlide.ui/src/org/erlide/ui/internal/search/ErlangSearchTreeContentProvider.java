@@ -26,9 +26,9 @@ public class ErlangSearchTreeContentProvider extends ErlangSearchContentProvider
             final ErlangSearchResultPage page) {
         super(page);
         fTreeViewer = viewer;
-        childMap = new HashMap<Object, List<Object>>();
-        parentMap = new HashMap<Object, Object>();
-        moduleNames = new ArrayList<String>();
+        childMap = new HashMap<>();
+        parentMap = new HashMap<>();
+        moduleNames = new ArrayList<>();
         // modules = new ArrayList<IErlModule>();
     }
 
@@ -67,7 +67,7 @@ public class ErlangSearchTreeContentProvider extends ErlangSearchContentProvider
                 children.add(child);
             }
         } else {
-            final List<Object> children = new ArrayList<Object>(1);
+            final List<Object> children = new ArrayList<>(1);
             children.add(child);
             childMap.put(parent, children);
         }
@@ -168,9 +168,9 @@ public class ErlangSearchTreeContentProvider extends ErlangSearchContentProvider
         final int elementLimit = getElementLimit();
         final boolean treeLimited = elementLimit != -1;
         final int n = updatedElements.length;
-        final List<Object> toRemove = new ArrayList<Object>(n);
-        final List<Object> toAdd = new ArrayList<Object>(n);
-        final List<Object> toUpdate = new ArrayList<Object>(n);
+        final List<Object> toRemove = new ArrayList<>(n);
+        final List<Object> toAdd = new ArrayList<>(n);
+        final List<Object> toUpdate = new ArrayList<>(n);
         for (final Object element : updatedElements) {
             if (fResult.getMatchCount(element) > 0) {
                 if (viewer.testFindItem(element) != null) {

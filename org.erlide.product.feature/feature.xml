@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.product.feature"
       label="erlide product feature"
-      version="0.23.2.qualifier"
+      version="0.30.0.qualifier"
       provider-name="erlide.org project"
       plugin="org.erlide.branding">
 

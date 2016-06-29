@@ -121,9 +121,9 @@ public class HtmlReportAction extends Action {
         try {
             final String report = ReportGenerator.getInstance().getHTMLreport(obj, false);
             log.info(report);
-            final FileWriter writer = new FileWriter(reportPath);
-            writer.write(report);
-            writer.close();
+            try (final FileWriter writer = new FileWriter(reportPath)) {
+                writer.write(report);
+            }
             obj.setHtmlPath(reportPath);
 
         } catch (final IOException e) {

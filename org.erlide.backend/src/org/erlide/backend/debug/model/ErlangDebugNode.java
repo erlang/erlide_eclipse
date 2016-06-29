@@ -31,7 +31,7 @@ public class ErlangDebugNode extends ErlangDebugElement
     public ErlangDebugNode(final ErlangDebugTarget target, final String nodeName) {
         super(null);
         fNodeName = nodeName;
-        fShownProcesses = new ArrayList<ErlangProcess>();
+        fShownProcesses = new ArrayList<>();
         fErlangDebugTarget = target;
     }
 

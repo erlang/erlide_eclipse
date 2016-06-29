@@ -88,7 +88,7 @@ public class SearchUtil {
     public static ErlSearchScope getSelectionScope(final ISelection selection,
             final boolean addExternals, final boolean addOtp) throws CoreException {
         final ErlSearchScope result = new ErlSearchScope();
-        final Set<String> externalModulePaths = new HashSet<String>();
+        final Set<String> externalModulePaths = new HashSet<>();
         if (selection instanceof IStructuredSelection) {
             final IStructuredSelection ss = (IStructuredSelection) selection;
             for (final Object i : ss.toList()) {
@@ -299,7 +299,7 @@ public class SearchUtil {
     public static ErlSearchScope getWorkingSetsScope(final IWorkingSet[] workingSets,
             final boolean addExternals, final boolean addOTP) throws CoreException {
         final ErlSearchScope result = new ErlSearchScope();
-        final Set<String> externalModulePaths = new HashSet<String>();
+        final Set<String> externalModulePaths = new HashSet<>();
         if (workingSets == null) {
             return result;
         }
@@ -436,7 +436,7 @@ public class SearchUtil {
             final String[] lruWorkingSetNames = settingsStore
                     .getArray(STORE_LRU_WORKING_SET_NAMES + i);
             if (lruWorkingSetNames != null) {
-                final Set<IWorkingSet> workingSets = new HashSet<IWorkingSet>(2);
+                final Set<IWorkingSet> workingSets = new HashSet<>(2);
                 for (int j = 0; j < lruWorkingSetNames.length; j++) {
                     final IWorkingSet workingSet = PlatformUI.getWorkbench()
                             .getWorkingSetManager().getWorkingSet(lruWorkingSetNames[j]);

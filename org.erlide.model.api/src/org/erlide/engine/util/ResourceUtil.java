@@ -40,14 +40,14 @@ public class ResourceUtil {
      */
     public static String readStream(final InputStream is) throws IOException {
         final StringBuilder sbResult = new StringBuilder();
-        final BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        String line = br.readLine();
-        while (line != null) {
-            sbResult.append(line);
-            sbResult.append('\n');
-            line = br.readLine();
+        try (final BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+            String line = br.readLine();
+            while (line != null) {
+                sbResult.append(line);
+                sbResult.append('\n');
+                line = br.readLine();
+            }
         }
-        br.close();
         is.close();
 
         return sbResult.toString();

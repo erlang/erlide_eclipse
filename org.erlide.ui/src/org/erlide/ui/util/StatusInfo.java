@@ -10,17 +10,12 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import org.eclipse.core.runtime.IStatus;
 import org.erlide.core.ErlangCore;
 
 /**
- * A setable IStatus. Can be an error, warning, info or ok. For error, info and
- * warning states, a message describes the problem.
+ * A setable IStatus. Can be an error, warning, info or ok. For error, info and warning
+ * states, a message describes the problem.
  *
  *
  */
@@ -45,8 +40,7 @@ public class StatusInfo implements IStatus {
      * @param severity
      *            the severity of this status: ERROR, WARNING, INFO and OK.
      * @param message
-     *            the message of this status. Applies only for ERROR, WARNING
-     *            and INFO.
+     *            the message of this status. Applies only for ERROR, WARNING and INFO.
      */
     public StatusInfo(final int severity, final String message) {
         fStatusMessage = message;
@@ -64,8 +58,8 @@ public class StatusInfo implements IStatus {
     /**
      * Returns whether this status indicates a warning.
      *
-     * @return <code>true</code> if this status has severity
-     *         {@link IStatus#WARNING}and <code>false</code> otherwise
+     * @return <code>true</code> if this status has severity {@link IStatus#WARNING}and
+     *         <code>false</code> otherwise
      */
     public boolean isWarning() {
         return fSeverity == IStatus.WARNING;
@@ -74,8 +68,8 @@ public class StatusInfo implements IStatus {
     /**
      * Returns whether this status indicates an info.
      *
-     * @return <code>true</code> if this status has severity
-     *         {@link IStatus#INFO}and <code>false</code> otherwise
+     * @return <code>true</code> if this status has severity {@link IStatus#INFO}and
+     *         <code>false</code> otherwise
      */
     public boolean isInfo() {
         return fSeverity == IStatus.INFO;
@@ -84,8 +78,8 @@ public class StatusInfo implements IStatus {
     /**
      * Returns whether this status indicates an error.
      *
-     * @return <code>true</code> if this status has severity
-     *         {@link IStatus#ERROR}and <code>false</code> otherwise
+     * @return <code>true</code> if this status has severity {@link IStatus#ERROR}and
+     *         <code>false</code> otherwise
      */
     public boolean isError() {
         return fSeverity == IStatus.ERROR;
@@ -107,7 +101,6 @@ public class StatusInfo implements IStatus {
      *            <code>null</code>
      */
     public void setError(final String errorMessage) {
-        assertThat(errorMessage, is(not(nullValue())));
         fStatusMessage = errorMessage;
         fSeverity = IStatus.ERROR;
     }
@@ -120,7 +113,6 @@ public class StatusInfo implements IStatus {
      *            <code>null</code>
      */
     public void setWarning(final String warningMessage) {
-        assertThat(warningMessage, is(not(nullValue())));
         fStatusMessage = warningMessage;
         fSeverity = IStatus.WARNING;
     }
@@ -129,11 +121,9 @@ public class StatusInfo implements IStatus {
      * Sets the status to INFO.
      *
      * @param infoMessage
-     *            the info message which can be an empty string, but not
-     *            <code>null</code>
+     *            the info message which can be an empty string, but not <code>null</code>
      */
     public void setInfo(final String infoMessage) {
-        assertThat(infoMessage, is(not(nullValue())));
         fStatusMessage = infoMessage;
         fSeverity = IStatus.INFO;
     }

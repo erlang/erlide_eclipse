@@ -52,7 +52,7 @@ public class ErlangCompletionService implements CompletionService {
     private final IErlModule module;
     private final String elementBefore;
 
-    private static final List<CompletionData> EMPTY_COMPLETIONS = new ArrayList<CompletionData>();
+    private static final List<CompletionData> EMPTY_COMPLETIONS = new ArrayList<>();
 
     public ErlangCompletionService(final IErlProject project, final IErlModule module,
             final String elementBefore) {
@@ -256,7 +256,7 @@ public class ErlangCompletionService implements CompletionService {
     List<CompletionData> getDeclaredFunctions(final int offset, final String prefix,
             final boolean unexportedOnly, final boolean arityOnly)
             throws ErlModelException {
-        final List<CompletionData> result = new ArrayList<CompletionData>();
+        final List<CompletionData> result = new ArrayList<>();
         for (final IErlElement e : module.getChildren()) {
             if (e instanceof IErlFunction) {
                 final IErlFunction f = (IErlFunction) e;
@@ -271,7 +271,7 @@ public class ErlangCompletionService implements CompletionService {
 
     List<CompletionData> getVariables(final IOtpRpc b, final int offset,
             final String prefix) {
-        final List<CompletionData> result = new ArrayList<CompletionData>();
+        final List<CompletionData> result = new ArrayList<>();
         final Collection<String> vars = ErlangEngine.getInstance()
                 .getContextAssistService().getVariables(elementBefore, prefix);
         for (final String var : vars) {
@@ -286,7 +286,7 @@ public class ErlangCompletionService implements CompletionService {
         if (module == null) {
             return EMPTY_COMPLETIONS;
         }
-        final List<CompletionData> result = new ArrayList<CompletionData>();
+        final List<CompletionData> result = new ArrayList<>();
         try {
             final List<IErlPreprocessorDef> defs = ErlangEngine.getInstance()
                     .getModelUtilService().getAllPreprocessorDefs(module, kind);
@@ -314,7 +314,7 @@ public class ErlangCompletionService implements CompletionService {
                 .getModelFindService();
         final String moduleName = modelFindService.resolveMacroValue(moduleName0, module);
         // we have an external call
-        final List<CompletionData> result = new ArrayList<CompletionData>();
+        final List<CompletionData> result = new ArrayList<>();
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         final IErlModule theModule = modelFindService.findModule(model, project,
                 moduleName, null, IErlElementLocator.Scope.ALL_PROJECTS);
@@ -346,7 +346,7 @@ public class ErlangCompletionService implements CompletionService {
             return EMPTY_COMPLETIONS;
         }
         if (pd instanceof IErlRecordDef) {
-            final List<CompletionData> result = new ArrayList<CompletionData>();
+            final List<CompletionData> result = new ArrayList<>();
             try {
                 for (final IErlElement i : pd.getChildren()) {
                     final IErlRecordField field = (IErlRecordField) i;
@@ -366,7 +366,7 @@ public class ErlangCompletionService implements CompletionService {
             final Set<CompletionFlag> flags, final int offset, final String prefix,
             final String moduleOrRecord, final int pos, final List<String> fieldsSoFar,
             final boolean inString) throws CoreException {
-        final List<CompletionData> result = new ArrayList<CompletionData>();
+        final List<CompletionData> result = new ArrayList<>();
         final IErlProject aProject = project;
         if (aProject == null) {
             return result;
@@ -419,7 +419,7 @@ public class ErlangCompletionService implements CompletionService {
 
     List<CompletionData> addDeclaredFunctionsCompletions(final Set<CompletionFlag> flags,
             final int offset, final String prefix) throws CoreException {
-        final List<CompletionData> result = new ArrayList<CompletionData>();
+        final List<CompletionData> result = new ArrayList<>();
         if (flags.contains(CompletionFlag.DECLARED_FUNCTIONS)) {
             addSorted(prefix, result,
                     getDeclaredFunctions(offset, prefix,
@@ -439,7 +439,7 @@ public class ErlangCompletionService implements CompletionService {
 
     List<CompletionData> getTypeCompletions(final IOtpRpc backend,
             final String moduleOrRecord, final int offset, final String prefix) {
-        final List<CompletionData> result = new ArrayList<CompletionData>();
+        final List<CompletionData> result = new ArrayList<>();
         for (final String builtin : getBuiltinTypeCompletions()) {
             if (builtin.startsWith(prefix.trim())) {
                 result.add(new CompletionData(null, builtin, offset - prefix.length(),
@@ -485,7 +485,7 @@ public class ErlangCompletionService implements CompletionService {
                 }
 
                 funWithParameters = funWithParameters.substring(aprefix.length());
-                final List<Location> offsetsAndLengths = new ArrayList<Location>();
+                final List<Location> offsetsAndLengths = new ArrayList<>();
                 if (!arityOnly) {
                     addOffsetsAndLengths(parOffsets, offset, offsetsAndLengths);
                 }
@@ -527,7 +527,7 @@ public class ErlangCompletionService implements CompletionService {
     List<String> getParameterNames(final IErlFunction function) {
         final List<String> parameters = function.getParameters();
         final int arity = function.getArity();
-        final List<String> result = new ArrayList<String>(arity);
+        final List<String> result = new ArrayList<>(arity);
         addEmptyParameterNames(arity, result);
         addParametersFromFunctionParameters(parameters, result);
         for (final IErlFunctionClause clause : function.getClauses()) {
@@ -585,7 +585,7 @@ public class ErlangCompletionService implements CompletionService {
         if (function.name.regionMatches(0, prefix, 0, prefix.length())) {
             final int offs = function.name.length() - prefix.length();
 
-            final List<Location> offsetsAndLengths = new ArrayList<Location>();
+            final List<Location> offsetsAndLengths = new ArrayList<>();
             if (!arityOnly) {
                 addOffsetsAndLengths(parameterNames, offset + offs + 1,
                         offsetsAndLengths);
@@ -643,14 +643,14 @@ public class ErlangCompletionService implements CompletionService {
         final OtpErlangObject res = ErlangEngine.getInstance()
                 .getService(OtpDocService.class)
                 .getProposalsWithDoc(backend, "<auto_imported>", prefix);
-        final List<CompletionData> result = new ArrayList<CompletionData>();
+        final List<CompletionData> result = new ArrayList<>();
         addFunctionProposalsWithDoc(offset, prefix, result, res, null, false);
         return result;
     }
 
     List<CompletionData> getImportedFunctions(final IOtpRpc backend, final int offset,
             final String prefix) {
-        final List<CompletionData> result = new ArrayList<CompletionData>();
+        final List<CompletionData> result = new ArrayList<>();
         for (final IErlImport imp : module.getImports()) {
             final OtpErlangObject res = ErlangEngine.getInstance()
                     .getService(OtpDocService.class)

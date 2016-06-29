@@ -247,7 +247,7 @@ public class MarkOccurencesSupport implements IDisposable {
 
     List<MarkOccurencesSupport.ErlangRef> getErlangRefs(final IErlModule module,
             final List<ModuleLineFunctionArityRef> findRefs) {
-        final List<MarkOccurencesSupport.ErlangRef> result = new ArrayList<MarkOccurencesSupport.ErlangRef>(
+        final List<MarkOccurencesSupport.ErlangRef> result = new ArrayList<>(
                 findRefs.size());
         for (final ModuleLineFunctionArityRef ref : findRefs) {
             result.add(new MarkOccurencesSupport.ErlangRef(
@@ -408,7 +408,7 @@ public class MarkOccurencesSupport implements IDisposable {
             }
 
             // Add occurrence annotations
-            final HashMap<Annotation, Position> annotationMap = new HashMap<Annotation, Position>(
+            final HashMap<Annotation, Position> annotationMap = new HashMap<>(
                     fRefs.size());
             for (final MarkOccurencesSupport.ErlangRef ref : fRefs) {
                 if (isCanceled(progressMonitor)) {

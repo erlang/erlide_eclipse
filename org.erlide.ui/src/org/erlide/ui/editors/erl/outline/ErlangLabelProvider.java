@@ -70,7 +70,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
      */
     public void addLabelDecorator(final ILabelDecorator decorator) {
         if (fLabelDecorators == null) {
-            fLabelDecorators = new ArrayList<ILabelDecorator>(2);
+            fLabelDecorators = new ArrayList<>(2);
         }
         fLabelDecorators.add(decorator);
     }

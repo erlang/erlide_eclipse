@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test frameworks support plug-in
 Bundle-SymbolicName: org.erlide.test_support;singleton:=true
-Bundle-Version: 0.32.1.qualifier
+Bundle-Version: 0.50.0.qualifier
 Bundle-Activator: org.erlide.test_support.Activator
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.ui,
@@ -24,8 +24,9 @@ Require-Bundle: org.eclipse.ui,
  org.erlide.runtime,
  org.erlide.libs,
  org.erlide.util,
- org.erlide.model.api
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+ org.erlide.model.api,
+ org.erlide.libs2;bundle-version="[1.16.1,2.0.0)"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.test_support,
  org.erlide.test_support.builder,

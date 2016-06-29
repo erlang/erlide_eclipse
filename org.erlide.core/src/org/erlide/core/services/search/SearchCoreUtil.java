@@ -35,7 +35,7 @@ public class SearchCoreUtil {
     static public ErlSearchScope getProjectsScope(final Collection<IProject> projects,
             final boolean addExternals, final boolean addOtp) throws CoreException {
         final ErlSearchScope result = new ErlSearchScope();
-        final Set<String> externalModulePaths = new HashSet<String>();
+        final Set<String> externalModulePaths = new HashSet<>();
         final IErlModel model = ErlangEngine.getInstance().getModel();
         for (final IProject project : projects) {
             SearchCoreUtil.addProjectToScope(project, result);
@@ -148,7 +148,7 @@ public class SearchCoreUtil {
             }
             // addProjectEbin(i, result);
         }
-        final Set<String> externalModulePaths = new HashSet<String>();
+        final Set<String> externalModulePaths = new HashSet<>();
         for (final IErlProject project : erlangProjects) {
             addExternalModules(project, result, externalModulePaths, addExternals,
                     addOtp);

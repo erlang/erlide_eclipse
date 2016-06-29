@@ -8,10 +8,6 @@
  *******************************************************************************/
 package org.erlide.ui.dialogs.fields;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -146,7 +142,7 @@ public class ListDialogField<Element> extends DialogField {
         fListViewerAdapter = new ListViewerAdapter();
         fParentElement = this;
 
-        fElements = new ArrayList<Element>(10);
+        fElements = new ArrayList<>(10);
 
         fButtonLabels = buttonLabels;
         if (fButtonLabels != null) {
@@ -173,7 +169,6 @@ public class ListDialogField<Element> extends DialogField {
      * handled internally. (enable state, button invocation behaviour)
      */
     public void setRemoveButtonIndex(final int removeButtonIndex) {
-        assertThat(removeButtonIndex, is(lessThan(fButtonLabels.length)));
         fRemoveButtonIndex = removeButtonIndex;
     }
 
@@ -183,7 +178,6 @@ public class ListDialogField<Element> extends DialogField {
      * handled internally. (enable state, button invocation behaviour)
      */
     public void setUpButtonIndex(final int upButtonIndex) {
-        assertThat(upButtonIndex, is(lessThan(fButtonLabels.length)));
         fUpButtonIndex = upButtonIndex;
     }
 
@@ -193,7 +187,6 @@ public class ListDialogField<Element> extends DialogField {
      * handled internally. (enable state, button invocation behaviour)
      */
     public void setDownButtonIndex(final int downButtonIndex) {
-        assertThat(downButtonIndex, is(lessThan(fButtonLabels.length)));
         fDownButtonIndex = downButtonIndex;
     }
 
@@ -576,7 +569,7 @@ public class ListDialogField<Element> extends DialogField {
      * Sets the elements shown in the list.
      */
     public void setElements(final Collection<? extends Element> elements) {
-        fElements = new ArrayList<Element>(elements);
+        fElements = new ArrayList<>(elements);
         if (isOkToUse(fTableControl)) {
             fTable.refresh();
         }
@@ -588,7 +581,7 @@ public class ListDialogField<Element> extends DialogField {
      * modified by the user.
      */
     public List<Element> getElements() {
-        return new ArrayList<Element>(fElements);
+        return new ArrayList<>(fElements);
     }
 
     /**
@@ -657,7 +650,7 @@ public class ListDialogField<Element> extends DialogField {
 
         if (nElements > 0) {
             // filter duplicated
-            final ArrayList<Element> elementsToAdd = new ArrayList<Element>(nElements);
+            final ArrayList<Element> elementsToAdd = new ArrayList<>(nElements);
 
             for (int i = 0; i < nElements; i++) {
                 final Element elem = elements.get(i);
@@ -776,7 +769,7 @@ public class ListDialogField<Element> extends DialogField {
 
     private List<Element> moveUp(final List<Element> elements, final List<Element> move) {
         final int nElements = elements.size();
-        final List<Element> res = new ArrayList<Element>(nElements);
+        final List<Element> res = new ArrayList<>(nElements);
         Element floating = null;
         for (int i = 0; i < nElements; i++) {
             final Element curr = elements.get(i);
@@ -810,7 +803,7 @@ public class ListDialogField<Element> extends DialogField {
     }
 
     private List<Element> reverse(final List<Element> p) {
-        final List<Element> reverse = new ArrayList<Element>(p.size());
+        final List<Element> reverse = new ArrayList<>(p.size());
         for (int i = p.size() - 1; i >= 0; i--) {
             reverse.add(p.get(i));
         }
@@ -858,7 +851,7 @@ public class ListDialogField<Element> extends DialogField {
      * Returns the selected elements.
      */
     public List<Element> getSelectedElements() {
-        final List<Element> result = new ArrayList<Element>();
+        final List<Element> result = new ArrayList<>();
         if (isOkToUse(fTableControl)) {
             final ISelection selection = fTable.getSelection();
             if (selection instanceof IStructuredSelection) {

@@ -13,8 +13,8 @@ package org.erlide.ui.prefs.plugin;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -59,6 +59,7 @@ import org.erlide.ui.util.PixelConverter;
 import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * The color preferences.
@@ -87,11 +88,11 @@ public class ColoringPreferencePage extends PreferencePage
     private IColorManager fColorManager;
     SourceViewer fPreviewViewer;
 
-    List<TokenHighlight> fColors;
+    Map<TokenHighlight, HighlightStyle> fColors;
     private OverlayPreferenceStore fOverlayStore;
 
     public ColoringPreferencePage() {
-        fColors = new ArrayList<TokenHighlight>();
+        fColors = Maps.newHashMap();
     }
 
     /**
@@ -108,7 +109,7 @@ public class ColoringPreferencePage extends PreferencePage
         fOverlayStore.start();
 
         for (final TokenHighlight th : TokenHighlight.values()) {
-            fColors.add(th);
+            fColors.put(th, null);
         }
     }
 
@@ -162,7 +163,7 @@ public class ColoringPreferencePage extends PreferencePage
             if (parentElement instanceof String) {
                 final String entry = (String) parentElement;
                 if (fErlangCategory.equals(entry)) {
-                    return fColors.toArray();
+                    return fColors.keySet().toArray();
                 }
                 // if (fEdocCategory.equals(entry)) {
                 // return fListModel.subList(0, 4).toArray();
@@ -197,25 +198,19 @@ public class ColoringPreferencePage extends PreferencePage
         fPreviewViewer.invalidateTextPresentation();
     }
 
+    @Override
+    public boolean performOk() {
+        fOverlayStore.propagate();
+        ErlideUIPlugin.flushInstanceScope();
+        return super.performOk();
+    }
+
     public void storeHighlight(final IPreferenceStore store, final TokenHighlight th,
-            final HighlightStyle style) {
+            HighlightStyle style) {
         if (store != null) {
             store.setValue(th.getColorKey(), StringConverter.asString(style.getColor()));
             store.setValue(th.getStylesKey(), style.getStyles());
-            ErlLogger.debug("Store colors:: %s: %s; %s: %d", th.getColorKey(),
-                    StringConverter.asString(style.getColor()), th.getStylesKey(),
-                    style.getStyles());
         }
-    }
-
-    @Override
-    public boolean performOk() {
-        for (final TokenHighlight th : fColors) {
-            final HighlightStyle data = th.getStyle(fOverlayStore);
-            storeHighlight(fOverlayStore, th, data);
-        }
-        fOverlayStore.propagate();
-        return super.performOk();
     }
 
     @Override
@@ -332,7 +327,7 @@ public class ColoringPreferencePage extends PreferencePage
         gd = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true);
         gd.heightHint = convertHeightInCharsToPixels(9);
         int maxWidth = 0;
-        for (final TokenHighlight item : fColors) {
+        for (final TokenHighlight item : fColors.keySet()) {
             maxWidth = Math.max(maxWidth,
                     convertWidthInCharsToPixels(item.getName().length()));
         }
@@ -478,6 +473,7 @@ public class ColoringPreferencePage extends PreferencePage
                 }
                 data.setStyle(SWT.ITALIC, fItalicCheckBox.getSelection());
                 storeHighlight(fOverlayStore, item, data);
+                fPreviewViewer.invalidateTextPresentation();
             }
         });
         fStrikethroughCheckBox.addSelectionListener(new SelectionListener() {
@@ -496,6 +492,7 @@ public class ColoringPreferencePage extends PreferencePage
                 data.setStyle(TextAttribute.STRIKETHROUGH,
                         fStrikethroughCheckBox.getSelection());
                 storeHighlight(fOverlayStore, item, data);
+                fPreviewViewer.invalidateTextPresentation();
             }
         });
 
@@ -514,6 +511,7 @@ public class ColoringPreferencePage extends PreferencePage
                 }
                 data.setStyle(TextAttribute.UNDERLINE, fUnderlineCheckBox.getSelection());
                 storeHighlight(fOverlayStore, item, data);
+                fPreviewViewer.invalidateTextPresentation();
             }
         });
 

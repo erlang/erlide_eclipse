@@ -95,8 +95,8 @@ public class ErlangConsolePage extends Page
     SourceViewer consoleOutputViewer;
     private SourceViewer consoleInputViewer;
     private IBackendShell shell;
-    protected Map<String, IAction> fGlobalActions = new HashMap<String, IAction>();
-    protected List<String> fSelectionActions = new ArrayList<String>();
+    protected Map<String, IAction> fGlobalActions = new HashMap<>();
+    protected List<String> fSelectionActions = new ArrayList<>();
     // protected ClearOutputAction fClearOutputAction;
     private final ErlangConsole fConsole;
     private IConsoleView fConsoleView;

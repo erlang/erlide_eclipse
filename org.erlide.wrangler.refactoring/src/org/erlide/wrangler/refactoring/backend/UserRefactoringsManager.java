@@ -104,10 +104,10 @@ public class UserRefactoringsManager {
      */
     @SuppressWarnings("rawtypes")
     private void scanForUserRefactorings() {
-        elementaryRefacs = new LinkedList<UserRefactoringInfo>();
-        compositeRefacs = new LinkedList<UserRefactoringInfo>();
-        myElementaryRefacs = new LinkedList<UserRefactoringInfo>();
-        myCompositeRefacs = new LinkedList<UserRefactoringInfo>();
+        elementaryRefacs = new LinkedList<>();
+        compositeRefacs = new LinkedList<>();
+        myElementaryRefacs = new LinkedList<>();
+        myCompositeRefacs = new LinkedList<>();
 
         final Bundle coreBundle = Platform.getBundle(Activator.CORE_ID);
 
@@ -115,7 +115,7 @@ public class UserRefactoringsManager {
                 false);
 
         // modules that origin from repository
-        final List<OtpErlangObject> erlModules = new LinkedList<OtpErlangObject>();
+        final List<OtpErlangObject> erlModules = new LinkedList<>();
         while (modules != null && modules.hasMoreElements()) {
             final String next = modules.nextElement().toString();
             final String module = next.substring(next.lastIndexOf('/') + 1,

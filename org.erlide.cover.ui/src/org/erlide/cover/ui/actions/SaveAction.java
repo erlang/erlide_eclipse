@@ -90,15 +90,9 @@ public class SaveAction extends Action {
         log.info(location);
         log.info(name);
 
-        try {
-            final ObjectOutputStream objOutStream = new ObjectOutputStream(
-                    new FileOutputStream(location.append(name).toString()));
-            try {
-                objOutStream.writeObject(StatsTreeModel.getInstance());
-            } finally {
-                objOutStream.close();
-            }
-
+        try (final ObjectOutputStream objOutStream = new ObjectOutputStream(
+                new FileOutputStream(location.append(name).toString()))) {
+            objOutStream.writeObject(StatsTreeModel.getInstance());
         } catch (final FileNotFoundException e) {
             log.error("Error while openning stream");
             ErlLogger.error(e);

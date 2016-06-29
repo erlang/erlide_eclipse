@@ -79,7 +79,7 @@ public class SelectionInputPage extends InputPage {
         gridData.horizontalSpan = 2;
         inputLabel.setLayoutData(gridData);
 
-        checkButtons = new HashMap<Button, IErlRange>();
+        checkButtons = new HashMap<>();
         Button b;
         GridData gd;
         final IDocument doc = ((IErlMemberSelection) GlobalParameters
@@ -108,7 +108,7 @@ public class SelectionInputPage extends InputPage {
     }
 
     protected void setSelectedPositions() {
-        final ArrayList<IErlRange> rl = new ArrayList<IErlRange>();
+        final ArrayList<IErlRange> rl = new ArrayList<>();
         for (final Entry<Button, IErlRange> e : checkButtons.entrySet()) {
             if (e.getKey().getSelection()) {
                 rl.add(e.getValue());

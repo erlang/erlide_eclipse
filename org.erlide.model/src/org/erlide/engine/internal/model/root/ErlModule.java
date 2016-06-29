@@ -10,7 +10,6 @@ package org.erlide.engine.internal.model.root;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -140,24 +139,18 @@ public class ErlModule extends Openable implements IErlModule {
                         charset = modelUtilService.getProject(this).getWorkspaceProject()
                                 .getDefaultCharset();
                     }
-                    final FileInputStream is = new FileInputStream(new File(path));
-                    try {
+                    try (final FileInputStream is = new FileInputStream(new File(path))) {
                         initialText = Util.getInputStreamAsString(is, charset);
-                    } finally {
-                        try {
-                            is.close();
-                        } catch (final IOException e) {
-                            // ignore
-                        }
+                    } catch (final IOException e) {
+                        // ignore
                     }
                 } catch (final CoreException e) {
-                    ErlLogger.warn(e);
-                } catch (final FileNotFoundException e) {
                     ErlLogger.warn(e);
                 }
             }
         }
         return initialText;
+
     }
 
     @Override
@@ -373,7 +366,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public Collection<IErlImport> getImports() {
-        final List<IErlImport> result = new ArrayList<IErlImport>();
+        final List<IErlImport> result = new ArrayList<>();
         synchronized (getModelLock()) {
             for (final IErlElement e : internalGetChildren()) {
                 if (e instanceof IErlImport) {
@@ -442,7 +435,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public Set<ISourceUnit> getDirectDependentModules() throws ErlModelException {
-        final Set<ISourceUnit> result = new HashSet<ISourceUnit>();
+        final Set<ISourceUnit> result = new HashSet<>();
         final IErlProject project = modelUtilService.getProject(this);
         for (final IErlModule module : project.getModules()) {
             final boolean wasOpen = module.isOpen();
@@ -465,7 +458,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public Set<ISourceUnit> getAllDependentModules() throws CoreException {
-        final Set<ISourceUnit> result = new HashSet<ISourceUnit>();
+        final Set<ISourceUnit> result = new HashSet<>();
         final IErlProject project = modelUtilService.getProject(this);
         for (final IErlModule module : project.getModules()) {
             final Collection<IErlModule> allIncludedFiles = ErlangEngine.getInstance()

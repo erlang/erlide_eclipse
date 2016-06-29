@@ -96,14 +96,12 @@ public class NewErlangScratchPadWizard extends Wizard implements INewWizard {
             path = path.addFileExtension("erlScratchPad");
         }
         final IFile file = container.getFile(path);
-        try {
-            final InputStream stream = openContentStream();
+        try (final InputStream stream = openContentStream()) {
             if (file.exists()) {
                 file.setContents(stream, true, true, monitor);
             } else {
                 file.create(stream, true, monitor);
             }
-            stream.close();
         } catch (final IOException e) {
         }
         monitor.worked(1);

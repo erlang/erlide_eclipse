@@ -5,10 +5,11 @@ Bundle-SymbolicName: org.erlide.ui.tests;singleton:=true
 Bundle-Version: 0.32.1.qualifier
 Bundle-Vendor: Erilde.org project
 Fragment-Host: org.erlide.ui
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit,
- org.erlide.libs,
- org.erlide.testing.libs
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.erlide.testing.libs,
+ org.hamcrest.library;bundle-version="1.3.0",
+ org.hamcrest.core;bundle-version="1.3.0",
+ org.junit
 Export-Package: org.erlide.ui.editors.erl.scanner,
  org.erlide.ui.tests;x-friends:="org.erlide.testing",
  org.erlide.ui.tests.util,

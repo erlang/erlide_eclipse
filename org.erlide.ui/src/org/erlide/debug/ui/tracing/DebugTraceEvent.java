@@ -59,7 +59,7 @@ public class DebugTraceEvent {
         OtpErlangAtom m = (OtpErlangAtom) ieval.elementAt(3);
         OtpErlangList bindings = (OtpErlangList) t2.elementAt(t2.arity() - 1);
         OtpErlangLong l = (OtpErlangLong) ieval.elementAt(1);
-        final List<IStackFrame> stackFrames = new ArrayList<IStackFrame>(
+        final List<IStackFrame> stackFrames = new ArrayList<>(
                 erlStackFrames.arity() + 1);
         for (final OtpErlangObject o : erlStackFrames) {
             final OtpErlangTuple t = (OtpErlangTuple) o;

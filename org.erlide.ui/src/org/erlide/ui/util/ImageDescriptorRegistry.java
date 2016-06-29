@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,29 +22,27 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ImageDescriptorRegistry {
 
-    private final Map<ImageDescriptor, Image> fRegistry = new HashMap<ImageDescriptor, Image>(
+    private final Map<ImageDescriptor, Image> fRegistry = new HashMap<>(
             10);
 
     private final Display fDisplay;
 
     /**
-     * Creates a new image descriptor registry for the current or default
-     * display, respectively.
+     * Creates a new image descriptor registry for the current or default display,
+     * respectively.
      */
     public ImageDescriptorRegistry() {
         this(SWTUtil.getStandardDisplay());
     }
 
     /**
-     * Creates a new image descriptor registry for the given display. All images
-     * managed by this registry will be disposed when the display gets disposed.
+     * Creates a new image descriptor registry for the given display. All images managed
+     * by this registry will be disposed when the display gets disposed.
      *
      * @param display
-     *            the display the images managed by this registry are allocated
-     *            for
+     *            the display the images managed by this registry are allocated for
      */
     public ImageDescriptorRegistry(final Display display) {
-        assertThat(display, is(not(nullValue())));
         fDisplay = display;
         hookDisplay();
     }
@@ -59,9 +52,8 @@ public class ImageDescriptorRegistry {
      *
      * @param descriptor
      *            the image descriptor for which the registry manages an image
-     * @return the image associated with the image descriptor or
-     *         <code>null</code> if the image descriptor can't create the
-     *         requested image.
+     * @return the image associated with the image descriptor or <code>null</code> if the
+     *         image descriptor can't create the requested image.
      */
     public Image get(final ImageDescriptor descriptor0) {
         final ImageDescriptor descriptor = descriptor0 != null ? descriptor0
@@ -72,7 +64,6 @@ public class ImageDescriptorRegistry {
             return result;
         }
 
-        assertThat(fDisplay, is(SWTUtil.getStandardDisplay()));
         result = descriptor.createImage();
         if (result != null) {
             fRegistry.put(descriptor, result);

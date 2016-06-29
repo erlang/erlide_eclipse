@@ -92,8 +92,8 @@ public class UserRefacInputPage extends InputPage {
         descrLabel.setText(description);
         descrLabel.setLayoutData(lgData);
 
-        inputLabels = new ArrayList<Label>(parPrompts.size());
-        inputTexts = new ArrayList<Text>(parPrompts.size());
+        inputLabels = new ArrayList<>(parPrompts.size());
+        inputTexts = new ArrayList<>(parPrompts.size());
 
         for (final String labelText : parPrompts) {
             GridData gridData = new GridData();
@@ -128,7 +128,7 @@ public class UserRefacInputPage extends InputPage {
     @Override
     protected boolean isInputValid() {
         if (checkCorrectness()) {
-            final List<String> params = new ArrayList<String>(inputTexts.size());
+            final List<String> params = new ArrayList<>(inputTexts.size());
             for (final Text text : inputTexts) {
                 params.add(text.getText());
             }

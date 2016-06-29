@@ -199,33 +199,17 @@ public class AddRefacHandler extends AbstractHandler {
             }
         }
 
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-            in = new FileInputStream(source);
-            out = new FileOutputStream(dest);
+        try (InputStream in = new FileInputStream(source);
+                OutputStream out = new FileOutputStream(dest)) {
             final byte[] buf = new byte[1024];
             int len;
             while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
             }
-        } catch (final IOException e) {
+            return true;
+        } catch (IOException e1) {
             return false;
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (final IOException ignore) {
-            }
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (final IOException ignore) {
-            }
         }
-        return true;
     }
 
     // invoke loading module

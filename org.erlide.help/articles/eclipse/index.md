@@ -4,7 +4,7 @@ title: Eclipse client documentation
 part: Erlide documentation
 ---
 
-<img src="https://raw.githubusercontent.com/erlide/erlide/master/org.erlide.branding/images/erl-zen-badge-160.png" alt="erlide logo" class="pull-right no-eclipse">
+<img src="https://raw.githubusercontent.com/erlang/erlide_eclipse/master/org.erlide.branding/images/erl-zen-badge-160.png" alt="erlide logo" class="pull-right no-eclipse">
 
 ## User's guide
 
@@ -18,7 +18,7 @@ part: Erlide documentation
   - [Hello world](150_Tutorial-Hello-World.html) by Alain O’Dea
 * [Troubleshooting](160_Troubleshooting.html)
 * [FAQ](170_FAQ.html) - check this out first.
-* Bugs? Suggestions? [Write a support ticket!](http://github.com/erlide/erlide/issues)
+* Bugs? Suggestions? [Write a support ticket!](http://github.com/erlang/erlide_eclipse/issues)
   Please attach (or email) logs retrieved with
   `Window -> Preferences -> Erlang -> Report problem`.
 

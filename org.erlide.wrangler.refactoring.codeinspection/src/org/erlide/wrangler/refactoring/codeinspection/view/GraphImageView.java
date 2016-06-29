@@ -13,7 +13,6 @@ package org.erlide.wrangler.refactoring.codeinspection.view;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -25,11 +24,13 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import com.google.common.io.Files;
+
 /**
  * This ImageView class shows how to use SWTImageCanvas to manipulate images.
  * <p>
- * To facilitate the usage, you should setFocus to the canvas at the beginning,
- * and call the dispose at the end.
+ * To facilitate the usage, you should setFocus to the canvas at the beginning, and call
+ * the dispose at the end.
  * <p>
  *
  * @author Chengdong Li: cli4@uky.edu
@@ -117,7 +118,7 @@ public class GraphImageView extends ViewPart {
             final String filename = fileChooser.open();
             if (filename != null) {
                 try {
-                    FileUtils.copyFile(dotFile, new File(filename));
+                    Files.copy(dotFile, new File(filename));
                 } catch (final IOException e) {
                     MessageDialog.openError(imageCanvas.getShell(), "Saving error",
                             e.getMessage());

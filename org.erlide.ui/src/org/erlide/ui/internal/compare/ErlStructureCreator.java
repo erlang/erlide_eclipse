@@ -256,15 +256,10 @@ public class ErlStructureCreator extends StructureCreator {
             }
         } else if (document == null && element instanceof IStreamContentAccessor) {
             try {
-                final InputStream contents = ((IStreamContentAccessor) element)
-                        .getContents();
-                try {
+                try (final InputStream contents = ((IStreamContentAccessor) element)
+                        .getContents()) {
                     s = readString(contents);
-                } finally {
-                    try {
-                        contents.close();
-                    } catch (final IOException e) {
-                    }
+                } catch (final IOException e) {
                 }
                 document = new Document(s);
             } catch (final CoreException ex) {
@@ -299,7 +294,7 @@ public class ErlStructureCreator extends StructureCreator {
             IErlElement e = (IErlElement) element;
             // build a path starting at the given element and walk
             // up the parent chain until we reach a module
-            final List<String> args = new ArrayList<String>();
+            final List<String> args = new ArrayList<>();
             while (e != null) {
                 // each path component has a name that uses the same
                 // conventions as a ErlNode name

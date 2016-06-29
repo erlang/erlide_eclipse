@@ -19,7 +19,7 @@ public class CoverageMap {
     private final Map<String, Map<LineResult, Annotation>> coverage;
 
     public CoverageMap() {
-        coverage = new HashMap<String, Map<LineResult, Annotation>>();
+        coverage = new HashMap<>();
     }
 
     /**
@@ -107,7 +107,7 @@ public class CoverageMap {
     }
 
     public Set<LineResult> getLineSet(final String name) {
-        return new HashSet<LineResult>(coverage.get(name).keySet());
+        return new HashSet<>(coverage.get(name).keySet());
     }
 
 }

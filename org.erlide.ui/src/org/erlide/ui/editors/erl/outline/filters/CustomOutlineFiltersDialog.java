@@ -1,10 +1,5 @@
 package org.erlide.ui.editors.erl.outline.filters;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -78,9 +73,6 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
             final Collection<String> enabledFilterIds) {
 
         super(shell);
-        assertThat(viewId, is(not(nullValue())));
-        assertThat(patterns, is(not(nullValue())));
-        assertThat(enabledFilterIds, is(not(nullValue())));
 
         fViewId = viewId;
         fPatterns = Lists.newArrayList(patterns);
@@ -88,7 +80,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
         fEnabledFilterIds = Sets.newHashSet(enabledFilterIds);
 
         fBuiltInFilters = FilterDescriptor.getFilterDescriptors(fViewId);
-        fFilterDescriptorChangeHistory = new Stack<FilterDescriptor>();
+        fFilterDescriptorChangeHistory = new Stack<>();
     }
 
     @Override

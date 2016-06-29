@@ -1,20 +1,7 @@
 package org.erlide.cover.ui.views.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.net.URL;
 import java.util.Calendar;
-import java.util.Properties;
 
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.resource.loader.StringResourceLoader;
-import org.eclipse.core.runtime.Platform;
-import org.erlide.cover.core.Activator;
-import org.erlide.cover.core.Logger;
 import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.util.ErlLogger;
 
@@ -28,20 +15,7 @@ public class ReportGenerator {
 
     private static ReportGenerator instance;
 
-    private final VelocityEngine ve;
-    private final Logger log; // logger
-
     private ReportGenerator() {
-        ve = new VelocityEngine();
-
-        final Properties props = new Properties();
-
-        props.setProperty("resource.loader", "string");
-        props.setProperty("string.resource.loader.class",
-                "org.apache.velocity.runtime.resource.loader.StringResourceLoader");
-
-        ve.init(props);
-        log = Activator.getDefault();
     }
 
     public static synchronized ReportGenerator getInstance() {
@@ -56,43 +30,10 @@ public class ReportGenerator {
 
         final String date = Calendar.getInstance().getTime().toString();
         final String type = "file";
-        String cssCode = "";
-        try {
-            final URL bundleRoot = Platform
-                    .getBundle(org.erlide.cover.ui.Activator.PLUGIN_ID)
-                    .getEntry("/templates/reports.css");
-            final BufferedReader stream = new BufferedReader(
-                    new InputStreamReader(bundleRoot.openStream()));
-            final StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = stream.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-
-            cssCode = sb.toString();
-        } catch (final Exception e) {
-            ErlLogger.error(e);
-            log.error(e);
-        }
-
-        // add data to a context
-        final VelocityContext context = new VelocityContext();
-        context.put("obj", obj);
-        context.put("children", obj.getChildren());
-        context.put("date", date);
-        context.put("type", type);
-        context.put("css", cssCode);
 
         try {
-            final String templText = getTemplateFromJar(relative);
-            StringResourceLoader.getRepository().putStringResource("my_template",
-                    templText);
-            final Template t = ve.getTemplate("my_template");
-
-            final StringWriter writer = new StringWriter();
-            t.merge(context, writer);
-
-            return writer.toString();
+            final ReportTemplate template = new ReportTemplate(obj, date, type);
+            return template.getReport(relative);
         } catch (final Exception e) {
             ErlLogger.error(e);
             return null;
@@ -100,24 +41,4 @@ public class ReportGenerator {
 
     }
 
-    // obtain templates
-    private String getTemplateFromJar(final boolean relative) throws IOException {
-        URL bundleRoot;
-        if (relative) {
-            bundleRoot = Platform.getBundle(org.erlide.cover.ui.Activator.PLUGIN_ID)
-                    .getEntry("/templates/reportRel.vm");
-        } else {
-            bundleRoot = Platform.getBundle(org.erlide.cover.ui.Activator.PLUGIN_ID)
-                    .getEntry("/templates/report.vm");
-        }
-
-        final BufferedReader stream = new BufferedReader(
-                new InputStreamReader(bundleRoot.openStream()));
-        final StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = stream.readLine()) != null) {
-            sb.append(line).append("\n");
-        }
-        return sb.toString();
-    }
 }

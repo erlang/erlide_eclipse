@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
@@ -24,8 +19,8 @@ import org.erlide.ui.util.IProblemChangedListener;
 
 /**
  * The <code>ErlangEditorErrorTickUpdater</code> will register as a
- * IProblemChangedListener to listen on problem changes of the editor's input.
- * It updates the title images when the annotation model changed.
+ * IProblemChangedListener to listen on problem changes of the editor's input. It updates
+ * the title images when the annotation model changed.
  */
 public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
 
@@ -33,7 +28,6 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
     private final ErlangFileLabelProvider fLabelProvider;
 
     public ErlangEditorErrorTickUpdater(final ErlangEditor editor) {
-        assertThat(editor, is(not(nullValue())));
         fErlangEditor = editor;
         fLabelProvider = new ErlangFileLabelProvider();
         ErlideUIPlugin.getDefault().getProblemMarkerManager().addListener(this);

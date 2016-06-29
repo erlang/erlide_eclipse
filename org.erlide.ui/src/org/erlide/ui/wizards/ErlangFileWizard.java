@@ -132,14 +132,12 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
             path = path.addFileExtension("erl");
         }
         final IFile file = container.getFile(path);
-        try {
-            final InputStream stream = openContentStream(skeleton);
+        try (final InputStream stream = openContentStream(skeleton)) {
             if (file.exists()) {
                 file.setContents(stream, true, true, monitor);
             } else {
                 file.create(stream, true, monitor);
             }
-            stream.close();
         } catch (final IOException e) {
         }
         monitor.worked(1);

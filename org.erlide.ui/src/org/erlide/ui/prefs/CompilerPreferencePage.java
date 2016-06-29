@@ -320,8 +320,8 @@ public class CompilerPreferencePage extends PropertyPage
         if (isProjectPreferencePage()) {
             openWorkspacePreferences(null);
         } else {
-            final List<IProject> erlProjects = new ArrayList<IProject>();
-            final Set<IProject> projectsWithSpecifics = new HashSet<IProject>();
+            final List<IProject> erlProjects = new ArrayList<>();
+            final Set<IProject> projectsWithSpecifics = new HashSet<>();
             final IErlModel model = ErlangEngine.getInstance().getModel();
             try {
                 for (final IErlProject ep : model.getErlangProjects()) {

@@ -36,7 +36,7 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
     }
 
     public static List<String> getParameters(final OtpErlangList parameters) {
-        final List<String> pars = new ArrayList<String>(parameters.arity());
+        final List<String> pars = new ArrayList<>(parameters.arity());
         for (final OtpErlangObject i : parameters) {
             pars.add(Util.stringValue(i));
         }

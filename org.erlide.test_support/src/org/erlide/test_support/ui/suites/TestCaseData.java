@@ -175,7 +175,7 @@ public class TestCaseData {
         failLocations = new FailLocations(locations);
     }
 
-    static final List<OtpErlangObject> NO_STACK = new ArrayList<OtpErlangObject>();
+    static final List<OtpErlangObject> NO_STACK = new ArrayList<>();
 
     private FailReason parseReason(final OtpErlangObject reason) {
         OtpBindings b;

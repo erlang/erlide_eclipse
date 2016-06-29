@@ -142,13 +142,13 @@ public class TypeConverterTest {
 
     @Test
     public void cvtMapOk_1() throws SignatureException {
-        final HashMap<OtpErlangObject, OtpErlangObject> map = new HashMap<OtpErlangObject, OtpErlangObject>();
+        final HashMap<OtpErlangObject, OtpErlangObject> map = new HashMap<>();
         test(map, "m", new OtpErlangMap(new OtpErlangObject[0], new OtpErlangObject[0]));
     }
 
     @Test
     public void cvtMapOk_2() throws SignatureException {
-        final HashMap<OtpErlangObject, OtpErlangObject> map = new HashMap<OtpErlangObject, OtpErlangObject>();
+        final HashMap<OtpErlangObject, OtpErlangObject> map = new HashMap<>();
         map.put(new OtpErlangAtom("foo"), new OtpErlangAtom("bar"));
         test(map, "m",
                 new OtpErlangMap(new OtpErlangObject[] { new OtpErlangAtom("foo") },

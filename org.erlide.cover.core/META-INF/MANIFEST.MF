@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Cover suport for ErlIde (Core plugin)
 Bundle-SymbolicName: org.erlide.cover.core;singleton:=true
-Bundle-Version: 0.32.1.qualifier
+Bundle-Version: 0.50.0.qualifier
 Bundle-Activator: org.erlide.cover.core.Activator
 Bundle-Vendor: Erlang Solutions
 Require-Bundle: org.eclipse.core.runtime,
@@ -14,8 +14,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.runtime,
  org.erlide.libs,
  org.erlide.model.api,
- org.erlide.util
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+ org.erlide.util,
+ org.erlide.libs2;bundle-version="[1.16.1,2.0.0)"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.cover.constants,
  org.erlide.cover.core,

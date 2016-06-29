@@ -5,10 +5,15 @@ Bundle-SymbolicName: org.erlide.model.tests;singleton:=true
 Bundle-Version: 0.32.1.qualifier
 Bundle-Vendor: erlide.org
 Fragment-Host: org.erlide.model
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.core.filesystem;bundle-version="1.3.1",
- org.junit,
- org.erlide.testing.libs
+ org.erlide.backend,
+ org.erlide.runtime,
+ org.erlide.core,
+ org.erlide.testing.libs,
+ org.hamcrest.library;bundle-version="1.3.0",
+ org.hamcrest.core;bundle-version="1.3.0",
+ org.junit
 Eclipse-ExtensibleAPI: true 
 Export-Package: org.erlide.engine.model.builder,
  org.erlide.engine.model.erlang,

@@ -1,10 +1,5 @@
 package org.erlide.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import org.eclipse.core.runtime.Path;
 
 public class FilePathUtils {
@@ -13,8 +8,6 @@ public class FilePathUtils {
             final boolean caseSensitive) {
         String path_1 = path_10;
         String path_2 = path_20;
-        assertThat(path_1, is(not(nullValue())));
-        assertThat(path_2, is(not(nullValue())));
         if (!caseSensitive) {
             path_1 = path_1.toLowerCase();
             path_2 = path_2.toLowerCase();

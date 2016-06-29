@@ -35,7 +35,7 @@ import org.erlide.cover.core.ICoverObserver;
 import org.erlide.cover.core.Logger;
 import org.erlide.cover.ui.Activator;
 import org.erlide.cover.ui.actions.ClearCoverageAction;
-import org.erlide.cover.ui.actions.EksportReports;
+import org.erlide.cover.ui.actions.ExportReports;
 import org.erlide.cover.ui.actions.HideCoverageAction;
 import org.erlide.cover.ui.actions.HtmlReportAction;
 import org.erlide.cover.ui.actions.OpenItemAction;
@@ -329,7 +329,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     }
 
     private void makeRefreshAction() {
-        eksportHTML = new EksportReports(viewer.getControl().getShell());
+        eksportHTML = new ExportReports(viewer.getControl().getShell());
         // TODO change image
         eksportHTML.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_TOOL_UP));

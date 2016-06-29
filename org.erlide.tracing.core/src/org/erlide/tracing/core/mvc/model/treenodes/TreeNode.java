@@ -15,7 +15,7 @@ public class TreeNode implements ITreeNode {
 
     private ITreeNode parent;
     private String label;
-    private final List<ITreeNode> children = new ArrayList<ITreeNode>();
+    private final List<ITreeNode> children = new ArrayList<>();
     private Image image;
 
     public TreeNode() {

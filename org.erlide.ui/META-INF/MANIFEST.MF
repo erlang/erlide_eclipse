@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.ui; singleton:=true
-Bundle-Version: 0.32.1.qualifier
+Bundle-Version: 0.50.0.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.erlide.ui.internal.ErlideUIPlugin
 Bundle-Vendor: %providerName
@@ -94,8 +94,11 @@ Require-Bundle: org.eclipse.compare;bundle-version="3.5.202",
  org.eclipse.core.databinding.observable;bundle-version="1.4.0",
  org.eclipse.core.databinding.property;bundle-version="1.4.0",
  org.eclipse.jface.databinding,
- org.erlide.kernel
+ org.erlide.kernel,
+ org.eclipse.equinox.preferences,
+ org.eclipse.e4.ui.css.swt,
+ org.erlide.libs2;bundle-version="[1.16.1,2.0.0)"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Eclipse-ExtensibleAPI: true
 

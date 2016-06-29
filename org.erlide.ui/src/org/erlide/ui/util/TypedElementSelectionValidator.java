@@ -10,19 +10,14 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import java.util.Collection;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 
 /**
- * Implementation of a <code>ISelectionValidator</code> to validate the type of
- * an element. Empty selections are not accepted.
+ * Implementation of a <code>ISelectionValidator</code> to validate the type of an
+ * element. Empty selections are not accepted.
  */
 public class TypedElementSelectionValidator implements ISelectionStatusValidator {
 
@@ -37,8 +32,7 @@ public class TypedElementSelectionValidator implements ISelectionStatusValidator
      * @param acceptedTypes
      *            The types accepted by the validator
      * @param allowMultipleSelection
-     *            If set to <code>true</code>, the validator allows multiple
-     *            selection.
+     *            If set to <code>true</code>, the validator allows multiple selection.
      */
     public TypedElementSelectionValidator(final Class<?>[] acceptedTypes,
             final boolean allowMultipleSelection) {
@@ -49,14 +43,12 @@ public class TypedElementSelectionValidator implements ISelectionStatusValidator
      * @param acceptedTypes
      *            The types accepted by the validator
      * @param allowMultipleSelection
-     *            If set to <code>true</code>, the validator allows multiple
-     *            selection.
+     *            If set to <code>true</code>, the validator allows multiple selection.
      * @param rejectedElements
      *            A list of elements that are not accepted
      */
     public TypedElementSelectionValidator(final Class<?>[] acceptedTypes,
             final boolean allowMultipleSelection, final Collection<?> rejectedElements) {
-        assertThat(acceptedTypes, is(not(nullValue())));
         fAcceptedTypes = acceptedTypes;
         fAllowMultipleSelection = allowMultipleSelection;
         fRejectedElements = rejectedElements;

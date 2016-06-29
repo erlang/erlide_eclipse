@@ -1,10 +1,5 @@
 package org.erlide.debug.ui.properties;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +38,11 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     protected Button fHitCountButton;
     // protected Text fHitCountText;
     protected Combo fBreakActionCombo;
-    protected List<String> fErrorMessages = new ArrayList<String>();
+    protected List<String> fErrorMessages = new ArrayList<>();
 
     /**
-     * Attribute used to indicate that a breakpoint should be deleted when
-     * cancel is pressed.
+     * Attribute used to indicate that a breakpoint should be deleted when cancel is
+     * pressed.
      */
     public static final String ATTR_DELETE_ON_CANCEL = ErlideUIPlugin.PLUGIN_ID
             + ".ATTR_DELETE_ON_CANCEL"; //$NON-NLS-1$
@@ -96,11 +91,11 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     }
 
     /**
-     * Adds the given error message to the errors currently displayed on this
-     * page. The page displays the most recently added error message. Clients
-     * should retain messages that are passed into this method as the message
-     * should later be passed into removeErrorMessage(String) to clear the
-     * error. This method should be used instead of setErrorMessage(String).
+     * Adds the given error message to the errors currently displayed on this page. The
+     * page displays the most recently added error message. Clients should retain messages
+     * that are passed into this method as the message should later be passed into
+     * removeErrorMessage(String) to clear the error. This method should be used instead
+     * of setErrorMessage(String).
      *
      * @param message
      *            the error message to display on this page.
@@ -113,11 +108,10 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     }
 
     /**
-     * Removes the given error message from the errors currently displayed on
-     * this page. When an error message is removed, the page displays the error
-     * that was added before the given message. This is akin to popping the
-     * message from a stack. Clients should call this method instead of
-     * setErrorMessage(null).
+     * Removes the given error message from the errors currently displayed on this page.
+     * When an error message is removed, the page displays the error that was added before
+     * the given message. This is akin to popping the message from a stack. Clients should
+     * call this method instead of setErrorMessage(null).
      *
      * @param message
      *            the error message to clear
@@ -132,8 +126,8 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     }
 
     /**
-     * Stores the values configured in this page. This method should be called
-     * from within a workspace runnable to reduce the number of resource deltas.
+     * Stores the values configured in this page. This method should be called from within
+     * a workspace runnable to reduce the number of resource deltas.
      */
     protected void doStore() throws CoreException {
         final IErlangBreakpoint breakpoint = getBreakpoint();
@@ -379,8 +373,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     }
 
     /**
-     * Allows subclasses to add type specific labels to the common Erlang
-     * breakpoint page.
+     * Allows subclasses to add type specific labels to the common Erlang breakpoint page.
      *
      * @param parent
      */
@@ -388,8 +381,8 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     }
 
     /**
-     * Allows subclasses to add type specific editors to the common Erlang
-     * breakpoint page.
+     * Allows subclasses to add type specific editors to the common Erlang breakpoint
+     * page.
      *
      * @param parent
      * @throws CoreException
@@ -462,7 +455,6 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     }
 
     private void setButtonDimensionHint(final Button button) {
-        assertThat(button, is(not(nullValue())));
         final Object o = button.getLayoutData();
         if (o instanceof GridData) {
             final GridData gd = (GridData) o;

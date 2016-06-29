@@ -24,7 +24,7 @@ public class Configuration implements IConfiguration {
     private final Map<String, IErlModule> modules;
 
     public Configuration() {
-        modules = new HashMap<String, IErlModule>();
+        modules = new HashMap<>();
     }
 
     /**

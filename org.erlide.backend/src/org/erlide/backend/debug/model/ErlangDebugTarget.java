@@ -68,8 +68,6 @@ import com.google.common.collect.Lists;
 public class ErlangDebugTarget extends ErlangDebugElement
         implements IDebugTarget, IErlangDebugNode, IDisposable {
 
-    private static final OtpErlangAtom PARENT_ATOM = new OtpErlangAtom("parent");
-
     public static final IThread[] NO_PROCS = new IThread[] {};
 
     public static final int INTERPRETED_MODULES_CHANGED = 0;
@@ -88,8 +86,8 @@ public class ErlangDebugTarget extends ErlangDebugElement
     private final Set<String> interpretedModules;
     private final Collection<IProject> projects;
 
-    private final Map<OtpErlangPid, OtpErlangPid> metaPids = new TreeMap<OtpErlangPid, OtpErlangPid>();
-    private final Map<OtpErlangPid, OtpErlangPid> pidsFromMeta = new TreeMap<OtpErlangPid, OtpErlangPid>();
+    private final Map<OtpErlangPid, OtpErlangPid> metaPids = new TreeMap<>();
+    private final Map<OtpErlangPid, OtpErlangPid> pidsFromMeta = new TreeMap<>();
 
     private final DebuggerEventDaemon debuggerDaemon;
     private boolean disposed = false;
@@ -101,9 +99,9 @@ public class ErlangDebugTarget extends ErlangDebugElement
         this.launch = launch;
         this.projects = projects;
 
-        allProcesses = new ArrayList<ErlangProcess>();
-        localProcesses = new ArrayList<ErlangProcess>();
-        interpretedModules = new HashSet<String>();
+        allProcesses = new ArrayList<>();
+        localProcesses = new ArrayList<>();
+        interpretedModules = new HashSet<>();
 
         debuggerDaemon = new DebuggerEventDaemon(backend, this);
         debuggerDaemon.start();
@@ -117,10 +115,8 @@ public class ErlangDebugTarget extends ErlangDebugElement
         }
 
         final OtpErlangPid pid = ErlideDebug.startDebug(backend.getOtpRpc(),
-                ErlDebugFlags.getFlag(debugFlags));
+                ErlDebugFlags.getFlag(debugFlags), debuggerDaemon.getMBox());
         ErlLogger.debug("debug started " + pid);
-        backend.getOtpRpc().send(pid,
-                OtpErlang.mkTuple(PARENT_ATOM, debuggerDaemon.getMBox()));
 
         DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
 
@@ -494,15 +490,11 @@ public class ErlangDebugTarget extends ErlangDebugElement
     private void distributeDebuggerCode() {
         final List<String> debuggerModules = getDebuggerModules();
 
-        final List<OtpErlangTuple> modules = new ArrayList<OtpErlangTuple>(
-                debuggerModules.size());
+        final List<OtpErlangTuple> modules = new ArrayList<>(debuggerModules.size());
         final String ver = backend.getRuntime().getVersion().asMajor().toString()
                 .toLowerCase();
         for (final String module : debuggerModules) {
-            OtpErlangBinary b = getDebuggerBeam(module, "org.erlide.kernel.debugger.otp");
-            if (b == null) {
-                b = getDebuggerBeam(module, "org.erlide.kernel.debugger");
-            }
+            final OtpErlangBinary b = getDebuggerBeam(module, "org.erlide.kernel");
             if (b != null) {
                 final OtpErlangString filename = new OtpErlangString(module + ".erl");
                 final OtpErlangTuple t = OtpErlang.mkTuple(new OtpErlangAtom(module),
@@ -577,21 +569,16 @@ public class ErlangDebugTarget extends ErlangDebugElement
     }
 
     private List<String> getDebuggerModules() {
-        final Bundle debugger = Platform.getBundle("org.erlide.kernel.debugger");
+        final Bundle debugger = Platform.getBundle("org.erlide.kernel");
         if (debugger == null) {
-            ErlLogger.warn("debugger bundle was not found...");
-            return new ArrayList<String>();
+            ErlLogger.warn("engine bundle was not found...");
+            return new ArrayList<>();
         }
         final List<String> dbg_modules = getModulesFromBundle(debugger, null);
 
-        final Bundle debugger_otp = Platform.getBundle("org.erlide.kernel.debugger.otp");
-        if (debugger_otp == null) {
-            ErlLogger.error("debugger bundle was not found!");
-            return dbg_modules;
-        }
         final String ver = backend.getRuntime().getVersion().asMajor().toString()
                 .toLowerCase();
-        final List<String> dbg_otp_modules = getModulesFromBundle(debugger_otp, ver);
+        final List<String> dbg_otp_modules = getModulesFromBundle(debugger, ver);
 
         dbg_modules.addAll(dbg_otp_modules);
         return dbg_modules;

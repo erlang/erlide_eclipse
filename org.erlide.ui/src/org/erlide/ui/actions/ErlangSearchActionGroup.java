@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.actions;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
@@ -27,8 +22,7 @@ import org.erlide.ui.internal.search.ImplementorsSearchGroup;
 import org.erlide.ui.internal.search.ReferencesSearchGroup;
 
 /**
- * Action group that adds erlang search actions to a context menu and the global
- * menu bar.
+ * Action group that adds erlang search actions to a context menu and the global menu bar.
  *
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -50,8 +44,8 @@ public class ErlangSearchActionGroup extends ActionGroup {
     // private OccurrencesSearchGroup fOccurrencesGroup;
 
     /**
-     * Creates a new <code>ErlangSearchActionGroup</code>. The group requires
-     * that the selection provided by the part's selection provider is of type
+     * Creates a new <code>ErlangSearchActionGroup</code>. The group requires that the
+     * selection provided by the part's selection provider is of type
      * <code>org.eclipse.jface.viewers.IStructuredSelection</code>.
      *
      * @param part
@@ -62,8 +56,8 @@ public class ErlangSearchActionGroup extends ActionGroup {
     }
 
     /**
-     * Creates a new <code>ErlangSearchActionGroup</code>. The group requires
-     * that the selection provided by the page's selection provider is of type
+     * Creates a new <code>ErlangSearchActionGroup</code>. The group requires that the
+     * selection provided by the page's selection provider is of type
      * <code>org.eclipse.jface.viewers.IStructuredSelection</code>.
      *
      * @param page
@@ -74,14 +68,13 @@ public class ErlangSearchActionGroup extends ActionGroup {
     }
 
     /**
-     * Note: This constructor is for internal use only. Clients should not call
-     * this constructor.
+     * Note: This constructor is for internal use only. Clients should not call this
+     * constructor.
      *
      * @param editor
      *            the Erlang editor
      */
     public ErlangSearchActionGroup(final AbstractErlangEditor editor) {
-        assertThat(editor, is(not(nullValue())));
         fEditor = editor;
 
         fReferencesGroup = new ReferencesSearchGroup(fEditor);
