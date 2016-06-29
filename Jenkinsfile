@@ -35,11 +35,7 @@ stage 'Publish'
 node {
 	wrap([$class: 'TimestamperBuildWrapper']) {
 		publish(archive)
-
-		def isMaster = (git_branch=='master')
-		if(isMaster) {
-			publishRelease(archive)
-		}
+		publishRelease(archive)
 	}
 }
 
@@ -51,19 +47,16 @@ def checkout() {
 		checkout scm
 		git_branch = env.BRANCH_NAME
 	} else {
-                git url: 'git@github.com:vladdu/erlide_eclipse.git', branch: 'pu'
+        git url: 'git@github.com:vladdu/erlide_eclipse.git', branch: 'pu'
+	    sh 'git symbolic-ref --short HEAD > GIT_BRANCH'
+    	git_branch=readFile('GIT_BRANCH').trim()
 	}
     sh('git rev-parse HEAD > GIT_COMMIT')
     git_commit=readFile('GIT_COMMIT')
     short_commit=git_commit.take(6)
-    sh 'git name-rev --name-only HEAD > GIT_BRANCH'
-    git_branch=readFile('GIT_BRANCH').trim()
-    if(git_branch.contains('/')) {
-        git_branch=git_branch.substring(git_branch.lastIndexOf('/')+1)
-    }
 
 	//currentBuild.setName("${short_commit}__${env.BUILD_NUMBER}")
-	currentBuild.setDescription("${git_branch} @${short_commit}")
+	currentBuild.setDescription("${git_branch} - ${short_commit}")
 }
 
 def compile() {
@@ -172,6 +165,14 @@ def generate_version_info(def vsn, def base) {
 }
 
 def publishRelease(def archive) {
+	def isMaster = (git_branch=='master')
+	sh "git remote get-url origin > REPO"
+	def isMainRepo = readFile('REPO').trim().contains('github.com/erlang/')
+	if(!isMaster || !isMainRepo) {
+		// only do a github release if on master and in main repo
+		return
+	}
+
 	def v = getVersion(archive)
 	def vsn = v[1]
 	def ts = v[2]
@@ -182,13 +183,15 @@ def publishRelease(def archive) {
     sh 'rm -rf GIT_TAG'
 	sh 'git describe --exact-match > GIT_TAG || true'
 	def git_tag = readFile('GIT_TAG').trim()
-
-	if(vvsn == git_tag) {
-		echo "Tag ${vsn} already exists!"
+	if(git_tag == null || git_tag == '') {
+		sh "git tag -a ${vvsn} -m ${vvsn}"
+		sh "git push origin ${vvsn}"
+		git_tag = vvsn
+	}
+	if(git_tag != vvsn) {
+		// if there is a tag, but it's not $vvsn, skip publishing
 		return
 	}
-	sh "git tag -a ${vvsn} -m ${vvsn}"
-	sh "git push origin ${vvsn}"
 
 	def draft = true
 	def body = "test"

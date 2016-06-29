@@ -17,6 +17,8 @@ permalink: /blog/:year/:title
 
 titlecase: true 
 
+edit-repo : "https://github.com/erlide/erlide.github.io/edit/new_docs/"
+
 sass:
     style: :expanded
     #style: :compressed
