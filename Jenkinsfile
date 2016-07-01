@@ -129,7 +129,7 @@ def publish(def archive) {
 		dest = "${vsn}_${kind}${ts}"
 	}
 
-	def output_base = "/media/www2/download.erlide.org/update"
+	def output_base = "/media/www/download.erlide.org/update"
 	def full_dest = "${output_base}/archive/${repo}/${dest}"
 	sh "umask 002"
 	sh "mkdir -p ${full_dest}"
