@@ -206,6 +206,15 @@ def publishRelease(def archive) {
 	def info = getReleaseInfo(release)
 	def release_id = info[1]
 	sh "curl -X POST --header \"Content-Type:application/edn\" --data-binary @org.erlide.site/target/repository/${archive} https://uploads.github.com/repos/${owner}/${repository}/releases/${release_id}/assets?access_token=${access_token}\\&name=${archive}"
+
+	// publish help to github.io
+	val dest = "org.erlide.help/target/erlide.github.io"
+	sh "rm -rf ${dest} && mkdir -p ${dest}"
+	sh "git clone --depth 1 git@github.com:erlide/erlide.github.io -b master ${dest}"
+	sh "cp -R org.erlide.help/articles/* ${dest}/articles/eclipse"
+	dir(dest) {
+		sh "git add . && git commit -a -m 'autoupdate eclipse docs (${vsn})' && git push origin master"
+	}
 }
 
 @NonCPS
