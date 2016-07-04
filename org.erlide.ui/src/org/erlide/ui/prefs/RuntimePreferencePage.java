@@ -616,7 +616,7 @@ public class RuntimePreferencePage extends PreferencePage implements
                 : erlideRuntime.getName();
         erlideLabel
                 .setText(RuntimePreferenceMessages.RuntimePreferencePage_erlideLabel_text
-                        + erlideName);
+                        + " " + erlideName);
         new Label(composite, SWT.NONE);
         new Label(parent, SWT.NONE);
 

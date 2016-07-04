@@ -48,16 +48,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
             addRuntime(rt);
         }
         defaultRuntimeName = dfltRuntime;
-        if (defaultRuntimeName == null) {
-            setDefaultRuntimes();
-        }
-        final RuntimeInfo rt = runtimes
-                .get(ideRuntime != null ? ideRuntime : defaultRuntimeName);
-        if (rt == null) {
-            erlideRuntime = getDefaultRuntime();
-        } else {
-            erlideRuntime = rt;
-        }
+        setDefaultRuntimes();
         Assert.isNotNull(erlideRuntime);
     }
 
