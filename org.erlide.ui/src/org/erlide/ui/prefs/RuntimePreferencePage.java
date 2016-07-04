@@ -12,6 +12,7 @@
 package org.erlide.ui.prefs;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -70,6 +71,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
 import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
+import org.erlide.runtime.runtimeinfo.RuntimeFinder;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalogData;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -103,6 +105,7 @@ public class RuntimePreferencePage extends PreferencePage implements
     private Button fRemoveButton;
     private Button fEditButton;
     private Button fDuplicateButton;
+    private Button fDetectButton;
 
     // column weights
     protected float fWeight1 = 1 / 4F;
@@ -423,11 +426,6 @@ public class RuntimePreferencePage extends PreferencePage implements
         removeRuntimes(vms);
     }
 
-    /**
-     * Removes the given VMs from the table.
-     *
-     * @param vms
-     */
     public void removeRuntimes(final RuntimeInfo[] vms) {
         final IStructuredSelection prev = (IStructuredSelection) getSelection();
         if (runtimes.size() == 1) {
@@ -450,6 +448,16 @@ public class RuntimePreferencePage extends PreferencePage implements
             }
         }
         selectSingle();
+    }
+
+    protected void detectRuntimes() {
+        final Collection<RuntimeInfo> found = RuntimeFinder.guessRuntimeLocations();
+        for (final RuntimeInfo i : found) {
+            if (!runtimes.contains(i)) {
+                runtimes.add(i);
+            }
+        }
+        fRuntimeList.refresh();
     }
 
     @Override
@@ -762,6 +770,15 @@ public class RuntimePreferencePage extends PreferencePage implements
             public void handleEvent(final Event evt) {
                 removeSelectedRuntimes();
             }
+        });
+
+        fDetectButton = createPushButton(buttons, RuntimePreferenceMessages.detect);
+        fDetectButton.addListener(SWT.Selection, new Listener() {
+            @Override
+            public void handleEvent(final Event evt) {
+                detectRuntimes();
+            }
+
         });
 
         configureTableResizing(parent, buttons, table, column1, column2, column3);

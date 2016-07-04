@@ -42,9 +42,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
     public synchronized void setRuntimes(final Collection<RuntimeInfo> elements,
             final String dfltRuntime, final String ideRuntime) {
         runtimes.clear();
-        if (elements.isEmpty()) {
-            initializeRuntimesList();
-        }
+        initializeRuntimesList();
 
         for (final RuntimeInfo rt : elements) {
             addRuntime(rt);
