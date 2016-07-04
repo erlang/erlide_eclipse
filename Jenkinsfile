@@ -63,7 +63,17 @@ def compile() {
 	wrap([$class: 'Xvfb', displayNameOffset: 100, installationName: 'xvfb', screen: '1024x768x24']) {
 		dir('org.erlide.parent') {
 			sh "chmod u+x mvnw"
-			sh "./mvnw -B -U clean verify -P help -Dmaven.test.failure.ignore=true"
+			def product
+			if(git_branch=="master")
+				product=",build-ide"
+			else
+				product=""
+			profiles="help${product}"
+			sh "./mvnw -B -U clean verify -P ${profiles} -Dmaven.test.failure.ignore=true"
+
+			if(git_branch=="master") {
+				// TODO rename product artifacts
+			}
 		}
 	}
 }
@@ -95,6 +105,9 @@ def archive() {
 		    step([$class: 'ArtifactArchiver', artifacts: archive, fingerprint: true])
 	    }
 	}
+    if(git_branch=="master") {
+    	step([$class: 'ArtifactArchiver', artifacts: 'org.erlide.product.site/target/products/*.zip', fingerprint: true])
+    }
 	return archive
 }
 

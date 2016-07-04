@@ -21,10 +21,6 @@
                value="3,267,494,15">
          </property>
          <property
-               name="preferenceCustomization"
-               value="plugin_customization.ini">
-         </property>
-         <property
                name="aboutImage"
                value="images/erl-zen-badge-160.png">
          </property>
@@ -45,8 +41,12 @@
                value="images/erlide-32.gif">
          </property>
       <property name="introBrandingImage" value="product:erlide-48.gif" />
-      <property name="introBrandingImageText" value="Erlide.org project111" />
-      <property name="introTitle" value="Welcome to Erlide111" />
+      <property name="introBrandingImageText" value="Erlide.org project" />
+      <property name="introTitle" value="Welcome to Erlide!" />
+      <property
+            name="preferenceCustomization"
+            value="plugin_customization.ini">
+      </property>
       </product>
    </extension>
 	<extension point="org.eclipse.ui.splashHandlers">
@@ -84,4 +84,3 @@
         </introProductBinding>
      </extension>
     </plugin>
-	

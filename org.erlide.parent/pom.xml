@@ -10,7 +10,7 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho.version>0.24.0</tycho.version>
+		<tycho.version>0.22.0</tycho.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -45,6 +45,7 @@
 		<module>../org.erlide.target</module>
 		<!-- <module>../releng.tools</module> -->
 		<module>../org.erlide</module>
+		<module>../org.erlide.product.feature</module>
 
 		<module>../org.erlide.backend</module>
 		<module>../org.erlide.branding</module>
@@ -69,7 +70,7 @@
 		<module>../org.erlide.tracing.core</module>
 
 		<module>../org.erlide.site</module>
-		<!-- <module>../org.erlide.product.site</module> -->
+		<module>../org.erlide.product.site</module>
 
 		<module>../org.erlide.testing.libs</module>
 
@@ -154,6 +155,15 @@
 				</plugins>
 			</build>
 		</profile>
+	    <profile>
+	        <id>build-ide</id>
+	        <activation>
+	            <activeByDefault>false</activeByDefault>
+	        </activation>
+	        <modules>
+	            <module>../org.erlide.product.site</module>
+	        </modules>
+	    </profile>
 	</profiles>
 
 	<build>
@@ -183,17 +193,7 @@
 							<environment>
 								<os>linux</os>
 								<ws>gtk</ws>
-								<arch>x86</arch>
-							</environment>
-							<environment>
-								<os>linux</os>
-								<ws>gtk</ws>
 								<arch>x86_64</arch>
-							</environment>
-							<environment>
-								<os>win32</os>
-								<ws>win32</ws>
-								<arch>x86</arch>
 							</environment>
 							<environment>
 								<os>win32</os>
@@ -366,18 +366,18 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
-                <plugin>
-                    <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>tycho-surefire-plugin</artifactId>
-                    <version>${tycho.version}</version>
-                    <configuration>
-                        <failIfNoTests>false</failIfNoTests>
-                        <!-- Sets the VM argument line used when unit tests are run. -->
-                        <argLine>${surefireArgLine}</argLine>
-                        <!-- Skips unit tests if the value of skip.unit.tests property is true -->
-                        <skipTests>${skip.unit.tests}</skipTests>
-                    </configuration>
-                </plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-surefire-plugin</artifactId>
+					<version>${tycho.version}</version>
+					<configuration>
+						<failIfNoTests>false</failIfNoTests>
+						<!-- Sets the VM argument line used when unit tests are run. -->
+						<argLine>${surefireArgLine}</argLine>
+						<!-- Skips unit tests if the value of skip.unit.tests property is true -->
+						<skipTests>${skip.unit.tests}</skipTests>
+					</configuration>
+				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-p2-director-plugin</artifactId>

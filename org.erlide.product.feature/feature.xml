@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.product.feature"
       label="erlide product feature"
-      version="0.30.0.qualifier"
+      version="0.50.0.qualifier"
       provider-name="erlide.org project"
       plugin="org.erlide.branding">
 
@@ -22,20 +22,10 @@
       <update label="erlide update site" url="http://download.erlide.org/update"/>
    </url>
 
-   <includes
-         id="org.erlide"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.platform"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.equinox.p2.user.ui"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.help"
-         version="0.0.0"/>
+   <requires>
+      <import feature="org.erlide" version="0.50.0.qualifier" match="compatible"/>
+      <import feature="org.eclipse.platform" version="4.4.2.v20150204-1700" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.sdk"/>
+   </requires>
 
 </feature>
