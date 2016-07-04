@@ -185,8 +185,8 @@ def publishRelease(def archive) {
 	def git_tag = readFile('GIT_TAG').trim()
 	if(git_tag == null || git_tag == '') {
 		sh "git tag -a ${vvsn} -m ${vvsn}"
-		sh "git push origin ${vvsn}"
-		git_tag = vvsn
+		//sh "git push origin ${vvsn}"
+		//git_tag = vvsn
 	}
 	if(git_tag != vvsn) {
 		// if there is a tag, but it's not $vvsn, skip publishing
