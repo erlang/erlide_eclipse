@@ -12,7 +12,7 @@
 	</parent>
 
 	<artifactId>org.erlide.model.tests</artifactId>
-	<version>0.32.1-SNAPSHOT</version>
+	<version>0.32.2-SNAPSHOT</version>
 	<packaging>eclipse-test-plugin</packaging>
 
 	<build>

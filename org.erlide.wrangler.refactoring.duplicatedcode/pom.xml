@@ -11,6 +11,6 @@
 	</parent>
 
 	<artifactId>org.erlide.wrangler.refactoring.duplicatedcode</artifactId>
-	<version>0.9.19-SNAPSHOT</version>
+	<version>0.9.20-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 </project>

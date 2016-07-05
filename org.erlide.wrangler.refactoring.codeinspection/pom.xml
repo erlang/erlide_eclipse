@@ -11,6 +11,6 @@
 	</parent>
 
 	<artifactId>org.erlide.wrangler.refactoring.codeinspection</artifactId>
-	<version>0.1.15-SNAPSHOT</version>
+	<version>0.1.16-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 </project>
