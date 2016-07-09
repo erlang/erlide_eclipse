@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.libs;bundle-version="1.12.0",
  org.erlide.libs2;bundle-version="[1.16.1,2.0.0)",
  org.erlide.libs.annotations;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.util,
  org.erlide.util.erlang,

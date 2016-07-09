@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.erlide.libs
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.16.2.qualifier
 Bundle-Vendor: Erlide project
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: javax.inject-1.jar,
  guava-17.0.jar,
  org.eclipse.xtend.lib-2.9.1.jar,

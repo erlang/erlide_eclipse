@@ -5,4 +5,4 @@ Bundle-SymbolicName: org.erlide.wrangler.help;singleton:=true
 Bundle-Version: 0.5.9.qualifier
 Bundle-Vendor: UKC
 Require-Bundle: org.eclipse.help;bundle-version="[3.6.0,4.0.0)"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

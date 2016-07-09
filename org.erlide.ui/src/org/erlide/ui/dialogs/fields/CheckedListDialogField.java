@@ -127,7 +127,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
             return res;
         }
 
-        return new ArrayList<Object>(fCheckElements);
+        return new ArrayList<>(fCheckElements);
     }
 
     /**

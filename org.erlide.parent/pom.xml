@@ -246,7 +246,7 @@
 							<excludeResource>*._trace</excludeResource>
 						</excludeResources>
 						<compilerArgs>
-							<arg>-1.7</arg>
+							<arg>-1.8</arg>
 						</compilerArgs>
 					</configuration>
 					<dependencies>

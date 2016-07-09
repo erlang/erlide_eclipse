@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Testing Support Libraries
 Bundle-SymbolicName: org.erlide.testing.libs;singleton:=true
 Bundle-Version: 1.2.2
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.erlide.libs;bundle-version="1.16.0",
  org.erlide.libs2;bundle-version="[1.16.1,2.0.0)",
  org.junit;bundle-version="4.11.0"

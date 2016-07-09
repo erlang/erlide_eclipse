@@ -4,7 +4,7 @@ Bundle-Name: erlide engine api
 Bundle-SymbolicName: org.erlide.model.api;singleton:=true
 Bundle-Version: 0.50.0.qualifier
 Bundle-Vendor: erlide.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.erlide.engine,
  org.erlide.engine.model,
  org.erlide.engine.model.builder,

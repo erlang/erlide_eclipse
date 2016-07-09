@@ -79,7 +79,7 @@ public class RpcMonitor {
 
         public void dump(final PrintStream out, final boolean full) {
             Collection<OtpErlangObject> myArgs = args.get();
-            myArgs = myArgs == null ? new ArrayList<OtpErlangObject>() : myArgs;
+            myArgs = myArgs == null ? new ArrayList<>() : myArgs;
             final String argsString = full ? args.toString().replaceAll("\n|\r", " ")
                     : "...";
             OtpErlangObject val = result.get();

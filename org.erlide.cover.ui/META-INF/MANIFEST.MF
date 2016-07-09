@@ -20,7 +20,7 @@ Require-Bundle: org.eclipse.ui,
  org.erlide.cover.core,
  org.erlide.cover.api,
  org.erlide.ui
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.cover.ui;x-internal:=true,
  org.erlide.cover.ui.actions;x-internal:=true,

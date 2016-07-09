@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.erlide.wrangler.refactoring.codeinspection;singleton:=t
 Bundle-Version: 0.1.16.qualifier
 Bundle-Vendor: UKC
 Fragment-Host: org.erlide.wrangler.refactoring;bundle-version="0.10.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ui
 Import-Package: com.abstratt.graphviz;resolution:=optional
 Export-Package: org.erlide.wrangler.refactoring.codeinspection;x-internal:=true,
