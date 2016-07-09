@@ -7,7 +7,7 @@ deps/
 erl_crash.dump
 target/
 xtend-gen/
-!xtend-gen/.keep
+!**/.keep
 
 .vagrant
 *.class
