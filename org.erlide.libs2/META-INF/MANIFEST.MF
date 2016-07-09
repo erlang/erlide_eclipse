@@ -7,8 +7,6 @@ Bundle-Version: 1.16.1.qualifier
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: com.ericsson.otp.erlang,
- nl.kii.util,
- org.eclipse.jdt.annotation,
- org.erlide.annotations
+ nl.kii.util
 Require-Bundle: org.erlide.libs;bundle-version="1.16.1"
 

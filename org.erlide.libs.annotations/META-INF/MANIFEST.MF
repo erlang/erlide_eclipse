@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: erlide Annotations
+Bundle-SymbolicName: org.erlide.libs.annotations
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.eclipse.jdt.annotation,
+ org.erlide.annotations
+Require-Bundle: org.erlide.libs;bundle-version="1.16.2"
+

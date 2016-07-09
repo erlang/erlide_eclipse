@@ -27,7 +27,8 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.erlide.util_eclipse,
  org.erlide.libs,
  org.erlide.libs2;bundle-version="[1.16.1,2.0.0)",
- org.erlide.kernel;bundle-version="0.110.0"
+ org.erlide.kernel;bundle-version="0.110.0",
+ org.erlide.libs.annotations;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Eclipse-ExtensibleAPI: true

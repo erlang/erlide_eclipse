@@ -54,7 +54,8 @@
 		<module>../org.erlide.dialyzer.ui</module>
 		<module>../org.erlide.help</module>
 		<module>../org.erlide.kernel</module>
-		<module>../org.erlide.libs</module>
+        <module>../org.erlide.libs</module>
+        <module>../org.erlide.libs.annotations</module>
 		<module>../org.erlide.libs2</module>
 		<module>../org.erlide.licenses</module>
 		<module>../org.erlide.model</module>
@@ -89,6 +90,7 @@
 		<module>../org.erlide.wrangler.refactoring</module>
 		<module>../org.erlide.wrangler.refactoring.codeinspection</module>
 		<module>../org.erlide.wrangler.refactoring.duplicatedcode</module>
+
 	</modules>
 
 	<profiles>

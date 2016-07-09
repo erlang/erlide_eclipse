@@ -18,7 +18,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.libs,
  org.erlide.util,
  org.erlide.kernel;bundle-version="0.101.0",
- org.erlide.libs2;bundle-version="[1.16.1,2.0.0)"
+ org.erlide.libs2;bundle-version="[1.16.1,2.0.0)",
+ org.erlide.libs.annotations;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Localization: plugin
