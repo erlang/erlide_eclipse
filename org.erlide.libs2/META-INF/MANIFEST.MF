@@ -9,8 +9,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: com.ericsson.otp.erlang,
  nl.kii.util,
  org.eclipse.jdt.annotation,
- org.erlide.annotations,
- org.fishwife.jrugged,
- org.incava.util.diff
+ org.erlide.annotations
 Require-Bundle: org.erlide.libs;bundle-version="1.16.1"
 

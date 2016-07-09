@@ -10,7 +10,10 @@ Bundle-ClassPath: javax.inject-1.jar,
  guava-17.0.jar,
  org.eclipse.xtend.lib-2.9.1.jar,
  org.eclipse.xtend.lib.macro-2.9.1.jar,
- org.eclipse.xtext.xbase.lib-2.9.1.jar
+ org.eclipse.xtext.xbase.lib-2.9.1.jar,
+ jrugged-core-3.2.2.jar,
+ jrugged-aspects-3.2.2.jar,
+ java-diff-1.1.jar
 Export-Package: com.google.common.annotations;version="14.0.1",
  com.google.common.base;version="14.0.1",
  com.google.common.base.internal;version="14.0.1";x-internal:=true,
@@ -39,4 +42,10 @@ Export-Package: com.google.common.annotations;version="14.0.1",
  org.eclipse.xtend2.lib,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtext.xbase.lib.internal,
- org.eclipse.xtext.xbase.lib.util
+ org.eclipse.xtext.xbase.lib.util,
+ org.fishwife.jrugged,
+ org.fishwife.jrugged.aspects,
+ org.fishwife.jrugged.clocks,
+ org.fishwife.jrugged.control,
+ org.fishwife.jrugged.interval,
+ org.incava.util.diff
