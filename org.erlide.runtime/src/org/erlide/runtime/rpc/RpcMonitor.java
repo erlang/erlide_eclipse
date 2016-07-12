@@ -170,6 +170,9 @@ public class RpcMonitor {
     }
 
     public static void dump(final String fileName, final int n, final boolean full) {
+        if (DISABLED) {
+            return;
+        }
         try (final PrintStream os = new PrintStream(
                 new FileOutputStream(fileName, true))) {
             dump(os, n, full);
@@ -184,11 +187,6 @@ public class RpcMonitor {
 
         out.println("\n" + delim);
         out.format("*** RpcMonitor statistics%n - %d calls%n", callCount);
-        if (DISABLED) {
-            out.println(
-                    "\nRpcMonitor was not enabled.\n\nUse -Derlide.rpcmonitor to enable it.");
-            return;
-        }
         out.println(delim);
         out.println();
         out.format("Slowest %d calls%n", slowest.size());
