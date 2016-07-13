@@ -1,8 +1,6 @@
 package org.erlide.core.services.builder;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -163,7 +161,7 @@ public class DialyzerUtilsTest {
             final IMarker[] markers = root.findMarkers(
                     DialyzerMarkerUtils.DIALYZE_WARNING_MARKER, true,
                     IResource.DEPTH_INFINITE);
-            assertThat(markers.length, is(greaterThan(0)));
+            assertThat(markers.length).isGreaterThan(0);
             for (final IMarker marker : markers) {
                 // for some reason, when running on Hudson, we get two identical
                 // markers...

@@ -1,8 +1,7 @@
 package org.erlide.core.services.builder;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import java.io.StringBufferInputStream;
 
@@ -109,13 +108,13 @@ public class BuildersTest {
     }
 
     private void testBuilder(final BuilderTool builderTool) throws CoreException {
-        assertThat(prj, notNullValue());
+        assertThat(prj).isNotNull();
 
         ErlangNature.setErlangProjectBuilder(prj, builderTool);
         final String targetBeamPath = "ebin/mod.beam";
 
         final IResource beam0 = prj.findMember(targetBeamPath);
-        assertThat("beam existed before test", beam0, nullValue());
+        assertWithMessage("beam existed before test").that(beam0).isNull();
 
         final ErlangBuilder builder = ErlangBuilderFactory.get(builderTool);
         final BuildNotifier notifier = new BuildNotifier(null, prj);
@@ -127,14 +126,14 @@ public class BuildersTest {
         waitJobsToFinish(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 
         final IResource beam = prj.findMember(targetBeamPath);
-        assertThat("beam was not created", beam, notNullValue());
+        assertWithMessage("beam was not created").that(beam).isNotNull();
 
         builder.clean(erlProject, notifier);
         prj.refreshLocal(IResource.DEPTH_INFINITE, null);
         waitJobsToFinish(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 
         final IResource beam2 = prj.findMember(targetBeamPath);
-        assertThat("beam was not removed", beam2, nullValue());
+        assertWithMessage("beam was not removed").that(beam2).isNull();
     }
 
     private void waitJobsToFinish(final Object family) {

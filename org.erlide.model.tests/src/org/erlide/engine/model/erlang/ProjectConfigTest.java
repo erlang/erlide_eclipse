@@ -1,7 +1,6 @@
 package org.erlide.engine.model.erlang;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static com.google.common.truth.Truth.assertThat;
 
 import java.util.Map;
 import java.util.Set;
@@ -16,6 +15,6 @@ public class ProjectConfigTest {
     public void configMapMatchesToolMap() {
         final Map<BuilderTool, Set<ProjectConfigType>> map = BuilderTool.toolConfigsMap;
         final Map<ProjectConfigType, Set<BuilderTool>> inverse = MapUtils.inverseSet(map);
-        assertThat(ProjectConfigType.configToolsMap, is(inverse));
+        assertThat(ProjectConfigType.configToolsMap).isEqualTo(inverse);
     }
 }

@@ -1,7 +1,6 @@
 package org.erlide.engine.model.erlang.configuration;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static com.google.common.truth.Truth.assertThat;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -29,7 +28,7 @@ public class InternalProjectConfigurationTest extends AbstractProjectConfigurati
         final ErlangProjectProperties pp = project.getProperties();
         final String actual = pp.getOutputDir().toPortableString();
 
-        assertThat(actual, is(expected));
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -44,7 +43,7 @@ public class InternalProjectConfigurationTest extends AbstractProjectConfigurati
 
         final String actual = project.getProperties().getIncludeDirs().toString();
 
-        assertThat(actual, is(convertListString(expected)));
+        assertThat(actual).isEqualTo(convertListString(expected));
     }
 
     private String convertListString(final String expected) {
@@ -63,7 +62,7 @@ public class InternalProjectConfigurationTest extends AbstractProjectConfigurati
 
         final String actual = project.getProperties().getSourceDirs().toString();
 
-        assertThat(actual, is(convertListString(expected)));
+        assertThat(actual).isEqualTo(convertListString(expected));
     }
 
     @Override

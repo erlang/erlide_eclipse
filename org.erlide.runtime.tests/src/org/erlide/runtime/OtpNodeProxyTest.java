@@ -1,9 +1,6 @@
 package org.erlide.runtime;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static com.google.common.truth.Truth.assertThat;
 
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.internal.OtpNodeProxy;
@@ -31,9 +28,9 @@ public class OtpNodeProxyTest {
     public void prepareRuntime() {
         final RuntimeInfoCatalog cat = new RuntimeInfoCatalog();
         cat.initializeRuntimesList();
-        assertThat("empty runtime list", !cat.getRuntimes().isEmpty());
+        assertThat(cat.getRuntimes()).isNotEmpty();
         info = cat.getRuntimes().iterator().next();
-        assertThat("no default info", info != RuntimeInfo.NO_RUNTIME_INFO);
+        assertThat(info).isNotEqualTo(RuntimeInfo.NO_RUNTIME_INFO);
 
         HostnameChecker.getInstance().detectHostNames(info.getOtpHome());
 
@@ -47,7 +44,7 @@ public class OtpNodeProxyTest {
         runtime = new OtpNodeProxy(data);
         runtime.ensureRunning();
         process = runtime.getProcess();
-        assertThat("beam process", process, is(not(nullValue())));
+        assertThat(process).isNotNull();
     }
 
     @After
@@ -67,8 +64,8 @@ public class OtpNodeProxyTest {
         } catch (final IllegalThreadStateException e) {
             val = -1;
         }
-        assertThat("bad exit value", val, is(-1));
-        assertThat("not running", runtime.isRunning(), is(true));
+        assertThat(val).isEqualTo(-1);
+        assertThat(runtime.isRunning()).isEqualTo(true);
         final IOtpRpc site = runtime.getOtpRpc();
         OtpErlangObject r;
         try {
@@ -76,7 +73,7 @@ public class OtpNodeProxyTest {
         } catch (final RpcException e) {
             r = null;
         }
-        assertThat("rpc", r, is(not(nullValue())));
+        assertThat(r).isNotNull();
         try {
             site.cast("erlang", "halt", "i", 0);
         } catch (final RpcException e1) {
@@ -131,7 +128,7 @@ public class OtpNodeProxyTest {
             } catch (final InterruptedException e) {
             }
         }
-        assertThat("state", aRuntime.state(), is(state));
+        assertThat(aRuntime.state()).isEqualTo(state);
         if (aProcess != null) {
             int val;
             try {
@@ -139,7 +136,7 @@ public class OtpNodeProxyTest {
             } catch (final InterruptedException e) {
                 val = -1;
             }
-            assertThat("exit code", val, is(code));
+            assertThat(val).isEqualTo(code);
         }
     }
 
@@ -155,8 +152,8 @@ public class OtpNodeProxyTest {
         runtime2.ensureRunning();
 
         final Process process2 = runtime2.getProcess();
-        assertThat("running", runtime2.isRunning(), is(true));
-        assertThat("beam process", process2, is(nullValue()));
+        assertThat(runtime2.isRunning()).isEqualTo(true);
+        assertThat(process2).isNull();
 
         final IOtpRpc site = runtime2.getOtpRpc();
         OtpErlangObject r;
@@ -165,7 +162,7 @@ public class OtpNodeProxyTest {
         } catch (final RpcException e) {
             r = null;
         }
-        assertThat("rpc", r, is(not(nullValue())));
+        assertThat(r).isNotNull();
         try {
             runtime2.dispose();
         } catch (final Throwable t) {
@@ -176,6 +173,6 @@ public class OtpNodeProxyTest {
         } catch (final InterruptedException e) {
         }
         expect(runtime2, process2, -1, State.TERMINATED);
-        assertThat("state", runtime.state(), is(State.RUNNING));
+        assertThat(runtime.state()).isEqualTo(State.RUNNING);
     }
 }

@@ -7,7 +7,7 @@ public class ListsUtilsTest {
     // final List<String> input = Lists.newArrayList("aaa", "bbb", "ccc");
     // final String expected = "aaa--bbb--ccc";
     // final String actual = ListsUtils.packList(input, "--");
-    // assertThat(actual, is(expected));
+    // assertThat(actual).isEqualTo(expected));
     // }
     //
     // @Test
@@ -15,7 +15,7 @@ public class ListsUtilsTest {
     // final List<String> input = Lists.newArrayList();
     // final String expected = "";
     // final String actual = ListsUtils.packList(input, "--");
-    // assertThat(actual, is(expected));
+    // assertThat(actual).isEqualTo(expected));
     // }
     //
     // @Test
@@ -23,7 +23,7 @@ public class ListsUtilsTest {
     // final List<String> input = Lists.newArrayList("aaa");
     // final String expected = "aaa";
     // final String actual = ListsUtils.packList(input, "--");
-    // assertThat(actual, is(expected));
+    // assertThat(actual).isEqualTo(expected));
     // }
     //
     // @Test
@@ -31,7 +31,7 @@ public class ListsUtilsTest {
     // final String[] input = new String[] { "aaa", "bbb", "ccc" };
     // final String expected = "aaa--bbb--ccc";
     // final String actual = ListsUtils.packArray(input, "--");
-    // assertThat(actual, is(expected));
+    // assertThat(actual).isEqualTo(expected));
     // }
     //
     // @Test
@@ -39,7 +39,7 @@ public class ListsUtilsTest {
     // final String input = "aaa--bbb--ccc";
     // final String[] expected = new String[] { "aaa", "bbb", "ccc" };
     // final String[] actual = ListsUtils.unpackArray(input, "--");
-    // assertThat(actual, is(expected));
+    // assertThat(actual).isEqualTo(expected));
     // }
     //
     // @Test
@@ -47,7 +47,7 @@ public class ListsUtilsTest {
     // final String input = "";
     // final String[] expected = new String[] {};
     // final String[] actual = ListsUtils.unpackArray(input, "--");
-    // assertThat(actual, is(expected));
+    // assertThat(actual).isEqualTo(expected));
     // }
 
 }

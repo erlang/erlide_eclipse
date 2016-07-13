@@ -1,9 +1,6 @@
 package org.erlide.engine.model.erlang.configuration;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static com.google.common.truth.Truth.assertThat;
 
 import java.util.Collection;
 
@@ -12,7 +9,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.internal.model.root.FileProjectConfigurator;
 import org.erlide.engine.internal.model.root.ProjectConfiguratorFactory;
-import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IProjectConfigurator;
 import org.erlide.engine.model.root.ProjectConfigType;
@@ -37,7 +33,7 @@ public class RebarProjectConfigurationTest extends AbstractProjectConfigurationT
         expected.setOutputDir(new Path("ebin"));
         final ErlangProjectProperties actual = configurator.decodeConfig("");
 
-        assertThat(actual, is(ErlangProjectPropertiesMatcher.sameAs(expected)));
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -53,11 +49,11 @@ public class RebarProjectConfigurationTest extends AbstractProjectConfigurationT
         final ErlangProjectProperties p2 = project.getProperties();
 
         final Collection<IPath> actualSources = p2.getSourceDirs();
-        assertThat(actualSources, hasSize(2));
-        assertThat(actualSources, hasItem(new Path("src2")));
+        assertThat(actualSources).hasSize(2);
+        assertThat(actualSources).contains(new Path("src2"));
 
         final Collection<IPath> actualIncludes = p2.getIncludeDirs();
-        assertThat(actualIncludes, hasSize(1));
-        assertThat(actualIncludes, hasItem(new Path("myinclude")));
+        assertThat(actualIncludes).hasSize(1);
+        assertThat(actualIncludes).contains(new Path("myinclude"));
     }
 }

@@ -14,7 +14,7 @@ Bundle-ClassPath: javax.inject-1.jar,
  jrugged-core-3.2.2.jar,
  jrugged-aspects-3.2.2.jar,
  java-diff-1.1.jar
-Export-Package: com.google.common.annotations;version="14.0.1",
+Export-Package: com.google.common.annotations,
  com.google.common.base;version="14.0.1",
  com.google.common.base.internal;version="14.0.1";x-internal:=true,
  com.google.common.cache;version="14.0.1",

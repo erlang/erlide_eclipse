@@ -6,4 +6,6 @@ Bundle-Version: 1.2.2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.erlide.libs;bundle-version="1.16.0",
  org.erlide.libs2;bundle-version="[1.16.1,2.0.0)",
- org.hamcrest.core;bundle-version="1.3.0"
+ org.junit;bundle-version="4.11.0"
+Bundle-ClassPath: truth-0.28.jar
+Export-Package: com.google.common.truth

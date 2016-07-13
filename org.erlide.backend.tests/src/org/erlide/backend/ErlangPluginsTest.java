@@ -1,9 +1,6 @@
 package org.erlide.backend;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static com.google.common.truth.Truth.assertThat;
 
 import java.util.Enumeration;
 
@@ -46,10 +43,10 @@ public class ErlangPluginsTest {
     private void checkBundleForTwoEbinElements(final String pluginId, final String path) {
         final Bundle b = Platform.getBundle(pluginId);
         final Enumeration<String> paths = b.getEntryPaths(path);
-        assertThat(paths, is(not(nullValue())));
+        assertThat(paths).isNotNull();
         // we check for at least two elements
-        assertThat(paths.hasMoreElements(), is(true));
-        assertThat(paths.hasMoreElements(), is(true));
+        assertThat(paths.hasMoreElements()).isEqualTo(true);
+        assertThat(paths.hasMoreElements()).isEqualTo(true);
     }
 
 }

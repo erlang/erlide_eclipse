@@ -137,15 +137,19 @@ public class ToolExecutor {
 
     public static String getToolLocation(final String cmd) {
         // hack because sometimes first call returns an empty value
-        String result;
+        String result = null;
         final int MAX_TRIES = 5;
         for (int i = 1; i < MAX_TRIES; i++) {
             result = getToolLocation_1(cmd);
             if (result != null) {
                 return result;
             }
+            try {
+                Thread.sleep(20);
+            } catch (final InterruptedException e) {
+                // ignore
+            }
         }
-        result = getToolLocation_1(cmd);
         return result;
     }
 

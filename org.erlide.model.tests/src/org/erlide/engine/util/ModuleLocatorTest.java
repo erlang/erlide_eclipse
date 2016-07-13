@@ -1,9 +1,6 @@
 package org.erlide.engine.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static com.google.common.truth.Truth.assertThat;
 
 import java.util.Collection;
 
@@ -39,8 +36,8 @@ public class ModuleLocatorTest {
 
     @Test
     public void demoProjectsShouldBeInWorkspace() {
-        assertThat(p1, is(not(nullValue())));
-        assertThat(p2, is(not(nullValue())));
+        assertThat(p1).isNotNull();
+        assertThat(p2).isNotNull();
     }
 
     @Test
@@ -54,10 +51,10 @@ public class ModuleLocatorTest {
     private void checkProjectDirectories(final IErlProject project,
             final Object[] expectedSources, final Object[] expectedIncludes) {
         final ErlangProjectProperties properties = project.getProperties();
-        assertThat(properties.getSourceDirs().toArray(), is(expectedSources));
-        assertThat(properties.getIncludeDirs().toArray(), is(expectedIncludes));
-        assertThat(properties.getExternalModules(), is("../external_modules"));
-        assertThat(properties.getExternalIncludes(), is("../external_includes"));
+        assertThat(properties.getSourceDirs().toArray()).isEqualTo(expectedSources);
+        assertThat(properties.getIncludeDirs().toArray()).isEqualTo(expectedIncludes);
+        assertThat(properties.getExternalModules()).isEqualTo("../external_modules");
+        assertThat(properties.getExternalIncludes()).isEqualTo("../external_includes");
     }
 
     // @Test
@@ -80,7 +77,7 @@ public class ModuleLocatorTest {
     private void checkModuleNamesInList(final String[] mods,
             final Collection<IErlModule> list) {
         for (final String name : mods) {
-            assertThat(name, hasModWithName(list, name));
+            assertThat(hasModWithName(list, name)).isTrue();
         }
     }
 

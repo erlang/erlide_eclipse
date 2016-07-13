@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.erlide.runtime;singleton:=true
 Bundle-Version: 0.50.0.qualifier
 Bundle-Vendor: erlide.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.erlide.libs,
+Require-Bundle: org.erlide.libs;bundle-version="1.16.2",
  org.erlide.util,
  org.erlide.libs2;bundle-version="[1.16.1,2.0.0)",
  org.erlide.libs.annotations;bundle-version="1.0.0"

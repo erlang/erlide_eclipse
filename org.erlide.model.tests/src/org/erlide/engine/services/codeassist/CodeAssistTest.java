@@ -1,10 +1,10 @@
 package org.erlide.engine.services.codeassist;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import java.util.Collection;
 
 import org.erlide.engine.ErlangEngine;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.google.common.collect.Sets;
@@ -15,7 +15,7 @@ public class CodeAssistTest {
     public void getVariablesShouldReturnNonNull() {
         final Collection<String> result = ErlangEngine.getInstance()
                 .getContextAssistService().getVariables("src", "");
-        MatcherAssert.assertThat(result, Matchers.notNullValue());
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -24,7 +24,7 @@ public class CodeAssistTest {
                 .getContextAssistService()
                 .getVariables("a(X)-> XY=-X, {Z, W}=XY, X.", "");
         final Collection<String> expected = Sets.newHashSet("X", "XY", "Z", "W");
-        MatcherAssert.assertThat(result, Matchers.is(expected));
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -32,6 +32,6 @@ public class CodeAssistTest {
         final Collection<String> result = ErlangEngine.getInstance()
                 .getContextAssistService().getVariables("a(X)-> XY=-X, Z=XY, X.", "X");
         final Collection<String> expected = Sets.newHashSet("X", "XY");
-        MatcherAssert.assertThat(result, Matchers.is(expected));
+        assertThat(result).isEqualTo(expected);
     }
 }

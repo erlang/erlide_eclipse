@@ -1,7 +1,6 @@
 package org.erlide.engine.model.erlang;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static com.google.common.truth.Truth.assertThat;
 
 import java.util.List;
 
@@ -23,10 +22,10 @@ public class RecordDefTest extends ErlModelTestBase {
                 .getChildrenOfKind(ErlElementKind.RECORD_DEF);
 
         IErlRecordDef def = (IErlRecordDef) childrenOfKind.get(0);
-        assertThat(def.getDefinedName(), is("X"));
+        assertThat(def.getDefinedName()).isEqualTo("X");
 
         def = (IErlRecordDef) childrenOfKind.get(1);
-        assertThat(def.getDefinedName(), is("X"));
+        assertThat(def.getDefinedName()).isEqualTo("X");
     }
 
 }
