@@ -118,6 +118,13 @@ def getVersion(String archive) {
 }
 
 def publish(def archive) {
+	sh "git remote get-url origin > REPO"
+	def isMainRepo = readFile('REPO').trim().contains('github.com/erlang/')
+	if(!isMainRepo) {
+		// only do a release if in main repo
+		return
+	}
+
 	def v = getVersion(archive)
 	def vsn = v[1]
 	def ts = v[2]
