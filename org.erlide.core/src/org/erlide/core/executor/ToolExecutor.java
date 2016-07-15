@@ -145,7 +145,7 @@ public class ToolExecutor {
                 return result;
             }
             try {
-                Thread.sleep(20);
+                Thread.sleep(60);
             } catch (final InterruptedException e) {
                 // ignore
             }
