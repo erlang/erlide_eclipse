@@ -214,8 +214,8 @@ def publishRelease(def archive) {
 	}
 
 	def draft = true
-	def body = "test"
-	def owner = "vladdu" // "erlang"
+	def body = ""
+	def owner = "erlang"
 	def repository = "erlide_eclipse"
 	def access_token = "${env.GITHUB_TOKEN}"
 
