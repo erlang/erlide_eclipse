@@ -12,7 +12,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry excluding="**" kind="src" output="target/classes" path="xtend-gen">
+	<classpathentry kind="src" output="target/classes" path="xtend-gen">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
