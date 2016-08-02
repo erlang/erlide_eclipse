@@ -18,12 +18,12 @@ public class BeamLocator implements IBeamLocator {
     @Override
     public IFile findModuleBeam(final IProject project, final String module)
             throws ErlModelException {
-        final IErlangEngine engine = ErlangEngine.getInstance();
-        if (engine == null) {
+        final IErlangEngine server = ErlangEngine.getInstance();
+        if (server == null) {
             ErlLogger.warn("Erlang engine was not created!");
             return null;
         }
-        final IErlProject erlProject = engine.getModel().getErlangProject(project);
+        final IErlProject erlProject = server.getModel().getErlangProject(project);
         if (erlProject == null) {
             ErlLogger.warn("Project " + project + " is not in erlang model...");
             return null;

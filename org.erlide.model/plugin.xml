@@ -5,7 +5,7 @@
    <extension
          point="org.erlide.model.api.erlangEngine"> 
       <erlangEngine 
-            class="org.erlide.engine.internal.DefaultErlangEngine">
+            class="org.erlide.engine.internal.ErlangServerImpl">
       </erlangEngine>
    </extension>
    <extension

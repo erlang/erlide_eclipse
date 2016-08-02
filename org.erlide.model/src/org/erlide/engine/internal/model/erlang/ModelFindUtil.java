@@ -20,7 +20,6 @@ import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelFindService;
-import org.erlide.engine.services.search.OpenService;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.util.StringUtils;
 
@@ -37,8 +36,8 @@ public class ModelFindUtil implements ModelFindService {
     @Override
     public ISourceRange findVariable(final ISourceRange range, final String variableName,
             final String elementText) throws OtpErlangRangeException {
-        final OtpErlangTuple res2 = ErlangEngine.getInstance()
-                .getService(OpenService.class).findFirstVar(variableName, elementText);
+        final OtpErlangTuple res2 = ErlangEngine.getInstance().getOpenService()
+                .findFirstVar(variableName, elementText);
         if (res2 != null) {
             final int relativePos = ((OtpErlangLong) res2.elementAt(0)).intValue() - 1;
             final int length = ((OtpErlangLong) res2.elementAt(1)).intValue();

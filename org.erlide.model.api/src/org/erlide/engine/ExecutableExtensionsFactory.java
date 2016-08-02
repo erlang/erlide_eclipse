@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.erlide.engine.services.ErlangService;
+import org.erlide.engine.services.search.XrefService;
 import org.osgi.framework.Bundle;
 
 /**
@@ -97,9 +98,8 @@ public class ExecutableExtensionsFactory
     }
 
     private Object injectParameter(final Class<? extends ErlangService> serviceClass) {
-        final Object parameter = ErlangEngine.getInstance().getService(serviceClass);
-        if (parameter != null) {
-            return parameter;
+        if (serviceClass == XrefService.class) {
+            return ErlangEngine.getInstance().getXrefService();
         }
         throw new InjectionException("Constructor parameter " + serviceClass.getName()
                 + " could not be instantiated");

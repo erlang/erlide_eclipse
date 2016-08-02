@@ -15,7 +15,6 @@ import org.erlide.engine.model.OtpRpcFactory;
 import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.services.search.OpenService;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.util.erlang.OtpErlang;
 
@@ -49,8 +48,8 @@ public class ErlOtpExternalReferenceEntryList extends Openable
     }
 
     private void addExternalEntries(final IProgressMonitor pm, final IOtpRpc backend) {
-        final OtpErlangList structure = ErlangEngine.getInstance()
-                .getService(OpenService.class).getOtpLibStructure(backend);
+        final OtpErlangList structure = ErlangEngine.getInstance().getOpenService()
+                .getOtpLibStructure(backend);
         mkOtpStructureMap(structure);
     }
 
@@ -84,8 +83,9 @@ public class ErlOtpExternalReferenceEntryList extends Openable
     }
 
     private void mkOtpStructureMap(final OtpErlangList input) {
-        if (input == null)
+        if (input == null) {
             return;
+        }
         for (final OtpErlangObject o : input) {
             final OtpErlangTuple t = (OtpErlangTuple) o;
             final String lib = ((OtpErlangString) t.elementAt(0)).stringValue();

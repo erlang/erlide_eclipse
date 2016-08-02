@@ -14,7 +14,6 @@ import org.erlide.engine.model.OtpRpcFactory;
 import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.runtime.rpc.IOtpRpc;
 
@@ -55,8 +54,8 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
                 .getProject(this);
         final IOtpRpc backend = OtpRpcFactory.getOtpRpcForProject(project);
         if (backend != null) {
-            final List<String> files = ErlangEngine.getInstance()
-                    .getService(OpenService.class).getLibFiles(entry);
+            final List<String> files = ErlangEngine.getInstance().getOpenService()
+                    .getLibFiles(entry);
             final List<IErlModule> children = Lists
                     .newArrayListWithCapacity(files.size());
             for (final String file : files) {

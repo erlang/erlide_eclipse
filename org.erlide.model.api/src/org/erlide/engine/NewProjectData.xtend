@@ -29,7 +29,7 @@ class NewProjectData extends ErlangProjectProperties {
     val IProjectConfiguratorFactory factory
 
     new() {
-        this.factory = ErlangEngine.instance.projectConfiguratorFactory
+        this.factory = ErlangEngine.getInstance.projectConfiguratorFactory
     }
 
     override String toString() {

@@ -30,7 +30,6 @@ import org.erlide.engine.services.codeassist.FunctionCompletionData;
 import org.erlide.engine.services.codeassist.Location;
 import org.erlide.engine.services.codeassist.RecordCompletion;
 import org.erlide.engine.services.search.ModelFindService;
-import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.engine.services.text.DocumentationFormatter;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.util.ErlLogger;
@@ -216,8 +215,7 @@ public class ErlangCompletionService implements CompletionService {
         final List<String> names = ErlangEngine.getInstance().getModelUtilService()
                 .findUnitsWithPrefix(prefix, project, kind != CompletionFlag.INCLUDES,
                         includes);
-        final OtpErlangObject res = ErlangEngine.getInstance()
-                .getService(OtpDocService.class)
+        final OtpErlangObject res = ErlangEngine.getInstance().getOtpDocService()
                 .getModules(backend, prefix, names, includes);
         if (res instanceof OtpErlangList) {
             final OtpErlangList resList = (OtpErlangList) res;
@@ -321,8 +319,7 @@ public class ErlangCompletionService implements CompletionService {
         // FIXME or IErlElementLocator.Scope.REFERENCED_PROJECTS
         if (theModule != null) {
             if (ErlangEngine.getInstance().getModelUtilService().isOtpModule(theModule)) {
-                final OtpErlangObject res = ErlangEngine.getInstance()
-                        .getService(OtpDocService.class)
+                final OtpErlangObject res = ErlangEngine.getInstance().getOtpDocService()
                         .getProposalsWithDoc(b, moduleName, prefix);
                 addFunctionProposalsWithDoc(offset, prefix, result, res, null, arityOnly);
             } else {
@@ -640,8 +637,7 @@ public class ErlangCompletionService implements CompletionService {
 
     List<CompletionData> getAutoImportedFunctions(final IOtpRpc backend, final int offset,
             final String prefix) {
-        final OtpErlangObject res = ErlangEngine.getInstance()
-                .getService(OtpDocService.class)
+        final OtpErlangObject res = ErlangEngine.getInstance().getOtpDocService()
                 .getProposalsWithDoc(backend, "<auto_imported>", prefix);
         final List<CompletionData> result = new ArrayList<>();
         addFunctionProposalsWithDoc(offset, prefix, result, res, null, false);
@@ -652,8 +648,7 @@ public class ErlangCompletionService implements CompletionService {
             final String prefix) {
         final List<CompletionData> result = new ArrayList<>();
         for (final IErlImport imp : module.getImports()) {
-            final OtpErlangObject res = ErlangEngine.getInstance()
-                    .getService(OtpDocService.class)
+            final OtpErlangObject res = ErlangEngine.getInstance().getOtpDocService()
                     .getProposalsWithDoc(backend, imp.getImportModule(), prefix);
             addFunctionProposalsWithDoc(offset, prefix, result, res, imp, false);
         }

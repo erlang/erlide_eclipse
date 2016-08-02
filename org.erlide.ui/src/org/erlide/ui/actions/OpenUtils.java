@@ -22,7 +22,6 @@ import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelFindService;
 import org.erlide.engine.services.search.OpenResult;
-import org.erlide.engine.services.search.OpenService;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
 import org.erlide.ui.util.ErlModelUtils;
@@ -113,9 +112,9 @@ public class OpenUtils {
         if (ei != null) {
             final IErlModel model = ErlangEngine.getInstance().getModel();
             moduleName = ei.getImportModule();
-            res2 = ErlangEngine.getInstance().getService(OpenService.class)
-                    .getSourceFromModule(model.getPathVars(), moduleName,
-                            erlProject.getProperties().getExternalModules());
+            res2 = ErlangEngine.getInstance().getOpenService().getSourceFromModule(
+                    model.getPathVars(), moduleName,
+                    erlProject.getProperties().getExternalModules());
         }
         if (res2 instanceof OtpErlangString && moduleName != null) {
             // imported from otp module

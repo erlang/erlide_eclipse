@@ -18,7 +18,6 @@ import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.engine.services.search.OpenResult;
-import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.ErlideTestUtils;
 import org.erlide.util.FilePathUtils;
 import org.junit.After;
@@ -183,12 +182,11 @@ public class ErlProjectTest {
             // when
             // looking for lists:reverse/2 and lists:reverse/1
             final IErlModel model = ErlangEngine.getInstance().getModel();
-            final OpenResult res = ErlangEngine.getInstance()
-                    .getService(OpenService.class).open(moduleE.getScannerName(), 49,
-                            ErlangEngine.getInstance().getModelUtilService()
-                                    .getImportsAsList(moduleE),
-                            project.getProperties().getExternalModules(),
-                            model.getPathVars());
+            final OpenResult res = ErlangEngine.getInstance().getOpenService().open(
+                    moduleE.getScannerName(), 49,
+                    ErlangEngine.getInstance().getModelUtilService()
+                            .getImportsAsList(moduleE),
+                    project.getProperties().getExternalModules(), model.getPathVars());
             final IErlFunction function = ErlangEngine.getInstance().getModelFindService()
                     .findFunction(model, project, moduleE, res.getName(), res.getPath(),
                             res.getFunction(), IErlElementLocator.Scope.PROJECT_ONLY);
