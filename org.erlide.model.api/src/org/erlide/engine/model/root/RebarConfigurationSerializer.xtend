@@ -1,4 +1,4 @@
-package org.erlide.engine.internal.model.root
+package org.erlide.engine.model.root
 
 import com.ericsson.otp.erlang.OtpErlangString
 import java.util.List

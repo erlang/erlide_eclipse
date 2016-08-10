@@ -58,6 +58,7 @@ import org.erlide.engine.model.root.IProjectConfigurator;
 import org.erlide.engine.model.root.PathResolver;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.engine.model.root.ProjectConfigurationChangeListener;
+import org.erlide.engine.model.root.ProjectConfiguratorFactory;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.NatureUtil;
 import org.erlide.runtime.api.RuntimeCore;
@@ -721,8 +722,7 @@ public class ErlProject extends Openable
     }
 
     private IProjectConfigurator getConfig() {
-        return ErlangEngine.getInstance().getProjectConfiguratorFactory()
-                .getConfig(getConfigType(), this);
+        return ProjectConfiguratorFactory.getDefault().getConfig(getConfigType(), this);
     }
 
     private void storeProperties() {

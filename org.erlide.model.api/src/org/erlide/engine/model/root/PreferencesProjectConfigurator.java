@@ -1,11 +1,8 @@
-package org.erlide.engine.internal.model.root;
+package org.erlide.engine.model.root;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.IProjectConfigurator;
-import org.erlide.engine.model.root.PathSerializer;
-import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;

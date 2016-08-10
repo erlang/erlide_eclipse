@@ -5,9 +5,8 @@ import org.erlide.engine.model.root.IBeamLocator
 import org.erlide.engine.model.root.IErlModel
 import org.erlide.engine.model.root.IErlModule
 import org.erlide.engine.model.root.IErlProject
-import org.erlide.engine.model.root.IProjectConfiguratorFactory
-import org.erlide.engine.services.GenericService
 import org.erlide.engine.services.SystemInfoService
+import org.erlide.engine.services.ToggleCommentService
 import org.erlide.engine.services.cleanup.CleanupProvider
 import org.erlide.engine.services.codeassist.CompletionService
 import org.erlide.engine.services.codeassist.ContextAssistService
@@ -40,33 +39,28 @@ interface IErlangEngine {
 
     def IErlModel getModel()
 
+// LANGUAGE services
     def ContextAssistService getContextAssistService()
 
-    def SearchServerService getSearchServerService()
+    def CompletionService getCompletionService(IErlProject project, IErlModule module, String elementBefore)
 
     def ModelUtilService getModelUtilService()
 
     def CleanupProvider getCleanupProvider()
 
-    def ParserService getParserService()
-
     def ScannerProviderService getScannerProviderService()
-
-    def EdocExportService getEdocExportService()
-
-    def ProclistService getProclistService()
 
     def SimpleScannerService getSimpleScannerService()
 
     def SimpleParserService getSimpleParserService()
 
+    def SearchServerService getSearchServerService()
+
     def ModelFindService getModelFindService()
 
     def ModelSearcherService getModelSearcherService()
 
-    def CompletionService getCompletionService(IErlProject project, IErlModule module, String elementBefore)
-
-    def GenericService getGenericService()
+    def ToggleCommentService getToggleCommentService()
 
     def IBeamLocator getIBeamLocator()
 
@@ -76,11 +70,16 @@ interface IErlangEngine {
 
     def OtpDocService getOtpDocService()
 
-    def SystemInfoService getSystemInfoService()
-
     def XrefService getXrefService()
 
-// INTERNAL use
-    def IProjectConfiguratorFactory getProjectConfiguratorFactory()
+    def EdocExportService getEdocExportService()
+
+// RUNTIME services
+    def SystemInfoService getSystemInfoService()
+
+    def ProclistService getProclistService()
+
+// INTERNAL services (shouldn't really be exposed here)
+    def ParserService getParserService()
 
 }

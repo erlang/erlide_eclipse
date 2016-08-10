@@ -1,4 +1,4 @@
-package org.erlide.engine.internal.model.root
+package org.erlide.engine.model.root
 
 import java.util.ArrayList
 import java.util.List

@@ -5,10 +5,10 @@ import org.eclipse.xtend.lib.annotations.Delegate
 class ErlangServerProxy implements IErlangEngine {
 
     @Delegate
-    IErlangEngine server
+    IErlangEngine getToggleCommentService
 
     new(IErlangEngine server) {
-        this.server = server
+        this.getToggleCommentService = server
     }
 
 }

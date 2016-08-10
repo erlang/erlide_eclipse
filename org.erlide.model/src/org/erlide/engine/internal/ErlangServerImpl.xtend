@@ -13,7 +13,6 @@ import org.erlide.engine.internal.model.BeamLocator
 import org.erlide.engine.internal.model.ErlModel
 import org.erlide.engine.internal.model.erlang.ModelFindUtil
 import org.erlide.engine.internal.model.erlang.ModelInternalUtils
-import org.erlide.engine.internal.model.root.ProjectConfiguratorFactory
 import org.erlide.engine.internal.services.cleanup.ErlTidyCleanupProvider
 import org.erlide.engine.internal.services.codeassist.ErlangCompletionService
 import org.erlide.engine.internal.services.codeassist.ErlideContextAssist
@@ -34,9 +33,8 @@ import org.erlide.engine.model.root.IBeamLocator
 import org.erlide.engine.model.root.IErlModel
 import org.erlide.engine.model.root.IErlModule
 import org.erlide.engine.model.root.IErlProject
-import org.erlide.engine.model.root.IProjectConfiguratorFactory
-import org.erlide.engine.services.GenericService
 import org.erlide.engine.services.SystemInfoService
+import org.erlide.engine.services.ToggleCommentService
 import org.erlide.engine.services.cleanup.CleanupProvider
 import org.erlide.engine.services.codeassist.CompletionService
 import org.erlide.engine.services.codeassist.ContextAssistService
@@ -75,12 +73,12 @@ class ErlangServerImpl implements IErlangEngine, IExecutableExtension {
 
     override initialize(ErlangInitializeParams params) {
         stateDir = params.stateDir
-    // FIXME serverConfig = server.initialize(params).get
+        serverConfig = server?.initialize(params)?.get
     }
 
     override shutdown() {
-        // FIXME server.shutdown
-        // FIXME server.exit
+        server?.shutdown
+        server?.exit
     }
 
     override getLanguageServer() {
@@ -162,10 +160,6 @@ class ErlangServerImpl implements IErlangEngine, IExecutableExtension {
         return new ModelSearcher()
     }
 
-    override IProjectConfiguratorFactory getProjectConfiguratorFactory() {
-        return ProjectConfiguratorFactory.getDefault()
-    }
-
     override CompletionService getCompletionService(IErlProject project, IErlModule module, String elementBefore) {
         return new ErlangCompletionService(project, module, elementBefore)
     }
@@ -174,7 +168,7 @@ class ErlangServerImpl implements IErlangEngine, IExecutableExtension {
         return backend !== null
     }
 
-    override GenericService getGenericService() {
+    override ToggleCommentService getToggleCommentService() {
         return [ String module, String fun, int offset, int length, String text |
             try {
                 val OtpErlangObject r1 = backend.call(module, fun, "sii", text, offset, length)

@@ -13,6 +13,7 @@ import org.erlide.engine.model.root.ProjectConfigType
 import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.api.RuntimeCore
 import org.erlide.runtime.runtimeinfo.RuntimeInfo
+import org.erlide.engine.model.root.ProjectConfiguratorFactory
 
 @Accessors
 class NewProjectData extends ErlangProjectProperties {
@@ -29,7 +30,7 @@ class NewProjectData extends ErlangProjectProperties {
     val IProjectConfiguratorFactory factory
 
     new() {
-        this.factory = ErlangEngine.getInstance.projectConfiguratorFactory
+        this.factory = ProjectConfiguratorFactory.getDefault()
     }
 
     override String toString() {
