@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.model.SourcePathUtils;
+import org.erlide.engine.services.search.ExternalTreeEntry;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.runtime.rpc.IOtpRpc;

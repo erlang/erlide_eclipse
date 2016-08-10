@@ -22,7 +22,6 @@ import org.erlide.engine.internal.services.proclist.ErlideProclist
 import org.erlide.engine.internal.services.search.ErlideDoc
 import org.erlide.engine.internal.services.search.ErlideOpen
 import org.erlide.engine.internal.services.search.ErlideSearchServer
-import org.erlide.engine.internal.services.search.ModelSearcher
 import org.erlide.engine.internal.services.text.ErlideIndent
 import org.erlide.engine.model.OtpRpcFactory
 import org.erlide.engine.model.root.IErlModel
@@ -39,7 +38,6 @@ import org.erlide.engine.services.parsing.SimpleParserService
 import org.erlide.engine.services.parsing.SimpleScannerService
 import org.erlide.engine.services.proclist.ProclistService
 import org.erlide.engine.services.search.ModelFindService
-import org.erlide.engine.services.search.ModelSearcherService
 import org.erlide.engine.services.search.ModelUtilService
 import org.erlide.engine.services.search.OpenService
 import org.erlide.engine.services.search.OtpDocService
@@ -138,10 +136,6 @@ class ErlangServerImpl implements IErlangEngine, IExecutableExtension {
 
     override SimpleParserService getSimpleParserService() {
         return new ErlideParser(backend)
-    }
-
-    override ModelSearcherService getModelSearcherService() {
-        return new ModelSearcher()
     }
 
     override CompletionService getCompletionService(IErlProject project, IErlModule module, String elementBefore) {

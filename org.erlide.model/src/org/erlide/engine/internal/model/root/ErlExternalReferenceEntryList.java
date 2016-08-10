@@ -18,7 +18,7 @@ import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.services.search.OpenService.ExternalTreeEntry;
+import org.erlide.engine.services.search.ExternalTreeEntry;
 import org.erlide.runtime.rpc.IOtpRpc;
 
 import com.ericsson.otp.erlang.OtpErlangList;

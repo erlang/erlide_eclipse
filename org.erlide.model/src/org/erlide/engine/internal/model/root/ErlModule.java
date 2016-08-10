@@ -463,7 +463,7 @@ public class ErlModule extends Openable implements IErlModule {
         final IErlProject project = modelUtilService.getProject(this);
         for (final IErlModule module : project.getModules()) {
             final Collection<IErlModule> allIncludedFiles = ErlangEngine.getInstance()
-                    .getModelSearcherService().findAllIncludedFiles(module);
+                    .getModelFindService().findAllIncludedFiles(module);
             if (allIncludedFiles.contains(this)) {
                 result.add(module);
             }

@@ -13,7 +13,7 @@ import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.root.IErlModelChangeListener;
 import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.services.search.OpenService.ExternalTreeEntry;
+import org.erlide.engine.services.search.ExternalTreeEntry;
 import org.erlide.util.IDisposable;
 
 import com.google.common.cache.Cache;
