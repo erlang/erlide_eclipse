@@ -14,7 +14,6 @@ import org.erlide.engine.internal.model.erlang.ModelFindUtil
 import org.erlide.engine.internal.model.erlang.ModelInternalUtils
 import org.erlide.engine.internal.services.cleanup.ErlTidyCleanupProvider
 import org.erlide.engine.internal.services.codeassist.ErlangCompletionService
-import org.erlide.engine.internal.services.codeassist.ErlideContextAssist
 import org.erlide.engine.internal.services.edoc.ErlideEdocExport
 import org.erlide.engine.internal.services.parsing.ErlParser
 import org.erlide.engine.internal.services.parsing.ErlideParser
@@ -35,7 +34,6 @@ import org.erlide.engine.services.SystemInfoService
 import org.erlide.engine.services.ToggleCommentService
 import org.erlide.engine.services.cleanup.CleanupProvider
 import org.erlide.engine.services.codeassist.CompletionService
-import org.erlide.engine.services.codeassist.ContextAssistService
 import org.erlide.engine.services.edoc.EdocExportService
 import org.erlide.engine.services.parsing.NullScannerService
 import org.erlide.engine.services.parsing.ParserService
@@ -102,10 +100,6 @@ class ErlangServerImpl implements IErlangEngine, IExecutableExtension {
         return stateDir
     }
 
-    override ContextAssistService getContextAssistService() {
-        return new ErlideContextAssist(backend)
-    }
-
     override SearchServerService getSearchServerService() {
         return new ErlideSearchServer(backend)
     }
@@ -159,7 +153,7 @@ class ErlangServerImpl implements IErlangEngine, IExecutableExtension {
     }
 
     override CompletionService getCompletionService(IErlProject project, IErlModule module, String elementBefore) {
-        return new ErlangCompletionService(project, module, elementBefore)
+        return new ErlangCompletionService(project, module, elementBefore, backend)
     }
 
     override boolean isAvailable() {

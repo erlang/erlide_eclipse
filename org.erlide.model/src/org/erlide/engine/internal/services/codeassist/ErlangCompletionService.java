@@ -28,7 +28,6 @@ import org.erlide.engine.services.codeassist.CompletionNameComparer;
 import org.erlide.engine.services.codeassist.CompletionService;
 import org.erlide.engine.services.codeassist.FunctionCompletionData;
 import org.erlide.engine.services.codeassist.Location;
-import org.erlide.engine.services.codeassist.RecordCompletion;
 import org.erlide.engine.services.search.ModelFindService;
 import org.erlide.engine.services.text.DocumentationFormatter;
 import org.erlide.runtime.rpc.IOtpRpc;
@@ -50,14 +49,16 @@ public class ErlangCompletionService implements CompletionService {
     private final IErlProject project;
     private final IErlModule module;
     private final String elementBefore;
+    private final ErlideContextAssist contextAssistService;
 
     private static final List<CompletionData> EMPTY_COMPLETIONS = new ArrayList<>();
 
     public ErlangCompletionService(final IErlProject project, final IErlModule module,
-            final String elementBefore) {
+            final String elementBefore, IOtpRpc backend) {
         this.project = project;
         this.module = module;
         this.elementBefore = elementBefore;
+        contextAssistService = new ErlideContextAssist(backend);
     }
 
     @Override
@@ -88,8 +89,7 @@ public class ErlangCompletionService implements CompletionService {
         if (hashMarkPos >= 0) {
             final IErlProject aproject = project;
             if (aproject != null) {
-                rc = ErlangEngine.getInstance().getContextAssistService()
-                        .checkRecordCompletion(backend, before);
+                rc = contextAssistService.checkRecordCompletion(backend, before);
             }
         }
         if (rc != null && rc.isNameWanted()) {
@@ -270,8 +270,8 @@ public class ErlangCompletionService implements CompletionService {
     List<CompletionData> getVariables(final IOtpRpc b, final int offset,
             final String prefix) {
         final List<CompletionData> result = new ArrayList<>();
-        final Collection<String> vars = ErlangEngine.getInstance()
-                .getContextAssistService().getVariables(elementBefore, prefix);
+        final Collection<String> vars = contextAssistService.getVariables(elementBefore,
+                prefix);
         for (final String var : vars) {
             result.add(new CompletionData(null, var, offset - prefix.length(),
                     prefix.length(), var.length()));

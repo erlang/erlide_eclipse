@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.10.0",
  org.erlide.util,
  org.erlide.libs,
  org.erlide.libs2;bundle-version="[1.16.1,2.0.0)",
- org.erlide.libs.annotations;bundle-version="1.0.0"
+ org.erlide.libs.annotations;bundle-version="1.0.0",
+ org.erlide.backend
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.engine.internal;x-internal:=true,
