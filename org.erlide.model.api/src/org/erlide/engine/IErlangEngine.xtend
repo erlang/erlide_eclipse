@@ -9,7 +9,6 @@ import org.erlide.engine.services.ToggleCommentService
 import org.erlide.engine.services.cleanup.CleanupProvider
 import org.erlide.engine.services.codeassist.CompletionService
 import org.erlide.engine.services.edoc.EdocExportService
-import org.erlide.engine.services.parsing.ParserService
 import org.erlide.engine.services.parsing.ScannerProviderService
 import org.erlide.engine.services.parsing.SimpleParserService
 import org.erlide.engine.services.parsing.SimpleScannerService
@@ -74,7 +73,5 @@ interface IErlangEngine {
 
 // INTERNAL services (shouldn't really be exposed here)
     def String getStateDir()
-
-    def ParserService getParserService()
 
 }

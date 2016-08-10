@@ -26,11 +26,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.SourceRange;
+import org.erlide.engine.internal.services.parsing.ErlParser;
 import org.erlide.engine.internal.util.ModelConfig;
 import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
+import org.erlide.engine.model.OtpRpcFactory;
 import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.ErlangIncludeFile;
 import org.erlide.engine.model.erlang.IErlAttribute;
@@ -49,7 +51,6 @@ import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ISourceUnit;
-import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.engine.services.search.ModelUtilService;
 import org.erlide.util.ErlLogger;
@@ -111,7 +112,7 @@ public class ErlModule extends Openable implements IErlModule {
         setChildren(null);
         final String text = getInitialText();
         if (text != null) {
-            final ParserService parser = ErlangEngine.getInstance().getParserService();
+            final ErlParser parser = new ErlParser(OtpRpcFactory.getOtpRpc());
             parsed = parser.parse(this, scannerName, !parsed, getFilePath(), text, true);
             return parsed;
         }

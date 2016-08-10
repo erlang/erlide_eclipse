@@ -15,7 +15,6 @@ import org.erlide.engine.internal.model.erlang.ModelInternalUtils
 import org.erlide.engine.internal.services.cleanup.ErlTidyCleanupProvider
 import org.erlide.engine.internal.services.codeassist.ErlangCompletionService
 import org.erlide.engine.internal.services.edoc.ErlideEdocExport
-import org.erlide.engine.internal.services.parsing.ErlParser
 import org.erlide.engine.internal.services.parsing.ErlideParser
 import org.erlide.engine.internal.services.parsing.ErlideScanner
 import org.erlide.engine.internal.services.parsing.ScannerProvider
@@ -36,7 +35,6 @@ import org.erlide.engine.services.cleanup.CleanupProvider
 import org.erlide.engine.services.codeassist.CompletionService
 import org.erlide.engine.services.edoc.EdocExportService
 import org.erlide.engine.services.parsing.NullScannerService
-import org.erlide.engine.services.parsing.ParserService
 import org.erlide.engine.services.parsing.ScannerProviderService
 import org.erlide.engine.services.parsing.SimpleParserService
 import org.erlide.engine.services.parsing.SimpleScannerService
@@ -119,10 +117,6 @@ class ErlangServerImpl implements IErlangEngine, IExecutableExtension {
      */
     override CleanupProvider getCleanupProvider() {
         return new ErlTidyCleanupProvider(backend)
-    }
-
-    override ParserService getParserService() {
-        return new ErlParser(backend)
     }
 
     override ScannerProviderService getScannerProviderService() {
