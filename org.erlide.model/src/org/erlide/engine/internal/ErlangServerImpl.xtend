@@ -9,7 +9,6 @@ import org.eclipse.core.runtime.IConfigurationElement
 import org.eclipse.core.runtime.IExecutableExtension
 import org.erlide.engine.ErlangInitializeParams
 import org.erlide.engine.IErlangEngine
-import org.erlide.engine.internal.model.BeamLocator
 import org.erlide.engine.internal.model.ErlModel
 import org.erlide.engine.internal.model.erlang.ModelFindUtil
 import org.erlide.engine.internal.model.erlang.ModelInternalUtils
@@ -29,7 +28,6 @@ import org.erlide.engine.internal.services.search.ErlideSearchServer
 import org.erlide.engine.internal.services.search.ModelSearcher
 import org.erlide.engine.internal.services.text.ErlideIndent
 import org.erlide.engine.model.OtpRpcFactory
-import org.erlide.engine.model.root.IBeamLocator
 import org.erlide.engine.model.root.IErlModel
 import org.erlide.engine.model.root.IErlModule
 import org.erlide.engine.model.root.IErlProject
@@ -177,10 +175,6 @@ class ErlangServerImpl implements IErlangEngine, IExecutableExtension {
                 return new OtpErlangString("")
             }
         ]
-    }
-
-    override IBeamLocator getIBeamLocator() {
-        return new BeamLocator()
     }
 
     override IndentService getIndentService() {

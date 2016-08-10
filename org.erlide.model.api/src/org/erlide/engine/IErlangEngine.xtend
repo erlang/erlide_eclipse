@@ -1,7 +1,6 @@
 package org.erlide.engine
 
 import io.typefox.lsapi.services.LanguageServer
-import org.erlide.engine.model.root.IBeamLocator
 import org.erlide.engine.model.root.IErlModel
 import org.erlide.engine.model.root.IErlModule
 import org.erlide.engine.model.root.IErlProject
@@ -61,8 +60,6 @@ interface IErlangEngine {
     def ModelSearcherService getModelSearcherService()
 
     def ToggleCommentService getToggleCommentService()
-
-    def IBeamLocator getIBeamLocator()
 
     def IndentService getIndentService()
 
