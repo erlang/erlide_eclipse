@@ -19,7 +19,6 @@ import org.erlide.engine.services.search.ModelUtilService
 import org.erlide.engine.services.search.OpenService
 import org.erlide.engine.services.search.OtpDocService
 import org.erlide.engine.services.search.SearchServerService
-import org.erlide.engine.services.search.XrefService
 import org.erlide.engine.services.text.IndentService
 
 interface IErlangEngine {
@@ -61,8 +60,6 @@ interface IErlangEngine {
     def OpenService getOpenService()
 
     def OtpDocService getOtpDocService()
-
-    def XrefService getXrefService()
 
     def EdocExportService getEdocExportService()
 

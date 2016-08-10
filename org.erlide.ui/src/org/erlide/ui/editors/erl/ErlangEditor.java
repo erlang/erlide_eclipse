@@ -77,7 +77,6 @@ import org.erlide.engine.model.erlang.ISourceReference;
 import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ScannerService;
-import org.erlide.engine.services.search.XrefService;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.editors.erl.actions.CallHierarchyAction;
@@ -143,17 +142,14 @@ public class ErlangEditor extends AbstractErlangEditor
 
     private final AnnotationSupport annotationSupport;
 
-    XrefService xrefService;
-
     final MarkOccurencesSupport markOccurencesHandler = new MarkOccurencesSupport(this,
             null, IDocumentExtension4.UNKNOWN_MODIFICATION_STAMP);
 
-    public ErlangEditor(final XrefService xrefService) {
+    public ErlangEditor() {
         super();
         fErlangEditorErrorTickUpdater = new ErlangEditorErrorTickUpdater(this);
 
         annotationSupport = new AnnotationSupport(this, getAnnotationPreferenceLookup());
-        this.xrefService = xrefService;
 
         setRulerContextMenuId("#ErlangEditorRulerContext");
     }
@@ -281,7 +277,7 @@ public class ErlangEditor extends AbstractErlangEditor
             setAction("cleanUp", cleanUpAction);
         }
 
-        callhierarchy = new CallHierarchyAction(this, getModule(), xrefService);
+        callhierarchy = new CallHierarchyAction(this, getModule());
         callhierarchy
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.CALLHIERARCHY);
         setAction("callHierarchy", callhierarchy);

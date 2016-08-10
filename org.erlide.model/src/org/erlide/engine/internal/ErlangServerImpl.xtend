@@ -19,7 +19,6 @@ import org.erlide.engine.internal.services.parsing.ErlideParser
 import org.erlide.engine.internal.services.parsing.ErlideScanner
 import org.erlide.engine.internal.services.parsing.ScannerProvider
 import org.erlide.engine.internal.services.proclist.ErlideProclist
-import org.erlide.engine.internal.services.search.ErlangXref
 import org.erlide.engine.internal.services.search.ErlideDoc
 import org.erlide.engine.internal.services.search.ErlideOpen
 import org.erlide.engine.internal.services.search.ErlideSearchServer
@@ -45,7 +44,6 @@ import org.erlide.engine.services.search.ModelUtilService
 import org.erlide.engine.services.search.OpenService
 import org.erlide.engine.services.search.OtpDocService
 import org.erlide.engine.services.search.SearchServerService
-import org.erlide.engine.services.search.XrefService
 import org.erlide.engine.services.text.IndentService
 import org.erlide.runtime.rpc.IOtpRpc
 import org.erlide.runtime.rpc.RpcException
@@ -179,10 +177,6 @@ class ErlangServerImpl implements IErlangEngine, IExecutableExtension {
 
     override SystemInfoService getSystemInfoService() {
         return new SystemInfo(backend)
-    }
-
-    override XrefService getXrefService() {
-        return new ErlangXref(backend)
     }
 
 }

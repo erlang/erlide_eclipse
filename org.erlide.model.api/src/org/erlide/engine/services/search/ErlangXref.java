@@ -1,4 +1,4 @@
-package org.erlide.engine.internal.services.search;
+package org.erlide.engine.services.search;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.model.erlang.FunctionRef;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.services.search.XrefService;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.util.ErlLogger;
@@ -16,7 +15,7 @@ import org.erlide.util.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public class ErlangXref implements XrefService {
+public class ErlangXref {
 
     private static final String ERLIDE_XREF = "erlide_xref";
     private final IOtpRpc backend;
@@ -25,7 +24,6 @@ public class ErlangXref implements XrefService {
         this.backend = backend;
     }
 
-    @Override
     public void start() {
         try {
             backend.call(ERLIDE_XREF, "start", "");
@@ -35,7 +33,6 @@ public class ErlangXref implements XrefService {
 
     }
 
-    @Override
     public void stop() {
         try {
             backend.call(ERLIDE_XREF, "stop", "");
@@ -45,7 +42,6 @@ public class ErlangXref implements XrefService {
 
     }
 
-    @Override
     public RpcFuture addProject(final IErlProject project) {
         try {
             final IPath outputLocation = project.getWorkspaceProject()
@@ -58,7 +54,6 @@ public class ErlangXref implements XrefService {
         return null;
     }
 
-    @Override
     public void update() {
         try {
             backend.call(ERLIDE_XREF, "update", "");
@@ -67,13 +62,12 @@ public class ErlangXref implements XrefService {
         }
     }
 
-    @Override
     @SuppressWarnings("boxing")
     public FunctionRef[] functionUse(final String mod, final String fun,
             final int arity) {
         try {
             final OtpErlangObject r = backend.call(ERLIDE_XREF, "function_use", "aai",
-                    mod, fun, arity);
+                    mod.substring(0, mod.length() - 4), fun, arity);
             final OtpBindings bind = OtpErlang.match("{ok, L}", r);
             if (bind == null) {
                 return new FunctionRef[0];
@@ -90,7 +84,6 @@ public class ErlangXref implements XrefService {
         return null;
     }
 
-    @Override
     public FunctionRef[] functionUse(final FunctionRef ref) {
         return functionUse(ref.module, ref.function, ref.arity);
     }
