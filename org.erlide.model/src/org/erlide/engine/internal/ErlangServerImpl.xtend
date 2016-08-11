@@ -5,8 +5,6 @@ import com.ericsson.otp.erlang.OtpErlangString
 import io.typefox.lsapi.InitializeResult
 import io.typefox.lsapi.services.LanguageServer
 import org.eclipse.core.runtime.CoreException
-import org.eclipse.core.runtime.IConfigurationElement
-import org.eclipse.core.runtime.IExecutableExtension
 import org.erlide.engine.ErlangInitializeParams
 import org.erlide.engine.IErlangEngine
 import org.erlide.engine.internal.model.ErlModel
@@ -47,7 +45,7 @@ import org.erlide.runtime.rpc.IOtpRpc
 import org.erlide.runtime.rpc.RpcException
 import org.erlide.util.ErlLogger
 
-class ErlangServerImpl implements IErlangEngine, IExecutableExtension {
+class ErlangServerImpl implements IErlangEngine {
 
     IOtpRpc backend
     volatile ErlModel erlangModel
@@ -55,13 +53,12 @@ class ErlangServerImpl implements IErlangEngine, IExecutableExtension {
     LanguageServer server
     InitializeResult serverConfig
 
-    override void setInitializationData(IConfigurationElement config, String propertyName,
-        Object data) throws CoreException {
-        backend = OtpRpcFactory.getOtpRpc()
-    // FIXME server = new ErlangLanguageServer()
+    new() {
     }
 
     override initialize(ErlangInitializeParams params) {
+        backend = OtpRpcFactory.getOtpRpc()
+        // FIXME server = new ErlangLanguageServer()
         stateDir = params.stateDir
         serverConfig = server?.initialize(params)?.get
     }

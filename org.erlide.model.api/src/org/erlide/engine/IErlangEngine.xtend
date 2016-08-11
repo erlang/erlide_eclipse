@@ -26,13 +26,13 @@ interface IErlangEngine {
 
     def void shutdown()
 
-    def LanguageServer getLanguageServer()
-
     def boolean isAvailable()
 
     def IErlModel getModel()
 
 // LANGUAGE services
+
+    def LanguageServer getLanguageServer()
 
     def CompletionService getCompletionService(IErlProject project, IErlModule module, String elementBefore)
 
@@ -40,11 +40,7 @@ interface IErlangEngine {
 
     def CleanupProvider getCleanupProvider()
 
-    def ScannerProviderService getScannerProviderService()
-
     def SimpleScannerService getSimpleScannerService()
-
-    def SimpleParserService getSimpleParserService()
 
     def SearchServerService getSearchServerService()
 
@@ -67,5 +63,9 @@ interface IErlangEngine {
 
 // INTERNAL services (shouldn't really be exposed here)
     def String getStateDir()
+
+    def ScannerProviderService getScannerProviderService()
+
+    def SimpleParserService getSimpleParserService()
 
 }
