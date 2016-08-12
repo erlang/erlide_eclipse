@@ -2,8 +2,6 @@ package org.erlide.engine
 
 import io.typefox.lsapi.services.LanguageServer
 import org.erlide.engine.model.root.IErlModel
-import org.erlide.engine.model.root.IErlModule
-import org.erlide.engine.model.root.IErlProject
 import org.erlide.engine.services.SystemInfoService
 import org.erlide.engine.services.ToggleCommentService
 import org.erlide.engine.services.cleanup.CleanupProvider
@@ -34,7 +32,7 @@ interface IErlangEngine {
 
     def LanguageServer getLanguageServer()
 
-    def CompletionService getCompletionService(IErlProject project, IErlModule module, String elementBefore)
+    def CompletionService getCompletionService()
 
     def ModelUtilService getModelUtilService()
 

@@ -23,8 +23,6 @@ import org.erlide.engine.internal.services.search.ErlideSearchServer
 import org.erlide.engine.internal.services.text.ErlideIndent
 import org.erlide.engine.model.OtpRpcFactory
 import org.erlide.engine.model.root.IErlModel
-import org.erlide.engine.model.root.IErlModule
-import org.erlide.engine.model.root.IErlProject
 import org.erlide.engine.services.SystemInfoService
 import org.erlide.engine.services.ToggleCommentService
 import org.erlide.engine.services.cleanup.CleanupProvider
@@ -52,9 +50,6 @@ class ErlangServerImpl implements IErlangEngine {
     volatile String stateDir
     LanguageServer server
     InitializeResult serverConfig
-
-    new() {
-    }
 
     override initialize(ErlangInitializeParams params) {
         backend = OtpRpcFactory.getOtpRpc()
@@ -135,8 +130,8 @@ class ErlangServerImpl implements IErlangEngine {
         return new ErlideParser(backend)
     }
 
-    override CompletionService getCompletionService(IErlProject project, IErlModule module, String elementBefore) {
-        return new ErlangCompletionService(project, module, elementBefore, backend)
+    override CompletionService getCompletionService() {
+        return new ErlangCompletionService(backend)
     }
 
     override boolean isAvailable() {

@@ -46,25 +46,27 @@ import com.google.common.collect.Lists;
 
 public class ErlangCompletionService implements CompletionService {
 
-    private final IErlProject project;
-    private final IErlModule module;
-    private final String elementBefore;
+    private IErlProject project;
+    private IErlModule module;
+    private String elementBefore;
     private final ErlideContextAssist contextAssistService;
 
     private static final List<CompletionData> EMPTY_COMPLETIONS = new ArrayList<>();
 
-    public ErlangCompletionService(final IErlProject project, final IErlModule module,
-            final String elementBefore, IOtpRpc backend) {
-        this.project = project;
-        this.module = module;
-        this.elementBefore = elementBefore;
+    public ErlangCompletionService(IOtpRpc backend) {
         contextAssistService = new ErlideContextAssist(backend);
     }
 
     @Override
     public List<CompletionData> computeCompletions(final IOtpRpc backend,
+            IErlProject project0, IErlModule module0, String elementBefore0,
             final int offset, final String before0, final boolean inString)
             throws CoreException {
+        // FIXME these should be passed on as parameters, where needed
+        project = project0;
+        module = module0;
+        elementBefore = elementBefore0;
+
         String before = before0;
         final int commaPos = before.lastIndexOf(',');
         final int colonPos = before.lastIndexOf(':');
