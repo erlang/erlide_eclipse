@@ -98,7 +98,8 @@ Require-Bundle: org.eclipse.compare;bundle-version="3.5.202",
  org.eclipse.equinox.preferences,
  org.eclipse.e4.ui.css.swt,
  org.erlide.libs2;bundle-version="[1.16.1,2.0.0)",
- org.erlide.libs.annotations;bundle-version="1.0.0"
+ org.erlide.libs.annotations;bundle-version="1.0.0",
+ org.erlide.server
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-ExtensibleAPI: true

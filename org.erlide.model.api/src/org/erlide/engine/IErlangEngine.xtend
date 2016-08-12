@@ -1,6 +1,5 @@
 package org.erlide.engine
 
-import io.typefox.lsapi.services.LanguageServer
 import org.erlide.engine.model.root.IErlModel
 import org.erlide.engine.services.SystemInfoService
 import org.erlide.engine.services.ToggleCommentService
@@ -26,17 +25,15 @@ interface IErlangEngine {
 
     def boolean isAvailable()
 
+// MODEL
     def IErlModel getModel()
-
-// LANGUAGE services
-
-    def LanguageServer getLanguageServer()
-
-    def CompletionService getCompletionService()
 
     def ModelUtilService getModelUtilService()
 
-    def CleanupProvider getCleanupProvider()
+// LANGUAGE services
+    def CompletionService getCompletionService()
+
+    def CleanupProvider getCleanupProvider() // codeLens?
 
     def SimpleScannerService getSimpleScannerService()
 
@@ -44,10 +41,12 @@ interface IErlangEngine {
 
     def ModelFindService getModelFindService()
 
+// client!
     def ToggleCommentService getToggleCommentService()
 
     def IndentService getIndentService()
 
+// client!
     def OpenService getOpenService()
 
     def OtpDocService getOtpDocService()

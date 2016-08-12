@@ -48,23 +48,13 @@ class ErlangServerImpl implements IErlangEngine {
     IOtpRpc backend
     volatile ErlModel erlangModel
     volatile String stateDir
-    LanguageServer server
-    InitializeResult serverConfig
 
     override initialize(ErlangInitializeParams params) {
         backend = OtpRpcFactory.getOtpRpc()
-        // FIXME server = new ErlangLanguageServer()
         stateDir = params.stateDir
-        serverConfig = server?.initialize(params)?.get
     }
 
     override shutdown() {
-        server?.shutdown
-        server?.exit
-    }
-
-    override getLanguageServer() {
-        server
     }
 
     override IErlModel getModel() {
