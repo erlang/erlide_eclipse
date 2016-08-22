@@ -2,7 +2,7 @@ package org.erlide.engine;
 
 import org.erlide.runtime.rpc.IOtpRpc;
 
-public interface IErlangEngineFactory {
+public interface IErlangServerFactory {
 
     IErlangEngine get(IOtpRpc backend);
 

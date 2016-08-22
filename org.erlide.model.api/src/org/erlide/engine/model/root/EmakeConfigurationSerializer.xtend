@@ -1,14 +1,14 @@
-package org.erlide.engine.internal.model.root
+package org.erlide.engine.model.root
 
 import java.util.ArrayList
 import java.util.List
 import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.Path
-import org.erlide.engine.ErlangEngine
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.erlide.engine.model.root.ProjectConfigurationSerializer
 import org.erlide.util.erlang.OtpErlang
 import org.erlide.util.erlang.OtpBindings
+import org.erlide.engine.ErlangEngine
 
 class EmakeConfigurationSerializer implements ProjectConfigurationSerializer {
 
@@ -30,7 +30,7 @@ class EmakeConfigurationSerializer implements ProjectConfigurationSerializer {
     result.setOutputDir(new Path("ebin"))
     result.setSourceDirs()
 
-    val content = ErlangEngine.instance.simpleParserService.parse(config)
+    val content = ErlangEngine.getInstance.simpleParserService.parse(config)
     if (content.empty) return result
 
     content.forEach [ erl_opts |

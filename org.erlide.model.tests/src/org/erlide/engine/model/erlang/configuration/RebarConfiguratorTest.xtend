@@ -1,12 +1,12 @@
 package org.erlide.engine.model.erlang.configuration
 
 import org.eclipse.core.runtime.Path
-import org.erlide.engine.internal.model.root.RebarConfigurationSerializer
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.junit.Before
 import org.junit.Test
 
 import static com.google.common.truth.Truth.assertThat
+import org.erlide.engine.model.root.RebarConfigurationSerializer
 
 class RebarConfiguratorTest {
 

@@ -18,8 +18,7 @@ import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.services.search.OpenService;
-import org.erlide.engine.services.search.OpenService.ExternalTreeEntry;
+import org.erlide.engine.services.search.ExternalTreeEntry;
 import org.erlide.runtime.rpc.IOtpRpc;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -65,16 +64,14 @@ public class ErlExternalReferenceEntryList extends Openable implements IErlExter
                 if (pm != null) {
                     pm.worked(1);
                 }
-                externalModuleTree = ErlangEngine.getInstance()
-                        .getService(OpenService.class)
+                externalModuleTree = ErlangEngine.getInstance().getOpenService()
                         .getExternalModuleTree(backend, externalModules, pathVars);
             }
             if (externalIncludeTree == null && externalIncludes.length() > 0) {
                 if (pm != null) {
                     pm.worked(1);
                 }
-                externalIncludeTree = ErlangEngine.getInstance()
-                        .getService(OpenService.class)
+                externalIncludeTree = ErlangEngine.getInstance().getOpenService()
                         .getExternalModuleTree(backend, externalIncludes, pathVars);
             }
         }

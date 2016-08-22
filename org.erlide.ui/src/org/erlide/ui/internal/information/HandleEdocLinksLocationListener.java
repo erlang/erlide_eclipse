@@ -6,7 +6,6 @@ import org.erlide.backend.BackendCore;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenResult;
-import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
@@ -65,7 +64,7 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                 final IOtpRpc backend = BackendCore.getBuildBackend(project);
 
                 final OtpErlangTuple otpDoc = (OtpErlangTuple) ErlangEngine.getInstance()
-                        .getService(OtpDocService.class).getOtpDoc(backend, functionCall);
+                        .getOtpDocService().getOtpDoc(backend, functionCall);
                 if (Util.isOk(otpDoc)) {
                     final String docStr = Util.stringValue(otpDoc.elementAt(1));
                     final StringBuffer result = new StringBuffer(docStr);

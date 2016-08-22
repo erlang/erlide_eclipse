@@ -6,6 +6,7 @@ Bundle-Version: 0.50.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.erlide.model.api,
- org.erlide.util;bundle-version="0.20.5"
+ org.erlide.util;bundle-version="0.20.5",
+ org.erlide.libs;bundle-version="1.17.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.erlide.cover.api

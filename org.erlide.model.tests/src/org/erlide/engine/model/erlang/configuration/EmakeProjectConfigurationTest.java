@@ -8,10 +8,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.engine.internal.model.root.ProjectConfiguratorFactory;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IProjectConfigurator;
 import org.erlide.engine.model.root.ProjectConfigType;
+import org.erlide.engine.model.root.ProjectConfiguratorFactory;
 import org.junit.Test;
 
 public class EmakeProjectConfigurationTest extends AbstractProjectConfigurationTest {

@@ -1,14 +1,14 @@
-package org.erlide.engine.internal.model.root
+package org.erlide.engine.model.root
 
 import com.ericsson.otp.erlang.OtpErlangString
 import java.util.List
 import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.Path
-import org.erlide.engine.ErlangEngine
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.erlide.engine.model.root.ProjectConfigurationSerializer
 import org.erlide.util.erlang.OtpErlang
 import org.erlide.util.erlang.OtpBindings
+import org.erlide.engine.ErlangEngine
 
 class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
 
@@ -36,7 +36,7 @@ class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
         val result = new ErlangProjectProperties()
         result.setOutputDir(new Path("ebin"))
 
-        val content = ErlangEngine.instance.simpleParserService.parse(config)
+        val content = ErlangEngine.getInstance.simpleParserService.parse(config)
         if(content.empty) return result
 
         content.forEach [ erl_opts |

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries
 Bundle-SymbolicName: org.erlide.libs
 Bundle-ActivationPolicy: lazy
-Bundle-Version: 1.16.2.qualifier
+Bundle-Version: 1.17.0.qualifier
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: javax.inject-1.jar,
@@ -13,7 +13,9 @@ Bundle-ClassPath: javax.inject-1.jar,
  org.eclipse.xtext.xbase.lib-2.9.1.jar,
  jrugged-core-3.2.2.jar,
  jrugged-aspects-3.2.2.jar,
- java-diff-1.1.jar
+ java-diff-1.1.jar,
+ io.typefox.lsapi-0.3.0-SNAPSHOT.jar,
+ io.typefox.lsapi.services-0.3.0-SNAPSHOT.jar
 Export-Package: com.google.common.annotations,
  com.google.common.base;version="14.0.1",
  com.google.common.base.internal;version="14.0.1";x-internal:=true,
@@ -31,6 +33,13 @@ Export-Package: com.google.common.annotations,
  com.google.common.util.concurrent;version="14.0.1",
  com.google.common.xml,
  com.google.thirdparty.publicsuffix,
+ io.typefox.lsapi,
+ io.typefox.lsapi.builders,
+ io.typefox.lsapi.impl,
+ io.typefox.lsapi.services,
+ io.typefox.lsapi.services.json,
+ io.typefox.lsapi.services.json.adapters,
+ io.typefox.lsapi.services.validation,
  javax.inject,
  org.eclipse.xtend.lib,
  org.eclipse.xtend.lib.annotations;version="2.9.1",

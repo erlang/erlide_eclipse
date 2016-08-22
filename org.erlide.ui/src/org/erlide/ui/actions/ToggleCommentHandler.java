@@ -78,10 +78,8 @@ public class ToggleCommentHandler extends ErlangAbstractHandler {
 
     private OtpErlangObject callErlang(final int offset, final int length,
             final String aText) {
-        final String fErlModule = "erlide_comment";
-        final String fErlFunction = "toggle_comment";
-        final OtpErlangObject r1 = ErlangEngine.getInstance().getGenericService()
-                .call(fErlModule, fErlFunction, offset, length, aText);
+        final OtpErlangObject r1 = ErlangEngine.getInstance().getToggleCommentService()
+                .call("erlide_comment", "toggle_comment", offset, length, aText);
         return r1;
     }
 }

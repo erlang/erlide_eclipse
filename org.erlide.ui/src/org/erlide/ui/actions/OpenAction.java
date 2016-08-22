@@ -27,7 +27,6 @@ import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenResult;
-import org.erlide.engine.services.search.OpenService;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.util.ErlLogger;
@@ -125,20 +124,20 @@ public class OpenAction extends SelectionDispatchAction {
                 final String scannerName = editor.getScannerName();
                 module = editor.getModule();
                 project = editor.getProject();
-                openResult = ErlangEngine.getInstance().getService(OpenService.class)
-                        .open(scannerName, offset,
-                                ErlangEngine.getInstance().getModelUtilService()
-                                        .getImportsAsList(module),
-                                project.getProperties().getExternalModules(),
-                                model.getPathVars());
+                openResult = ErlangEngine.getInstance().getOpenService().open(scannerName,
+                        offset,
+                        ErlangEngine.getInstance().getModelUtilService().getImportsAsList(
+                                module),
+                        project.getProperties().getExternalModules(),
+                        model.getPathVars());
                 ErlLogger.debug("open " + openResult);
                 element = editor.getElementAt(offset, true);
             } else if (activeEditor instanceof ITextEditor) {
                 textEditor = (ITextEditor) activeEditor;
                 final String text = textEditor.getDocumentProvider()
                         .getDocument(textEditor.getEditorInput()).get();
-                openResult = ErlangEngine.getInstance().getService(OpenService.class)
-                        .openText(text, offset);
+                openResult = ErlangEngine.getInstance().getOpenService().openText(text,
+                        offset);
                 final IFile file = (IFile) textEditor.getEditorInput()
                         .getAdapter(IFile.class);
                 if (file != null) {

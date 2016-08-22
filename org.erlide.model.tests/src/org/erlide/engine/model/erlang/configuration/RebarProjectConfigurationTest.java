@@ -7,12 +7,12 @@ import java.util.Collection;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.engine.internal.model.root.FileProjectConfigurator;
-import org.erlide.engine.internal.model.root.ProjectConfiguratorFactory;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.FileProjectConfigurator;
 import org.erlide.engine.model.root.IProjectConfigurator;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.engine.model.root.ProjectConfigurationSerializer;
+import org.erlide.engine.model.root.ProjectConfiguratorFactory;
 import org.junit.Test;
 
 public class RebarProjectConfigurationTest extends AbstractProjectConfigurationTest {

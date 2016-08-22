@@ -1,6 +1,6 @@
 package org.erlide.engine;
 
-public interface IEngineInput {
+public interface IServerInput {
 
     void handleChangedInput(final String id, final TextChange change);
 

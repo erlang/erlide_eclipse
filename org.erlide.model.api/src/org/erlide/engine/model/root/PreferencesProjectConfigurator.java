@@ -1,29 +1,26 @@
-package org.erlide.engine.internal.model.root;
+package org.erlide.engine.model.root;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.IProjectConfigurator;
-import org.erlide.engine.model.root.PathSerializer;
-import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class PreferencesProjectConfigurator implements IProjectConfigurator {
-    @NonNull
+
     private final IEclipsePreferences node;
 
     public PreferencesProjectConfigurator(final IEclipsePreferences node) {
-        Assert.isNotNull(node);
         this.node = node;
     }
 
     @Override
     public ErlangProjectProperties getConfiguration() {
         final ErlangProjectProperties result = new ErlangProjectProperties();
+        if (node == null) {
+            return result;
+        }
 
         final String sourceDirsStr = node.get(ProjectPreferencesConstants.SOURCE_DIRS,
                 ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
@@ -52,6 +49,9 @@ public class PreferencesProjectConfigurator implements IProjectConfigurator {
 
     @Override
     public void setConfiguration(final ErlangProjectProperties info) {
+        if (node == null) {
+            return;
+        }
         node.put(ProjectPreferencesConstants.SOURCE_DIRS,
                 PathSerializer.packList(info.getSourceDirs()));
         node.put(ProjectPreferencesConstants.INCLUDE_DIRS,

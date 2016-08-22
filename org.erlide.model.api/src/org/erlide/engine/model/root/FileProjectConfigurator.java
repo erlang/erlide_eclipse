@@ -1,4 +1,4 @@
-package org.erlide.engine.internal.model.root;
+package org.erlide.engine.model.root;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,10 +14,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.annotation.NonNull;
-import org.erlide.engine.model.root.ErlangContentDescriber;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.IProjectConfigurator;
-import org.erlide.engine.model.root.ProjectConfigurationSerializer;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.IDisposable;
 

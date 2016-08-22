@@ -11,12 +11,13 @@ import java.util.Collection;
 import java.util.List;
 
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.internal.services.parsing.ErlParser;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.OtpRpcFactory;
 import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.services.parsing.InternalScanner;
-import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.util.TestingSupport;
 import org.junit.After;
 import org.junit.Before;
@@ -58,7 +59,7 @@ public class ParsingTest {
         try {
             ErlangEngine.getInstance().getScannerProviderService().get(scannerModuleName)
                     .initialScan(s, "", false);
-            final ParserService parser = ErlangEngine.getInstance().getParserService();
+            final ErlParser parser = new ErlParser(OtpRpcFactory.getOtpRpc());
             result = parser.parse(module, scannerModuleName, false, "", s, false);
         } finally {
             ErlangEngine.getInstance().getScannerProviderService().get(scannerModuleName)

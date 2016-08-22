@@ -23,8 +23,6 @@ import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.ErlRuntimeAttributes;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
-import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.root.IBeamLocator;
 import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -89,7 +87,6 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
     protected BackendData configureBackend(final BackendData data, final String mode,
             final ILaunch launch) {
         data.setLaunch(launch);
-        data.setBeamLocator(ErlangEngine.getInstance().getService(IBeamLocator.class));
         if (mode.equals("debug")) {
             data.setContext(CodeContext.DEBUGGER);
         }

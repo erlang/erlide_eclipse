@@ -58,7 +58,7 @@ import org.erlide.engine.model.root.IProjectConfigurator;
 import org.erlide.engine.model.root.PathResolver;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.engine.model.root.ProjectConfigurationChangeListener;
-import org.erlide.engine.services.search.OpenService;
+import org.erlide.engine.model.root.ProjectConfiguratorFactory;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.NatureUtil;
 import org.erlide.runtime.api.RuntimeCore;
@@ -128,8 +128,7 @@ public class ErlProject extends Openable
         try {
             final IContainer c = (IContainer) r;
             final IResource[] elems = c.members();
-            final List<IErlElement> children = new ArrayList<>(
-                    elems.length + 1);
+            final List<IErlElement> children = new ArrayList<>(elems.length + 1);
             // ErlLogger.debug(">>adding externals");
             addExternals(children);
             // ErlLogger.debug("childcount %d", children.size());
@@ -179,8 +178,7 @@ public class ErlProject extends Openable
         for (final IPath path : new PathResolver().resolvePaths(includeDirs)) {
             if (path.isAbsolute() && !fProject.getLocation().isPrefixOf(path)) {
                 final Collection<String> includes = ErlangEngine.getInstance()
-                        .getService(OpenService.class)
-                        .getIncludesInDir(path.toPortableString());
+                        .getOpenService().getIncludesInDir(path.toPortableString());
                 if (includes != null) {
                     for (final String include : includes) {
                         projectIncludes.add(path.append(include).toPortableString());
@@ -724,8 +722,7 @@ public class ErlProject extends Openable
     }
 
     private IProjectConfigurator getConfig() {
-        return ErlangEngine.getInstance().getProjectConfiguratorFactory()
-                .getConfig(getConfigType(), this);
+        return ProjectConfiguratorFactory.getDefault().getConfig(getConfigType(), this);
     }
 
     private void storeProperties() {

@@ -1,4 +1,4 @@
-package org.erlide.engine.services.codeassist;
+package org.erlide.engine.internal.services.codeassist;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,11 +44,11 @@ public class RecordCompletion {
     }
 
     public boolean isNameWanted() {
-        return kind == ContextAssistService.RECORD_NAME;
+        return kind == ErlideContextAssist.RECORD_NAME;
     }
 
     public boolean isFieldWanted() {
-        return kind == ContextAssistService.RECORD_FIELD;
+        return kind == ErlideContextAssist.RECORD_FIELD;
     }
 
     public String getName() {

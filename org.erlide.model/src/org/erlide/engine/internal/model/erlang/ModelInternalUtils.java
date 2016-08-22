@@ -192,7 +192,7 @@ public class ModelInternalUtils implements ModelUtilService {
             final ErlElementKind kind) throws CoreException {
         final List<IErlPreprocessorDef> result = Lists.newArrayList();
         final List<IErlModule> modulesWithIncludes = Lists.newArrayList(ErlangEngine
-                .getInstance().getModelSearcherService().findAllIncludedFiles(module));
+                .getInstance().getModelFindService().findAllIncludedFiles(module));
         modulesWithIncludes.add(module);
         for (final IErlModule m : modulesWithIncludes) {
             result.addAll(m.getPreprocessorDefs(kind));

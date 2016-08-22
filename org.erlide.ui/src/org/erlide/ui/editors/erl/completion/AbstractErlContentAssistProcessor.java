@@ -134,12 +134,13 @@ public abstract class AbstractErlContentAssistProcessor
                 oldBefore = before;
 
                 final CompletionService completionService = ErlangEngine.getInstance()
-                        .getCompletionService(project, module, elementBefore);
+                        .getCompletionService();
                 List<ICompletionProposal> result = Lists.newArrayList();
                 if (project != null) {
                     final IOtpRpc backend = BackendCore.getBuildBackend(project);
                     final List<CompletionData> resultData = completionService
-                            .computeCompletions(backend, offset, before, isInString());
+                            .computeCompletions(backend, project, module, elementBefore,
+                                    offset, before, isInString());
                     result = Lists.transform(resultData,
                             new Function<CompletionData, ICompletionProposal>() {
                                 @Override

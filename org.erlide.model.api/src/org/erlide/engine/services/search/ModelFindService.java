@@ -50,4 +50,5 @@ public interface ModelFindService {
 
     String resolveMacroValue(final String definedName, final IErlModule module);
 
+    Collection<IErlModule> findAllIncludedFiles(IErlModule module) throws CoreException;
 }
