@@ -37,7 +37,7 @@ public class ModelTest {
     public void moduleWithNonErlangExtension() throws Exception {
         // given an erlang project
         final String projectName = "testproject";
-        final IErlProject erlProject = ErlideTestUtils.createTmpErlProject(projectName);
+        final IErlProject erlProject = ErlideTestUtils.createErlProject(projectName);
         assertNotNull(erlProject);
         // when creating a module with non-erlang extension, e.g. erlx
         final IErlModule a = ErlideTestUtils.createModule(erlProject, "a.erlx",

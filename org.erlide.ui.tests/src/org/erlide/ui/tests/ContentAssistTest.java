@@ -72,8 +72,7 @@ public class ContentAssistTest {
     public void moduleCompletionTest() throws Exception {
         ErlideTestUtils.initProjects();
         final String name1 = "testproject1";
-        final IErlProject project = ErlideTestUtils
-                .createProject(ErlideTestUtils.getTmpPath(name1), name1);
+        final IErlProject project = ErlideTestUtils.createErlProject(name1);
         try {
             final String initialText = "application_";
             completionTest(project, "z.erl", initialText, initialText.length(),
@@ -89,8 +88,7 @@ public class ContentAssistTest {
     public void moduleCompletion1Test() throws Exception {
         ErlideTestUtils.initProjects();
         final String name1 = "testproject1";
-        final IErlProject project = ErlideTestUtils
-                .createProject(ErlideTestUtils.getTmpPath(name1), name1);
+        final IErlProject project = ErlideTestUtils.createErlProject(name1);
         try {
             completionTest(project, "ay.erl", "alarm_h", 7,
                     Lists.newArrayList("alarm_handler:"), false);
@@ -105,8 +103,7 @@ public class ContentAssistTest {
     public void moduleCompletion2Test() throws Exception {
         ErlideTestUtils.initProjects();
         final String name1 = "testproject1";
-        final IErlProject project = ErlideTestUtils
-                .createProject(ErlideTestUtils.getTmpPath(name1), name1);
+        final IErlProject project = ErlideTestUtils.createErlProject(name1);
         try {
             completionTest(project, "a.erl", "'CosEventChannelAdmin_A", 23,
                     Lists.newArrayList("'CosEventChannelAdmin_AlreadyConnected':"),
@@ -120,8 +117,7 @@ public class ContentAssistTest {
     public void recordCompletionLettersTest() throws Exception {
         ErlideTestUtils.initProjects();
         final String name1 = "testproject1";
-        final IErlProject project = ErlideTestUtils
-                .createProject(ErlideTestUtils.getTmpPath(name1), name1);
+        final IErlProject project = ErlideTestUtils.createErlProject(name1);
         try {
             final String initialText = "-record(aa, {a, b}).\n-record(ab, {a, b}).\n-record(bb, {a, b}).\nf() ->\n#a";
             completionTest(project, "w.erl", initialText, initialText.length() - 1,
@@ -137,8 +133,7 @@ public class ContentAssistTest {
     public void recordCompletionSingleQuoteTest() throws Exception {
         ErlideTestUtils.initProjects();
         final String name1 = "testproject1";
-        final IErlProject project = ErlideTestUtils
-                .createProject(ErlideTestUtils.getTmpPath(name1), name1);
+        final IErlProject project = ErlideTestUtils.createErlProject(name1);
         try {
             final String initialText = "-record('AA', {a, b}).\n-record('B', {a, b}).\n"
                     + "-record(ab, {a, b}).\nf() ->\n#'A";
@@ -158,8 +153,7 @@ public class ContentAssistTest {
     public void caseInsensitiveProposalsTest() throws Exception {
         ErlideTestUtils.initProjects();
         final String name1 = "testproject1";
-        final IErlProject project = ErlideTestUtils
-                .createProject(ErlideTestUtils.getTmpPath(name1), name1);
+        final IErlProject project = ErlideTestUtils.createErlProject(name1);
         try {
             final String initialText1 = "-define(abc,abc).\n-define(aBc, aBc).\nf()->?ab";
             completionTest(project, "w.erl", initialText1, initialText1.length() - 1,
@@ -200,8 +194,7 @@ public class ContentAssistTest {
     public void includeCompletionTest() throws Exception {
         ErlideTestUtils.initProjects();
         final String name1 = "testproject1";
-        final IErlProject project = ErlideTestUtils
-                .createProject(ErlideTestUtils.getTmpPath(name1), name1);
+        final IErlProject project = ErlideTestUtils.createErlProject(name1);
         try {
             ErlideTestUtils.createInclude(project, "a.hrl", "-define(A, a).\n");
             // check that quotes are added if needed

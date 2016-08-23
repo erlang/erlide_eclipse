@@ -69,11 +69,12 @@ public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementL
 
     void removeModelChangeListener(IErlModelChangeListener listener);
 
-    IErlElement innermostThat(final IErlElement el, final Predicate<IErlElement> firstThat);
+    IErlElement innermostThat(final IErlElement el,
+            final Predicate<IErlElement> firstThat);
 
     OtpErlangList getPathVars();
 
-    IErlProject newProject(final String name, final String path) throws ErlModelException;
+    IErlProject newProject(final String name) throws ErlModelException;
 
     void notifyChange(IErlElement element);
 

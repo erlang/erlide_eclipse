@@ -1,6 +1,6 @@
 package org.erlide.core.services.builder;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -11,7 +11,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -95,7 +97,7 @@ public class DialyzerUtilsTest {
             // given
             // an erlang module in an erlang project
             final String projectName = "testproject";
-            erlProject = ErlideTestUtils.createTmpErlProject(projectName);
+            erlProject = ErlideTestUtils.createErlProject(projectName);
             final String moduleName = "test.erl";
             final IErlModule erlModule = ErlideTestUtils.createModule(erlProject,
                     moduleName,
@@ -141,13 +143,22 @@ public class DialyzerUtilsTest {
             // given
             // an erlang project and an external file not in any project
             final String projectName = "testproject";
-            erlProject = ErlideTestUtils.createTmpErlProject(projectName);
-            final String externalFileName = "external.hrl";
+            erlProject = ErlideTestUtils.createErlProject(projectName);
+            final String externalFileName = "external9.hrl";
             externalFile = ErlideTestUtils.createTmpFile(externalFileName,
                     "f([_ | _]=L) ->\n    atom_to_list(L).\n");
             externalIncludesFile = ErlideTestUtils.createTmpFile("external_includes",
                     externalFile.getAbsolutePath());
             DialyzerMarkerUtils.removeDialyzerMarkersFor(root);
+
+            final IProject project = erlProject.getWorkspaceProject();
+            if (!project.isOpen()) {
+                project.open(null);
+            }
+            final IPath location = new Path(externalFile.getAbsolutePath());
+            final IFile file = project.getFile(location.lastSegment());
+            file.createLink(location, IResource.NONE, null);
+
             // when
             // putting dialyzer warning markers on the external file
             final String message = "test message";
@@ -161,7 +172,7 @@ public class DialyzerUtilsTest {
             final IMarker[] markers = root.findMarkers(
                     DialyzerMarkerUtils.DIALYZE_WARNING_MARKER, true,
                     IResource.DEPTH_INFINITE);
-            assertThat(markers.length).isGreaterThan(0);
+            assertWithMessage("Markers count").that(markers.length).isGreaterThan(0);
             for (final IMarker marker : markers) {
                 // for some reason, when running on Hudson, we get two identical
                 // markers...
@@ -169,7 +180,8 @@ public class DialyzerUtilsTest {
                         .getAttribute(DialyzerMarkerUtils.PATH_ATTRIBUTE);
                 final IPath p = new Path(path);
                 assertEquals(externalFileName, p.lastSegment());
-                assertEquals(lineNumber, marker.getAttribute(IMarker.LINE_NUMBER));
+                assertWithMessage("line number").that(lineNumber)
+                        .isEqualTo(marker.getAttribute(IMarker.LINE_NUMBER));
                 assertEquals(message, marker.getAttribute(IMarker.MESSAGE));
             }
         } finally {
@@ -194,7 +206,7 @@ public class DialyzerUtilsTest {
             // given
             // a project with two erlang modules, one of them selected
             final String projectName = "testproject";
-            erlProject = ErlideTestUtils.createTmpErlProject(projectName);
+            erlProject = ErlideTestUtils.createErlProject(projectName);
             assertNotNull(erlProject);
             final IErlModule a = ErlideTestUtils.createModule(erlProject, "a.erl",
                     "-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
@@ -311,7 +323,7 @@ public class DialyzerUtilsTest {
             // a project with two erlang modules, one of them with an erlang
             // error, preventing it from generating a beam-file
             final String projectName = "testproject";
-            erlProject = ErlideTestUtils.createTmpErlProject(projectName);
+            erlProject = ErlideTestUtils.createErlProject(projectName);
             assertNotNull(erlProject);
             final IErlModule a = ErlideTestUtils.createModule(erlProject, "a.erl",
                     "-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");

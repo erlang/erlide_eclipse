@@ -1,4 +1,4 @@
-package org.erlide.engine.internal;
+package org.erlide.engine;
 
 public class ModelPlugin {
 

@@ -21,7 +21,7 @@ public abstract class AbstractProjectConfigurationTest {
     public void setUp() throws Exception {
         ErlideTestUtils.initProjects();
         final String name = "testproject3";
-        project = ErlideTestUtils.createProject(ErlideTestUtils.getTmpPath(name), name);
+        project = ErlideTestUtils.createErlProject(name);
         final ErlProject p = (ErlProject) project;
         p.configurationChanged();
     }

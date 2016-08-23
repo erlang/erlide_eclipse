@@ -12,3 +12,4 @@ Require-Bundle: org.erlide.testing.libs,
  org.erlide.core,
  org.junit
 Export-Package: org.erlide.core.services.builder
+Import-Package: org.eclipse.core.resources

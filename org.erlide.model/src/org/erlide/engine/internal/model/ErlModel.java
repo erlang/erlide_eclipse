@@ -43,7 +43,7 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.internal.ModelPlugin;
+import org.erlide.engine.ModelPlugin;
 import org.erlide.engine.internal.model.cache.ErlModelCache;
 import org.erlide.engine.internal.model.root.ErlElementDelta;
 import org.erlide.engine.internal.model.root.ErlFolder;
@@ -340,8 +340,7 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     @Override
-    public final IErlProject newProject(final String name, final String path)
-            throws ErlModelException {
+    public final IErlProject newProject(final String name) throws ErlModelException {
         final IWorkspace ws = ResourcesPlugin.getWorkspace();
         final IProject project = ws.getRoot().getProject(name);
         try {

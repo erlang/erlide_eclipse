@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.internal.ModelPlugin;
+import org.erlide.engine.ModelPlugin;
 import org.erlide.engine.internal.model.cache.ErlModelCache;
 import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
@@ -619,9 +619,10 @@ public class ErlProject extends Openable
                         || element.getKind() == ErlElementKind.PROJECT;
                 if (element instanceof IErlModule) {
                     final IErlModule module = (IErlModule) element;
-                    if (module.getSourceKind() == SourceKind.HRL
-                            && module.getAncestorOfKind(
-                                    ErlElementKind.PROJECT) == ErlProject.this) {
+                    if (module.getSourceKind() == SourceKind.HRL && (module
+                            .getAncestorOfKind(ErlElementKind.PROJECT) == ErlProject.this
+                            || element.getKind() == ErlElementKind.EXTERNAL_APP
+                            || element.getKind() == ErlElementKind.EXTERNAL_FOLDER)) {
                         result.add(module);
                     }
                     return false;
