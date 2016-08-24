@@ -73,9 +73,12 @@ class RuntimeFinder {
             result.add(folder)
             return result
         }
-        for (File f : folder.listFiles) {
-            if (f.isDirectory && RuntimeInfo.validateLocation(f.path)) {
-                result.add(f)
+        val files = folder.listFiles
+        if (files !== null) {
+            for (File f : files) {
+                if (f.isDirectory && RuntimeInfo.validateLocation(f.path)) {
+                    result.add(f)
+                }
             }
         }
         return result
