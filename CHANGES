@@ -1,3 +1,7 @@
+List of user visible changes between 0.33.0 and 0.33.1 (20160824)
+
+3ee8b96 fix #290 - RuntimeFinder don't treat files as directories
+
 List of user visible changes between 0.32.1 and 0.33.0 (20160524)
 
 ******* last version supporting Java 6
