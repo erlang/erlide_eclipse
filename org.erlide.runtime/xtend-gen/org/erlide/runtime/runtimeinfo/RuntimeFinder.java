@@ -114,10 +114,12 @@ public class RuntimeFinder {
       result.add(folder);
       return result;
     }
-    File[] _listFiles = folder.listFiles();
-    for (final File f : _listFiles) {
-      if ((f.isDirectory() && RuntimeInfo.validateLocation(f.getPath()))) {
-        result.add(f);
+    final File[] files = folder.listFiles();
+    if ((files != null)) {
+      for (final File f : files) {
+        if ((f.isDirectory() && RuntimeInfo.validateLocation(f.getPath()))) {
+          result.add(f);
+        }
       }
     }
     return result;
