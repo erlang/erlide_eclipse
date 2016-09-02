@@ -5,10 +5,10 @@
               {applications,[kernel,stdlib]},
               {env,[]},
               {mod,{erlide_common_app,[]}},
-              {modules,[app_meta,erlide_backend,erlide_batch,erlide_builder,
+              {modules,[app_meta,erlide_backend,erlide_builder,
                         erlide_builder_app,erlide_builder_server,
                         erlide_builder_slave,erlide_common_app,
                         erlide_erlcerrors,erlide_jrpc,erlide_log,
-                        erlide_monitor,erlide_proclist,erlide_shell,
-                        erlide_time_compat,erlide_user,erlide_util,
-                        erlide_yecc_msgs]}]}.
+                        erlide_monitor,erlide_pool,erlide_proclist,
+                        erlide_shell,erlide_time_compat,erlide_user,
+                        erlide_util,erlide_yecc_msgs]}]}.

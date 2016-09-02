@@ -106,7 +106,8 @@ public class Backend implements IStreamListener, IBackend {
                         sysconf.getMaxParallelBuilds());
                 break;
             case IDE:
-                site.call("erlide_builder_app", "init", "");
+                site.call("erlide_builder_app", "init", "i",
+                        sysconf.getMaxParallelBuilds());
                 site.call("erlide_ide_app", "init", "");
                 break;
             default:
