@@ -96,13 +96,14 @@ public class Backend implements IStreamListener, IBackend {
         try {
             final IOtpRpc site = getOtpRpc();
             final SystemConfiguration sysconf = SystemConfiguration.getInstance();
-            site.call("erlide_common_app", "init", "poiii", jRex, watch,
+            site.call("erlide_common_app", "init", "poii", jRex, watch,
                     sysconf.getWarnProcessSizeLimitMB(),
-                    sysconf.getKillProcessSizeLimitMB(), sysconf.getMaxParallelBuilds());
+                    sysconf.getKillProcessSizeLimitMB());
             // TODO should use extension point!
             switch (data.getContext()) {
             case BUILDER:
-                site.call("erlide_builder_app", "init", "");
+                site.call("erlide_builder_app", "init", "i",
+                        sysconf.getMaxParallelBuilds());
                 break;
             case IDE:
                 site.call("erlide_builder_app", "init", "");
