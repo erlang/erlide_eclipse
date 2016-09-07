@@ -241,7 +241,8 @@ public class ModelInternalUtils implements ModelUtilService {
 
     @Override
     public String[] getPredefinedMacroNames() {
-        return new String[] { "MODULE", "LINE", "FILE" };
+        return new String[] { "MODULE", "LINE", "FILE", "FUNCTION_NAME",
+                "FUNCTION_ARITY" };
     }
 
     @Override
