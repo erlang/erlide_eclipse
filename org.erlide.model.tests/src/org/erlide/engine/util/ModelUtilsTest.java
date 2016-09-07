@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.root.ErlProject;
+import org.erlide.engine.internal.services.codeassist.ErlangCompletionService;
 import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.ErlangFunction;
@@ -237,9 +238,9 @@ public class ModelUtilsTest {
                         + "    lists:reverse([1, 0]),\n"
                         + "    lists:reverse([1, 0], [2]).\n");
         module.open(null);
-        final List<IErlPreprocessorDef> macroDefs = modelUtilService
+        final List<IErlPreprocessorDef> macroDefs = ErlangCompletionService
                 .getAllPreprocessorDefs(module, ErlElementKind.MACRO_DEF);
-        final List<IErlPreprocessorDef> recordDefs = modelUtilService
+        final List<IErlPreprocessorDef> recordDefs = ErlangCompletionService
                 .getAllPreprocessorDefs(module, ErlElementKind.RECORD_DEF);
         assertEquals(2, macroDefs.size());
         assertEquals(3, recordDefs.size());

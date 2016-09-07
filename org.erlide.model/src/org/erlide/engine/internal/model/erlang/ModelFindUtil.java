@@ -200,8 +200,7 @@ public class ModelFindUtil implements ModelFindService {
                 return module.getModuleName();
             }
             final IErlPreprocessorDef def = module.findPreprocessorDef(
-                    StringUtils.withoutInterrogationMark(definedName),
-                    ErlElementKind.MACRO_DEF);
+                    withoutInterrogationMark(definedName), ErlElementKind.MACRO_DEF);
             if (def != null) {
                 final String extra = def.getExtra();
                 final int p = extra.indexOf(',');
@@ -212,6 +211,13 @@ public class ModelFindUtil implements ModelFindService {
                     }
                 }
             }
+        }
+        return definedName;
+    }
+
+    private static String withoutInterrogationMark(final String definedName) {
+        if (definedName.startsWith("?")) {
+            return definedName.substring(1);
         }
         return definedName;
     }

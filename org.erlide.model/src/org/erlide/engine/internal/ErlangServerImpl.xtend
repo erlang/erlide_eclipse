@@ -127,9 +127,9 @@ class ErlangServerImpl implements IErlangEngine {
     }
 
     override ToggleCommentService getToggleCommentService() {
-        return [ String module, String fun, int offset, int length, String text |
+        return [ int offset, int length, String text |
             try {
-                val OtpErlangObject r1 = backend.call(module, fun, "sii", text, offset, length)
+                val OtpErlangObject r1 = backend.call("erlide_comment", "toggle_comment", "sii", text, offset, length)
                 return r1
             } catch (RpcException e) {
                 return new OtpErlangString("")

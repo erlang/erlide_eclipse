@@ -288,8 +288,7 @@ public class ErlangCompletionService implements CompletionService {
         }
         final List<CompletionData> result = new ArrayList<>();
         try {
-            final List<IErlPreprocessorDef> defs = ErlangEngine.getInstance()
-                    .getModelUtilService().getAllPreprocessorDefs(module, kind);
+            final List<IErlPreprocessorDef> defs = getAllPreprocessorDefs(module, kind);
             for (final IErlPreprocessorDef pd : defs) {
                 final String name = pd.getDefinedName();
                 addIfMatches(name, prefix, offset, result);
@@ -303,6 +302,18 @@ public class ErlangCompletionService implements CompletionService {
             for (final String name : names) {
                 addIfMatches(name, prefix, offset, result);
             }
+        }
+        return result;
+    }
+
+    public static List<IErlPreprocessorDef> getAllPreprocessorDefs(
+            final IErlModule module, final ErlElementKind kind) throws CoreException {
+        final List<IErlPreprocessorDef> result = Lists.newArrayList();
+        final List<IErlModule> modulesWithIncludes = Lists.newArrayList(ErlangEngine
+                .getInstance().getModelFindService().findAllIncludedFiles(module));
+        modulesWithIncludes.add(module);
+        for (final IErlModule m : modulesWithIncludes) {
+            result.addAll(m.getPreprocessorDefs(kind));
         }
         return result;
     }

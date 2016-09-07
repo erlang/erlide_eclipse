@@ -241,8 +241,7 @@ public final class StringUtils {
             final char toSplit) {
         final int i = fullRep.indexOf(toSplit);
         if (i != -1) {
-            return new Pair<>(fullRep.substring(0, i),
-                    fullRep.substring(i + 1));
+            return new Pair<>(fullRep.substring(0, i), fullRep.substring(i + 1));
         }
         return new Pair<>(fullRep, "");
 
@@ -264,25 +263,6 @@ public final class StringUtils {
         c1[c.length] = toAdd;
         return c1;
 
-    }
-
-    public static String replaceNewLines(final String message0, final String string) {
-        String message = message0.replaceAll("\r\n", string);
-        message = message.replaceAll("\r", string);
-        message = message.replaceAll("\n", string);
-
-        return message;
-    }
-
-    public static String removeNewLineChars(final String message) {
-        return message.replaceAll("\r", "").replaceAll("\n", "");
-    }
-
-    public static String withoutInterrogationMark(final String definedName) {
-        if (definedName.startsWith("?")) {
-            return definedName.substring(1);
-        }
-        return definedName;
     }
 
     public static String unquote(final String s) {

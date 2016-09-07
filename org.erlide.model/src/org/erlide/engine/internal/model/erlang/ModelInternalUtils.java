@@ -18,16 +18,13 @@ import java.util.List;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.IErlImport;
-import org.erlide.engine.model.erlang.IErlPreprocessorDef;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlModel;
@@ -183,19 +180,6 @@ public class ModelInternalUtils implements ModelUtilService {
             final OtpErlangTuple modFunsT = new OtpErlangTuple(new OtpErlangObject[] {
                     new OtpErlangAtom(i.getImportModule()), new OtpErlangList(funsT) });
             result.add(modFunsT);
-        }
-        return result;
-    }
-
-    @Override
-    public List<IErlPreprocessorDef> getAllPreprocessorDefs(final IErlModule module,
-            final ErlElementKind kind) throws CoreException {
-        final List<IErlPreprocessorDef> result = Lists.newArrayList();
-        final List<IErlModule> modulesWithIncludes = Lists.newArrayList(ErlangEngine
-                .getInstance().getModelFindService().findAllIncludedFiles(module));
-        modulesWithIncludes.add(module);
-        for (final IErlModule m : modulesWithIncludes) {
-            result.addAll(m.getPreprocessorDefs(kind));
         }
         return result;
     }
