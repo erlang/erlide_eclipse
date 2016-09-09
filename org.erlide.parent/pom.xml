@@ -70,6 +70,7 @@
 		<module>../org.erlide.dialyzer.ui</module>
 		<module>../org.erlide.help</module>
 		<module>../org.erlide.kernel</module>
+		<module>../org.erlide.jvmcheck</module>
 		<module>../org.erlide.libs</module>
 		<module>../org.erlide.libs.annotations</module>
 		<module>../org.erlide.libs2</module>

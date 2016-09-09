@@ -36,6 +36,10 @@ is available from http://www.eclipse.org/legal/epl-v10.html
       <discovery label="Handly" url="https://hudson.eclipse.org/handly/job/0.3.x/lastSuccessfulBuild/artifact/build/repository/"/>
    </url>
 
+   <requires>
+      <import feature="org.eclipse.platform" version="4.5.0" match="compatible"/>
+   </requires>
+
    <plugin
          id="org.erlide.ui"
          download-size="0"
@@ -181,6 +185,13 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.erlide.server"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.jvmcheck"
          download-size="0"
          install-size="0"
          version="0.0.0"
