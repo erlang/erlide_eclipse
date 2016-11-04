@@ -113,13 +113,15 @@ public final class BuilderHelper {
                 includeDirs.add(incPath);
             } else {
                 final IFolder folder = project.getFolder(incPath);
-                if (folder != null) {
+				if (folder != null && folder.exists()) {
                     final IPath location = folder.getLocation();
                     if (location != null) {
                         includeDirs.add(location);
                     } else {
                         ErlLogger.warn("No location for %s", folder);
                     }
+				} else {
+					ErlLogger.warn("Inexistent location for %s", folder);
                 }
             }
         }
