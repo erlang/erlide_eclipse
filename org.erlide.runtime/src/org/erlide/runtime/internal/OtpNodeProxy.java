@@ -403,7 +403,7 @@ public class OtpNodeProxy implements IOtpNodeProxy {
                 }
             } while (!stopped && !crashed);
             if (crashed) {
-                throw new Exception("Runtime exited");
+				throw new Exception("Runtime crashed " + getNodeName());
             }
         }
 

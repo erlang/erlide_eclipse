@@ -74,6 +74,11 @@ public class RunDialyzerHandler extends AbstractHandler {
                             e.getCause().getMessage());
                 } finally {
                     if (backend != null) {
+						try {
+							backend.getOtpRpc().async_call("init", "stop", "");
+							Thread.sleep(200);
+						} catch (Exception e) {
+						}
                         backend.dispose();
                     }
                     monitor.done();

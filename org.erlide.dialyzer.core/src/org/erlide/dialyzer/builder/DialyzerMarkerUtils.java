@@ -31,7 +31,7 @@ public class DialyzerMarkerUtils {
 
     public static void addDialyzerWarningMarkersFromResultList(final IOtpRpc backend,
             final OtpErlangList result) {
-        if (result == null) {
+		if (result == null || result.arity() == 0) {
             return;
         }
         final List<String> warnings = ErlideDialyze.formatWarnings(backend, result);
