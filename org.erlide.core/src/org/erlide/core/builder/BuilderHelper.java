@@ -121,7 +121,7 @@ public final class BuilderHelper {
                         ErlLogger.warn("No location for %s", folder);
                     }
 				} else {
-					ErlLogger.warn("Inexistent location for %s", folder);
+					ErlLogger.info("Inexistent location for %s", folder);
                 }
             }
         }

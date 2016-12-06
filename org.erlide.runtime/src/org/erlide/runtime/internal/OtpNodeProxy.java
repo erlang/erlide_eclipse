@@ -391,19 +391,21 @@ public class OtpNodeProxy implements IOtpNodeProxy {
         @Override
         protected void run() throws Exception {
             final OtpMbox eventBox = eventMBox;
-            do {
+            int theCode = -1;
+			do {
                 receiveEventMessage(eventBox);
                 if (managed) {
                     try {
                         final int code = process.exitValue();
                         stopped = code == 0;
                         crashed = code != 0;
+                        theCode = code;
                     } catch (final IllegalThreadStateException e) {
                     }
                 }
             } while (!stopped && !crashed);
             if (crashed) {
-				throw new Exception("Runtime crashed " + getNodeName());
+				throw new Exception("Runtime crashed " + theCode+" : "+getNodeName());
             }
         }
 
