@@ -1,41 +1,39 @@
 #!groovy
 
-stage 'Checkout'
 node {
-	wrap([$class: 'TimestamperBuildWrapper']) {
-		checkout()
+	stage('Checkout') {
+		wrap([$class: 'TimestamperBuildWrapper']) {
+			checkout()
+		}
 	}
-}
 
-stage 'Compile'
-node {
-	wrap([$class: 'TimestamperBuildWrapper']) {
-		compile()
+	stage('Compile') {
+		wrap([$class: 'TimestamperBuildWrapper']) {
+			compile()
+		}
 	}
-}
 
-//stage 'Tests'
-//	runTests()
+	//stage('Tests') {
+	//	runTests()
+	//}
 
-stage 'Analyze'
-node {
-	wrap([$class: 'TimestamperBuildWrapper']) {
-		analyze()
+	stage('Analyze') {
+		wrap([$class: 'TimestamperBuildWrapper']) {
+			analyze()
+		}
 	}
-}
 
-stage 'Archive'
-node {
-	wrap([$class: 'TimestamperBuildWrapper']) {
-		archive = archive()
+	stage('Archive') {
+		wrap([$class: 'TimestamperBuildWrapper']) {
+			archive = archive()
+		}
 	}
-}
 
-stage 'Publish'
-node {
-	wrap([$class: 'TimestamperBuildWrapper']) {
-		publish(archive)
-		publishRelease(archive)
+	stage('Publish') {
+		wrap([$class: 'TimestamperBuildWrapper']) {
+			publish(archive)
+			publishRelease(archive)
+		}
 	}
 }
 
