@@ -10,7 +10,8 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho.version>0.22.0</tycho.version>
+		<tycho.version>0.24.0</tycho.version>
+		<tycho-extras-version>${tycho.version}</tycho-extras-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -54,12 +55,12 @@
 		<module>../org.erlide.dialyzer.ui</module>
 		<module>../org.erlide.help</module>
 		<module>../org.erlide.kernel</module>
-        <module>../org.erlide.libs</module>
-        <module>../org.erlide.libs.annotations</module>
+		<module>../org.erlide.libs</module>
+		<module>../org.erlide.libs.annotations</module>
 		<module>../org.erlide.libs2</module>
 		<module>../org.erlide.licenses</module>
-        <module>../org.erlide.server</module>
-        <module>../org.erlide.model</module>
+		<module>../org.erlide.server</module>
+		<module>../org.erlide.model</module>
 		<module>../org.erlide.model.api</module>
 		<module>../org.erlide.runtime</module>
 		<module>../org.erlide.test_support</module>
@@ -158,15 +159,15 @@
 				</plugins>
 			</build>
 		</profile>
-	    <profile>
-	        <id>build-ide</id>
-	        <activation>
-	            <activeByDefault>false</activeByDefault>
-	        </activation>
-	        <modules>
-	            <module>../org.erlide.product.site</module>
-	        </modules>
-	    </profile>
+		<profile>
+			<id>build-ide</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<modules>
+				<module>../org.erlide.product.site</module>
+			</modules>
+		</profile>
 	</profiles>
 
 	<build>
@@ -176,6 +177,14 @@
 				<artifactId>tycho-maven-plugin</artifactId>
 				<version>${tycho.version}</version>
 				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-p2-extras-plugin</artifactId>
 			</plugin>
 		</plugins>
 		<pluginManagement>
@@ -292,12 +301,54 @@
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-packaging-plugin</artifactId>
 					<version>${tycho.version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.eclipse.tycho.extras</groupId>
+							<artifactId>tycho-buildtimestamp-jgit</artifactId>
+							<version>${tycho-extras-version}</version>
+						</dependency>
+					</dependencies>
 					<configuration>
-						<format>'v'yyyyMMdd-HHmm</format>
-						<archive>
-							<addMavenDescriptor>false</addMavenDescriptor>
-						</archive>
+						<timestampProvider>jgit</timestampProvider>
+						<jgit.ignore>pom.xml</jgit.ignore>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-p2-plugin</artifactId>
+					<version>${tycho.version}</version>
+					<configuration>
+						<baselineMode>failCommon</baselineMode>
+						<baselineReplace>none</baselineReplace>
+						<baselineRepositories>
+							<repository>
+								<url>http://download.erlide.org/update/</url>
+								<url>http://download.erlide.org/update/nightly</url>
+								<url>http://download.erlide.org/update/beta</url>
+							</repository>
+						</baselineRepositories>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho.extras</groupId>
+					<artifactId>tycho-p2-extras-plugin</artifactId>
+					<version>${tycho.version}</version>
+					<executions>
+						<!-- Make sure we don't forget to bump version -->
+						<execution>
+							<id>compare-version-with-baseline</id>
+							<goals>
+								<goal>compare-version-with-baselines</goal>
+							</goals>
+							<configuration>
+								<baselines>
+									<url>http://download.erlide.org/update/</url>
+									<url>http://download.erlide.org/update/nightly</url>
+									<url>http://download.erlide.org/update/beta</url>
+								</baselines>
+							</configuration>
+						</execution>
+					</executions>
 				</plugin>
 				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
