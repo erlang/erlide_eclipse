@@ -65,7 +65,7 @@ public class IndentHandler extends ErlangAbstractHandler {
         display.syncExec(new Runnable() {
             @Override
             public void run() {
-                final IRewriteTarget target = (IRewriteTarget) textEditor
+                final IRewriteTarget target = textEditor
                         .getAdapter(IRewriteTarget.class);
                 if (target != null) {
                     target.beginCompoundChange();

@@ -54,7 +54,7 @@ public abstract class AbstractResultTreeObject implements IAdaptable {
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class adapter) {
+    public <T> T getAdapter(final Class<T> adapter) {
         return null;
     }
 

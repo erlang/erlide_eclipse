@@ -120,7 +120,7 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
             final int offset, final int length) {
         final IAdaptable adaptable = DebugUITools.getDebugContext();
         if (adaptable != null) {
-            final IStackFrame frame = (IStackFrame) adaptable
+            final IStackFrame frame = adaptable
                     .getAdapter(IStackFrame.class);
             try {
                 if (frame != null && frame.hasVariables()) {

@@ -120,7 +120,7 @@ public abstract class FindAction extends SelectionDispatchAction {
             if (firstElement instanceof IErlElement) {
                 return (IErlElement) firstElement;
             } else if (firstElement instanceof IAdaptable) {
-                return (IErlElement) ((IAdaptable) firstElement)
+                return ((IAdaptable) firstElement)
                         .getAdapter(IErlElement.class);
             }
         }

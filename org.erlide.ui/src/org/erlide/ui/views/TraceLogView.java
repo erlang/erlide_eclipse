@@ -68,7 +68,7 @@ public class TraceLogView extends ViewPart {
         }
 
         @Override
-        public Object getAdapter(@SuppressWarnings("rawtypes") final Class key) {
+        public <T> T getAdapter(final Class<T> adapter) {
             return null;
         }
     }

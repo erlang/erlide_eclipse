@@ -138,7 +138,7 @@ public class OpenAction extends SelectionDispatchAction {
                         .getDocument(textEditor.getEditorInput()).get();
                 openResult = ErlangEngine.getInstance().getOpenService().openText(text,
                         offset);
-                final IFile file = (IFile) textEditor.getEditorInput()
+                final IFile file = textEditor.getEditorInput()
                         .getAdapter(IFile.class);
                 if (file != null) {
                     final IProject p = file.getProject();

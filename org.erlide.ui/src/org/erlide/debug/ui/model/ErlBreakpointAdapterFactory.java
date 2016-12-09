@@ -16,25 +16,23 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 public class ErlBreakpointAdapterFactory implements IAdapterFactory {
 
     @Override
-    public Object getAdapter(final Object adaptableObject,
-            @SuppressWarnings("rawtypes") final Class adapterType) {
+    public <T> T getAdapter(final Object adaptableObject, final Class<T> adapterType) {
         if (adaptableObject instanceof ErlangEditor) {
             final AbstractErlangEditor editorPart = (AbstractErlangEditor) adaptableObject;
-            final IResource resource = (IResource) editorPart.getEditorInput()
+            final IResource resource = editorPart.getEditorInput()
                     .getAdapter(IResource.class);
             if (resource != null) {
                 final String extension = resource.getFileExtension();
                 if (extension != null && "erl".equals(extension)) {
-                    return new ErlLineBreakpointAdapter();
+                    return adapterType.cast(new ErlLineBreakpointAdapter());
                 }
             }
         }
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public Class[] getAdapterList() {
+    public Class<?>[] getAdapterList() {
         return new Class[] { IToggleBreakpointsTarget.class };
     }
 

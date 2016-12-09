@@ -29,7 +29,7 @@ public class ErlModulePropertyPage extends PropertyPage {
         text.setFont(SWTResourceManager.getFont("Courier New", 10, SWT.NONE));
 
         final IAdaptable element = getElement();
-        final IFile file = (IFile) element.getAdapter(IFile.class);
+        final IFile file = element.getAdapter(IFile.class);
         final IErlModule module = ErlangEngine.getInstance().getModel().findModule(file);
         final String value = ErlangEngine.getInstance().getModelUtilService()
                 .getModuleInfo(module);

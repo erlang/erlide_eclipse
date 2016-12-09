@@ -31,7 +31,7 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
             final ISelection selection) throws CoreException {
         final ITextEditor textEditor = getEditor(part);
         if (textEditor != null) {
-            final IResource resource = (IResource) textEditor.getEditorInput()
+            final IResource resource = textEditor.getEditorInput()
                     .getAdapter(IResource.class);
             final ITextSelection textSelection = (ITextSelection) selection;
             final int lineNumber = textSelection.getStartLine();

@@ -56,7 +56,7 @@ public class ToggleCommentHandler extends ErlangAbstractHandler {
         display.syncExec(new Runnable() {
             @Override
             public void run() {
-                final ITextOperationTarget target1 = (ITextOperationTarget) textEditor
+                final ITextOperationTarget target1 = textEditor
                         .getAdapter(ITextOperationTarget.class);
                 if (target1 instanceof ITextViewer) {
                     final ITextViewer textViewer = (ITextViewer) target1;

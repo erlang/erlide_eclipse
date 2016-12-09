@@ -157,7 +157,7 @@ public class BreakpointConditionEditor {
                     return null;
                 }
             };
-            fHandlerService = (IHandlerService) PlatformUI.getWorkbench()
+            fHandlerService = PlatformUI.getWorkbench()
                     .getAdapter(IHandlerService.class);
         } catch (final CoreException exception) {
             ErlLogger.warn(exception);

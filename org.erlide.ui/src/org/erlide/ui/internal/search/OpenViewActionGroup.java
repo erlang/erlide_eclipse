@@ -271,7 +271,7 @@ public class OpenViewActionGroup extends ActionGroup {
     private String getShowInMenuLabel() {
         String keyBinding = null;
 
-        final IBindingService bindingService = (IBindingService) PlatformUI
+        final IBindingService bindingService = PlatformUI
                 .getWorkbench().getAdapter(IBindingService.class);
         if (bindingService != null) {
             keyBinding = bindingService

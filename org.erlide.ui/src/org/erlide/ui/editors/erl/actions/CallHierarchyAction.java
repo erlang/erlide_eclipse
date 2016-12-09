@@ -78,7 +78,7 @@ public class CallHierarchyAction extends Action {
             protected CallHierarchyView prepare() {
                 try {
                     final IViewPart p = page.showView("org.erlide.ui.callhierarchy");
-                    final CallHierarchyView cvh = (CallHierarchyView) p
+                    final CallHierarchyView cvh = p
                             .getAdapter(CallHierarchyView.class);
 
                     cvh.setMessage("<searching... project " + ErlangEngine.getInstance()

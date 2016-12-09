@@ -34,7 +34,7 @@ public class ShowCustomOutlineFiltersDialogHandler extends AbstractHandler {
         StructuredViewer viewer;
         if (activePart instanceof ContentOutline) {
             final ContentOutline outline = (ContentOutline) activePart;
-            final ErlangOutlinePage erlangOutlinePage = (ErlangOutlinePage) outline
+            final ErlangOutlinePage erlangOutlinePage = outline
                     .getAdapter(ErlangOutlinePage.class);
             shell = outline.getSite().getShell();
             targetId = "org.eclipse.ui.views.ContentOutline";

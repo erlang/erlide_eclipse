@@ -46,7 +46,7 @@ public class ErlideTestUtils {
     // TODO replace ResourceDeltaStub with a mock object
     public static class ResourceDeltaStub implements IResourceDelta {
         @Override
-        public Object getAdapter(@SuppressWarnings("rawtypes") final Class adapter) {
+        public <T> T getAdapter(final Class<T> adapter) {
             return null;
         }
 

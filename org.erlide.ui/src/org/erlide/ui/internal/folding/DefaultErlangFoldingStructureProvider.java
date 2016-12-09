@@ -750,7 +750,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
             return;
         }
 
-        final ProjectionAnnotationModel model = (ProjectionAnnotationModel) fEditor
+        final ProjectionAnnotationModel model = fEditor
                 .getAdapter(ProjectionAnnotationModel.class);
         if (model == null) {
             return;
@@ -1019,7 +1019,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
             return;
         }
 
-        final ProjectionAnnotationModel model = (ProjectionAnnotationModel) fEditor
+        final ProjectionAnnotationModel model = fEditor
                 .getAdapter(ProjectionAnnotationModel.class);
         if (model == null) {
             return;
@@ -1069,7 +1069,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
         // fHasHeaderComment = false;
         try {
 
-            final ProjectionAnnotationModel model = (ProjectionAnnotationModel) fEditor
+            final ProjectionAnnotationModel model = fEditor
                     .getAdapter(ProjectionAnnotationModel.class);
             if (model == null) {
                 return;
