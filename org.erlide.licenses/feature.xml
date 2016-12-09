@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.licenses"
       label="Licenses"
-      version="1.0.0.qualifier"
+      version="1.0.1"
       provider-name="erlide.org project">
 
    <description url="http://www.example.com/description">
@@ -10,7 +10,7 @@
    </description>
 
    <copyright>
-     Copyright (c) 2004-2010 Vlad Dumitrescu, Jakob Cederlund, and
+      Copyright (c) 2004-2010 Vlad Dumitrescu, Jakob Cederlund, and
 others.
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License

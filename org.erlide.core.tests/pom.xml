@@ -11,7 +11,7 @@
 	</parent>
 
 	<artifactId>org.erlide.core.tests</artifactId>
-	<version>0.32.2-SNAPSHOT</version>
+	<version>0.32.3-SNAPSHOT</version>
 	<packaging>eclipse-test-plugin</packaging>
 
 	<build>

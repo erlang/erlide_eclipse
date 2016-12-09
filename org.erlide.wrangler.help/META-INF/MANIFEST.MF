@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Wrangler Help plug-in
 Bundle-SymbolicName: org.erlide.wrangler.help;singleton:=true
-Bundle-Version: 0.5.9.qualifier
+Bundle-Version: 0.5.10.qualifier
 Bundle-Vendor: UKC
 Require-Bundle: org.eclipse.help;bundle-version="[3.6.0,4.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

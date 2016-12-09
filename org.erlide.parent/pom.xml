@@ -17,14 +17,14 @@
 
 	<repositories>
 		<repository>
-			<id>luna</id>
+			<id>mars</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/luna</url>
+			<url>http://download.eclipse.org/releases/mars</url>
 		</repository>
 		<repository>
-			<id>luna updates</id>
+			<id>mars updates</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/eclipse/updates/4.4</url>
+			<url>http://download.eclipse.org/eclipse/updates/4.5</url>
 		</repository>
 		<repository>
 			<id>graphviz</id>
@@ -32,9 +32,9 @@
 			<url>http://download.erlide.org/update/graphviz</url>
 		</repository>
 		<repository>
-			<id>orbit luna</id>
+			<id>orbit mars</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository</url>
+			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository</url>
 		</repository>
 	</repositories>
 

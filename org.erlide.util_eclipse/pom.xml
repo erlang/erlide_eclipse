@@ -11,6 +11,6 @@
 	</parent>
 
 	<artifactId>org.erlide.util_eclipse</artifactId>
-	<version>0.50.0-SNAPSHOT</version>
+	<version>0.50.1-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 </project>

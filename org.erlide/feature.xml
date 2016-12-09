@@ -2,12 +2,12 @@
 <feature
       id="org.erlide"
       label="Erlang language tools IDE"
-      version="0.50.0.qualifier"
+      version="0.50.1.qualifier"
       provider-name="%vendorName"
       plugin="org.erlide.branding"
       image="erlang-64.gif"
       license-feature="org.erlide.licenses"
-      license-feature-version="1.0.0.qualifier">
+      license-feature-version="1.0.1">
    <install-handler/>
 
    <description>
