@@ -12,6 +12,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Iterator;
 
+import org.eclipse.jface.internal.text.link.contentassist.LineBreakingReader;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextPresentation;
@@ -21,7 +22,6 @@ import org.eclipse.swt.graphics.Drawable;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Display;
 import org.erlide.ui.util.UIStringUtils;
-import org.erlide.ui.util.eclipse.text.LineBreakingReader;
 import org.erlide.util.StringUtils;
 
 /**

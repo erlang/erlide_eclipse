@@ -28,8 +28,8 @@ import org.erlide.engine.services.codeassist.CompletionData;
 import org.erlide.engine.services.codeassist.CompletionService;
 import org.erlide.engine.services.codeassist.FunctionCompletionData;
 import org.erlide.runtime.rpc.IOtpRpc;
+import org.erlide.ui.internal.information.HoverUtil;
 import org.erlide.ui.templates.ErlTemplateCompletionProcessor;
-import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.event_tracer.ErlideEventTracer;
 
@@ -189,11 +189,13 @@ public abstract class AbstractErlContentAssistProcessor
     protected ICompletionProposal toProposal(final CompletionData data) {
         if (data instanceof FunctionCompletionData) {
             final FunctionCompletionData fdata = (FunctionCompletionData) data;
-            return new ErlCompletionProposal(fdata.getOffsetsAndLengths(),
+            String info = fdata.getAdditionalProposalInfo();
+			StringBuffer buffer = new StringBuffer(info==null?"":info);
+			return new ErlCompletionProposal(fdata.getOffsetsAndLengths(),
                     fdata.getDisplayString(), fdata.getReplacementString(),
                     fdata.getReplacementOffset(), fdata.getReplacementLength(),
                     fdata.getCursorPosition(), null, null,
-                    HTMLPrinter.asHtml(fdata.getAdditionalProposalInfo()), sourceViewer);
+                    HoverUtil.getHTML(buffer), sourceViewer);
 
         }
         return new CompletionProposal(data.getReplacementString(),

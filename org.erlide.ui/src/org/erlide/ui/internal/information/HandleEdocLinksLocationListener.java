@@ -1,5 +1,7 @@
 package org.erlide.ui.internal.information;
 
+import org.eclipse.jface.internal.text.html.BrowserInformationControl;
+import org.eclipse.jface.internal.text.html.BrowserInformationControlInput;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
 import org.erlide.backend.BackendCore;
@@ -9,8 +11,6 @@ import org.erlide.engine.services.search.OpenResult;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
-import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
-import org.erlide.ui.util.eclipse.text.BrowserInformationControlInput;
 import org.erlide.ui.views.EdocView;
 import org.erlide.util.ErlangFunctionCall;
 import org.erlide.util.Util;
@@ -75,7 +75,7 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                         anchor = Util.stringValue(otpDoc.elementAt(4));
                     }
                     if (result.length() > 0) {
-                        final String html = HoverUtil.getHTMLAndReplaceJSLinks(result);
+                        final String html = HoverUtil.getHTML(result);
                         final Object element = new OpenResult(otpDoc.elementAt(2));
                         input = new ErlBrowserInformationControlInput(input, editor,
                                 element, html, 20,

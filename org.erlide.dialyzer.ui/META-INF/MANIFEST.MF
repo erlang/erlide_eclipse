@@ -7,8 +7,8 @@ Bundle-Activator: org.erlide.dialyzer.ui.Activator
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.core.resources;bundle-version="3.6.1",
- org.eclipse.core.expressions;bundle-version="3.4.200",
+ org.eclipse.core.resources,
+ org.eclipse.core.expressions,
  org.erlide.dialyzer.core,
  org.erlide.ui,
  org.erlide.core,

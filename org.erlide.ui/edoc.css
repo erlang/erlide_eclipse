@@ -2,7 +2,7 @@
 body {
   background: white;
   color: black;
-  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-family: sans-serif;
   margin: 0;
   padding: 0;
   border: 0;
@@ -10,10 +10,6 @@ body {
   height: 100%;
   max-height: 100%;
 }
-
-th            { font-family: Verdana, Arial, Helvetica, sans-serif }
-td            { font-family: Verdana, Arial, Helvetica, sans-serif }
-p             { font-family: Verdana, Arial, Helvetica, sans-serif }
 
 .header       { background: #222; color: #fff }
 .top          { background: #efe }
@@ -25,44 +21,6 @@ p             { font-family: Verdana, Arial, Helvetica, sans-serif }
 a:link         { color: blue; text-decoration: none }
 a:active       { color: blue; text-decoration: none }
 a:visited      { color: blue; text-decoration: none }
-
-#container {
-  width: 100%;
-  margin: 0;
-  background-color: #fff;
-}
-
-#leftnav {
-  position: fixed;
-  float: left;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 200px;
-  overflow:auto;
-  margin: 0;
-  padding: 1px;
-  border-right: 1px solid red;
-}
-
-#content {
-  margin-left: 240px; /* set left value to WidthOfFrameDiv */
-}
-
-.frontpage
-{
-  padding-top: 50px; /* Magins for inner DIV inside each DIV (to provide padding) */
-}
-
-.innertube
-{
-  margin: 15px; /* Magins for inner DIV inside each DIV (to provide padding) */
-}
-
-.footer
-{
-  margin: 15px; /* Magins for inner DIV inside each DIV (to provide padding) */
-}
 
 span.bold_code   { font-family: Courier, monospace; font-weight: bold }
 span.code        { font-family: Courier, monospace; font-weight: normal }
@@ -102,13 +60,17 @@ span.code        { font-family: Courier, monospace; font-weight: normal }
   padding: 0px 10px;
 }
 
-pre          { font-family: Courier, monospace; }
+pre          {
+	font-family: Courier, monospace;
+}
 
-.REFBODY     { margin-left: 13mm }
+.REFBODY     {
+	margin-left: 1em;
+}
 
-.REFTYPES    { margin-left: 8mm }
-
-footer       { }
+.REFTYPES    {
+	margin-left: 1em;
+}
 
 .edoc {
 }

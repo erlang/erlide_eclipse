@@ -12,6 +12,9 @@ package org.erlide.ui.internal.information;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.internal.text.html.BrowserInformationControl;
+import org.eclipse.jface.internal.text.html.BrowserInformationControlInput;
+import org.eclipse.jface.internal.text.html.BrowserInput;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.AbstractReusableInformationControlCreator;
@@ -33,9 +36,6 @@ import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.SimpleSelectionProvider;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
-import org.erlide.ui.util.eclipse.text.BrowserInformationControlInput;
-import org.erlide.ui.util.eclipse.text.BrowserInput;
 import org.erlide.ui.views.EdocView;
 import org.erlide.util.ErlLogger;
 

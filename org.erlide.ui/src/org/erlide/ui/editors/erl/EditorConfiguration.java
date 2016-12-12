@@ -14,6 +14,7 @@ package org.erlide.ui.editors.erl;
 import java.util.Map;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.internal.text.html.BrowserInformationControl;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -37,7 +38,6 @@ import org.erlide.ui.editors.internal.reconciling.ErlReconcilingStrategy;
 import org.erlide.ui.internal.information.ErlInformationPresenter;
 import org.erlide.ui.internal.information.PresenterControlCreator;
 import org.erlide.ui.util.IColorManager;
-import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 
 /**
  * The editor configurator
