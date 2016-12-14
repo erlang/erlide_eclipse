@@ -121,6 +121,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         ErlLogger.info("Starting UI " + Thread.currentThread());
         super.start(context);
 
+        loadDefaultEditorColors();
+
         final String workspace = ResourcesPlugin.getWorkspace().getRoot().getLocation()
                 .toPortableString();
         if (!ErlangEngine.getInstance().isAvailable()) {
@@ -136,8 +138,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         if (SystemConfiguration.getInstance().isDeveloper()) {
             BackendManagerPopup.init();
         }
-
-        loadDefaultEditorColors();
 
         ErlLogger.info("Started UI");
 

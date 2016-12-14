@@ -110,7 +110,7 @@ public class CodeManager {
         for (final URL beam : beams) {
             final String beamModuleName = BackendUtils.getBeamModuleName(beam.getPath());
             if (beamModuleName != null) {
-                ErlLogger.debug(" load " + beamModuleName);
+                // ErlLogger.debug(" load " + beamModuleName);
                 if (!loadBeam(beamModuleName, beam)) {
                     ErlLogger.error("Could not load %s", beamModuleName);
                 }
@@ -127,7 +127,7 @@ public class CodeManager {
         for (final URL beam : beams) {
             final String beamModuleName = BackendUtils.getBeamModuleName(beam.getPath());
             if (beamModuleName != null) {
-                ErlLogger.debug(" unload " + beamModuleName);
+                // ErlLogger.debug(" unload " + beamModuleName);
                 unloadBeam(beamModuleName);
             }
         }
