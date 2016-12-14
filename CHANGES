@@ -1,3 +1,8 @@
+List of user visible changes between 0.33.2 and 0.33.3 (20161214)
+
+d94c2ae43 small fixes
+b25bac25f small fixes
+
 List of user visible changes between 0.33.1 and 0.33.2 (20161104)
 
 26b025d [dialyzer] fix crash when stopping backend
