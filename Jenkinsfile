@@ -90,6 +90,8 @@ def analyze() {
 	// locks
 
 	// jacoco
+	step([$class: 'JacocoPublisher', exclusionPattern: '**/*Test*.class,org/erlide/wrangler/**/*,org/erlide/cover/**/*,org/erlide/tracing/**/*,org/incava/**/*,org/fishwife/**/*,com/ericsson/**/*,nl/kii/**/*,org/erlide/annotations/**/*,org/erlide/util/CharOperation,org/erlide/util/Util', sourcePattern: '**/src/'])
+
 
 }
 

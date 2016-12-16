@@ -121,8 +121,7 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<!-- <version>0.7.5.201505241946</version> -->
-						<version>0.7.6.201602180812</version>
+						<version>0.7.8</version>
 						<executions>
 							<!-- Prepares the property pointing to the JaCoCo runtime agent which
 								is passed as VM argument when Maven the Surefire plugin is executed. -->
@@ -447,6 +446,18 @@
 	</build>
 	<reporting>
 		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.8</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
