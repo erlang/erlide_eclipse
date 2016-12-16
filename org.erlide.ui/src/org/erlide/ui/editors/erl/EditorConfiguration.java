@@ -14,7 +14,6 @@ package org.erlide.ui.editors.erl;
 import java.util.Map;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.internal.text.html.BrowserInformationControl;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -36,6 +35,7 @@ import org.erlide.ui.editors.erl.hover.ErlTextHover;
 import org.erlide.ui.editors.internal.reconciling.ErlReconciler;
 import org.erlide.ui.editors.internal.reconciling.ErlReconcilingStrategy;
 import org.erlide.ui.internal.information.ErlInformationPresenter;
+import org.erlide.ui.internal.information.ErlangBrowserInformationControl;
 import org.erlide.ui.internal.information.PresenterControlCreator;
 import org.erlide.ui.util.IColorManager;
 
@@ -107,8 +107,8 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
             @Override
             public IInformationControl createInformationControl(final Shell parent) {
                 if (parent.getText().length() == 0
-                        && BrowserInformationControl.isAvailable(parent)) {
-                    final BrowserInformationControl info = new BrowserInformationControl(
+                        && ErlangBrowserInformationControl.isAvailable(parent)) {
+                    final ErlangBrowserInformationControl info = new ErlangBrowserInformationControl(
                             parent, JFaceResources.DIALOG_FONT,
                             EditorsUI.getTooltipAffordanceString()) {
                         @Override

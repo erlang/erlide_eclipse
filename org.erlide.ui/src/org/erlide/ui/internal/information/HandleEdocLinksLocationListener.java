@@ -1,7 +1,5 @@
 package org.erlide.ui.internal.information;
 
-import org.eclipse.jface.internal.text.html.BrowserInformationControl;
-import org.eclipse.jface.internal.text.html.BrowserInformationControlInput;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
 import org.erlide.backend.BackendCore;
@@ -10,7 +8,6 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
-import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.views.EdocView;
 import org.erlide.util.ErlangFunctionCall;
 import org.erlide.util.Util;
@@ -21,10 +18,10 @@ public class HandleEdocLinksLocationListener implements LocationListener {
     /**
      *
      */
-    private final BrowserInformationControl control;
+    private final ErlangBrowserInformationControl control;
     private final EdocView edocView;
 
-    public HandleEdocLinksLocationListener(final BrowserInformationControl control) {
+    public HandleEdocLinksLocationListener(final ErlangBrowserInformationControl control) {
         this.control = control;
         edocView = null;
     }
@@ -36,12 +33,9 @@ public class HandleEdocLinksLocationListener implements LocationListener {
 
     @Override
     public void changing(final LocationEvent event) {
-        ErlBrowserInformationControlInput input = null;
+        ErlangBrowserInformationControlInput input = null;
         if (control != null) {
-            final BrowserInformationControlInput input2 = control.getInput();
-            if (input2 instanceof ErlBrowserInformationControlInput) {
-                input = (ErlBrowserInformationControlInput) input2;
-            }
+            input = control.getInput();
         } else if (edocView != null) {
             input = edocView.getInput();
         }
@@ -77,7 +71,7 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                     if (result.length() > 0) {
                         final String html = HoverUtil.getHTML(result);
                         final Object element = new OpenResult(otpDoc.elementAt(2));
-                        input = new ErlBrowserInformationControlInput(input, editor,
+                        input = new ErlangBrowserInformationControlInput(input, editor,
                                 element, html, 20,
                                 HoverUtil.getDocumentationURL(docPath, anchor));
                     }

@@ -29,6 +29,7 @@ import org.erlide.util.StringUtils;
  *
  * @author Fabio
  */
+@SuppressWarnings("restriction")
 public class ErlInformationPresenter
         implements DefaultInformationControl.IInformationPresenter,
         DefaultInformationControl.IInformationPresenterExtension {
@@ -176,12 +177,6 @@ public class ErlInformationPresenter
                 maxHeight);
     }
 
-    /*
-     * @see IHoverInformationPresenterExtension#updatePresentation(Drawable drawable,
-     * String, TextPresentation, int, int)
-     *
-     * @since 3.2
-     */
     @Override
     public String updatePresentation(final Drawable drawable, final String hoverInfo,
             final TextPresentation presentation, final int maxWidth,

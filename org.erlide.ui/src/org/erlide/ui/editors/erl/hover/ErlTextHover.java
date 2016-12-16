@@ -20,7 +20,6 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.debug.ui.DebugUITools;
-import org.eclipse.jface.internal.text.html.BrowserInformationControl;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.AbstractReusableInformationControlCreator;
 import org.eclipse.jface.text.BadLocationException;
@@ -51,9 +50,10 @@ import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.ui.actions.OpenUtils;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.information.ErlInformationPresenter;
+import org.erlide.ui.internal.information.ErlangBrowserInformationControl;
+import org.erlide.ui.internal.information.ErlangBrowserInformationControlInput;
 import org.erlide.ui.internal.information.HoverUtil;
 import org.erlide.ui.internal.information.PresenterControlCreator;
 import org.erlide.ui.prefs.plugin.EditorPreferencePage;
@@ -64,7 +64,8 @@ import org.osgi.framework.Bundle;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlTextHover implements ITextHover, IInformationProviderExtension2, ITextHoverExtension, ITextHoverExtension2 {
+public class ErlTextHover
+		implements ITextHover, IInformationProviderExtension2, ITextHoverExtension, ITextHoverExtension2 {
 
 	private static URL fgStyleSheet = null;
 	private IInformationControlCreator fHoverControlCreator;
@@ -173,8 +174,9 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
 		@Override
 		protected IInformationControl doCreateInformationControl(final Shell parent) {
 			IInformationControl control;
-			if (BrowserInformationControl.isAvailable(parent)) {
-				control = new BrowserInformationControl(parent, JFaceResources.DIALOG_FONT, EditorsUI.getTooltipAffordanceString()) {
+			if (ErlangBrowserInformationControl.isAvailable(parent)) {
+				control = new ErlangBrowserInformationControl(parent, JFaceResources.DIALOG_FONT,
+						EditorsUI.getTooltipAffordanceString()) {
 					@Override
 					public IInformationControlCreator getInformationPresenterControlCreator() {
 						return fInformationPresenterControlCreator;
@@ -198,13 +200,15 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
 					}
 				};
 			} else {
-				control = new DefaultInformationControl(parent, EditorsUI.getTooltipAffordanceString(), new ErlInformationPresenter(true));
+				control = new DefaultInformationControl(parent, EditorsUI.getTooltipAffordanceString(),
+						new ErlInformationPresenter(true));
 			}
 			return control;
 		}
 	}
 
-	public static ErlBrowserInformationControlInput getHoverInfoForOffset(final int offset, final ErlangEditor editor) {
+	public static ErlangBrowserInformationControlInput getHoverInfoForOffset(final int offset,
+			final ErlangEditor editor) {
 		final ITextViewer textViewer = editor.getViewer();
 		final IRegion region = internalGetHoverRegion(offset, editor);
 		if (region != null) {
@@ -219,7 +223,8 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
 		if (isHoverDisabled()) {
 			return null;
 		}
-		final ErlBrowserInformationControlInput input = (ErlBrowserInformationControlInput) getHoverInfo2(textViewer, hoverRegion);
+		final ErlangBrowserInformationControlInput input = (ErlangBrowserInformationControlInput) getHoverInfo2(
+				textViewer, hoverRegion);
 		return input == null ? "" : input.getHtml();
 	}
 
@@ -235,14 +240,16 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
 		return internalGetHoverInfo(fEditor, textViewer, hoverRegion);
 	}
 
-	private static ErlBrowserInformationControlInput internalGetHoverInfo(final AbstractErlangEditor editor, final ITextViewer textViewer, final IRegion hoverRegion) {
+	private static ErlangBrowserInformationControlInput internalGetHoverInfo(final AbstractErlangEditor editor,
+			final ITextViewer textViewer, final IRegion hoverRegion) {
 		if (editor == null) {
 			return null;
 		}
 		final StringBuffer result = new StringBuffer();
 		OpenResult element = null;
 		// TODO our model is too coarse, here we need access to expressions
-		final Collection<OtpErlangObject> fImports = ErlangEngine.getInstance().getModelUtilService().getImportsAsList(editor.getModule());
+		final Collection<OtpErlangObject> fImports = ErlangEngine.getInstance().getModelUtilService()
+				.getImportsAsList(editor.getModule());
 
 		final int offset = hoverRegion.getOffset();
 		final int length = hoverRegion.getLength();
@@ -266,7 +273,8 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
 
 			final IErlModel model = ErlangEngine.getInstance().getModel();
 			final String externalModulesString = erlProject.getProperties().getExternalModules();
-			final OtpErlangTuple t = (OtpErlangTuple) ErlangEngine.getInstance().getOtpDocService().getOtpDoc(backend, offset, editor.getScannerName(), fImports, externalModulesString, model.getPathVars());
+			final OtpErlangTuple t = (OtpErlangTuple) ErlangEngine.getInstance().getOtpDocService().getOtpDoc(backend,
+					offset, editor.getScannerName(), fImports, externalModulesString, model.getPathVars());
 			if (Util.isOk(t)) {
 				element = new OpenResult(t.elementAt(2));
 				final String docStr = Util.stringValue(t.elementAt(1));
@@ -277,10 +285,12 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
 				}
 			} else {
 				element = new OpenResult(t);
-				final Object found = new OpenUtils().findOpenResult(editor, editor.getModule(), erlProject, element, editor.getElementAt(offset, false));
+				final Object found = new OpenUtils().findOpenResult(editor, editor.getModule(), erlProject, element,
+						editor.getElementAt(offset, false));
 				if (found instanceof IErlFunction) {
 					final IErlFunction function = (IErlFunction) found;
-					final String comment = DocumentationFormatter.getDocumentationString(function.getComments(), function.getTypespec());
+					final String comment = DocumentationFormatter.getDocumentationString(function.getComments(),
+							function.getTypespec());
 					if (comment.length() == 0) {
 						return null;
 					}
@@ -297,7 +307,8 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
 		}
 
 		final String strResult = HoverUtil.getHTML(result);
-		return new ErlBrowserInformationControlInput(null, editor, element, strResult, 20, HoverUtil.getDocumentationURL(docPath, anchor));
+		return new ErlangBrowserInformationControlInput(null, editor, element, strResult, 20,
+				HoverUtil.getDocumentationURL(docPath, anchor));
 	}
 
 }

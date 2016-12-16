@@ -8,7 +8,6 @@ import org.erlide.ui.ErlideImage;
 import org.erlide.ui.actions.OpenUtils;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
-import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.views.EdocView;
 import org.erlide.util.ErlLogger;
 
@@ -26,7 +25,7 @@ public final class OpenDeclarationAction extends Action {
 
     @Override
     public void run() {
-        ErlBrowserInformationControlInput input = null;
+        ErlangBrowserInformationControlInput input = null;
         if (edocView != null) {
             input = edocView.getInput();
         }

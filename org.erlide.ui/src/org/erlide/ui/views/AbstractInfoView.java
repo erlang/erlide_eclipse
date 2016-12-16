@@ -31,8 +31,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.ui.internal.information.ErlangBrowserInformationControlInput;
 
 /**
  * Abstract class for views which show information for a given element.
@@ -421,8 +421,8 @@ abstract public class AbstractInfoView extends ViewPart
                 // selection);
                 final Object info = getInfoForSelection(part, selection);
 
-                if (info == null || info instanceof ErlBrowserInformationControlInput
-                        && ((ErlBrowserInformationControlInput) info).getHtml()
+                if (info == null || info instanceof ErlangBrowserInformationControlInput
+                        && ((ErlangBrowserInformationControlInput) info).getHtml()
                                 .length() == 0) {
                     return;
                 }
