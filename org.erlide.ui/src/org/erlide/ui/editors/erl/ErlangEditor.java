@@ -85,6 +85,7 @@ import org.erlide.ui.editors.erl.actions.ClearAllCachesAction;
 import org.erlide.ui.editors.erl.actions.ClearCacheAction;
 import org.erlide.ui.editors.erl.actions.CompileAction;
 import org.erlide.ui.editors.erl.actions.GotoMatchingBracketAction;
+import org.erlide.ui.editors.erl.actions.IErlangEditorActionDefinitionIds;
 import org.erlide.ui.editors.erl.actions.ShowOutlineAction;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension;

@@ -9,7 +9,7 @@
  *     Vlad Dumitrescu
  *     Alain O'Dea
  *******************************************************************************/
-package org.erlide.ui.editors.erl;
+package org.erlide.ui.editors.erl.actions;
 
 /**
  * <p>

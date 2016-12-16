@@ -24,7 +24,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.actions.OpenWithMenu;
-import org.erlide.ui.editors.erl.IErlangEditorActionDefinitionIds;
+import org.erlide.ui.editors.erl.actions.IErlangEditorActionDefinitionIds;
 import org.erlide.ui.util.IContextMenuConstants;
 
 /**

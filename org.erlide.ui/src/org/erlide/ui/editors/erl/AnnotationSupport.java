@@ -11,8 +11,6 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.AnnotationPreferenceLookup;
-import org.erlide.ui.editors.erl.hover.ErlangAnnotationIterator;
-import org.erlide.ui.editors.erl.hover.IErlangAnnotation;
 
 public class AnnotationSupport {
     private final ErlangEditor editor;

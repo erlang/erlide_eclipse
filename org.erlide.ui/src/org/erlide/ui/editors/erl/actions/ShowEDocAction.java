@@ -1,4 +1,4 @@
-package org.erlide.ui.editors.erl;
+package org.erlide.ui.editors.erl.actions;
 
 import java.util.ResourceBundle;
 
@@ -21,6 +21,7 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 
 /**
@@ -29,7 +30,7 @@ import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
  * text hover, it is converted into a information presenter in order to make it
  * sticky.
  */
-class ShowEDocAction extends TextEditorAction {
+public class ShowEDocAction extends TextEditorAction {
 
     /** The wrapped text operation action. */
     private final TextOperationAction fTextOperationAction;
@@ -183,12 +184,12 @@ class ShowEDocAction extends TextEditorAction {
             final IInformationProvider informationProvider = new InformationProvider(
                     hoverRegion, hoverInfo, controlCreator);
 
-            editor.fInformationPresenter.setOffset(offset);
-            editor.fInformationPresenter
+            editor.getInformationPresenter().setOffset(offset);
+            editor.getInformationPresenter()
                     .setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
-            editor.fInformationPresenter.setInformationProvider(informationProvider,
+            editor.getInformationPresenter().setInformationProvider(informationProvider,
                     contentType);
-            editor.fInformationPresenter.showInformation();
+            editor.getInformationPresenter().showInformation();
         } catch (final BadLocationException e) {
         }
     }

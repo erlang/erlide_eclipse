@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.editors.erl.hover;
+package org.erlide.ui.editors.erl;
 
 import java.util.Collections;
 import java.util.Iterator;

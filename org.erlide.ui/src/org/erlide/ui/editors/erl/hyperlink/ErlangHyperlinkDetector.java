@@ -11,7 +11,7 @@ import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
-import org.erlide.ui.editors.erl.IErlangEditorActionDefinitionIds;
+import org.erlide.ui.editors.erl.actions.IErlangEditorActionDefinitionIds;
 
 public class ErlangHyperlinkDetector extends AbstractHyperlinkDetector {
 

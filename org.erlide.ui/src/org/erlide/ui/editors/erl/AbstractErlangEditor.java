@@ -24,7 +24,9 @@ import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.ui.actions.OpenAction;
+import org.erlide.ui.editors.erl.actions.IErlangEditorActionDefinitionIds;
 import org.erlide.ui.editors.erl.actions.SendToConsoleAction;
+import org.erlide.ui.editors.erl.actions.ShowEDocAction;
 import org.erlide.ui.prefs.PreferenceConstants;
 
 public abstract class AbstractErlangEditor extends TextEditor {
@@ -173,5 +175,9 @@ public abstract class AbstractErlangEditor extends TextEditor {
         fInformationPresenter.setDocumentPartitioning(getSourceViewerConfiguration()
                 .getConfiguredDocumentPartitioning(getSourceViewer()));
     }
+
+	public InformationPresenter getInformationPresenter() {
+		return fInformationPresenter;
+	}
 
 }
