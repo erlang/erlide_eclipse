@@ -42,8 +42,13 @@ node {
 def checkout() {
 	deleteDir()
 	if(env.BRANCH_NAME != null) { // multi branch
-		checkout scm
-		git_branch = env.BRANCH_NAME
+		checkout([
+		        $class: 'GitSCM',
+		        branches: scm.branches,
+		        extensions: scm.extensions + [[$class: 'CleanCheckout']],
+		        userRemoteConfigs: scm.userRemoteConfigs
+		      ])
+      		git_branch = env.BRANCH_NAME
 	} else {
         git url: 'git@github.com:vladdu/erlide_eclipse.git', branch: 'pu'
 	    sh 'git symbolic-ref --short HEAD > GIT_BRANCH'
