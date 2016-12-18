@@ -386,12 +386,6 @@
             id="org.erlide.ui.actions.gotoMatchingBracket">
       </command>
       <command
-            name="Show tooltip content"
-            description="Show tooltip content"
-            categoryId="org.eclipse.ui.category.edit"
-            id="org.erlide.ui.actions.showEDoc">
-      </command>
-      <command
             categoryId="org.eclipse.ui.category.navigate"
             id="org.erlide.ui.actions.open.editor"
             name="Open Editor"/>
@@ -817,11 +811,6 @@
        <!--  win32:  M1=CTRL,    M2=SHIFT, M3=ALT, M4=-
             carbon: M1=COMMAND, M2=SHIFT, M3=ALT, M4=CTRL -->
 
-      <key
-            sequence="M2+F2"
-            contextId="org.erlide.ui.erlangEditorScope"
-            commandId="org.erlide.ui.actions.showEDoc"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             commandId="org.erlide.ui.actions.open.editor"
             contextId="org.erlide.ui.erlangEditorScope"
