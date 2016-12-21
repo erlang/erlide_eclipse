@@ -12,6 +12,9 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.10.0",
  org.erlide.libs.annotations;bundle-version="1.0.0",
  org.junit;bundle-version="4.11.0",
  com.google.guava;bundle-version="15.0.0",
- javax.inject;bundle-version="1.0.0"
+ javax.inject;bundle-version="1.0.0",
+ org.eclipse.xtend.lib;bundle-version="2.10.0",
+ org.eclipse.xtend.lib.macro;bundle-version="2.10.0",
+ org.eclipse.xtext.xbase.lib;bundle-version="2.10.0"
 Bundle-ClassPath: truth-0.28.jar
 Export-Package: com.google.common.truth

@@ -7,6 +7,8 @@
 <unit id="org.eclipse.platform.ide" version="0.0.0"/>
 <unit id="org.eclipse.platform.sdk" version="0.0.0"/>
 <unit id="org.eclipse.xtend.lib" version="2.9.1.v201512180746"/>
+<unit id="org.eclipse.xtend.lib.macro" version="2.9.1.v201512180746"/>
+<unit id="org.eclipse.xtext.xbase.lib" version="2.9.1.v201512180746"/>
 <repository location="http://download.eclipse.org/releases/mars"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">

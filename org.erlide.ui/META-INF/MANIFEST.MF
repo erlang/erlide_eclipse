@@ -100,7 +100,10 @@ Require-Bundle: org.eclipse.compare;bundle-version="3.5.202",
  org.erlide.libs.annotations;bundle-version="1.0.0",
  org.erlide.server,
  com.google.guava;bundle-version="15.0.0",
- javax.inject;bundle-version="1.0.0"
+ javax.inject;bundle-version="1.0.0",
+ org.eclipse.xtend.lib;bundle-version="2.10.0",
+ org.eclipse.xtend.lib.macro;bundle-version="2.10.0",
+ org.eclipse.xtext.xbase.lib;bundle-version="2.10.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-ExtensibleAPI: true
