@@ -22,7 +22,9 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.9.100,4.0.0)",
  org.erlide.libs;bundle-version="[1.16.0,2.0.0)",
  org.erlide.util;bundle-version="0.32.0",
  org.erlide.runtime;bundle-version="0.32.0",
- org.erlide.libs2;bundle-version="[1.16.1,2.0.0)"
+ org.erlide.libs2;bundle-version="[1.16.1,2.0.0)",
+ com.google.guava;bundle-version="15.0.0",
+ javax.inject;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: 
  org.erlide.wrangler.refactoring;x-internal:=true,

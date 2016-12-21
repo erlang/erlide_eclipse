@@ -6,7 +6,9 @@ Bundle-Version: 0.1.17.qualifier
 Bundle-Vendor: UKC
 Fragment-Host: org.erlide.wrangler.refactoring;bundle-version="0.10.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.eclipse.ui
+Require-Bundle: org.eclipse.ui,
+ com.google.guava;bundle-version="15.0.0",
+ javax.inject;bundle-version="1.0.0"
 Import-Package: com.abstratt.graphviz;resolution:=optional
 Export-Package: org.erlide.wrangler.refactoring.codeinspection;x-internal:=true,
  org.erlide.wrangler.refactoring.codeinspection.ui;x-internal:=true,

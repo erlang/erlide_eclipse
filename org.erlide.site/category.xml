@@ -6,7 +6,17 @@
    <feature id="org.erlide.wrangler">
       <category name="extras"/>
    </feature>
+   <feature url="features/org.eclipse.handly_0.6.0.v20161109-0701.jar" id="org.eclipse.handly" version="0.6.0.v20161109-0701">
+      <category name="deps"/>
+   </feature>
+   <bundle id="com.google.guava" version="15.0.0.v201403281430">
+      <category name="deps"/>
+   </bundle>
+   <bundle id="javax.inject" version="1.0.0.v20091030">
+      <category name="deps"/>
+   </bundle>
    <category-def name="erlide" label="erlide - Erlang development tools"/>
    <category-def name="extras" label="erlide - optional plugins"/>
+   <category-def name="deps" label="deps"/>
    <repository-reference location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository" enabled="true" />
 </site>

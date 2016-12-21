@@ -3,6 +3,7 @@ package org.erlide.engine.model.root;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
@@ -14,11 +15,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.annotation.NonNull;
-import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.IDisposable;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
@@ -74,7 +73,7 @@ public class FileProjectConfigurator
         if (confString != null) {
             final String content = "%% coding: UTF-8\n" + confString;
             try {
-                Files.write(content, confFile, Charsets.UTF_8);
+                Files.write(content, confFile, StandardCharsets.UTF_8);
             } catch (final IOException e) {
                 ErlLogger.error(e);
             }

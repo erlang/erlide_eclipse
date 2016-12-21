@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -38,7 +39,6 @@ import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.util.SystemConfiguration;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 
 public class ErlideTestUtils {
@@ -181,7 +181,7 @@ public class ErlideTestUtils {
         final IFile file = project.getFile(name);
         final File f = new File(file.getLocation().toOSString());
         f.delete();
-        file.create(new ByteArrayInputStream(contents.getBytes(Charsets.UTF_8)), true,
+        file.create(new ByteArrayInputStream(contents.getBytes(StandardCharsets.UTF_8)), true,
                 null);
         return file;
     }

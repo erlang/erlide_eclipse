@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -15,7 +16,6 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.ITextContentDescriber;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
 public class ErlangContentDescriber implements ITextContentDescriber {
@@ -52,27 +52,27 @@ public class ErlangContentDescriber implements ITextContentDescriber {
 
     public static Charset detectEncoding(final String s) {
         if (s == null) {
-            return Charsets.ISO_8859_1;
+            return StandardCharsets.ISO_8859_1;
         }
         final String line = s.trim();
         Matcher matcher = LATIN1.matcher(line);
         if (matcher.matches()) {
-            return Charsets.ISO_8859_1;
+            return StandardCharsets.ISO_8859_1;
         }
         matcher = UTF8.matcher(line);
         if (matcher.matches()) {
-            return Charsets.UTF_8;
+            return StandardCharsets.UTF_8;
         }
         return null;
     }
 
     public static Charset detectCodingForFile(final File file) throws IOException {
-        return detectCodingForFile(file, Charsets.ISO_8859_1);
+        return detectCodingForFile(file, StandardCharsets.ISO_8859_1);
     }
 
     public static Charset detectCodingForFile(final File file, final Charset dflt)
             throws IOException {
-        final String line = Files.readFirstLine(file, Charsets.ISO_8859_1);
+        final String line = Files.readFirstLine(file, StandardCharsets.ISO_8859_1);
         Charset coding = detectEncoding(line);
         if (coding == null) {
             coding = dflt;
@@ -129,8 +129,8 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     }
 
     private boolean isCharsetValid(final String charset) {
-        return Charsets.ISO_8859_1.name().equals(charset)
-                || Charsets.UTF_8.name().equals(charset);
+        return StandardCharsets.ISO_8859_1.name().equals(charset)
+                || StandardCharsets.UTF_8.name().equals(charset);
     }
 
     private String readEncoding(final InputStream input, final String encoding)

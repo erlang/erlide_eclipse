@@ -8,5 +8,7 @@ Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: com.ericsson.otp.erlang,
  nl.kii.util
-Require-Bundle: org.erlide.libs;bundle-version="1.16.1"
+Require-Bundle: org.erlide.libs;bundle-version="1.16.1",
+ com.google.guava;bundle-version="15.0.0",
+ javax.inject;bundle-version="1.0.0"
 
