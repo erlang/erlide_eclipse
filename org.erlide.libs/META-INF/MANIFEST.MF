@@ -6,20 +6,10 @@ Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.17.1.qualifier
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-ClassPath: javax.inject-1.jar,
- jrugged-core-3.2.2.jar,
+Bundle-ClassPath: jrugged-core-3.2.2.jar,
  jrugged-aspects-3.2.2.jar,
- java-diff-1.1.jar,
- io.typefox.lsapi-0.3.0-SNAPSHOT.jar,
- io.typefox.lsapi.services-0.3.0-SNAPSHOT.jar
-Export-Package: io.typefox.lsapi,
- io.typefox.lsapi.builders,
- io.typefox.lsapi.impl,
- io.typefox.lsapi.services,
- io.typefox.lsapi.services.json,
- io.typefox.lsapi.services.json.adapters,
- io.typefox.lsapi.services.validation,
- org.fishwife.jrugged,
+ java-diff-1.1.jar
+Export-Package: org.fishwife.jrugged,
  org.fishwife.jrugged.aspects,
  org.fishwife.jrugged.clocks,
  org.fishwife.jrugged.control,

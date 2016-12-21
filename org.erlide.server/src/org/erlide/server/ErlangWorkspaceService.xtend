@@ -1,9 +1,9 @@
 package org.erlide.server
 
-import io.typefox.lsapi.DidChangeConfigurationParams
-import io.typefox.lsapi.DidChangeWatchedFilesParams
-import io.typefox.lsapi.WorkspaceSymbolParams
-import io.typefox.lsapi.services.WorkspaceService
+import org.eclipse.lsp4j.DidChangeConfigurationParams
+import org.eclipse.lsp4j.DidChangeWatchedFilesParams
+import org.eclipse.lsp4j.WorkspaceSymbolParams
+import org.eclipse.lsp4j.services.WorkspaceService
 
 class ErlangWorkspaceService implements WorkspaceService {
 
@@ -18,7 +18,7 @@ class ErlangWorkspaceService implements WorkspaceService {
         null
     }
 
-    override didChangeConfiguraton(DidChangeConfigurationParams params) {
+    override didChangeConfiguration(DidChangeConfigurationParams params) {
         println('''didChangeConfiguraton''')
     }
 

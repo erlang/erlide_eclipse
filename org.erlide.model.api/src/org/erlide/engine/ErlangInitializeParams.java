@@ -1,9 +1,9 @@
 package org.erlide.engine;
 
-import io.typefox.lsapi.InitializeParams;
+import org.eclipse.lsp4j.InitializeParams;
 
-public interface ErlangInitializeParams extends InitializeParams {
+public abstract class ErlangInitializeParams extends InitializeParams {
 
-    String getStateDir();
+    abstract public String getStateDir();
 
 }

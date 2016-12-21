@@ -1,23 +1,21 @@
 package org.erlide.server
 
-import io.typefox.lsapi.CodeActionParams
-import io.typefox.lsapi.CodeLens
-import io.typefox.lsapi.CodeLensParams
-import io.typefox.lsapi.CompletionItem
-import io.typefox.lsapi.DidChangeTextDocumentParams
-import io.typefox.lsapi.DidCloseTextDocumentParams
-import io.typefox.lsapi.DidOpenTextDocumentParams
-import io.typefox.lsapi.DidSaveTextDocumentParams
-import io.typefox.lsapi.DocumentFormattingParams
-import io.typefox.lsapi.DocumentOnTypeFormattingParams
-import io.typefox.lsapi.DocumentRangeFormattingParams
-import io.typefox.lsapi.DocumentSymbolParams
-import io.typefox.lsapi.PublishDiagnosticsParams
-import io.typefox.lsapi.ReferenceParams
-import io.typefox.lsapi.RenameParams
-import io.typefox.lsapi.TextDocumentPositionParams
-import io.typefox.lsapi.services.TextDocumentService
-import java.util.function.Consumer
+import org.eclipse.lsp4j.CodeActionParams
+import org.eclipse.lsp4j.CodeLens
+import org.eclipse.lsp4j.CodeLensParams
+import org.eclipse.lsp4j.CompletionItem
+import org.eclipse.lsp4j.DidChangeTextDocumentParams
+import org.eclipse.lsp4j.DidCloseTextDocumentParams
+import org.eclipse.lsp4j.DidOpenTextDocumentParams
+import org.eclipse.lsp4j.DidSaveTextDocumentParams
+import org.eclipse.lsp4j.DocumentFormattingParams
+import org.eclipse.lsp4j.DocumentOnTypeFormattingParams
+import org.eclipse.lsp4j.DocumentRangeFormattingParams
+import org.eclipse.lsp4j.DocumentSymbolParams
+import org.eclipse.lsp4j.ReferenceParams
+import org.eclipse.lsp4j.RenameParams
+import org.eclipse.lsp4j.TextDocumentPositionParams
+import org.eclipse.lsp4j.services.TextDocumentService
 
 class ErlangTextDocumentService implements TextDocumentService {
 
@@ -118,8 +116,8 @@ class ErlangTextDocumentService implements TextDocumentService {
         println('''didSave''')
     }
 
-    override onPublishDiagnostics(Consumer<PublishDiagnosticsParams> callback) {
-        println('''onPublishDiagnostics''')
-    }
+//    override onPublishDiagnostics(Consumer<PublishDiagnosticsParams> callback) {
+//        println('''onPublishDiagnostics''')
+//    }
 
 }

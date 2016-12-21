@@ -1,6 +1,5 @@
 package org.erlide.engine
 
-import io.typefox.lsapi.impl.ClientCapabilitiesImpl
 import java.io.File
 import java.lang.management.ManagementFactory
 import org.eclipse.core.resources.ResourcesPlugin
@@ -8,6 +7,7 @@ import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IStatus
 import org.eclipse.core.runtime.Platform
 import org.eclipse.core.runtime.Status
+import org.eclipse.lsp4j.ClientCapabilities
 import org.erlide.util.ErlLogger
 import org.erlide.util.services.ExtensionUtils
 import org.osgi.framework.BundleActivator
@@ -31,7 +31,7 @@ class ModelApiActivator implements BundleActivator {
             processId = getProcessId(0)
             rootPath = ResourcesPlugin.workspace.root.location.toPortableString
             clientName = "erlide-eclipse"
-            capabilities = new ClientCapabilitiesImpl
+            capabilities = new ClientCapabilities
         ]
         engine.initialize(params);
         ErlLogger.debug("Started model api")

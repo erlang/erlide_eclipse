@@ -19,21 +19,19 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-
-import io.typefox.lsapi.DiagnosticSeverity;
-import io.typefox.lsapi.Position;
-import io.typefox.lsapi.impl.PositionImpl;
-import io.typefox.lsapi.impl.TextDocumentIdentifierImpl;
-import io.typefox.lsapi.impl.TextDocumentPositionParamsImpl;
+import org.eclipse.lsp4j.DiagnosticSeverity;
+import org.eclipse.lsp4j.Position;
+import org.eclipse.lsp4j.TextDocumentIdentifier;
+import org.eclipse.lsp4j.TextDocumentPositionParams;
 
 /**
  * Some utility methods to convert between Eclipse and LS-API types
  */
 public class LanguageServerEclipseUtils {
 
-    public static PositionImpl toPosition(final int offset, final IDocument document)
+    public static Position toPosition(final int offset, final IDocument document)
             throws BadLocationException {
-        final PositionImpl res = new PositionImpl();
+        final Position res = new Position();
         res.setLine(document.getLineOfOffset(offset));
         res.setCharacter(
                 offset - document.getLineInformationOfOffset(offset).getOffset());
@@ -46,14 +44,14 @@ public class LanguageServerEclipseUtils {
                 + position.getCharacter();
     }
 
-    public static TextDocumentPositionParamsImpl toTextDocumentPosistionParams(
+    public static TextDocumentPositionParams toTextDocumentPosistionParams(
             final URI fileUri, final int offset, final IDocument document)
             throws BadLocationException {
-        final PositionImpl start = toPosition(offset, document);
-        final TextDocumentPositionParamsImpl param = new TextDocumentPositionParamsImpl();
+        final Position start = toPosition(offset, document);
+        final TextDocumentPositionParams param = new TextDocumentPositionParams();
         param.setPosition(start);
         param.setUri(fileUri.toString());
-        final TextDocumentIdentifierImpl id = new TextDocumentIdentifierImpl();
+        final TextDocumentIdentifier id = new TextDocumentIdentifier();
         id.setUri(fileUri.toString());
         param.setTextDocument(id);
         return param;

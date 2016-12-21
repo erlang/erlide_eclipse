@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="org.erlide.target" sequenceNumber="45">
+<?pde version="3.8"?><target name="org.erlide.target" sequenceNumber="49">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.e4.rcp.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.pde.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.platform.ide" version="0.0.0"/>
 <unit id="org.eclipse.platform.sdk" version="0.0.0"/>
-<unit id="org.eclipse.xtend.lib" version="2.9.1.v201512180746"/>
-<unit id="org.eclipse.xtend.lib.macro" version="2.9.1.v201512180746"/>
-<unit id="org.eclipse.xtext.xbase.lib" version="2.9.1.v201512180746"/>
 <repository location="http://download.eclipse.org/releases/mars"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">

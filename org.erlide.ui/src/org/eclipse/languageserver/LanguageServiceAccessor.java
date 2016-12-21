@@ -21,8 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.text.IDocument;
-
-import io.typefox.lsapi.services.LanguageServer;
+import org.eclipse.lsp4j.services.LanguageServer;
 
 /**
  * The entry-point to retrieve a Language Server for a given resource/project.

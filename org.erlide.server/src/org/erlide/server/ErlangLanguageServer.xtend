@@ -1,13 +1,11 @@
 package org.erlide.server
 
-import io.typefox.lsapi.InitializeParams
-import io.typefox.lsapi.InitializeResult
-import io.typefox.lsapi.impl.CompletionOptionsImpl
-import io.typefox.lsapi.impl.LanguageDescriptionImpl
-import io.typefox.lsapi.impl.ServerCapabilitiesImpl
-import io.typefox.lsapi.services.LanguageServer
 import java.util.concurrent.CompletableFuture
-import java.util.function.Consumer
+import org.eclipse.lsp4j.CompletionOptions
+import org.eclipse.lsp4j.InitializeParams
+import org.eclipse.lsp4j.InitializeResult
+import org.eclipse.lsp4j.ServerCapabilities
+import org.eclipse.lsp4j.services.LanguageServer
 
 class ErlangLanguageServer implements LanguageServer {
 
@@ -17,31 +15,31 @@ class ErlangLanguageServer implements LanguageServer {
         val result = new InitializeResult() {
 
             override getCapabilities() {
-                new ServerCapabilitiesImpl => [
+                new ServerCapabilities => [
                     hoverProvider = true
                     definitionProvider = true
                     referencesProvider = true
                     documentSymbolProvider = true
                     workspaceSymbolProvider = true
                     // textDocumentSync = ServerCapabilities.SYNC_INCREMENTAL
-                    completionProvider = new CompletionOptionsImpl => [
+                    completionProvider = new CompletionOptions => [
                         resolveProvider = false
                         triggerCharacters = #[":", "#", "?"]
                     ]
                 ]
             }
 
-            override getSupportedLanguages() {
-                val erlang = new LanguageDescriptionImpl => [
-                    fileExtensions = #["erl", "hrl"]
-                    languageId = "org.erlang"
-                    mimeTypes = #[]
-                ]
-                #[erlang]
-            }
+//            override getSupportedLanguages() {
+//                val erlang = new LanguageDescription => [
+//                    fileExtensions = #["erl", "hrl"]
+//                    languageId = "org.erlang"
+//                    mimeTypes = #[]
+//                ]
+//                #[erlang]
+//            }
 
             override toString() {
-                '''[ «capabilities», «supportedLanguages» ]'''
+                '''[ «capabilities»]'''
             }
 
         }
@@ -50,6 +48,7 @@ class ErlangLanguageServer implements LanguageServer {
 
     override shutdown() {
         println('''SHUTDOWN server''')
+        null
     }
 
     override exit() {
@@ -60,16 +59,16 @@ class ErlangLanguageServer implements LanguageServer {
         new ErlangTextDocumentService(this)
     }
 
-    override getWindowService() {
-        new ErlangWindowService(this)
-    }
+//    override getWindowService() {
+//        new ErlangWindowService(this)
+//    }
 
     override getWorkspaceService() {
         new ErlangWorkspaceService(this)
     }
 
-    override onTelemetryEvent(Consumer<Object> callback) {
-        println('''telemetry event...''')
-    }
+//    override onTelemetryEvent(Consumer<Object> callback) {
+//        println('''telemetry event...''')
+//    }
 
 }
