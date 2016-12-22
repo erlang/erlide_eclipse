@@ -105,7 +105,6 @@ Require-Bundle: org.eclipse.compare;bundle-version="3.5.202",
  org.eclipse.xtend.lib.macro;bundle-version="2.10.0",
  org.eclipse.xtext.xbase.lib;bundle-version="2.10.0",
  org.eclipse.lsp4j;bundle-version="0.1.0",
- org.eclipse.lsp4j.generator;bundle-version="0.1.0",
  org.eclipse.lsp4j.jsonrpc;bundle-version="0.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

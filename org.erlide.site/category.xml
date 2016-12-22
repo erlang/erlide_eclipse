@@ -7,25 +7,34 @@
       <category name="extras"/>
    </feature>
    <feature url="features/org.eclipse.handly_0.6.0.v20161109-0701.jar" id="org.eclipse.handly" version="0.6.0.v20161109-0701">
-      <category name="deps"/>
+      <category name="3pp_deps"/>
    </feature>
    <bundle id="com.google.guava" version="15.0.0.v201403281430">
-      <category name="deps"/>
-   </bundle>
-   <bundle id="org.eclipse.xtend.lib" version="2.9.1.v201512180746">
-      <category name="deps"/>
+      <category name="3pp_deps"/>
    </bundle>
    <bundle id="org.eclipse.xtend.lib.macro" version="2.10.0.v201605250459">
-      <category name="deps"/>
+      <category name="3pp_deps"/>
    </bundle>
    <bundle id="org.eclipse.xtext.xbase.lib" version="2.10.0.v201605250459">
-      <category name="deps"/>
+      <category name="3pp_deps"/>
    </bundle>
    <bundle id="javax.inject" version="1.0.0.v20091030">
-      <category name="deps"/>
+      <category name="3pp_deps"/>
+   </bundle>
+   <bundle id="org.eclipse.lsp4j" version="0.1.0.v20161222-0918">
+      <category name="3pp_deps"/>
+   </bundle>
+   <bundle id="org.eclipse.lsp4j.jsonrpc" version="0.1.0.v20161222-0918">
+      <category name="3pp_deps"/>
+   </bundle>
+   <bundle id="com.google.gson" version="2.7.0.v20161205-1708">
+      <category name="3pp_deps"/>
+   </bundle>
+   <bundle id="org.eclipse.xtend.lib" version="2.10.0.v201605250459">
+      <category name="3pp_deps"/>
    </bundle>
    <category-def name="erlide" label="erlide - Erlang development tools"/>
    <category-def name="extras" label="erlide - optional plugins"/>
-   <category-def name="deps" label="deps"/>
+   <category-def name="3pp_deps" label="Dependencies"/>
    <repository-reference location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository" enabled="true" />
 </site>
