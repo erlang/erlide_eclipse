@@ -42,6 +42,7 @@ import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.BuilderHelper.SearchVisitor;
 import org.erlide.core.builder.BuilderMessages;
 import org.erlide.core.builder.CompilerOptions;
+import org.erlide.dialyzer.internal.builder.DialyzerBuilder;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.MarkerUtils;
 import org.erlide.engine.model.ErlModelException;
@@ -78,6 +79,7 @@ public class InternalBuilder extends ErlangBuilder {
         if (project == null || !project.isAccessible()) {
             return null;
         }
+    	DialyzerBuilder dialyzerBuilder = new DialyzerBuilder(project);
 
         if (BuilderHelper.isDebugging()) {
             ErlLogger.trace("build", "Start " + project.getName() + ": " + kind);
@@ -104,6 +106,7 @@ public class InternalBuilder extends ErlangBuilder {
                         properties.getSourceDirs());
             }
             handleErlangFiles(erlProject, project, kind, delta, notifier);
+            dialyzerBuilder.build(notifier);
         } catch (final OperationCanceledException e) {
             if (BuilderHelper.isDebugging()) {
                 ErlLogger.debug("Build of " + project.getName() + " was canceled.");
@@ -130,6 +133,7 @@ public class InternalBuilder extends ErlangBuilder {
         if (currentProject == null || !currentProject.isAccessible()) {
             return;
         }
+    	DialyzerBuilder dialyzerBuilder = new DialyzerBuilder(currentProject);
 
         if (BuilderHelper.isDebugging()) {
             ErlLogger.trace("build", "Cleaning " + currentProject.getName() //$NON-NLS-1$
@@ -144,6 +148,7 @@ public class InternalBuilder extends ErlangBuilder {
             if (bf.exists()) {
                 cleanupOutput(bf, notifier);
             }
+            dialyzerBuilder.clean(notifier);
 
         } catch (final Exception e) {
             ErlLogger.error(e);
