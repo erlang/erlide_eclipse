@@ -126,13 +126,13 @@ def publish(def archive) {
 	sh "git remote get-url origin > REPO"
 	def isMainRepo = readFile('REPO').trim().contains('github.com/erlang/')
 
-    // FIXME we can't push to https git url, needs password... Jenkins Github plugin uses https...
-    return
-
 	if(!isMainRepo) {
 		// only do a release if in main repo
 		return
 	}
+
+    // FIXME we can't push to https git url, needs password... Jenkins Github plugin uses https...
+    //return
 
 	def v = getVersion(archive)
 	def vsn = v[1]

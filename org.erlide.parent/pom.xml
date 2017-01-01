@@ -66,8 +66,8 @@
 		<module>../org.erlide.backend</module>
 		<module>../org.erlide.branding</module>
 		<module>../org.erlide.core</module>
-		
-		
+
+
 		<module>../org.erlide.help</module>
 		<module>../org.erlide.kernel</module>
 		<module>../org.erlide.jvmcheck</module>
@@ -97,7 +97,7 @@
 		<module>../org.erlide.backend.tests</module>
 		<module>../org.erlide.model.tests</module>
 		<module>../org.erlide.core.tests</module>
-		
+
 		<module>../org.erlide.ui.tests</module>
 		<module>../org.erlide.test_support.tests</module>
 		<module>../org.erlide.util.tests</module>
@@ -358,8 +358,6 @@
 							<configuration>
 								<baselines>
 									<url>http://download.erlide.org/update/</url>
-									<url>http://download.erlide.org/update/nightly</url>
-									<url>http://download.erlide.org/update/beta</url>
 								</baselines>
 							</configuration>
 						</execution>
