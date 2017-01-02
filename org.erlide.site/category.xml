@@ -21,16 +21,16 @@
    <bundle id="javax.inject" version="1.0.0.v20091030">
       <category name="3pp_deps"/>
    </bundle>
-   <bundle id="org.eclipse.lsp4j" version="0.1.0.v20161222-0918">
-      <category name="3pp_deps"/>
-   </bundle>
-   <bundle id="org.eclipse.lsp4j.jsonrpc" version="0.1.0.v20161222-0918">
-      <category name="3pp_deps"/>
-   </bundle>
    <bundle id="com.google.gson" version="2.7.0.v20161205-1708">
       <category name="3pp_deps"/>
    </bundle>
    <bundle id="org.eclipse.xtend.lib" version="2.10.0.v201605250459">
+      <category name="3pp_deps"/>
+   </bundle>
+   <bundle id="org.eclipse.lsp4j" version="0.1.0.v20170102-1253">
+      <category name="3pp_deps"/>
+   </bundle>
+   <bundle id="org.eclipse.lsp4j.jsonrpc" version="0.1.0.v20170102-1253">
       <category name="3pp_deps"/>
    </bundle>
    <category-def name="erlide" label="erlide - Erlang development tools"/>

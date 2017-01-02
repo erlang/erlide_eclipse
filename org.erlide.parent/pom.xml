@@ -338,8 +338,6 @@
 						<baselineRepositories>
 							<repository>
 								<url>http://download.erlide.org/update/</url>
-								<url>http://download.erlide.org/update/nightly</url>
-								<url>http://download.erlide.org/update/beta</url>
 							</repository>
 						</baselineRepositories>
 					</configuration>
