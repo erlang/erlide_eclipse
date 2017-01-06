@@ -27,6 +27,12 @@
    <bundle id="org.eclipse.xtend.lib" version="2.10.0.v201605250459">
       <category name="3pp_deps"/>
    </bundle>
+   <bundle id="org.eclipse.lsp4j" version="0.0.0">
+      <category name="3pp_deps"/>
+   </bundle>
+   <bundle id="org.eclipse.lsp4j.jsonrpc" version="0.0.0">
+      <category name="3pp_deps"/>
+   </bundle>
    <category-def name="erlide" label="erlide - Erlang development tools"/>
    <category-def name="extras" label="erlide - optional plugins"/>
    <category-def name="3pp_deps" label="Dependencies"/>
