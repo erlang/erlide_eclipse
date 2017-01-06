@@ -43,6 +43,7 @@ public class DialyzerBuilder {
 		final Set<IErlModule> modules = DialyzerUtils.collectModulesFromResource(model, project);
 		final Set<IErlProject> projects = Sets.newHashSet();
 		projects.add(model.findProject(project));
+		DialyzerMarkerUtils.removeDialyzerMarkersFor(project);
 		if (!modules.isEmpty()) {
 			try {
 				final IErlProject eproject = model.findProject(project);
