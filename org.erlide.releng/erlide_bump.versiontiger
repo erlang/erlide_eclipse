@@ -1,0 +1,4 @@
+include erlide_projects.versiontiger
+
+incrementMinor org.erlide.*
+
