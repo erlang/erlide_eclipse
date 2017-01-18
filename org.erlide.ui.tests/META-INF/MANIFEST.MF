@@ -12,3 +12,4 @@ Export-Package: org.erlide.ui.editors.erl.scanner,
  org.erlide.ui.tests;x-friends:="org.erlide.testing",
  org.erlide.ui.tests.util,
  org.erlide.ui.wizards
+Import-Package: org.erlide.engine.internal
