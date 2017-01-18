@@ -93,7 +93,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable
             final String group = OtpErlang.asString(t.elementAt(2));
 
             final ErlExternalReferenceEntry extLib = new ErlExternalReferenceEntry(this,
-                    getLibName(lib), lib, true, false);
+                    getLibName(lib), new Path(lib), true, false);
             extLib.setGroup(group);
             addChild(extLib);
 
@@ -103,7 +103,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable
                 final OtpErlangList files = (OtpErlangList) tdir.elementAt(1);
 
                 final ErlExternalReferenceEntry subdir = new ErlExternalReferenceEntry(
-                        extLib, getLibName(dname), dname, true, includePath(dname));
+                        extLib, getLibName(dname), new Path(dname), true, includePath(dname));
                 extLib.addChild(subdir);
 
                 for (final OtpErlangObject fn : files.elements()) {

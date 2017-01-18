@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.erlide.engine.model.SourcePathUtils;
 import org.erlide.engine.services.search.ExternalTreeEntry;
 import org.erlide.engine.services.search.OpenResult;
@@ -120,11 +121,8 @@ public class ErlideOpen implements OpenService {
                     t = (OtpErlangTuple) i;
                     final String parentPath = Util.stringValue(t.elementAt(0));
                     final String path = Util.stringValue(t.elementAt(1));
-                    // final String name = Util.stringValue(t.elementAt(2));
-                    // final OtpErlangAtom isModuleA = (OtpErlangAtom) t
-                    // .elementAt(3);
                     final OtpErlangAtom isModuleA = (OtpErlangAtom) t.elementAt(2);
-                    result.add(new ExternalTreeEntry(parentPath, path,// name,
+                    result.add(new ExternalTreeEntry(new Path(parentPath), new Path(path),
                             isModuleA.atomValue().equals("module")));
                 }
                 final String msg = "open:external_module_tree <- " + stopwatch;

@@ -43,114 +43,114 @@ import org.erlide.util.ErlLogger
 
 class ErlangServerImpl implements IErlangEngine {
 
-    IOtpRpc backend
-    volatile ErlModel erlangModel
-    volatile String stateDir
+	IOtpRpc backend
+	volatile ErlModel erlangModel
+	volatile String stateDir
 
-    override initialize(ErlangInitializeParams params) {
-        backend = OtpRpcFactory.getOtpRpc()
-        stateDir = params.stateDir
-    }
+	override initialize(ErlangInitializeParams params) {
+		backend = OtpRpcFactory.getOtpRpc()
+		stateDir = params.stateDir
+	}
 
-    override shutdown() {
-    }
+	override shutdown() {
+	}
 
-    override IErlModel getModel() {
-        if (erlangModel === null) {
-            erlangModel = new ErlModel()
-        }
-        if (!erlangModel.isOpen()) {
-            try {
-                erlangModel.open(null)
-            } catch (CoreException e) {
-                ErlLogger.error(e)
-            }
+	override IErlModel getModel() {
+		if (erlangModel === null) {
+			erlangModel = new ErlModel()
+		}
+		if (!erlangModel.isOpen()) {
+			try {
+				erlangModel.open(null)
+			} catch (CoreException e) {
+				ErlLogger.error(e)
+			}
 
-        }
-        return erlangModel
-    }
+		}
+		return erlangModel
+	}
 
-    override String getStateDir() {
-        return stateDir
-    }
+	override String getStateDir() {
+		return stateDir
+	}
 
-    override SearchServerService getSearchServerService() {
-        return new ErlideSearchServer(backend)
-    }
+	override SearchServerService getSearchServerService() {
+		return new ErlideSearchServer(backend)
+	}
 
-    override ModelUtilService getModelUtilService() {
-        return new ModelInternalUtils(backend)
-    }
+	override ModelUtilService getModelUtilService() {
+		return new ModelInternalUtils(backend)
+	}
 
-    override ModelFindService getModelFindService() {
-        return new ModelFindUtil(backend)
-    }
+	override ModelFindService getModelFindService() {
+		return new ModelFindUtil(backend)
+	}
 
-    /**
-     * <p>
-     * Construct a {@link CleanUpProvider} appropriate for a particular IResource.
-     * </p>
-     */
-    override CleanupProvider getCleanupProvider() {
-        return new ErlTidyCleanupProvider(backend)
-    }
+	/**
+	 * <p>
+	 * Construct a {@link CleanUpProvider} appropriate for a particular IResource.
+	 * </p>
+	 */
+	override CleanupProvider getCleanupProvider() {
+		return new ErlTidyCleanupProvider(backend)
+	}
 
-    override ScannerProviderService getScannerProviderService() {
-        return new ScannerProvider(backend)
-    }
+	override ScannerProviderService getScannerProviderService() {
+		return new ScannerProvider(backend)
+	}
 
-    override EdocExportService getEdocExportService() {
-        return new ErlideEdocExport(backend)
-    }
+	override EdocExportService getEdocExportService() {
+		return new ErlideEdocExport(backend)
+	}
 
-    override ProclistService getProclistService() {
-        return new ErlideProclist()
-    }
+	override ProclistService getProclistService() {
+		return new ErlideProclist()
+	}
 
-    override SimpleScannerService getSimpleScannerService() {
-        if (backend === null) {
-            return new NullScannerService()
-        }
-        return new ErlideScanner(backend)
-    }
+	override SimpleScannerService getSimpleScannerService() {
+		if (backend === null) {
+			return new NullScannerService()
+		}
+		return new ErlideScanner(backend)
+	}
 
-    override SimpleParserService getSimpleParserService() {
-        return new ErlideParser(backend)
-    }
+	override SimpleParserService getSimpleParserService() {
+		return new ErlideParser(backend)
+	}
 
-    override CompletionService getCompletionService() {
-        return new ErlangCompletionService(backend)
-    }
+	override CompletionService getCompletionService() {
+		return new ErlangCompletionService(backend)
+	}
 
-    override boolean isAvailable() {
-        return backend !== null
-    }
+	override boolean isAvailable() {
+		return backend !== null
+	}
 
-    override ToggleCommentService getToggleCommentService() {
-        return [ int offset, int length, String text |
-            try {
-                val OtpErlangObject r1 = backend.call("erlide_comment", "toggle_comment", "sii", text, offset, length)
-                return r1
-            } catch (RpcException e) {
-                return new OtpErlangString("")
-            }
-        ]
-    }
+	override ToggleCommentService getToggleCommentService() {
+		return [ int offset, int length, String text |
+			try {
+				val OtpErlangObject r1 = backend.call("erlide_comment", "toggle_comment", "sii", text, offset, length)
+				return r1
+			} catch (RpcException e) {
+				return new OtpErlangString("")
+			}
+		]
+	}
 
-    override IndentService getIndentService() {
-        return new ErlideIndent(backend)
-    }
+	override IndentService getIndentService() {
+		return new ErlideIndent(backend)
+	}
 
-    override OpenService getOpenService() {
-        return new ErlideOpen(backend, getStateDir())
-    }
+	override OpenService getOpenService() {
+		return new ErlideOpen(backend, getStateDir())
+	}
 
-    override OtpDocService getOtpDocService() {
-        return new ErlideDoc(backend, getStateDir())
-    }
+	override OtpDocService getOtpDocService() {
+		return new ErlideDoc(backend, getStateDir())
+	}
 
-    override SystemInfoService getSystemInfoService() {
-        return new SystemInfo(backend)
-    }
+	override SystemInfoService getSystemInfoService() {
+		return new SystemInfo(backend)
+	}
 
 }

@@ -273,7 +273,7 @@ public class ErlStructureCreator extends StructureCreator {
                 final ITypedElement typedElement = (ITypedElement) element;
                 name = typedElement.getName();
             }
-            module = model.getModuleFromText(model, name, s, s);
+            module = model.getModuleFromText(model, name, s);
         }
         ErlNode root = null;
         if (element != null && document != null) {

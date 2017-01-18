@@ -37,7 +37,7 @@ public class ParsingTest {
     @Before
     public void setUp() throws Exception {
         final IErlModel model = ErlangEngine.getInstance().getModel();
-        module = model.getModuleFromText(model, "testing", "", null);
+        module = model.getModuleFromText(model, "testing", "");
     }
 
     /**

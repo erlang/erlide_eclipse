@@ -1,26 +1,25 @@
 package org.erlide.engine.services.search;
 
+import org.eclipse.core.runtime.IPath;
+
 public class ExternalTreeEntry {
-    private final String parentPath;
-    private final String path;
-    // private final String name;
+    private final IPath parentPath;
+    private final IPath path;
     private final boolean isModule;
 
-    public ExternalTreeEntry(final String parentPath, final String path,
-            // final String name,
+    public ExternalTreeEntry(final IPath parentPath, final IPath path,
             final boolean isModule) {
         super();
         this.parentPath = parentPath;
         this.path = path;
-        // this.name = name;
         this.isModule = isModule;
     }
 
-    public String getParentPath() {
+    public IPath getParentPath() {
         return parentPath;
     }
 
-    public String getPath() {
+    public IPath getPath() {
         return path;
     }
 

@@ -171,7 +171,7 @@ public class ErlideTestUtils {
         if (module == null) {
             final String path = file.getLocation().toPortableString();
             module = model.getModuleFromFile(model, file.getName(), path,
-                    Charset.defaultCharset().name(), path);
+                    Charset.defaultCharset().name());
         }
         return module;
     }
@@ -426,8 +426,7 @@ public class ErlideTestUtils {
 
     public static IErlModule createModuleFromText(final String initialText) {
         final IErlModel model = ErlangEngine.getInstance().getModel();
-        final IErlModule module = model.getModuleFromText(model, "test1", initialText,
-                "test1");
+        final IErlModule module = model.getModuleFromText(model, "test1", initialText);
         modulesAndIncludes.add(module);
         return module;
     }

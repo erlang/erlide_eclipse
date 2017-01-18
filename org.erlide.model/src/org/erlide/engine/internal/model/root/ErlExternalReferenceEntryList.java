@@ -96,17 +96,16 @@ public class ErlExternalReferenceEntryList extends Openable implements IErlExter
             final List<ExternalTreeEntry> externalTree, final IErlModel model,
             final String rootName, final List<String> otherItems,
             final boolean includeDir) throws ErlModelException {
-        final Map<String, IErlExternal> pathToEntryMap = Maps.newHashMap();
-        pathToEntryMap.put("root", this);
+        final Map<IPath, IErlExternal> pathToEntryMap = Maps.newHashMap();
+        pathToEntryMap.put(new Path("root"), this);
         IErlExternal parent = null;
         if (externalTree != null && !externalTree.isEmpty()) {
             for (final ExternalTreeEntry entry : externalTree) {
-                final String path = entry.getPath();
-                // final String name = entry.getName();
+                final IPath path = entry.getPath();
                 parent = pathToEntryMap.get(entry.getParentPath());
                 if (entry.isModule()) {
                     final IErlModule module = model.getModuleFromFile(parent,
-                            getNameFromPath(path), path, null, path);
+                            getNameFromPath(path), path.toPortableString(), null);
                     parent.addChild(module);
                 } else {
                     final String name = getNameFromExternalPath(path);
@@ -121,35 +120,28 @@ public class ErlExternalReferenceEntryList extends Openable implements IErlExter
         if (otherItems != null) {
             if (parent == null) {
                 parent = new ErlExternalReferenceEntry(this, rootName,
-                        "." + rootName + ".", true, includeDir);
+                        new Path("." + rootName + "."), true, includeDir);
                 addChild(parent);
             }
             for (final String path : otherItems) {
                 final IErlModule module = model.getModuleFromFile(parent,
-                        getNameFromPath(path), path, null, path);
+                        getNameFromPath(new Path(path)), path, null);
                 parent.addChild(module);
             }
         }
     }
 
-    private String getNameFromPath(final String path) {
-        final IPath p = new Path(path);
-        final String name = p.lastSegment();
+    private String getNameFromPath(final IPath path) {
+        final String name = path.lastSegment();
         return name;
     }
 
-    private static String getNameFromExternalPath(final String path0) {
-        String path = path0;
-        int i = path.indexOf(".settings");
-        if (i > 2) {
-            path = path.substring(0, i - 1);
+    private static String getNameFromExternalPath(final IPath path) {
+        String name = path.lastSegment();
+        if (name.endsWith(".erlidex")) {
+            name = name.substring(0, name.length() - ".erlidex".length());
         }
-        i = path.lastIndexOf('/');
-        path = path.substring(i + 1);
-        if (path.endsWith(".erlidex")) {
-            path = path.substring(0, path.length() - 8);
-        }
-        return path;
+        return name;
     }
 
     @Override
