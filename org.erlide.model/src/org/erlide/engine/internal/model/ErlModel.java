@@ -102,9 +102,8 @@ public class ErlModel extends Openable implements IErlModel {
 	final List<IElementChangedListener> elementChangedListeners;
 	private final ErlModelDeltaManager deltaManager;
 	OtpErlangList fCachedPathVars;
-	private final Map<String, IErlModule> moduleMap = Maps.newHashMap();
-	private final Map<IErlModule, String> mapModule = Maps.newHashMap();
-
+	private final Map<IPath, IErlModule> moduleMap = Maps.newHashMap();
+	private final Map<IErlModule, IPath> mapModule = Maps.newHashMap();
 
 	/**
 	 * Constructs a new Erlang Model on the given workspace. Note that only one instance
@@ -476,23 +475,25 @@ public class ErlModel extends Openable implements IErlModel {
 	}
 
 	@Override
-	public IErlModule getModuleFromFile(final IParent parent, final String name, final String path, final String encoding) {
+	public IErlModule getModuleFromFile(final IParent parent, final String name, final IPath path, final String encoding) {
 		return getModuleWithoutResource(parent, name, path, encoding, null);
 	}
 
 	@Override
-	public IErlModule getModuleFromText(final IParent parent, final String name, final String initialText) {
-		return getModuleWithoutResource(parent, name, null, null, initialText);
+	public IErlModule getModuleFromText(final IParent parent, final String name, final String initialText, String encoding) {
+		return getModuleWithoutResource(parent, name, null, encoding, initialText);
 	}
 
-	private IErlModule getModuleWithoutResource(final IParent parent, final String name, final String path, final String encoding, final String initialText) {
+	private IErlModule getModuleWithoutResource(final IParent parent, final String name, final IPath path, final String encoding, final String initialText) {
 		IErlModule m = moduleMap.get(path);
 		if (m == null) {
 			final IParent parent2 = parent == null ? this : parent;
-			m = new ErlModule(parent2, name, path, encoding, initialText);
 			if (path != null) {
+				m = new ErlModule(parent2, name, path.toPortableString(), encoding, initialText);
 				moduleMap.put(path, m);
 				mapModule.put(m, path);
+			} else {
+				m = new ErlModule(parent2, name, null, encoding, initialText);
 			}
 		}
 		return m;

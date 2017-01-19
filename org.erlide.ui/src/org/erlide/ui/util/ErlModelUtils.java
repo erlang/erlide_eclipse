@@ -113,7 +113,7 @@ public class ErlModelUtils {
             if (module != null) {
                 return module;
             }
-            final String path = file.getLocation().toPortableString();
+            final IPath path = file.getLocation();
             module = model.getModuleFromFile(model, file.getName(), path,
                     file.getCharset());
             module.setResource(file);
@@ -137,7 +137,7 @@ public class ErlModelUtils {
         final String encoding = getEncodingForInput(editorInput);
         final IPath p = new Path(path);
         return ErlangEngine.getInstance().getModel().getModuleFromFile(null,
-                p.lastSegment(), path, encoding);
+                p.lastSegment(), p, encoding);
 
     }
 

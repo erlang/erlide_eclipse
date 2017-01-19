@@ -105,7 +105,7 @@ public class ErlExternalReferenceEntryList extends Openable implements IErlExter
                 parent = pathToEntryMap.get(entry.getParentPath());
                 if (entry.isModule()) {
                     final IErlModule module = model.getModuleFromFile(parent,
-                            getNameFromPath(path), path.toPortableString(), null);
+                            getNameFromPath(path), path, null);
                     parent.addChild(module);
                 } else {
                     final String name = getNameFromExternalPath(path);
@@ -124,8 +124,9 @@ public class ErlExternalReferenceEntryList extends Openable implements IErlExter
                 addChild(parent);
             }
             for (final String path : otherItems) {
-                final IErlModule module = model.getModuleFromFile(parent,
-                        getNameFromPath(new Path(path)), path, null);
+                IPath apath = new Path(path);
+				final IErlModule module = model.getModuleFromFile(parent,
+                        getNameFromPath(apath), apath, null);
                 parent.addChild(module);
             }
         }

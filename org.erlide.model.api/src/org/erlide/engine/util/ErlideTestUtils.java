@@ -169,7 +169,7 @@ public class ErlideTestUtils {
         final IErlModel model = ErlangEngine.getInstance().getModel();
         IErlModule module = model.findModule(file);
         if (module == null) {
-            final String path = file.getLocation().toPortableString();
+            final IPath path = file.getLocation();
             module = model.getModuleFromFile(model, file.getName(), path,
                     Charset.defaultCharset().name());
         }
@@ -181,8 +181,8 @@ public class ErlideTestUtils {
         final IFile file = project.getFile(name);
         final File f = new File(file.getLocation().toOSString());
         f.delete();
-        file.create(new ByteArrayInputStream(contents.getBytes(StandardCharsets.UTF_8)), true,
-                null);
+        file.create(new ByteArrayInputStream(contents.getBytes(StandardCharsets.UTF_8)),
+                true, null);
         return file;
     }
 
@@ -426,7 +426,8 @@ public class ErlideTestUtils {
 
     public static IErlModule createModuleFromText(final String initialText) {
         final IErlModel model = ErlangEngine.getInstance().getModel();
-        final IErlModule module = model.getModuleFromText(model, "test1", initialText);
+        final IErlModule module = model.getModuleFromText(model, "test1", initialText,
+                null);
         modulesAndIncludes.add(module);
         return module;
     }

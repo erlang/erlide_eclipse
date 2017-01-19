@@ -14,6 +14,7 @@ import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
@@ -151,10 +152,10 @@ public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementL
 
     void registerModelDelta(IErlElementDelta delta);
 
-    IErlModule getModuleFromFile(IParent parent, String name, String initialText,
-            String path);
+    IErlModule getModuleFromFile(IParent parent, String name, IPath path,
+            String encoding);
 
-    IErlModule getModuleFromText(IParent parent, String name, String initialText);
+    IErlModule getModuleFromText(IParent parent, String name, String initialText, String encoding);
 
     public void removeModule(final IErlModule module);
 

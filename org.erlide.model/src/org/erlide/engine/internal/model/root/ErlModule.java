@@ -172,7 +172,7 @@ public class ErlModule extends Openable implements IErlModule {
         if (file != null) {
             final IPath location = file.getLocation();
             if (location != null) {
-                return location.toString();
+                return location.toPortableString();
             }
         }
         return path;
