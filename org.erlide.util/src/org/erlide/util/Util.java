@@ -45,10 +45,10 @@ public final class Util {
 
     private static final String ARGUMENTS_DELIMITER = "#"; //$NON-NLS-1$
     private static final String BUNDLE_NAME = "org.erlide.util.util"; //$NON-NLS-1$
-    private static final char[] DOUBLE_QUOTES = "''".toCharArray(); //$NON-NLS-1$
+    private static final String DOUBLE_QUOTES = "''"; //$NON-NLS-1$
     private static final String EMPTY_ARGUMENT = "   "; //$NON-NLS-1$
     // public static final String[] fgEmptyStringArray = new String[0];
-    private static final char[] SINGLE_QUOTE = "'".toCharArray(); //$NON-NLS-1$
+    private static final String SINGLE_QUOTE = "'"; //$NON-NLS-1$
 
     /* Bundle containing messages */
     private static ResourceBundle bundle;
@@ -105,26 +105,23 @@ public final class Util {
         }
         // for compatibility with MessageFormat which eliminates double quotes
         // in original message
-        final char[] messageWithNoDoubleQuotes = CharOperation
-                .replace(message.toCharArray(), DOUBLE_QUOTES, SINGLE_QUOTE);
+        final String messageWithNoDoubleQuotes = message.replace(DOUBLE_QUOTES, SINGLE_QUOTE);
 
         if (bindings == null) {
             return new String(messageWithNoDoubleQuotes);
         }
 
-        final int length = messageWithNoDoubleQuotes.length;
+        final int length = messageWithNoDoubleQuotes.length();
         int start = 0;
         int end = length;
         final StringBuilder output = new StringBuilder();
         while (true) {
-            end = CharOperation.indexOf('{', messageWithNoDoubleQuotes, start);
+            end = messageWithNoDoubleQuotes.indexOf('{', start);
             if (end > -1) {
                 output.append(messageWithNoDoubleQuotes, start, end - start);
-                if ((start = CharOperation.indexOf('}', messageWithNoDoubleQuotes,
-                        end + 1)) > -1) {
+                if ((start = messageWithNoDoubleQuotes.indexOf('}', end + 1)) > -1) {
                     int index = -1;
-                    final String argId = new String(messageWithNoDoubleQuotes, end + 1,
-                            start - end - 1);
+                    final String argId = messageWithNoDoubleQuotes.substring(end + 1, start - end - 1);
                     try {
                         index = Integer.parseInt(argId);
                         output.append(bindings[index]);
@@ -352,67 +349,6 @@ public final class Util {
         final char[] chars = new char[len];
         s.getChars(0, len, chars, 0);
         return chars;
-    }
-
-    /**
-     * Converts a String to char[][], where segments are separate by '.'.
-     */
-    public static char[][] toCompoundChars(final String s) {
-        final int len = s.length();
-        if (len == 0) {
-            return CharOperation.NO_CHAR_CHAR;
-        }
-        int segCount = 1;
-        for (int off = s.indexOf('.'); off != -1; off = s.indexOf('.', off + 1)) {
-            ++segCount;
-        }
-        final char[][] segs = new char[segCount][];
-        int start = 0;
-        for (int i = 0; i < segCount; ++i) {
-            final int dot = s.indexOf('.', start);
-            final int end = dot == -1 ? s.length() : dot;
-            segs[i] = new char[end - start];
-            s.getChars(start, end, segs[i], 0);
-            start = end + 1;
-        }
-        return segs;
-    }
-
-    /**
-     * Converts a char[] to String.
-     */
-    public static String toString(final char[] c) {
-        return new String(c);
-    }
-
-    /**
-     * Converts a char[][] to String, where segments are separated by '.'.
-     */
-    public static String toString(final char[][] c) {
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0, max = c.length; i < max; ++i) {
-            if (i != 0) {
-                sb.append('.');
-            }
-            sb.append(c[i]);
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Converts a char[][] and a char[] to String, where segments are separated by '.'.
-     */
-    public static String toString(final char[][] c, final char[] d) {
-        if (c == null) {
-            return new String(d);
-        }
-        final StringBuilder sb = new StringBuilder();
-        for (final char[] element : c) {
-            sb.append(element);
-            sb.append('.');
-        }
-        sb.append(d);
-        return sb.toString();
     }
 
     /**

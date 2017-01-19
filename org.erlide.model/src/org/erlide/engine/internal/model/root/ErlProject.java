@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.erlide.engine.internal.model.root;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -25,13 +23,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.ModelPlugin;
@@ -92,12 +87,6 @@ public class ErlProject extends Openable
         implements IErlProject, ProjectConfigurationChangeListener {
 
     private static final String CONFIG_TYPE_TAG = "configType";
-
-    /**
-     * Whether the underlying file system is case sensitive.
-     */
-    private static final boolean IS_CASE_SENSITIVE = !new File("Temp") //$NON-NLS-1$
-            .equals(new File("temp"));  //$NON-NLS-1$
 
     protected IProject fProject;
     private ProjectConfigType configType = ProjectConfigType.INTERNAL;
@@ -286,16 +275,6 @@ public class ErlProject extends Openable
         }
     }
 
-    /**
-     * Answers an PLUGIN_ID which is used to distinguish project/entries during
-     * package fragment root computations
-     *
-     * @return String
-     */
-    public String rootID() {
-        return "[PRJ]" + fProject.getFullPath(); //$NON-NLS-1$
-    }
-
     @Override
     public Collection<IErlModule> getModules() throws ErlModelException {
         final List<IErlModule> modulesForProject = ErlModelCache.getDefault()
@@ -380,74 +359,6 @@ public class ErlProject extends Openable
                 false);
         erlModelCache.putIncludesForProject(this, includes);
         return includes;
-    }
-
-    /**
-     * Returns a canonicalized path from the given external path. Note that the
-     * return path contains the same number of segments and it contains a device
-     * only if the given path contained one.
-     *
-     * @param externalPath
-     *            IPath
-     * @see java.io.File for the definition of a canonicalized path
-     * @return IPath
-     */
-    public static IPath canonicalizedPath(final IPath externalPath) {
-
-        if (externalPath == null) {
-            return null;
-        }
-
-        if (IS_CASE_SENSITIVE) {
-            return externalPath;
-        }
-
-        // if not external path, return original path
-        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        if (workspace == null) {
-            return externalPath; // protection during shutdown (30487)
-        }
-        if (workspace.getRoot().findMember(externalPath) != null) {
-            return externalPath;
-        }
-
-        IPath canonicalPath = null;
-        try {
-            canonicalPath = new Path(
-                    new File(externalPath.toOSString()).getCanonicalPath());
-        } catch (final IOException e) {
-            // default to original path
-            return externalPath;
-        }
-
-        IPath result;
-        final int canonicalLength = canonicalPath.segmentCount();
-        if (canonicalLength == 0) {
-            // the java.io.File canonicalization failed
-            return externalPath;
-        } else if (externalPath.isAbsolute()) {
-            result = canonicalPath;
-        } else {
-            // if path is relative, remove the first segments that were added by
-            // the java.io.File canonicalization
-            // e.g. 'lib/classes.zip' was converted to
-            // 'd:/myfolder/lib/classes.zip'
-            final int externalLength = externalPath.segmentCount();
-            if (canonicalLength >= externalLength) {
-                result = canonicalPath
-                        .removeFirstSegments(canonicalLength - externalLength);
-            } else {
-                return externalPath;
-            }
-        }
-
-        // keep device only if it was specified (this is because
-        // File.getCanonicalPath() converts '/lib/classed.zip' to
-        // 'd:/lib/classes/zip')
-        if (externalPath.getDevice() == null) {
-            result = result.setDevice(null);
-        }
-        return result;
     }
 
     @Override
