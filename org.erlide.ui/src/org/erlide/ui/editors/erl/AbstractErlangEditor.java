@@ -118,7 +118,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
         final ResourceBundle keyBundle = ErlangEditorMessages
                 .getBundleForConstructedKeys();
         sendToConsole = new SendToConsoleAction(getSite(), keyBundle, "SendToConsole.",
-                this, false, getProject());
+                this, false, getProject().getWorkspaceProject());
         sendToConsole
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE);
         setAction("SendToConsole", sendToConsole);
@@ -126,7 +126,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
         markAsSelectionDependentAction("sendToConsole", true);
 
         sendToConsoleWithResult = new SendToConsoleAction(getSite(), keyBundle,
-                "SendToConsoleWithResult.", this, true, getProject());
+                "SendToConsoleWithResult.", this, true, getProject().getWorkspaceProject());
         sendToConsoleWithResult.setActionDefinitionId(
                 IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE_WITH_RESULT);
         setAction("SendToConsoleWithResult", sendToConsoleWithResult);
