@@ -109,7 +109,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable
                 for (final OtpErlangObject fn : files.elements()) {
                     final String sfn = ((OtpErlangString) fn).stringValue();
                     final IErlModule ext = new ErlModule(subdir, getModuleName(sfn), sfn,
-                            Charsets.ISO_8859_1.toString(), null);
+                            Charsets.ISO_8859_1, null);
                     subdir.addChild(ext);
                 }
             }

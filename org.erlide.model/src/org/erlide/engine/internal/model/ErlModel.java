@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.engine.internal.model;
 
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -475,16 +476,16 @@ public class ErlModel extends Openable implements IErlModel {
 	}
 
 	@Override
-	public IErlModule getModuleFromFile(final IParent parent, final String name, final IPath path, final String encoding) {
+	public IErlModule getModuleFromFile(final IParent parent, final String name, final IPath path, final Charset encoding) {
 		return getModuleWithoutResource(parent, name, path, encoding, null);
 	}
 
 	@Override
-	public IErlModule getModuleFromText(final IParent parent, final String name, final String initialText, String encoding) {
+	public IErlModule getModuleFromText(final IParent parent, final String name, final String initialText, Charset encoding) {
 		return getModuleWithoutResource(parent, name, null, encoding, initialText);
 	}
 
-	private IErlModule getModuleWithoutResource(final IParent parent, final String name, final IPath path, final String encoding, final String initialText) {
+	private IErlModule getModuleWithoutResource(final IParent parent, final String name, final IPath path, final Charset encoding, final String initialText) {
 		IErlModule m = moduleMap.get(path);
 		if (m == null) {
 			final IParent parent2 = parent == null ? this : parent;

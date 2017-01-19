@@ -11,6 +11,7 @@ package org.erlide.engine.internal.model.root;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -60,6 +61,7 @@ import org.erlide.util.Util;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
+import com.google.common.base.Charsets;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
@@ -75,7 +77,7 @@ public class ErlModule extends Openable implements IErlModule {
     private final String scannerName;
     private final Collection<IErlComment> comments;
     private ScannerService scanner;
-    private final String encoding;
+    private final Charset encoding;
 
     private final ModelUtilService modelUtilService;
 
@@ -84,12 +86,12 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public ErlModule(final IParent parent, final String name, final String path,
-            final String encoding, final String initialText) {
+            final Charset encoding, final String initialText) {
         this(parent, name, null, path, encoding, initialText);
     }
 
     private ErlModule(final IParent parent, final String name, final IFile file,
-            final String path, final String encoding, final String initialText) {
+            final String path, final Charset encoding, final String initialText) {
         super(parent, name);
         modelUtilService = ErlangEngine.getInstance().getModelUtilService();
         this.file = file;
@@ -120,15 +122,16 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     private String getInitialText() {
-        String charset;
+        Charset charset;
         if (initialText == null) {
             if (file != null) {
                 if (file.isAccessible() && file.isSynchronized(0)) {
                     try {
-                        charset = file.getCharset();
+                        charset = Charset.forName(file.getCharset());
                         initialText = Util.getInputStreamAsString(file.getContents(),
-                                charset);
+                                charset.name());
                     } catch (final CoreException e) {
+                        charset = Charsets.UTF_8;
                         ErlLogger.warn(e);
                     }
                 }
@@ -137,11 +140,11 @@ public class ErlModule extends Openable implements IErlModule {
                     if (encoding != null) {
                         charset = encoding;
                     } else {
-                        charset = modelUtilService.getProject(this).getWorkspaceProject()
-                                .getDefaultCharset();
+                        charset = Charset.forName(modelUtilService.getProject(this).getWorkspaceProject()
+                                .getDefaultCharset());
                     }
                     try (final FileInputStream is = new FileInputStream(new File(path))) {
-                        initialText = Util.getInputStreamAsString(is, charset);
+                        initialText = Util.getInputStreamAsString(is, charset.name());
                     } catch (final IOException e) {
                         // ignore
                     }

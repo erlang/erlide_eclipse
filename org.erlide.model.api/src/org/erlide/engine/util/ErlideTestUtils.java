@@ -171,7 +171,7 @@ public class ErlideTestUtils {
         if (module == null) {
             final IPath path = file.getLocation();
             module = model.getModuleFromFile(model, file.getName(), path,
-                    Charset.defaultCharset().name());
+                    Charset.defaultCharset());
         }
         return module;
     }

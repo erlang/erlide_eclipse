@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.engine.model.root;
 
+import java.nio.charset.Charset;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
@@ -153,9 +154,10 @@ public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementL
     void registerModelDelta(IErlElementDelta delta);
 
     IErlModule getModuleFromFile(IParent parent, String name, IPath path,
-            String encoding);
+            Charset encoding);
 
-    IErlModule getModuleFromText(IParent parent, String name, String initialText, String encoding);
+    IErlModule getModuleFromText(IParent parent, String name, String initialText,
+            Charset encoding);
 
     public void removeModule(final IErlModule module);
 

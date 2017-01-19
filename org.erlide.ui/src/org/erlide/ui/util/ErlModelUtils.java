@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
+import java.nio.charset.Charset;
+
 import org.eclipse.core.resources.IEncodedStorage;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
@@ -36,6 +38,8 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.editors.util.ErlangExternalEditorInput;
+
+import com.google.common.base.Charsets;
 
 public class ErlModelUtils {
 
@@ -114,8 +118,13 @@ public class ErlModelUtils {
                 return module;
             }
             final IPath path = file.getLocation();
-            module = model.getModuleFromFile(model, file.getName(), path,
-                    file.getCharset());
+            Charset encoding;
+            try {
+                encoding = Charset.forName(file.getCharset());
+            } catch (Exception e) {
+                encoding = Charsets.UTF_8;
+            }
+            module = model.getModuleFromFile(model, file.getName(), path, encoding);
             module.setResource(file);
             return module;
         }
@@ -134,7 +143,7 @@ public class ErlModelUtils {
         if (module != null) {
             return module;
         }
-        final String encoding = getEncodingForInput(editorInput);
+        final Charset encoding = getEncodingForInput(editorInput);
         final IPath p = new Path(path);
         return ErlangEngine.getInstance().getModel().getModuleFromFile(null,
                 p.lastSegment(), p, encoding);
@@ -158,19 +167,27 @@ public class ErlModelUtils {
         return null;
     }
 
-    private static String getEncodingForInput(final IEditorInput editorInput) {
+    private static Charset getEncodingForInput(final IEditorInput editorInput) {
         if (editorInput instanceof IStorageEditorInput) {
             final IStorageEditorInput sei = (IStorageEditorInput) editorInput;
             try {
                 final IStorage storage = sei.getStorage();
                 if (storage instanceof IEncodedStorage) {
                     final IEncodedStorage encodedStorage = (IEncodedStorage) storage;
-                    return encodedStorage.getCharset();
+                    try {
+                        return Charset.forName(encodedStorage.getCharset());
+                    } catch (Exception e) {
+                        return Charsets.UTF_8;
+                    }
                 }
             } catch (final CoreException e) {
             }
         }
-        return ResourcesPlugin.getEncoding();
+        try {
+            return Charset.forName(ResourcesPlugin.getEncoding());
+        } catch (Exception e) {
+            return Charsets.UTF_8;
+        }
     }
 
     public static void openMFA(final String module, final String function,
