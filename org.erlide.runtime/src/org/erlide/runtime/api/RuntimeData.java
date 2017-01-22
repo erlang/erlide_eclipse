@@ -49,7 +49,7 @@ public class RuntimeData {
         restartable = false;
         startShell = true;
         console = true;
-        nodeName = "";
+        nodeName = Long.toHexString(System.currentTimeMillis() & 0xFFFFFF);
         longName = true;
         extraArgs = "";
         workingDir = ".";
@@ -149,7 +149,7 @@ public class RuntimeData {
     }
 
     public static boolean validateNodeName(final String name) {
-        return name != null && name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
+        return !Strings.isNullOrEmpty(name) && name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
     }
 
     public boolean hasLongName() {
