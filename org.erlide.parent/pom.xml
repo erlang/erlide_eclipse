@@ -82,7 +82,7 @@
 		<module>../org.erlide.test_support</module>
 		<module>../org.erlide.ui</module>
 		<module>../org.erlide.util</module>
-		<module>../org.erlide.util_eclipse</module>
+		
 		<module>../org.erlide.cover.api</module>
 		<module>../org.erlide.cover.core</module>
 		<module>../org.erlide.cover.ui</module>
