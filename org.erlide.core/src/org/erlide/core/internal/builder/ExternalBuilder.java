@@ -19,126 +19,116 @@ import org.erlide.util.ErlLogger;
 
 public abstract class ExternalBuilder extends ErlangBuilder {
 
-    protected static final boolean DEBUG = false;
+	public static boolean DEBUG = false;
 
-    protected final ToolExecutor ex;
-    protected final BuilderHelper helper = new BuilderHelper();
-    protected final BuilderTool info;
+	protected final ToolExecutor ex;
+	protected final BuilderHelper helper = new BuilderHelper();
+	protected final BuilderTool info;
 
-    public ExternalBuilder(final BuilderTool info) {
-        this.info = info;
-        ex = new ToolExecutor();
-    }
+	public ExternalBuilder(final BuilderTool info) {
+		this.info = info;
+		ex = new ToolExecutor();
+	}
 
-    public String getOsCommand(final IErlProject erlProject) {
-        return info.getOsCommand();
-    }
+	public String getOsCommand(final IErlProject erlProject) {
+		return info.getOsCommand();
+	}
 
-    @Override
-    public IProject[] build(final BuildKind kind, final IErlProject erlProject,
-            final BuildNotifier notifier) throws CoreException {
-        final IProject project = erlProject.getWorkspaceProject();
+	@Override
+	public IProject[] build(final BuildKind kind, final IErlProject erlProject, final BuildNotifier notifier) throws CoreException {
+		final IProject project = erlProject.getWorkspaceProject();
 
-        ErlLogger.trace("build", "Start " + kind + " for " + project.getName() + ": "
-                + getOsCommand(erlProject));
+		String osCommand = getOsCommand(erlProject);
+		ErlLogger.trace("build", "Start " + kind + " for " + project.getName() + ": " + osCommand);
 
-        try {
-            MarkerUtils.removeProblemMarkersFor(project);
-            notifier.worked(1);
+		try {
+			MarkerUtils.removeProblemMarkersFor(project);
+			notifier.worked(1);
 
-            // TODO use project config!
-            // XXX how do we know what make uses?
-            final IResource ebin = project.findMember("ebin");
-            if (ebin == null) {
-                project.getFolder("ebin").create(true, true, null);
-            }
+			// TODO use project config!
+			// XXX how do we know what make uses?
+			final IResource ebin = project.findMember("ebin");
+			if (ebin == null) {
+				project.getFolder("ebin").create(true, true, null);
+			}
 
-            final ProgressCallback callback = new ProgressCallback() {
+			final ProgressCallback callback = new ProgressCallback() {
 
-                @Override
-                public void stdout(final String line) {
-                    if (DEBUG) {
-                        System.out.println("!!! " + line);
-                    }
-                    final IMessageParser parser = getMessageParser(erlProject);
-                    parser.createMarkers(line);
-                }
+				@Override
+				public void stdout(final String line) {
+					if (DEBUG) {
+						System.out.println("out: " + line);
+					}
+					final IMessageParser parser = getMessageParser(erlProject);
+					parser.createMarkers(line);
+				}
 
-                @Override
-                public void stderr(final String line) {
-                    if (DEBUG) {
-                        System.out.println("??? " + line);
-                    }
-                }
-            };
-            final ToolResults result = ex.run(getOsCommand(erlProject),
-                    getCompileTarget(), project.getLocation().toPortableString(),
-                    callback, notifier);
+				@Override
+				public void stderr(final String line) {
+					if (DEBUG) {
+						System.out.println("err: " + line);
+					}
+				}
+			};
+			final ToolResults result = ex.run(osCommand, new String[] { getCompileTarget() }, project.getLocation().toPortableString(), callback, notifier);
 
-            if (result == null || result.isCommandNotFound()) {
-                MarkerUtils.createProblemMarker(project, null,
-                        "Builder command not found: " + getOsCommand(erlProject), 0,
-                        IMarker.SEVERITY_ERROR);
-            } else {
-                final boolean noMarkersOnProject = project.findMarkers(IMarker.PROBLEM,
-                        true, IResource.DEPTH_INFINITE).length == 0;
-                if (noMarkersOnProject && result.exit > 0) {
-                    MarkerUtils.createProblemMarker(project, null,
-                            "Builder error: " + getOsCommand(erlProject), 0,
-                            IMarker.SEVERITY_ERROR);
-                }
-            }
+			if (result == null || result.isCommandNotFound()) {
+				MarkerUtils.createProblemMarker(project, null, "Builder command not found: " + osCommand, 0, IMarker.SEVERITY_ERROR);
+			} else {
+				final boolean noMarkersOnProject = project.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE).length == 0;
+				if (noMarkersOnProject && result.exit > 0) {
+					MarkerUtils.createProblemMarker(project, null, "Builder error: " + osCommand, 0, IMarker.SEVERITY_ERROR);
+				}
+			}
 
-            notifier.worked(9);
+			notifier.worked(9);
 
-            ErlLogger.trace("build", "Done " + project.getName());
+			ErlLogger.trace("build", "Done " + project.getName());
 
-        } catch (final Error e) {
-            e.printStackTrace();
-            throw new CoreException(
-                    new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID, "builder error", e));
-        }
-        notifier.done();
-        return null;
-    }
+		} catch (final Error e) {
+			e.printStackTrace();
+			throw new CoreException(new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID, "builder error", e));
+		}
+		notifier.done();
+		return null;
+	}
 
-    @Override
-    public void clean(final IErlProject erlProject, final BuildNotifier notifier) {
-        final IProject project = erlProject.getWorkspaceProject();
+	@Override
+	public void clean(final IErlProject erlProject, final BuildNotifier notifier) {
+		final IProject project = erlProject.getWorkspaceProject();
 
-        MarkerUtils.removeProblemMarkersFor(project);
-        notifier.worked(1);
+		MarkerUtils.removeProblemMarkersFor(project);
+		notifier.worked(1);
 
-        if (getCleanTarget() == null) {
-            return;
-        }
-        final ProgressCallback callback = new ProgressCallback() {
+		if (getCleanTarget() == null) {
+			return;
+		}
+		final ProgressCallback callback = new ProgressCallback() {
 
-            @Override
-            public void stdout(final String line) {
-                final IMessageParser parser = getMessageParser(erlProject);
-                parser.createMarkers(line);
-            }
+			@Override
+			public void stdout(final String line) {
+				final IMessageParser parser = getMessageParser(erlProject);
+				parser.createMarkers(line);
+			}
 
-            @Override
-            public void stderr(final String line) {
-            }
-        };
-        ex.run(getOsCommand(erlProject), getCleanTarget(),
-                project.getLocation().toPortableString(), callback, notifier);
-        notifier.worked(9);
-    }
+			@Override
+			public void stderr(final String line) {
+			}
+		};
+		ex.run(getOsCommand(erlProject), new String[] { getCleanTarget() }, project.getLocation().toPortableString(), callback, notifier);
+		notifier.worked(9);
+	}
 
-    protected IMessageParser getMessageParser(final IErlProject erlProject) {
-        return new ErlcMessageParser(erlProject.getWorkspaceProject());
-    }
+	protected IMessageParser getMessageParser(final IErlProject erlProject) {
+		return new ErlcMessageParser(erlProject.getWorkspaceProject());
+	}
 
-    protected String getCompileTarget() {
-        return "compile";
-    }
+	protected String getCompileTarget() {
+		return "compile";
+	}
 
-    protected String getCleanTarget() {
-        return "clean";
-    }
+	protected String getCleanTarget() {
+		return "clean";
+	}
 
 }

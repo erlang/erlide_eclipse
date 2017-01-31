@@ -22,7 +22,7 @@ class RebarConfiguratorTest {
         val expected = new ErlangProjectProperties
         expected.setOutputDir(new Path("ebin"))
         val actual = configurator.decodeConfig("")
-        assertThat(actual).isSameAs(expected)
+        assertThat(actual).isEqualTo(expected)
     }
 
     @Test

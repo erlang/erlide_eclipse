@@ -72,7 +72,7 @@ def compile() {
 			else
 				product=""
 			profiles="help${product}"
-			sh "./mvnw -B -U clean verify -P ${profiles} -Dmaven.test.failure.ignore=true"
+			sh "PATH=$PATH:~jenkins/erlide_tools && ./mvnw -B -U clean verify -P ${profiles} -Dmaven.test.failure.ignore=true"
 
 			if(git_branch=="master") {
 				// TODO rename product artifacts

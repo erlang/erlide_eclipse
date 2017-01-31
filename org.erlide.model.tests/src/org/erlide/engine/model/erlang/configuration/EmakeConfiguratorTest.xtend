@@ -23,7 +23,7 @@ class EmakeConfiguratorTest {
         expected.setOutputDir(new Path("ebin"))
         expected.setSourceDirs()
         val actual = configurator.decodeConfig("")
-        assertThat(actual).isSameAs(expected)
+        assertThat(actual).isEqualTo(expected)
     }
 
     @Test
