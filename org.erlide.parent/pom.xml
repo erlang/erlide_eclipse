@@ -39,12 +39,12 @@
 		<repository>
 			<id>xtend</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.10.0</url>
+			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.11.0</url>
 		</repository>
 		<repository>
 			<id>lsp4j</id>
 			<layout>p2</layout>
-			<url>http://services.typefox.io/open-source/jenkins/job/lsp4j/job/master/lastSuccessfulBuild/artifact/build/p2-repository/</url>
+			<url>http://download.eclipse.org/lsp4j/updates/releases/0.1.0/</url>
 		</repository>
 		<repository>
 			<id>handly</id>
@@ -291,7 +291,7 @@
 				<plugin>
 					<groupId>org.eclipse.xtend</groupId>
 					<artifactId>xtend-maven-plugin</artifactId>
-					<version>2.9.0</version>
+					<version>2.11.0</version>
 					<executions>
 						<execution>
 							<goals>
