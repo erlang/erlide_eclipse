@@ -35,6 +35,9 @@ node {
 			publishRelease(archive)
 		}
 	}
+	stage('Cleanup') {
+		deleteDir()
+	}
 }
 
 ///////////////////////////////////
