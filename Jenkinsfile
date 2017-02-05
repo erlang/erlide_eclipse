@@ -1,43 +1,69 @@
 #!groovy
 
-node {
-	stage('Checkout') {
-		wrap([$class: 'TimestamperBuildWrapper']) {
-			checkout()
+pipeline {
+	agent any
+	options { 
+		disableConcurrentBuilds() 
+		timestamps()
+		skipDefaultCheckout() 
+		buildDiscarder(logRotator(numToKeepStr: '10')) 
+	}
+	stages {
+		stage('Checkout') {
+			steps{
+				script { 
+					checkout()
+				}
+			}
+		}
+
+		stage('Compile') {
+			steps{
+				script {
+					compile()
+				}
+			}
+		}
+
+		//stage('Tests') {
+		//	steps{
+		//   	runTests()
+		//	}
+		//}
+
+		stage('Analyze') {
+			steps{
+				script {
+					analyze()
+				}
+			}
+		}
+
+		stage('Archive') {
+			steps{
+				script { 
+					archive = archive() 
+				}
+			}
+		}
+
+		stage('Publish') {
+			steps{
+				script {
+					publish(archive)
+					publishRelease(archive)
+				}
+			}
+		}
+	}
+	post {
+		// publish, etc ?
+		always {
+			deleteDir()
 		}
 	}
 
-	stage('Compile') {
-		wrap([$class: 'TimestamperBuildWrapper']) {
-			compile()
-		}
-	}
 
-	//stage('Tests') {
-	//	runTests()
-	//}
-
-	stage('Analyze') {
-		wrap([$class: 'TimestamperBuildWrapper']) {
-			analyze()
-		}
-	}
-
-	stage('Archive') {
-		wrap([$class: 'TimestamperBuildWrapper']) {
-			archive = archive()
-		}
-	}
-
-	stage('Publish') {
-		wrap([$class: 'TimestamperBuildWrapper']) {
-			publish(archive)
-			publishRelease(archive)
-		}
-	}
-	stage('Cleanup') {
-		deleteDir()
-	}
 }
 
 ///////////////////////////////////
