@@ -103,7 +103,7 @@ def compile() {
 			product=""
 		profiles="help${product}"
 		wrap([$class: 'Xvfb', displayNameOffset: 100, installationName: 'xvfb', screen: '1024x768x24']) {
-			sh "PATH=$PATH:~jenkins/erlide_tools && ./mvnw -T 1C -B -U clean verify -P ${profiles} -D_maven.test.skip=true -Dmaven.test.failure.ignore=true"
+			sh "PATH=$PATH:~jenkins/erlide_tools && ./mvnw -T 1C -B -U clean verify -P ${profiles} -D_maven.test.skip=true -Dmaven.test.failure.ignore=true -X"
 		}
 		if(git_branch=="master") {
 			// TODO rename product artifacts
