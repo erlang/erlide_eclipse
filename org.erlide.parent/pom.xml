@@ -19,12 +19,12 @@
 		<repository>
 			<id>mars</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/mars</url>
+			<url>http://download.eclipse.org/releases/mars/201602261000</url>
 		</repository>
 		<repository>
 			<id>mars updates</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/eclipse/updates/4.5</url>
+			<url>http://download.eclipse.org/eclipse/updates/4.5/R-4.5.2-201602121500</url>
 		</repository>
 		<repository>
 			<id>graphviz</id>
@@ -89,7 +89,6 @@
 		<module>../org.erlide.tracing.core</module>
 
 		<module>../org.erlide.site</module>
-		<module>../org.erlide.product.site</module>
 
 		<module>../org.erlide.testing.libs</module>
 
@@ -175,7 +174,7 @@
 			</build>
 		</profile>
 		<profile>
-			<id>build-ide</id>
+			<id>build-product</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>

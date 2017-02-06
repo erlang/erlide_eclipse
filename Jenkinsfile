@@ -25,11 +25,13 @@ pipeline {
 			}
 		}
 
-		//stage('Tests') {
-		//	steps{
-		//   	runTests()
-		//	}
-		//}
+		// stage('Tests') {
+		// 	steps{
+		//    		script {
+		// 		   runTests()
+		// 		}
+		// 	}
+		// }
 
 		stage('Analyze') {
 			steps{
@@ -74,7 +76,7 @@ def checkout() {
 		checkout([
 		        $class: 'GitSCM',
 		        branches: scm.branches,
-		        extensions: scm.extensions + [[$class: 'CleanCheckout'], [$class: 'CloneOption', depth: 0, noTags: true, reference: '', shallow: false]],
+		        extensions: scm.extensions + [[$class: 'CleanCheckout'], [$class: 'CloneOption', depth: 10, noTags: true, reference: '', shallow: true]],
 		        userRemoteConfigs: scm.userRemoteConfigs
 		      ])
       		git_branch = env.BRANCH_NAME
@@ -92,20 +94,34 @@ def checkout() {
 }
 
 def compile() {
-	wrap([$class: 'Xvfb', displayNameOffset: 100, installationName: 'xvfb', screen: '1024x768x24']) {
-		dir('org.erlide.parent') {
-			sh "chmod u+x mvnw"
-			def product
-			if(git_branch=="master")
-				product=",build-ide"
-			else
-				product=""
-			profiles="help${product}"
-			sh "PATH=$PATH:~jenkins/erlide_tools && ./mvnw -B -U clean verify -P ${profiles} -Dmaven.test.failure.ignore=true"
+	dir('org.erlide.parent') {
+		sh "chmod u+x mvnw"
+		def product
+		if(git_branch=="master")
+			product=",build-product"
+		else
+			product=""
+		profiles="help${product}"
+		wrap([$class: 'Xvfb', displayNameOffset: 100, installationName: 'xvfb', screen: '1024x768x24']) {
+			sh "PATH=$PATH:~jenkins/erlide_tools && ./mvnw -T 1C -B -U clean verify -P ${profiles} -D_maven.test.skip=true -Dmaven.test.failure.ignore=true"
+		}
+		if(git_branch=="master") {
+			// TODO rename product artifacts
+		}
+	}
+}
 
-			if(git_branch=="master") {
-				// TODO rename product artifacts
-			}
+def runTests() {
+	dir('org.erlide.parent') {
+		sh "git reset --hard"
+		sh "chmod u+x mvnw"
+		def profiles
+		if(git_branch=="master")
+			profiles="-P build-product"
+		else
+			profiles=""
+		wrap([$class: 'Xvfb', displayNameOffset: 100, installationName: 'xvfb', screen: '1024x768x24']) {
+			// sh "PATH=$PATH:~jenkins/erlide_tools && ./mvnw -T 1C -B -U verify ${profiles} -Dmaven.test.failure.ignore=true"
 		}
 	}
 }
