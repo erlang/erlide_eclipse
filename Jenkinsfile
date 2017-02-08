@@ -11,8 +11,12 @@ pipeline {
 	stages {
 		stage('Checkout') {
 			steps{
-				script { 
-					checkout()
+				retry(3) {
+					timeout(time: 30, unit: 'SECONDS') {
+						script { 
+							checkout()
+						}
+					}
 				}
 			}
 		}
@@ -21,21 +25,6 @@ pipeline {
 			steps{
 				script {
 					compile()
-				}
-			}
-		}
-
-		// stage('Tests') {
-		// 	steps{
-		//    		script {
-		// 		   runTests()
-		// 		}
-		// 	}
-		// }
-
-		stage('Analyze') {
-			steps{
-				script {
 					analyze()
 				}
 			}
@@ -59,7 +48,6 @@ pipeline {
 		}
 	}
 	post {
-		// publish, etc ?
 		always {
 			deleteDir()
 		}
@@ -72,56 +60,35 @@ pipeline {
 
 def checkout() {
 	deleteDir()
-	if(env.BRANCH_NAME != null) { // multi branch
-		checkout([
-		        $class: 'GitSCM',
-		        branches: scm.branches,
-		        extensions: scm.extensions + [[$class: 'CleanCheckout'], [$class: 'CloneOption', depth: 10, noTags: true, reference: '', shallow: true]],
-		        userRemoteConfigs: scm.userRemoteConfigs
-		      ])
-      		git_branch = env.BRANCH_NAME
-	} else {
-        git url: 'git@github.com:vladdu/erlide_eclipse.git', branch: 'pu'
-	    sh 'git symbolic-ref --short HEAD > GIT_BRANCH'
-    	git_branch=readFile('GIT_BRANCH').trim()
-	}
+	checkout([
+			$class: 'GitSCM',
+			branches: scm.branches,
+			extensions: scm.extensions + [[$class: 'CleanCheckout'], [$class: 'CloneOption', depth: 10, noTags: true, reference: '', shallow: true]],
+			userRemoteConfigs: scm.userRemoteConfigs
+			])
+
     sh('git rev-parse HEAD > GIT_COMMIT')
     git_commit=readFile('GIT_COMMIT')
-    short_commit=git_commit.take(6)
+    def short_commit=git_commit.take(6)
 
 	//currentBuild.setName("${short_commit}__${env.BUILD_NUMBER}")
-	currentBuild.setDescription("${git_branch} - ${short_commit}")
+	currentBuild.setDescription("${env.BRANCH_NAME} - ${short_commit}")
 }
 
 def compile() {
 	dir('org.erlide.parent') {
 		sh "chmod u+x mvnw"
 		def product
-		if(git_branch=="master")
+		if(env.BRANCH_NAME=="master")
 			product=",build-product"
 		else
 			product=""
 		profiles="help${product}"
 		wrap([$class: 'Xvfb', displayNameOffset: 100, installationName: 'xvfb', screen: '1024x768x24']) {
-			sh "PATH=$PATH:~jenkins/erlide_tools && ./mvnw -T 1C -B -U clean verify -P ${profiles} -D_maven.test.skip=true -Dmaven.test.failure.ignore=true -X"
+			sh "PATH=$PATH:~jenkins/erlide_tools && ./mvnw -T 1C -B -U clean verify -P ${profiles} -Dmaven.test.failure.ignore=true -X"
 		}
-		if(git_branch=="master") {
+		if(env.BRANCH_NAME=="master") {
 			// TODO rename product artifacts
-		}
-	}
-}
-
-def runTests() {
-	dir('org.erlide.parent') {
-		sh "git reset --hard"
-		sh "chmod u+x mvnw"
-		def profiles
-		if(git_branch=="master")
-			profiles="-P build-product"
-		else
-			profiles=""
-		wrap([$class: 'Xvfb', displayNameOffset: 100, installationName: 'xvfb', screen: '1024x768x24']) {
-			// sh "PATH=$PATH:~jenkins/erlide_tools && ./mvnw -T 1C -B -U verify ${profiles} -Dmaven.test.failure.ignore=true"
 		}
 	}
 }
@@ -130,19 +97,10 @@ def analyze() {
 	step([$class: 'WarningsPublisher', canComputeNew: false, canResolveRelativePaths: false,
 		consoleParsers: [[parserName: 'Java Compiler (Eclipse)']],
 		excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''])
-
 	step([$class: 'TasksPublisher', canComputeNew: false, excludePattern: '', healthy: '', high: 'FIXME,XXX', low: '', normal: 'TODO', pattern: '**/*.java,**/*.?rl,**/*.xtend', unHealthy: ''])
-
 	step([$class: 'AnalysisPublisher', canComputeNew: false, healthy: '', unHealthy: ''])
-
 	step([$class: 'JUnitResultArchiver', allowEmptyResults: true, testResults: '**/target/surefire-reports/TEST-*.xml'])
-
-	// locks
-
-	// jacoco
 	step([$class: 'JacocoPublisher', exclusionPattern: '**/*Test*.class,org/erlide/wrangler/**/*,org/erlide/cover/**/*,org/erlide/tracing/**/*,org/incava/**/*,org/fishwife/**/*,com/ericsson/**/*,nl/kii/**/*,org/erlide/annotations/**/*,org/erlide/util/CharOperation,org/erlide/util/Util', sourcePattern: '**/src/'])
-
-
 }
 
 def archive() {
@@ -155,7 +113,7 @@ def archive() {
 		    step([$class: 'ArtifactArchiver', artifacts: archive, fingerprint: true])
 	    }
 	}
-    if(git_branch=="master") {
+    if(env.BRANCH_NAME=="master") {
     	step([$class: 'ArtifactArchiver', artifacts: 'org.erlide.product.site/target/products/*.zip', fingerprint: true])
     }
 	return archive
@@ -184,13 +142,13 @@ def publish(def archive) {
 	def ts = v[2]
 
 	def repo
-	switch (git_branch) {
+	switch (env.BRANCH_NAME) {
 		case "release": repo = "beta"; break
 		case "master" : repo = "releases"; break
 		default: repo = "nightly"
 	}
 	def kind
-	switch (git_branch) {
+	switch (env.BRANCH_NAME) {
 		case "release": kind = "B"; break
 		case "master" : kind = "R"; break
 		case "pu" : kind = "A"; break
@@ -239,7 +197,7 @@ def generate_version_info(def vsn, def base) {
 }
 
 def publishRelease(def archive) {
-	def isMaster = (git_branch=='master')
+	def isMaster = (env.BRANCH_NAME=='master')
 	sh "git remote get-url origin > REPO"
 	def isMainRepo = readFile('REPO').trim().contains('github.com/erlang/')
 	if(!isMaster || !isMainRepo) {
