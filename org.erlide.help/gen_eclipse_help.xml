@@ -26,7 +26,7 @@
 		<exec executable="bash" dir="${website}" searchpath="true" failonerror="true">
 			<arg value="-l"/>
 			<arg value="-c"/>
-			<arg value="bundle install"/>
+			<arg value="bundle update"/>
 		</exec>
 		<exec executable="bash" dir="${website}" searchpath="true" failonerror="true">
 			<arg value="-l"/>
