@@ -1,0 +1,24 @@
+encoding: utf-8
+
+# Site settings
+title: "erlide: an Erlang IDE"
+subtitle: "Turbocharged Erlang development. <br/> Powered by Eclipse"
+description: "Turbocharged Erlang development. Powered by Eclipse"
+author: The erlide team
+email: info@erlide.org
+#root_url: "http://erlide.org"
+root_url: "http://localhost:2233"
+baseurl: ""
+
+# Build settings
+exclude: [bin, CNAME, Gemfile, Gemfile.lock, README.md, Dockerfile, fig.yml]
+markdown: kramdown
+permalink: /blog/:year/:title
+
+titlecase: true 
+
+edit-repo : "https://github.com/erlide/erlide.github.io/edit/new_docs/"
+
+sass:
+    style: :expanded
+    #style: :compressed
