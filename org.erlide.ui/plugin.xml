@@ -197,13 +197,14 @@
             icon="icons/erl/erlang-notext016.gif"
             id="org.erlide.ui.views.EdocView"
             name="Edoc"/>
+      <!-- keep navigator reference around to be able to replace it -->
       <view
             allowMultiple="false"
             category="org.erlide.views"
-            class="org.eclipse.ui.navigator.CommonNavigator"
+            class="org.eclipse.ui.navigator.resources.ProjectExplorer"
             icon="icons/erl/erlang-notext016.gif"
             id="org.erlide.ui.views.navigator.view"
-            name="Erlang Navigator">
+            name="Erlang Navigator (deprecated)">
       </view>
       <view
             allowMultiple="false"
@@ -798,7 +799,7 @@
        </separator>
     </menuContribution>
     <menuContribution
-          locationURI="popup:org.erlide.ui.views.navigator.view#PopupMenu?after=additions">
+          locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu?after=additions">
        <menu
              icon="icons/full/obj16/erlang020.gif"
              id="org.erlide.ui.menu.erlang.tools"
@@ -1248,45 +1249,8 @@
  </extension>
    <extension
          point="org.eclipse.ui.navigator.viewer">
-       <viewer
-            viewerId="org.erlide.ui.views.navigator.view">
-            <popupMenu
-                allowsPlatformContributions="true"
-                id="org.erlide.ui.views.navigator.view#PopupMenu">
-             <insertionPoint name="erlideMenu1"
-                      separator="true"/>
-             <insertionPoint name="erlideMenu2"/>
-             <insertionPoint name="group.new"
-                     separator="true"/>
-             <insertionPoint
-                   name="group.open"
-                   separator="true"/>
-             <insertionPoint name="group.openWith"/>
-             <insertionPoint name="group.edit"
-                   separator="true"/>
-             <insertionPoint name="group.reorganize" />
-             <insertionPoint
-                   name="group.port"
-                   separator="true"/>
-             <insertionPoint
-                   name="group.build"
-                   separator="true"/>
-             <insertionPoint
-                   name="group.generate"
-                   separator="true"/>
-             <insertionPoint
-                   name="group.search"
-                   separator="true"/>
-             <insertionPoint
-                   name="additions"
-                   separator="true"/>
-             <insertionPoint
-                   name="group.properties"
-                   separator="true"/>
-          </popupMenu>
-      </viewer>
       <viewerContentBinding
-            viewerId="org.erlide.ui.views.navigator.view">
+            viewerId="org.eclipse.ui.navigator.ProjectExplorer">
          <includes>
             <contentExtension
                   pattern="org.eclipse.ui.navigator.resourceContent">
@@ -1309,7 +1273,7 @@
          </includes>
       </viewerContentBinding>
       <viewerActionBinding
-            viewerId="org.erlide.ui.views.navigator.view">
+            viewerId="org.eclipse.ui.navigator.ProjectExplorer">
          <includes>
             <actionExtension
                   pattern="org.eclipse.ui.navigator.resources.*">
@@ -1324,7 +1288,7 @@
       </viewerActionBinding>
       <dragAssistant
             class="org.erlide.ui.ErlDragAdapterAssistant"
-            viewerId="org.erlide.ui.views.navigator.view">
+            viewerId="org.eclipse.ui.navigator.ProjectExplorer">
       </dragAssistant>
    </extension>
    <extension
@@ -2054,7 +2018,7 @@
     </extension>
     <extension point="org.eclipse.ui.navigator.viewer">
         <viewerContentBinding
-              viewerId="org.erlide.ui.views.navigator.view">
+              viewerId="org.eclipse.ui.navigator.ProjectExplorer">
               <includes>
                 <contentExtension pattern="org.erlide.ui.commonFilter.hideBeam"/>
               </includes>
@@ -2189,6 +2153,14 @@
             id="org.erlide.dialyzer.ui.builder"
             name="Dialyzer">
       </page>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.p2.engine.actions">
+      <action
+            class="org.erlide.ui.ProvisioningAction:1"
+            name="org.erlide.ui.action1"
+            version="org.erlide.ui.action1">
+      </action>
    </extension>
 
 </plugin>

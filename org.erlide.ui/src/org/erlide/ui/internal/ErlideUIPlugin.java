@@ -32,6 +32,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -41,6 +42,8 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -144,6 +147,36 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         BackendCore.getBackendManager().addBackendListener(erlangDebuggerBackendListener);
 
         startPeriodicCacheCleaner();
+
+        checkNavigatorView();
+    }
+
+    private void checkNavigatorView() {
+        Display.getDefault().asyncExec(() -> {
+            IWorkbenchWindow win = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            try {
+                final IWorkbenchPage page = win.getActivePage();
+                final IViewPart vv = page.findView("org.erlide.ui.views.navigator.view");
+                if (vv != null) {
+                    Shell shell = win.getShell();
+                    String title = "An update to Erlide requires resetting the layout of your window";
+                    String message = "Choose OK to do it now, or CANCEL to wait (this "
+                            + "message will be shown again every time Eclipse is started).\n\n"
+                            + "Note that the 'Erlang navigator' view (to the left) will"
+                            + " be empty and unusable until the layout is reset.\n\n"
+                            + "We apologize for the inconvenience.";
+                    final boolean result = MessageDialog.open(MessageDialog.CONFIRM,
+                            shell, title, message, MessageDialog.NONE);
+                    if (result) {
+                        page.resetPerspective();
+                    } else {
+                        page.showView(IPageLayout.ID_PROJECT_EXPLORER);
+                    }
+                }
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override
