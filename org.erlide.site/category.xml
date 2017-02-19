@@ -9,6 +9,9 @@
    <feature url="features/org.eclipse.handly_0.6.0.v20161109-0701.jar" id="org.eclipse.handly" version="0.6.0.v20161109-0701">
       <category name="3pp_deps"/>
    </feature>
+   <feature url="features/com.abstratt.eclipsegraphviz.feature_2.2.201606.201701211537.jar" id="com.abstratt.eclipsegraphviz.feature" version="2.2.201606.201701211537">
+      <category name="3pp_deps"/>
+   </feature>
    <bundle id="com.google.guava" version="15.0.0.v201403281430">
       <category name="3pp_deps"/>
    </bundle>
