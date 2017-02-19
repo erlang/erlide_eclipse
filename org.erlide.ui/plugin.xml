@@ -2154,13 +2154,4 @@
             name="Dialyzer">
       </page>
    </extension>
-   <extension
-         point="org.eclipse.equinox.p2.engine.actions">
-      <action
-            class="org.erlide.ui.ProvisioningAction:1"
-            name="org.erlide.ui.action1"
-            version="org.erlide.ui.action1">
-      </action>
-   </extension>
-
 </plugin>
