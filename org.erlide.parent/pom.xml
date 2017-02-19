@@ -341,25 +341,6 @@
 						</baselineRepositories>
 					</configuration>
 				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho.extras</groupId>
-					<artifactId>tycho-p2-extras-plugin</artifactId>
-					<version>${tycho.version}</version>
-					<executions>
-						<!-- Make sure we don't forget to bump version -->
-						<execution>
-							<id>compare-version-with-baseline</id>
-							<goals>
-								<goal>compare-version-with-baselines</goal>
-							</goals>
-							<configuration>
-								<baselines>
-									<url>http://download.erlide.org/update/</url>
-								</baselines>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
 				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
