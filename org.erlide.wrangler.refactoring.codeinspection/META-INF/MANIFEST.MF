@@ -11,8 +11,8 @@ Require-Bundle: org.eclipse.ui,
  javax.inject;bundle-version="1.0.0",
  org.eclipse.xtend.lib;bundle-version="2.11.0",
  org.eclipse.xtend.lib.macro;bundle-version="2.11.0",
- org.eclipse.xtext.xbase.lib;bundle-version="2.11.0"
-Import-Package: com.abstratt.graphviz;resolution:=optional
+ org.eclipse.xtext.xbase.lib;bundle-version="2.11.0",
+ com.abstratt.graphviz;bundle-version="[2.2.201606,3.0.0)";resolution:=optional
 Export-Package: org.erlide.wrangler.refactoring.codeinspection;x-internal:=true,
  org.erlide.wrangler.refactoring.codeinspection.ui;x-internal:=true,
  org.erlide.wrangler.refactoring.codeinspection.view;x-internal:=true

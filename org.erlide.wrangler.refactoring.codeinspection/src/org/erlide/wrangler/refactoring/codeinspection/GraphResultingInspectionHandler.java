@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.codeinspection;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,7 +21,8 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
@@ -136,8 +138,9 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
             if (b) {
                 try (final FileInputStream fis = new FileInputStream(tmpFile)) {
                     if (fis.available() > 0) {
-
-                        final Image img = GraphViz.load(fis, "png", new Point(0, 0));
+                        byte[] data = GraphViz.load(fis, "png", 0, 0);
+                        ImageData imageData = new ImageData(new ByteArrayInputStream(data));
+                        Image img = new Image(Display.getCurrent(), imageData);
                         CodeInspectionViewsManager.showDotImage(img, viewtTitle,
                                 secondaryID, tmpFile);
                     } else {

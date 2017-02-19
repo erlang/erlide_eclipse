@@ -7,7 +7,7 @@
 <repository location="http://download.eclipse.org/releases/mars/201602261000"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="com.abstratt.eclipsegraphviz.feature.feature.group" version="1.8.0.201208300609"/>
+<unit id="com.abstratt.eclipsegraphviz.feature.feature.group" version="2.2.201606.201701211537"/>
 <repository location="http://download.erlide.org/update/graphviz"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
