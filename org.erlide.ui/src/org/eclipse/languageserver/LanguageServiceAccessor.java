@@ -43,34 +43,34 @@ public class LanguageServiceAccessor {
         try (InputStream contents = file.getContents()) {
             contentTypes = Platform.getContentTypeManager().findContentTypesFor(contents,
                     file.getName()); // TODO consider using document as inputstream
-        } catch (final CoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        ProjectSpecificLanguageServerWrapper wrapper = null;
-        // 1st: search existing server for that file
-        for (final IContentType contentType : contentTypes) {
-            if (wrapper == null) {
-                wrapper = projectServers.get(project).get(contentType);
-            }
-        }
-        if (wrapper == null) {
-            // try to create one for available content type
+            ProjectSpecificLanguageServerWrapper wrapper = null;
+            // 1st: search existing server for that file
             for (final IContentType contentType : contentTypes) {
                 if (wrapper == null) {
-                    final StreamConnectionProvider connection = LSPStreamConnectionProviderRegistry
-                            .getInstance().findProviderFor(contentType);
-                    if (connection != null) {
-                        wrapper = new ProjectSpecificLanguageServerWrapper(project,
-                                contentType, connection);
-                        projectServers.get(project).put(contentType, wrapper);
+                    wrapper = projectServers.get(project).get(contentType);
+                }
+            }
+            if (wrapper == null) {
+                // try to create one for available content type
+                for (final IContentType contentType : contentTypes) {
+                    if (wrapper == null) {
+                        final StreamConnectionProvider connection = LSPStreamConnectionProviderRegistry
+                                .getInstance().findProviderFor(contentType);
+                        if (connection != null) {
+                            wrapper = new ProjectSpecificLanguageServerWrapper(project,
+                                    contentType, connection);
+                            projectServers.get(project).put(contentType, wrapper);
+                        }
                     }
                 }
             }
-        }
-        if (wrapper != null) {
-            wrapper.connect(file, document);
-            return wrapper.getServer();
+            if (wrapper != null) {
+                wrapper.connect(file, document);
+                return wrapper.getServer();
+            }
+        } catch (final CoreException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         return null;
     }
