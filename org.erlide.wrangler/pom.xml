@@ -11,6 +11,6 @@
 	</parent>
 
 	<artifactId>org.erlide.wrangler</artifactId>
-	<version>0.10.4-SNAPSHOT</version>
+	<version>0.10.6-SNAPSHOT</version>
 	<packaging>eclipse-feature</packaging>
 </project>

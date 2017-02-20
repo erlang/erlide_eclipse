@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.wrangler"
       label="Erlide Wrangler support"
-      version="0.10.4.qualifier"
+      version="0.10.6.qualifier"
       provider-name="UKC">
 
    <description>
