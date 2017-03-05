@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Erlide Kernel
-Bundle-SymbolicName: org.erlide.kernel;singleton:=true
-Bundle-Version: 0.112.1.qualifier
-Bundle-Vendor: erlide.org project
-Require-Bundle: org.erlide.runtime;bundle-version="0.24.13"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6

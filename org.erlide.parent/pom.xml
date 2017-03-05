@@ -51,6 +51,11 @@
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/handly/releases/0.6/repository</url>
 		</repository>
+		<repository>
+			<id>kernel</id>
+			<layout>p2</layout>
+			<url>http://download.erlide.org/update/kernel/0.113.0</url>
+		</repository>
 	</repositories>
 
 	<prerequisites>
@@ -69,7 +74,7 @@
 
 
 		<module>../org.erlide.help</module>
-		<module>../org.erlide.kernel</module>
+		
 		<module>../org.erlide.jvmcheck</module>
 		<module>../org.erlide.libs</module>
 		<module>../org.erlide.libs.annotations</module>

@@ -12,32 +12,32 @@ public class ErlangPluginsTest {
 
     @Test
     public void commonIsAvailable() {
-        checkBundleForTwoEbinElements("org.erlide.kernel", "/common");
+        checkBundleForTwoEbinElements("org.erlide.kernel.common", "/ebin");
     }
 
     @Test
     public void ideIsAvailable() {
-        checkBundleForTwoEbinElements("org.erlide.kernel", "/ide");
+        checkBundleForTwoEbinElements("org.erlide.kernel.ide", "/ebin");
     }
 
     @Test
     public void debuggerIsAvailable() {
-        checkBundleForTwoEbinElements("org.erlide.kernel", "/debugger");
-    }
-
-    @Test
-    public void debuggerR16IsAvailable() {
-        checkBundleForTwoEbinElements("org.erlide.kernel", "/debugger/r16");
+        checkBundleForTwoEbinElements("org.erlide.kernel.debugger", "/ebin");
     }
 
     @Test
     public void debugger17IsAvailable() {
-        checkBundleForTwoEbinElements("org.erlide.kernel", "/debugger/17");
+        checkBundleForTwoEbinElements("org.erlide.kernel.debugger", "/ebin/17");
     }
 
     @Test
     public void debugger18IsAvailable() {
-        checkBundleForTwoEbinElements("org.erlide.kernel", "/debugger/18");
+        checkBundleForTwoEbinElements("org.erlide.kernel.debugger", "/ebin/18");
+    }
+
+    @Test
+    public void debugger19IsAvailable() {
+        checkBundleForTwoEbinElements("org.erlide.kernel.debugger", "/ebin/19");
     }
 
     private void checkBundleForTwoEbinElements(final String pluginId, final String path) {
