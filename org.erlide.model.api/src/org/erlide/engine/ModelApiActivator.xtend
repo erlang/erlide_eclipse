@@ -25,6 +25,9 @@ class ModelApiActivator implements BundleActivator {
             val Status status = new Status(IStatus.ERROR, "org.erlide.model", "Could not instantiate Erlang engine")
             throw new CoreException(status)
         }
+        val kernelPlugin = Platform.getBundle("org.erlide.kernel.common")
+        ErlLogger.debug('''Kernel: «kernelPlugin.version»''')
+
         val modelPlugin = Platform.getBundle("org.erlide.model")
         val params = new ErlangInitializeParamsImpl => [
             stateDir = Platform.getStateLocation(modelPlugin).toPortableString()

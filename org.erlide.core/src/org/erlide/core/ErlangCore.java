@@ -58,7 +58,7 @@ public final class ErlangCore {
     }
 
     public void start() throws CoreException {
-        final String version = retrieveFeatureVersion();
+        final String version = retrieveAllVersions();
 
         ErlLogger.info("Starting CORE " + Thread.currentThread());
         String dev = "(" + EncodingUtils.getEncoding() + ")";
@@ -158,12 +158,16 @@ public final class ErlangCore {
         return false;
     }
 
-    private String retrieveFeatureVersion() {
+    private String retrieveAllVersions() {
         String version = "?";
+        String kernelVersion = "?";
         try {
             final IBundleGroupProvider[] providers = Platform.getBundleGroupProviders();
             if (providers != null) {
-                version = findErlideFeatureVersion(providers);
+                version = findFeatureVersion("org.erlide", providers);
+                kernelVersion = findFeatureVersion("org.erlide.kernel.feature", providers)
+                        + "~"
+                        + Platform.getBundle("org.erlide.kernel.common").getVersion();
             } else {
                 ErlLogger.info("***: no bundle group providers");
             }
@@ -173,18 +177,21 @@ public final class ErlangCore {
         final Version coreVersion = getBundle().getVersion();
         final Version modelVersion = Platform.getBundle("org.erlide.model.api")
                 .getVersion();
-        version = version + " (core=" + coreVersion.toString() + ")" + " (model api="
-                + modelVersion.toString() + ")";
+
+        version = version + "~" + coreVersion.toString() + " (model api="
+                + modelVersion.toString() + ")" + " (kernel=" + kernelVersion.toString()
+                + ")";
         return version;
     }
 
-    private String findErlideFeatureVersion(final IBundleGroupProvider[] providers) {
+    private String findFeatureVersion(String key,
+            final IBundleGroupProvider[] providers) {
         String version = "?";
         for (final IBundleGroupProvider provider : providers) {
             final IBundleGroup[] bundleGroups = provider.getBundleGroups();
             for (final IBundleGroup group : bundleGroups) {
                 final String id = group.getIdentifier();
-                if ("org.erlide".equals(id) || "org.erlide.headless".equals(id)) {
+                if (key.equals(id)) {
                     version = group.getVersion();
                     break;
                 }
