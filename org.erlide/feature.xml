@@ -2,7 +2,7 @@
 <feature
       id="org.erlide"
       label="Erlang language tools IDE"
-      version="0.50.1.qualifier"
+      version="0.51.0.qualifier"
       provider-name="%vendorName"
       plugin="org.erlide.branding"
       image="erlang-64.gif"
@@ -38,8 +38,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <includes
          id="org.erlide.kernel.feature"
-         version="0.0.0"
-         search-location="both"/>
+         version="0.0.0"/>
 
    <requires>
       <import feature="org.eclipse.platform" version="4.5.0" match="compatible"/>

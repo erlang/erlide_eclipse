@@ -99,6 +99,7 @@ public class Backend implements IStreamListener, IBackend {
             site.call("erlide_common_app", "init", "poii", jRex, watch,
                     sysconf.getWarnProcessSizeLimitMB(),
                     sysconf.getKillProcessSizeLimitMB());
+            site.call("erlide_tools_app", "init", "");
             // TODO should use extension point!
             switch (data.getContext()) {
             case BUILDER:
@@ -108,11 +109,10 @@ public class Backend implements IStreamListener, IBackend {
             case IDE:
                 site.call("erlide_builder_app", "init", "i",
                         sysconf.getMaxParallelBuilds());
-                site.call("erlide_ide_app", "init", "");
+                //site.call("erlide_ide_app", "init", "");
                 break;
             default:
             }
-            // site.call("erlide_tracer", "start", "");
             return true;
         } catch (final Exception e) {
             ErlLogger.error(e);
