@@ -52,7 +52,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
 
     public static Charset detectEncoding(final String s) {
         if (s == null) {
-            return StandardCharsets.ISO_8859_1;
+            return StandardCharsets.UTF_8;
         }
         final String line = s.trim();
         Matcher matcher = LATIN1.matcher(line);
@@ -67,7 +67,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     }
 
     public static Charset detectCodingForFile(final File file) throws IOException {
-        return detectCodingForFile(file, StandardCharsets.ISO_8859_1);
+        return detectCodingForFile(file, StandardCharsets.UTF_8);
     }
 
     public static Charset detectCodingForFile(final File file, final Charset dflt)
