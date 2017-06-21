@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries 2
 Bundle-SymbolicName: org.erlide.libs2
 Bundle-ActivationPolicy: lazy
-Bundle-Version: 1.17.1.qualifier
+Bundle-Version: 1.18.0.qualifier
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: com.ericsson.otp.erlang,

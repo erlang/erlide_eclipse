@@ -37,7 +37,7 @@ package com.ericsson.otp.erlang;
  * <p>
  * Mailboxes can be named, either at creation or later. Messages can be sent to named
  * mailboxes and named Erlang processes without knowing the {@link OtpErlangPid pid} that
- * identifies the mailbox. This is neccessary in order to set up initial communication
+ * identifies the mailbox. This is necessary in order to set up initial communication
  * between parts of an application. Each mailbox can have at most one name.
  * </p>
  *
