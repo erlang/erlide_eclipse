@@ -217,7 +217,7 @@
 							<artifact>
 								<groupId>org.erlide</groupId>
 								<artifactId>org.erlide.target</artifactId>
-								<version>0.29.0-SNAPSHOT</version>
+								<version>0.30.0-SNAPSHOT</version>
 							</artifact>
 						</target>
 						<environments>
