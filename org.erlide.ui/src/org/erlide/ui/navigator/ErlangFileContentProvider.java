@@ -195,8 +195,8 @@ public class ErlangFileContentProvider
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
-        if (SaveablesProvider.class.equals(required)) {
+    public <T> T getAdapter(final Class<T> adapter) {
+        if (SaveablesProvider.class.equals(adapter)) {
             // TODO return something useful
             return null;
         }

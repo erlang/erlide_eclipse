@@ -11,19 +11,18 @@ import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
-import org.eclipse.ui.texteditor.TextOperationAction;
 import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.ui.actions.OpenAction;
+import org.erlide.ui.editors.erl.actions.IErlangEditorActionDefinitionIds;
 import org.erlide.ui.editors.erl.actions.SendToConsoleAction;
 import org.erlide.ui.prefs.PreferenceConstants;
 
@@ -119,7 +118,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
         final ResourceBundle keyBundle = ErlangEditorMessages
                 .getBundleForConstructedKeys();
         sendToConsole = new SendToConsoleAction(getSite(), keyBundle, "SendToConsole.",
-                this, false, getProject());
+                this, false, getProject().getWorkspaceProject());
         sendToConsole
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE);
         setAction("SendToConsole", sendToConsole);
@@ -127,7 +126,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
         markAsSelectionDependentAction("sendToConsole", true);
 
         sendToConsoleWithResult = new SendToConsoleAction(getSite(), keyBundle,
-                "SendToConsoleWithResult.", this, true, getProject());
+                "SendToConsoleWithResult.", this, true, getProject().getWorkspaceProject());
         sendToConsoleWithResult.setActionDefinitionId(
                 IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE_WITH_RESULT);
         setAction("SendToConsoleWithResult", sendToConsoleWithResult);
@@ -141,14 +140,6 @@ public abstract class AbstractErlangEditor extends TextEditor {
         setAction("ContentAssistProposal", contentAssistAction);
         markAsStateDependentAction("ContentAssistProposal", true);
 
-        final TextOperationAction showEdocAction0 = new TextOperationAction(keyBundle,
-                "ShowEDoc.", this, ISourceViewer.INFORMATION, true);
-        final ShowEDocAction showEdocAction = new ShowEDocAction(this, getSourceViewer(),
-                keyBundle, "ShowEDoc.", showEdocAction0);
-        showEdocAction.setActionDefinitionId(IErlangEditorActionDefinitionIds.SHOW_EDOC);
-        setAction("ShowEDoc", showEdocAction);
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(showEdocAction,
-                IErlangHelpContextIds.SHOW_EDOC_ACTION);
     }
 
     protected void addCommonActions(final IMenuManager menu) {
@@ -173,5 +164,9 @@ public abstract class AbstractErlangEditor extends TextEditor {
         fInformationPresenter.setDocumentPartitioning(getSourceViewerConfiguration()
                 .getConfiguredDocumentPartitioning(getSourceViewer()));
     }
+
+	public InformationPresenter getInformationPresenter() {
+		return fInformationPresenter;
+	}
 
 }

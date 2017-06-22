@@ -197,13 +197,14 @@
             icon="icons/erl/erlang-notext016.gif"
             id="org.erlide.ui.views.EdocView"
             name="Edoc"/>
+      <!-- keep navigator reference around to be able to replace it -->
       <view
             allowMultiple="false"
             category="org.erlide.views"
-            class="org.eclipse.ui.navigator.CommonNavigator"
+            class="org.eclipse.ui.navigator.resources.ProjectExplorer"
             icon="icons/erl/erlang-notext016.gif"
             id="org.erlide.ui.views.navigator.view"
-            name="Erlang Navigator">
+            name="Erlang Navigator (deprecated)">
       </view>
       <view
             allowMultiple="false"
@@ -384,12 +385,6 @@
             description="Jump to the bracket matching the one under the cursor"
             categoryId="org.eclipse.ui.category.navigate"
             id="org.erlide.ui.actions.gotoMatchingBracket">
-      </command>
-      <command
-            name="Show tooltip content"
-            description="Show tooltip content"
-            categoryId="org.eclipse.ui.category.edit"
-            id="org.erlide.ui.actions.showEDoc">
       </command>
       <command
             categoryId="org.eclipse.ui.category.navigate"
@@ -804,7 +799,7 @@
        </separator>
     </menuContribution>
     <menuContribution
-          locationURI="popup:org.erlide.ui.views.navigator.view#PopupMenu?after=additions">
+          locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu?after=additions">
        <menu
              icon="icons/full/obj16/erlang020.gif"
              id="org.erlide.ui.menu.erlang.tools"
@@ -817,11 +812,6 @@
        <!--  win32:  M1=CTRL,    M2=SHIFT, M3=ALT, M4=-
             carbon: M1=COMMAND, M2=SHIFT, M3=ALT, M4=CTRL -->
 
-      <key
-            sequence="M2+F2"
-            contextId="org.erlide.ui.erlangEditorScope"
-            commandId="org.erlide.ui.actions.showEDoc"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             commandId="org.erlide.ui.actions.open.editor"
             contextId="org.erlide.ui.erlangEditorScope"
@@ -1259,45 +1249,8 @@
  </extension>
    <extension
          point="org.eclipse.ui.navigator.viewer">
-       <viewer
-            viewerId="org.erlide.ui.views.navigator.view">
-            <popupMenu
-                allowsPlatformContributions="true"
-                id="org.erlide.ui.views.navigator.view#PopupMenu">
-             <insertionPoint name="erlideMenu1"
-                      separator="true"/>
-             <insertionPoint name="erlideMenu2"/>
-             <insertionPoint name="group.new"
-                     separator="true"/>
-             <insertionPoint
-                   name="group.open"
-                   separator="true"/>
-             <insertionPoint name="group.openWith"/>
-             <insertionPoint name="group.edit"
-                   separator="true"/>
-             <insertionPoint name="group.reorganize" />
-             <insertionPoint
-                   name="group.port"
-                   separator="true"/>
-             <insertionPoint
-                   name="group.build"
-                   separator="true"/>
-             <insertionPoint
-                   name="group.generate"
-                   separator="true"/>
-             <insertionPoint
-                   name="group.search"
-                   separator="true"/>
-             <insertionPoint
-                   name="additions"
-                   separator="true"/>
-             <insertionPoint
-                   name="group.properties"
-                   separator="true"/>
-          </popupMenu>
-      </viewer>
       <viewerContentBinding
-            viewerId="org.erlide.ui.views.navigator.view">
+            viewerId="org.eclipse.ui.navigator.ProjectExplorer">
          <includes>
             <contentExtension
                   pattern="org.eclipse.ui.navigator.resourceContent">
@@ -1320,7 +1273,7 @@
          </includes>
       </viewerContentBinding>
       <viewerActionBinding
-            viewerId="org.erlide.ui.views.navigator.view">
+            viewerId="org.eclipse.ui.navigator.ProjectExplorer">
          <includes>
             <actionExtension
                   pattern="org.eclipse.ui.navigator.resources.*">
@@ -1335,7 +1288,7 @@
       </viewerActionBinding>
       <dragAssistant
             class="org.erlide.ui.ErlDragAdapterAssistant"
-            viewerId="org.erlide.ui.views.navigator.view">
+            viewerId="org.eclipse.ui.navigator.ProjectExplorer">
       </dragAssistant>
    </extension>
    <extension
@@ -2065,7 +2018,7 @@
     </extension>
     <extension point="org.eclipse.ui.navigator.viewer">
         <viewerContentBinding
-              viewerId="org.erlide.ui.views.navigator.view">
+              viewerId="org.eclipse.ui.navigator.ProjectExplorer">
               <includes>
                 <contentExtension pattern="org.erlide.ui.commonFilter.hideBeam"/>
               </includes>
@@ -2087,5 +2040,118 @@
          </themeid>
       </stylesheet>
    </extension>
+<extension
+       point="org.eclipse.ui.handlers">
+     <handler
+          class="org.erlide.dialyzer.ui.handlers.RunDialyzerHandler"
+          commandId="org.erlide.ui.commands.runDialyzer">
+    </handler>
+    <handler
+          class="org.erlide.dialyzer.ui.handlers.RemoveDialyzerWarningsHandler"
+          commandId="org.erlide.ui.command.removeDialyzerWarnings">
+    </handler>
+</extension>
 
+<extension
+       point="org.eclipse.ui.commands">
+       <command
+             categoryId="org.erlide.ui.commandCategories.dialyzer"
+             description="Run Dialyzer"
+             id="org.erlide.ui.commands.runDialyzer"
+             name="Run Dialyzer">
+       </command>
+       <command
+             categoryId="org.erlide.ui.commandCategories.dialyzer"
+             description="Remove Dialyzer Warnings"
+             id="org.erlide.ui.command.removeDialyzerWarnings"
+             name="Remove Dialyzer Warnings">
+       </command>
+       <command
+             categoryId="org.erlide.ui.commandCategories.dialyzer"
+             description="Check PLT"
+             id="org.erlide.ui.command.checkDialyzerPLTFile"
+             name="Check PLT">
+       </command>
+       <category
+             description="Dialyzer Commands"
+             id="org.erlide.ui.commandCategories.dialyzer"
+             name="Dialyzer Commands">
+       </category>
+</extension>
+
+
+<extension
+       point="org.eclipse.ui.menus">
+
+     <menuContribution
+          allPopups="false"
+          locationURI="popup:org.erlide.ui.menu.erlang.tools">
+       <command
+             commandId="org.erlide.ui.commands.runDialyzer"
+             style="push">
+          <visibleWhen
+                checkEnabled="false">
+             <iterate
+                   ifEmpty="false"
+                   operator="or">
+                <test
+                      property="org.eclipse.core.resources.projectNature"
+                      value="org.erlide.core.erlnature">
+                </test>
+             </iterate>
+          </visibleWhen>
+       </command>
+       <command
+             commandId="org.erlide.ui.command.removeDialyzerWarnings"
+             style="push">
+          <visibleWhen
+                checkEnabled="false">
+             <iterate
+                   ifEmpty="false"
+                   operator="or">
+                <test
+                      property="org.eclipse.core.resources.projectNature"
+                      value="org.erlide.core.erlnature">
+                </test>
+             </iterate>
+          </visibleWhen>
+       </command>
+       </menuContribution>>
+</extension>
+<extension
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerType="org.erlide.core.dialyzewarningmarker"
+            name="org.erlide.ui.dialyzewarningmarkertype">
+      </type>
+</extension>
+   <extension
+         point="org.eclipse.ui.editors.markerAnnotationSpecification">
+      <specification
+            annotationType="org.erlide.ui.dialyzewarningmarkertype"
+            colorPreferenceKey="dialyzewarningmarkerColor"
+            colorPreferenceValue="255,150,150"
+            highlightPreferenceKey="dialyzewarningmarkerHighlighting"
+            highlightPreferenceValue="false"
+            icon="icons/full/obj16/dialyzer_warning.gif"
+            includeOnPreferencePage="true"
+            label="Dialyzer Warning"
+            overviewRulerPreferenceKey="dialyzewarningmarkerInOverviewRuler"
+            overviewRulerPreferenceValue="true"
+            presentationLayer="3"
+            textPreferenceKey="dialyzewarningmarker"
+            textPreferenceValue="true"
+            verticalRulerPreferenceKey="dialyzewarningmarkerInVerticalRuler"
+            verticalRulerPreferenceValue="true">
+      </specification>
+</extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.erlide.ui.preferences.compiler"
+            class="org.erlide.dialyzer.ui.prefs.DialyzerPreferencePage"
+            id="org.erlide.dialyzer.ui.builder"
+            name="Dialyzer">
+      </page>
+   </extension>
 </plugin>

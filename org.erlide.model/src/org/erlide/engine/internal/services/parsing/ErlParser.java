@@ -41,7 +41,6 @@ import org.erlide.engine.model.erlang.IErlRecordDef;
 import org.erlide.engine.model.erlang.IErlTypespec;
 import org.erlide.engine.model.erlang.ISourceReference;
 import org.erlide.engine.model.root.IErlModule;
-import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.services.parsing.RuntimeHelper;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.util.ErlLogger;
@@ -60,7 +59,7 @@ import com.google.common.collect.Lists;
  * @author jakob
  *
  */
-public final class ErlParser implements ParserService {
+public final class ErlParser {
 
     private static final class SourceOffsetComparator
             implements Comparator<ISourceReference> {
@@ -90,7 +89,6 @@ public final class ErlParser implements ParserService {
         helper = new RuntimeHelper(backend);
     }
 
-    @Override
     public boolean parse(final IErlModule module, final String scannerName,
             final boolean initialParse, final String path, final String initialText,
             final boolean updateSearchServer) {

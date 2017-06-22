@@ -157,18 +157,18 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
+    public <T> T getAdapter(final Class<T> required) {
         if (IShowInSource.class.equals(required)) {
-            return this;
+            return required.cast(this);
         }
         if (IShowInTargetList.class.equals(required)) {
-            return this;
+        	return required.cast(this);
         }
         // CONTEXTLAUNCHING
         if (ILaunchConfiguration.class.equals(required)) {
             final ILaunch launch = getProcess().getLaunch();
             if (launch != null) {
-                return launch.getLaunchConfiguration();
+                return required.cast(launch.getLaunchConfiguration());
             }
             return null;
         }
@@ -181,7 +181,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
         if (process == null) {
             return null;
         }
-        final IDebugTarget target = (IDebugTarget) process.getAdapter(IDebugTarget.class);
+        final IDebugTarget target = process.getAdapter(IDebugTarget.class);
         ISelection selection = null;
         if (target == null) {
             selection = new TreeSelection(new TreePath(
@@ -227,9 +227,9 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
     public void activated() {
         // add EOF submissions
         final IPageSite site = fPage.getSite();
-        final IHandlerService handlerService = (IHandlerService) site
+        final IHandlerService handlerService = site
                 .getService(IHandlerService.class);
-        final IContextService contextService = (IContextService) site
+        final IContextService contextService = site
                 .getService(IContextService.class);
         fActivatedContext = contextService.activateContext(fContextId);
         fActivatedHandler = handlerService
@@ -240,9 +240,9 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
     public void deactivated() {
         // remove EOF submissions
         final IPageSite site = fPage.getSite();
-        final IHandlerService handlerService = (IHandlerService) site
+        final IHandlerService handlerService = site
                 .getService(IHandlerService.class);
-        final IContextService contextService = (IContextService) site
+        final IContextService contextService = site
                 .getService(IContextService.class);
         handlerService.deactivateHandler(fActivatedHandler);
         contextService.deactivateContext(fActivatedContext);

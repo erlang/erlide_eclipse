@@ -84,7 +84,7 @@ public class ErlangProjectPropertyPage extends PropertyPage {
 
     @Override
     protected Control createContents(final Composite parent) {
-        final IProject project = (IProject) getElement().getAdapter(IProject.class);
+        final IProject project = getElement().getAdapter(IProject.class);
         erlProject = ErlangEngine.getInstance().getModel().getErlangProject(project);
         model = erlProject.getProperties();
 

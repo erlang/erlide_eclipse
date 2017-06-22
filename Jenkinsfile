@@ -1,69 +1,94 @@
 #!groovy
 
-stage 'Checkout'
-node {
-	wrap([$class: 'TimestamperBuildWrapper']) {
-		checkout()
+pipeline {
+	agent any
+	options { 
+		disableConcurrentBuilds() 
+		timestamps()
+		skipDefaultCheckout() 
+		buildDiscarder(logRotator(numToKeepStr: '10')) 
 	}
-}
+	stages {
+		stage('Checkout') {
+			steps{
+				retry(3) {
+					timeout(time: 30, unit: 'SECONDS') {
+						script { 
+							checkout()
+						}
+					}
+				}
+			}
+		}
 
-stage 'Compile'
-node {
-	wrap([$class: 'TimestamperBuildWrapper']) {
-		compile()
+		stage('Compile') {
+			steps{
+				script {
+					compile()
+					analyze()
+				}
+			}
+		}
+
+		stage('Archive') {
+			steps{
+				script { 
+					archive = archive() 
+				}
+			}
+		}
+
+		stage('Publish') {
+			steps{
+				script {
+					publish(archive)
+					publishRelease(archive)
+				}
+			}
+		}
 	}
-}
-
-//stage 'Tests'
-//	runTests()
-
-stage 'Analyze'
-node {
-	wrap([$class: 'TimestamperBuildWrapper']) {
-		analyze()
+	post {
+		always {
+			deleteDir()
+		}
 	}
-}
 
-stage 'Archive'
-node {
-	wrap([$class: 'TimestamperBuildWrapper']) {
-		archive = archive()
-	}
-}
 
-stage 'Publish'
-node {
-	wrap([$class: 'TimestamperBuildWrapper']) {
-		publish(archive)
-		publishRelease(archive)
-	}
 }
 
 ///////////////////////////////////
 
 def checkout() {
 	deleteDir()
-	if(env.BRANCH_NAME != null) { // multi branch
-		checkout scm
-		git_branch = env.BRANCH_NAME
-	} else {
-        git url: 'git@github.com:vladdu/erlide_eclipse.git', branch: 'pu'
-	    sh 'git symbolic-ref --short HEAD > GIT_BRANCH'
-    	git_branch=readFile('GIT_BRANCH').trim()
-	}
+	checkout([
+			$class: 'GitSCM',
+			branches: scm.branches,
+			extensions: scm.extensions + [[$class: 'CleanCheckout'], [$class: 'CloneOption', depth: 10, noTags: true, reference: '', shallow: true]],
+			userRemoteConfigs: scm.userRemoteConfigs
+			])
+
     sh('git rev-parse HEAD > GIT_COMMIT')
     git_commit=readFile('GIT_COMMIT')
-    short_commit=git_commit.take(6)
+    def short_commit=git_commit.take(6)
 
 	//currentBuild.setName("${short_commit}__${env.BUILD_NUMBER}")
-	currentBuild.setDescription("${git_branch} - ${short_commit}")
+	currentBuild.setDescription("${env.BRANCH_NAME} - ${short_commit}")
 }
 
 def compile() {
-	wrap([$class: 'Xvfb', displayNameOffset: 100, installationName: 'xvfb', screen: '1024x768x24']) {
-		dir('org.erlide.parent') {
-			sh "chmod u+x mvnw"
-			sh "./mvnw -B -U clean verify -P help -Dmaven.test.failure.ignore=true"
+	dir('org.erlide.parent') {
+		sh "chmod u+x mvnw"
+		def product
+		if(env.BRANCH_NAME=="master")
+			product=",build-product"
+		else
+			product=""
+		profiles="help${product}"
+		wrap([$class: 'Xvfb', displayNameOffset: 100, installationName: 'xvfb', screen: '1024x768x24']) {
+			sh "PATH=$PATH:~jenkins/erlide_tools && ./mvnw -B -U clean verify -P ${profiles} -Dmaven.test.failure.ignore=true -X"
+		}
+		if(env.BRANCH_NAME=="master") {
+			// TODO rename product artifacts
 		}
 	}
 }
@@ -72,17 +97,10 @@ def analyze() {
 	step([$class: 'WarningsPublisher', canComputeNew: false, canResolveRelativePaths: false,
 		consoleParsers: [[parserName: 'Java Compiler (Eclipse)']],
 		excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''])
-
 	step([$class: 'TasksPublisher', canComputeNew: false, excludePattern: '', healthy: '', high: 'FIXME,XXX', low: '', normal: 'TODO', pattern: '**/*.java,**/*.?rl,**/*.xtend', unHealthy: ''])
-
 	step([$class: 'AnalysisPublisher', canComputeNew: false, healthy: '', unHealthy: ''])
-
 	step([$class: 'JUnitResultArchiver', allowEmptyResults: true, testResults: '**/target/surefire-reports/TEST-*.xml'])
-
-	// locks
-
-	// jacoco
-
+	step([$class: 'JacocoPublisher', exclusionPattern: '**/*Test*.class,org/erlide/wrangler/**/*,org/erlide/cover/**/*,org/erlide/tracing/**/*,org/incava/**/*,org/fishwife/**/*,com/ericsson/**/*,nl/kii/**/*,org/erlide/annotations/**/*,org/erlide/util/CharOperation,org/erlide/util/Util', sourcePattern: '**/src/'])
 }
 
 def archive() {
@@ -95,28 +113,42 @@ def archive() {
 		    step([$class: 'ArtifactArchiver', artifacts: archive, fingerprint: true])
 	    }
 	}
+    if(env.BRANCH_NAME=="master") {
+    	step([$class: 'ArtifactArchiver', artifacts: 'org.erlide.product.site/target/products/*.zip', fingerprint: true])
+    }
 	return archive
 }
 
 @NonCPS
 def getVersion(String archive) {
-    def m = (archive =~ /org.erlide_([0-9]+\.[0-9]+\.[0-9]+)\.(.+).zip/)
+    def m = (archive =~ /org.erlide_([0-9]+\.[0-9]+\.[0-9]+)(\.(.+))?.zip/)
     return m[0]
 }
 
 def publish(def archive) {
+	sh "git remote get-url origin > REPO"
+	def isMainRepo = readFile('REPO').trim().contains('github.com/erlang/')
+
+	if(!isMainRepo) {
+		// only do a release if in main repo
+		return
+	}
+
+    // FIXME we can't push to https git url, needs password... Jenkins Github plugin uses https...
+    //return
+
 	def v = getVersion(archive)
 	def vsn = v[1]
 	def ts = v[2]
 
 	def repo
-	switch (git_branch) {
+	switch (env.BRANCH_NAME) {
 		case "release": repo = "beta"; break
 		case "master" : repo = "releases"; break
 		default: repo = "nightly"
 	}
 	def kind
-	switch (git_branch) {
+	switch (env.BRANCH_NAME) {
 		case "release": kind = "B"; break
 		case "master" : kind = "R"; break
 		case "pu" : kind = "A"; break
@@ -165,7 +197,7 @@ def generate_version_info(def vsn, def base) {
 }
 
 def publishRelease(def archive) {
-	def isMaster = (git_branch=='master')
+	def isMaster = (env.BRANCH_NAME=='master')
 	sh "git remote get-url origin > REPO"
 	def isMainRepo = readFile('REPO').trim().contains('github.com/erlang/')
 	if(!isMaster || !isMainRepo) {
@@ -185,8 +217,8 @@ def publishRelease(def archive) {
 	def git_tag = readFile('GIT_TAG').trim()
 	if(git_tag == null || git_tag == '') {
 		sh "git tag -a ${vvsn} -m ${vvsn}"
-		sh "git push origin ${vvsn}"
-		git_tag = vvsn
+		//sh "git push origin ${vvsn}"
+		//git_tag = vvsn
 	}
 	if(git_tag != vvsn) {
 		// if there is a tag, but it's not $vvsn, skip publishing
@@ -194,8 +226,8 @@ def publishRelease(def archive) {
 	}
 
 	def draft = true
-	def body = "test"
-	def owner = "vladdu" // "erlang"
+	def body = ""
+	def owner = "erlang"
 	def repository = "erlide_eclipse"
 	def access_token = "${env.GITHUB_TOKEN}"
 

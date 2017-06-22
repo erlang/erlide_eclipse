@@ -257,7 +257,7 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
     }
 
     public boolean isStable() {
-        return minor > 0;
+        return update_level == null;
     }
 
     public int getMajor() {
@@ -265,11 +265,11 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
     }
 
     public int getMinor() {
-        return major;
+        return minor;
     }
 
     public int getMicro() {
-        return major;
+        return micro;
     }
 
 }

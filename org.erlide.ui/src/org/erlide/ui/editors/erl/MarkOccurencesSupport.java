@@ -43,7 +43,6 @@ import org.erlide.engine.services.search.ErlangSearchPattern;
 import org.erlide.engine.services.search.LimitTo;
 import org.erlide.engine.services.search.ModuleLineFunctionArityRef;
 import org.erlide.engine.services.search.OpenResult;
-import org.erlide.engine.services.search.OpenService;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -313,12 +312,11 @@ public class MarkOccurencesSupport implements IDisposable {
             }
             try {
                 final int offset = aSelection.getOffset();
-                final OpenResult res = ErlangEngine.getInstance()
-                        .getService(OpenService.class).open(theModule.getScannerName(),
-                                offset,
-                                ErlangEngine.getInstance().getModelUtilService()
-                                        .getImportsAsList(theModule),
-                                "", ErlangEngine.getInstance().getModel().getPathVars());
+                final OpenResult res = ErlangEngine.getInstance().getOpenService().open(
+                        theModule.getScannerName(), offset,
+                        ErlangEngine.getInstance().getModelUtilService()
+                                .getImportsAsList(theModule),
+                        "", ErlangEngine.getInstance().getModel().getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil
                         .getSearchPatternFromOpenResultAndLimitTo(theModule, offset, res,
                                 LimitTo.ALL_OCCURRENCES, false);

@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.erlide.engine.model.root;
 
+import java.nio.charset.Charset;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
@@ -69,11 +71,12 @@ public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementL
 
     void removeModelChangeListener(IErlModelChangeListener listener);
 
-    IErlElement innermostThat(final IErlElement el, final Predicate<IErlElement> firstThat);
+    IErlElement innermostThat(final IErlElement el,
+            final Predicate<IErlElement> firstThat);
 
     OtpErlangList getPathVars();
 
-    IErlProject newProject(final String name, final String path) throws ErlModelException;
+    IErlProject newProject(final String name) throws ErlModelException;
 
     void notifyChange(IErlElement element);
 
@@ -150,11 +153,11 @@ public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementL
 
     void registerModelDelta(IErlElementDelta delta);
 
-    IErlModule getModuleFromFile(IParent parent, String name, String initialText,
-            String path, String key);
+    IErlModule getModuleFromFile(IParent parent, String name, IPath path,
+            Charset encoding);
 
     IErlModule getModuleFromText(IParent parent, String name, String initialText,
-            String key);
+            Charset encoding);
 
     public void removeModule(final IErlModule module);
 

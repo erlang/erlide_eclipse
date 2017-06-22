@@ -81,9 +81,9 @@ public class IErlProjectTest extends ErlModelTestBase {
         try {
             // given
             // an erlang project and an external file not in any project
-            final String externalFileName = "external.erl";
+            final String externalFileName = "external6.erl";
             externalFile = ErlideTestUtils.createTmpFile(externalFileName,
-                    "-module(external).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
+                    "-module(external6).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
             final String absolutePath = externalFile.getAbsolutePath();
             externalsFile = ErlideTestUtils.createTmpFile(XX_ERLIDEX, absolutePath);
             aProject.open(null);

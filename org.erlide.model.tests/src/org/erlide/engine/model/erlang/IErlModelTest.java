@@ -132,7 +132,8 @@ public class IErlModelTest extends ErlModelTestBase {
         final IFolder folder = (IFolder) parent.getResource();
         IFile createFile = null;
         try {
-            createFile = ErlideTestUtils.createFile("tt.erl", "-module(tt).\n", folder);
+            createFile = ErlideTestUtils.createFile(folder.getProject(),
+                    folder.getName() + "/tt.erl", "-module(tt).\n");
             model.findModule(createFile);
             assertEquals(module2, findModule);
         } finally {

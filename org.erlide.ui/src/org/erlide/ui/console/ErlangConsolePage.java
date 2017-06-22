@@ -414,12 +414,12 @@ public class ErlangConsolePage extends Page
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
-        if (IFindReplaceTarget.class.equals(required)) {
-            return consoleOutputViewer.getFindReplaceTarget();
+    public <T> T getAdapter(final Class<T> adapter) {
+        if (IFindReplaceTarget.class.equals(adapter)) {
+            return adapter.cast(consoleOutputViewer.getFindReplaceTarget());
         }
-        if (Widget.class.equals(required)) {
-            return consoleOutputViewer.getTextWidget();
+        if (Widget.class.equals(adapter)) {
+            return adapter.cast(consoleOutputViewer.getTextWidget());
         }
         return null;
     }

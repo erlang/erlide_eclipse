@@ -306,7 +306,7 @@ public class SearchUtil {
         for (final IWorkingSet ws : workingSets) {
             final IAdaptable[] elements = ws.getElements();
             for (final IAdaptable a : elements) {
-                final IResource r = (IResource) a.getAdapter(IResource.class);
+                final IResource r = a.getAdapter(IResource.class);
                 SearchCoreUtil.addResourceToScope(result, r);
                 IParent parent = null;
                 Object o = a.getAdapter(IErlElement.class);

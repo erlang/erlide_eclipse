@@ -164,7 +164,7 @@ public class ErlangElementImageProvider {
      */
     public ImageDescriptor getWorkbenchImageDescriptor(final IAdaptable adaptable,
             final int flags) {
-        final IWorkbenchAdapter wbAdapter = (IWorkbenchAdapter) adaptable
+        final IWorkbenchAdapter wbAdapter = adaptable
                 .getAdapter(IWorkbenchAdapter.class);
         if (wbAdapter == null) {
             return null;

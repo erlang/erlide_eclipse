@@ -1,12 +1,10 @@
 package org.erlide.runtime
 
 import org.erlide.runtime.runtimeinfo.RuntimeFinder
+import org.erlide.util.SystemConfiguration
 import org.junit.Test
 
-import static org.hamcrest.MatcherAssert.assertThat
-import static org.hamcrest.Matchers.greaterThan
-import static org.hamcrest.Matchers.is
-import org.erlide.util.SystemConfiguration
+import static com.google.common.truth.Truth.assertThat
 
 class RuntimeFinderTest {
     @Test
@@ -14,6 +12,6 @@ class RuntimeFinderTest {
         if(SystemConfiguration.instance.onWindows) return
 
         val kerl = RuntimeFinder.kerlLocations
-        assertThat(kerl.length, is(greaterThan(0)))
+        assertThat(kerl.length).isGreaterThan(0)
     }
 }

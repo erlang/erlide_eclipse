@@ -37,11 +37,9 @@ public class SearchTest {
         ErlideTestUtils.initProjects();
         // We set up projects here, it's quite costly
         final String name1 = "testproject1";
-        final IErlProject erlProject1 = ErlideTestUtils
-                .createProject(ErlideTestUtils.getTmpPath(name1), name1);
+        final IErlProject erlProject1 = ErlideTestUtils.createErlProject(name1);
         final String name2 = "testproject2";
-        final IErlProject erlProject2 = ErlideTestUtils
-                .createProject(ErlideTestUtils.getTmpPath(name2), name2);
+        final IErlProject erlProject2 = ErlideTestUtils.createErlProject(name2);
         projects = new IErlProject[] { erlProject1, erlProject2 };
     }
 

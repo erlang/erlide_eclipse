@@ -209,7 +209,7 @@ public class ErlangOutlinePage extends ContentOutlinePage
         fOpenAndLinkWithEditorHelper = new OpenAndLinkWithEditorHelper(fOutlineViewer,
                 fEditor, site.getPage());
 
-        final IContextService service = (IContextService) site
+        final IContextService service = site
                 .getService(IContextService.class);
         service.activateContext("org.erlide.ui.erlangOutlineAndNavigatorScope");
 
@@ -238,7 +238,7 @@ public class ErlangOutlinePage extends ContentOutlinePage
                 fEditor.getAction(ITextEditorActionConstants.REDO));
         fActionGroups.fillActionBars(actionBars);
         registerToolbarActions(actionBars);
-        final IHandlerService handlerService = (IHandlerService) site
+        final IHandlerService handlerService = site
                 .getService(IHandlerService.class);
         handlerService.activateHandler(
                 IWorkbenchCommandConstants.NAVIGATE_TOGGLE_LINK_WITH_EDITOR,
@@ -293,9 +293,9 @@ public class ErlangOutlinePage extends ContentOutlinePage
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
          */
         @Override
-        public Object getAdapter(@SuppressWarnings("rawtypes") final Class clas) {
-            if (clas == IWorkbenchAdapter.class) {
-                return this;
+        public <T> T getAdapter(final Class<T> adapter) {
+            if (adapter == IWorkbenchAdapter.class) {
+                return adapter.cast(this);
             }
             return null;
         }

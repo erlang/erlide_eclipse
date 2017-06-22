@@ -1,5 +1,7 @@
 package org.erlide.runtime;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import java.util.List;
 
 import org.erlide.runtime.service.AlwaysRestartPolicy;
@@ -7,9 +9,7 @@ import org.erlide.runtime.service.CooldownRestartPolicy;
 import org.erlide.runtime.service.NeverRestartPolicy;
 import org.erlide.runtime.service.RestartableService;
 import org.erlide.util.services.Provider;
-import org.hamcrest.Matchers;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -76,8 +76,8 @@ public class RestartableServiceTest {
         Thread.sleep(1100);
         dummy.triggerCrash();
         Thread.sleep(100);
-        Assert.assertThat(dummy.state(), Matchers.is(State.FAILED));
-        Assert.assertThat(service.state(), Matchers.is(State.RUNNING));
+        assertThat(dummy.state()).isEqualTo(State.FAILED);
+        assertThat(service.state()).isEqualTo(State.RUNNING);
     }
 
     @Test
@@ -87,8 +87,8 @@ public class RestartableServiceTest {
         final DummyService dummy = (DummyService) service.getDelegate();
         dummy.triggerCrash();
         Thread.sleep(100);
-        Assert.assertThat(dummy.state(), Matchers.is(State.FAILED));
-        Assert.assertThat(service.state(), Matchers.is(State.FAILED));
+        assertThat(dummy.state()).isEqualTo(State.FAILED);
+        assertThat(service.state()).isEqualTo(State.FAILED);
     }
 
     @Test
@@ -99,15 +99,15 @@ public class RestartableServiceTest {
         Thread.sleep(1100);
         dummy.triggerCrash();
         Thread.sleep(100);
-        Assert.assertThat(dummy.state(), Matchers.is(State.FAILED));
-        Assert.assertThat(service.state(), Matchers.is(State.RUNNING));
+        assertThat(dummy.state()).isEqualTo(State.FAILED);
+        assertThat(service.state()).isEqualTo(State.RUNNING);
 
         final DummyService dummy2 = (DummyService) service.getDelegate();
-        Assert.assertThat(dummy2, Matchers.is(Matchers.not(dummy)));
+        assertThat(dummy2).isNotEqualTo(dummy);
         dummy2.triggerCrash();
         Thread.sleep(100);
-        Assert.assertThat(dummy2.state(), Matchers.is(State.FAILED));
-        Assert.assertThat(service.state(), Matchers.is(State.FAILED));
+        assertThat(dummy2.state()).isEqualTo(State.FAILED);
+        assertThat(service.state()).isEqualTo(State.FAILED);
     }
 
     @Test
@@ -118,16 +118,16 @@ public class RestartableServiceTest {
         Thread.sleep(1100);
         dummy.triggerCrash();
         Thread.sleep(100);
-        Assert.assertThat(dummy.state(), Matchers.is(State.FAILED));
-        Assert.assertThat(service.state(), Matchers.is(State.RUNNING));
+        assertThat(dummy.state()).isEqualTo(State.FAILED);
+        assertThat(service.state()).isEqualTo(State.RUNNING);
 
         final DummyService dummy2 = (DummyService) service.getDelegate();
-        Assert.assertThat(dummy2, Matchers.is(Matchers.not(dummy)));
+        assertThat(dummy2).isNotEqualTo(dummy);
         Thread.sleep(1100);
         dummy2.triggerCrash();
         Thread.sleep(100);
-        Assert.assertThat(dummy2.state(), Matchers.is(State.FAILED));
-        Assert.assertThat(service.state(), Matchers.is(State.RUNNING));
+        assertThat(dummy2.state()).isEqualTo(State.FAILED);
+        assertThat(service.state()).isEqualTo(State.RUNNING);
     }
 
     @Test
@@ -137,8 +137,8 @@ public class RestartableServiceTest {
         final DummyService dummy = (DummyService) service.getDelegate();
         dummy.triggerShutdown();
         Thread.sleep(100);
-        Assert.assertThat(dummy.state(), Matchers.is(State.TERMINATED));
-        Assert.assertThat(service.state(), Matchers.is(State.TERMINATED));
+        assertThat(dummy.state()).isEqualTo(State.TERMINATED);
+        assertThat(service.state()).isEqualTo(State.TERMINATED);
     }
 
     @Test
@@ -148,8 +148,8 @@ public class RestartableServiceTest {
         final DummyService dummy = (DummyService) service.getDelegate();
         dummy.triggerCrash();
         Thread.sleep(100);
-        Assert.assertThat(dummy.state(), Matchers.is(State.FAILED));
-        Assert.assertThat(service.state(), Matchers.is(State.FAILED));
+        assertThat(dummy.state()).isEqualTo(State.FAILED);
+        assertThat(service.state()).isEqualTo(State.FAILED);
     }
 
     @Test
@@ -159,8 +159,8 @@ public class RestartableServiceTest {
         final DummyService dummy = (DummyService) service.getDelegate();
         dummy.triggerShutdown();
         Thread.sleep(100);
-        Assert.assertThat(dummy.state(), Matchers.is(State.TERMINATED));
-        Assert.assertThat(service.state(), Matchers.is(State.TERMINATED));
+        assertThat(dummy.state()).isEqualTo(State.TERMINATED);
+        assertThat(service.state()).isEqualTo(State.TERMINATED);
     }
 
     @Test
@@ -206,10 +206,9 @@ public class RestartableServiceTest {
         Thread.sleep(100);
 
         System.out.println(events);
-        Assert.assertThat(events,
-                Matchers.contains("starting", "running", "starting", "running",
-                        "starting", "running", "stopping RUNNING",
-                        "terminated STOPPING"));
+        assertThat(events).containsExactly("starting", "running", "starting", "running",
+                "starting", "running", "stopping RUNNING", "terminated STOPPING")
+                .inOrder();
     }
 
 }

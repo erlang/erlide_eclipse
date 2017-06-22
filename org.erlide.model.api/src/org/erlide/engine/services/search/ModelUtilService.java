@@ -3,12 +3,9 @@ package org.erlide.engine.services.search;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlElement;
-import org.erlide.engine.model.erlang.IErlPreprocessorDef;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlModule;
@@ -28,9 +25,6 @@ public interface ModelUtilService {
     boolean isOtpModule(final IErlModule module);
 
     String[] getPredefinedMacroNames();
-
-    List<IErlPreprocessorDef> getAllPreprocessorDefs(final IErlModule module,
-            final ErlElementKind kind) throws CoreException;
 
     List<OtpErlangObject> getImportsAsList(final IErlModule mod);
 

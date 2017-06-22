@@ -264,7 +264,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
      * @return the name of the element
      */
     String getName(final IAdaptable element) {
-        final IWorkbenchAdapter adapter = (IWorkbenchAdapter) element
+        final IWorkbenchAdapter adapter = element
                 .getAdapter(IWorkbenchAdapter.class);
         if (adapter != null) {
             return adapter.getLabel(element);

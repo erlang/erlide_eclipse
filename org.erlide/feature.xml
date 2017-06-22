@@ -2,12 +2,12 @@
 <feature
       id="org.erlide"
       label="Erlang language tools IDE"
-      version="0.50.0.qualifier"
+      version="0.52.0.qualifier"
       provider-name="%vendorName"
       plugin="org.erlide.branding"
       image="erlang-64.gif"
       license-feature="org.erlide.licenses"
-      license-feature-version="1.0.0.qualifier">
+      license-feature-version="1.0.1">
    <install-handler/>
 
    <description>
@@ -36,6 +36,14 @@ is available from http://www.eclipse.org/legal/epl-v10.html
       <discovery label="Handly" url="https://hudson.eclipse.org/handly/job/0.3.x/lastSuccessfulBuild/artifact/build/repository/"/>
    </url>
 
+   <includes
+         id="org.erlide.kernel.feature"
+         version="0.0.0"/>
+
+   <requires>
+      <import feature="org.eclipse.platform" version="4.5.0" match="compatible"/>
+   </requires>
+
    <plugin
          id="org.erlide.ui"
          download-size="0"
@@ -54,13 +62,6 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.dialyzer.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.erlide.branding"
@@ -82,19 +83,6 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.erlide.dialyzer.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.erlide.kernel"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
    <plugin
          id="org.erlide.libs"
@@ -131,13 +119,6 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.erlide.util_eclipse"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.erlide.cover.api"
          download-size="0"
          install-size="0"
@@ -167,6 +148,27 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.erlide.libs2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.libs.annotations"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.server"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.jvmcheck"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: erlide engine api
 Bundle-SymbolicName: org.erlide.model.api;singleton:=true
-Bundle-Version: 0.50.0.qualifier
+Bundle-Version: 0.50.1.qualifier
 Bundle-Vendor: erlide.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.erlide.engine,
  org.erlide.engine.model,
  org.erlide.engine.model.builder,
@@ -27,6 +27,14 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.erlide.runtime,
  org.erlide.util,
  org.erlide.libs,
- org.erlide.libs2;bundle-version="[1.16.1,2.0.0)"
+ org.erlide.libs2;bundle-version="[1.16.1,2.0.0)",
+ org.erlide.libs.annotations;bundle-version="1.0.0",
+ com.google.guava;bundle-version="[15.0.0,16.0.0)",
+ javax.inject;bundle-version="1.0.0",
+ org.eclipse.xtend.lib;bundle-version="2.11.0",
+ org.eclipse.xtend.lib.macro;bundle-version="2.11.0",
+ org.eclipse.xtext.xbase.lib;bundle-version="2.11.0",
+ org.eclipse.lsp4j;bundle-version="[0.1.0,0.2.0)",
+ org.eclipse.lsp4j.jsonrpc;bundle-version="[0.1.0,0.2.0)"
 Bundle-ActivationPolicy: lazy
-Bundle-Activator: org.erlide.engine.ModelActivator
+Bundle-Activator: org.erlide.engine.ModelApiActivator

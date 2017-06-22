@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.erlide.engine.internal.model.root;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -25,16 +23,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.internal.ModelPlugin;
+import org.erlide.engine.ModelPlugin;
 import org.erlide.engine.internal.model.cache.ErlModelCache;
 import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
@@ -58,7 +53,7 @@ import org.erlide.engine.model.root.IProjectConfigurator;
 import org.erlide.engine.model.root.PathResolver;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.engine.model.root.ProjectConfigurationChangeListener;
-import org.erlide.engine.services.search.OpenService;
+import org.erlide.engine.model.root.ProjectConfiguratorFactory;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.NatureUtil;
 import org.erlide.runtime.api.RuntimeCore;
@@ -93,12 +88,6 @@ public class ErlProject extends Openable
 
     private static final String CONFIG_TYPE_TAG = "configType";
 
-    /**
-     * Whether the underlying file system is case sensitive.
-     */
-    private static final boolean IS_CASE_SENSITIVE = !new File("Temp") //$NON-NLS-1$
-            .equals(new File("temp"));  //$NON-NLS-1$
-
     protected IProject fProject;
     private ProjectConfigType configType = ProjectConfigType.INTERNAL;
     private ErlangProjectProperties properties;
@@ -128,8 +117,7 @@ public class ErlProject extends Openable
         try {
             final IContainer c = (IContainer) r;
             final IResource[] elems = c.members();
-            final List<IErlElement> children = new ArrayList<>(
-                    elems.length + 1);
+            final List<IErlElement> children = new ArrayList<>(elems.length + 1);
             // ErlLogger.debug(">>adding externals");
             addExternals(children);
             // ErlLogger.debug("childcount %d", children.size());
@@ -179,8 +167,7 @@ public class ErlProject extends Openable
         for (final IPath path : new PathResolver().resolvePaths(includeDirs)) {
             if (path.isAbsolute() && !fProject.getLocation().isPrefixOf(path)) {
                 final Collection<String> includes = ErlangEngine.getInstance()
-                        .getService(OpenService.class)
-                        .getIncludesInDir(path.toPortableString());
+                        .getOpenService().getIncludesInDir(path.toPortableString());
                 if (includes != null) {
                     for (final String include : includes) {
                         projectIncludes.add(path.append(include).toPortableString());
@@ -288,16 +275,6 @@ public class ErlProject extends Openable
         }
     }
 
-    /**
-     * Answers an PLUGIN_ID which is used to distinguish project/entries during
-     * package fragment root computations
-     *
-     * @return String
-     */
-    public String rootID() {
-        return "[PRJ]" + fProject.getFullPath(); //$NON-NLS-1$
-    }
-
     @Override
     public Collection<IErlModule> getModules() throws ErlModelException {
         final List<IErlModule> modulesForProject = ErlModelCache.getDefault()
@@ -384,74 +361,6 @@ public class ErlProject extends Openable
         return includes;
     }
 
-    /**
-     * Returns a canonicalized path from the given external path. Note that the
-     * return path contains the same number of segments and it contains a device
-     * only if the given path contained one.
-     *
-     * @param externalPath
-     *            IPath
-     * @see java.io.File for the definition of a canonicalized path
-     * @return IPath
-     */
-    public static IPath canonicalizedPath(final IPath externalPath) {
-
-        if (externalPath == null) {
-            return null;
-        }
-
-        if (IS_CASE_SENSITIVE) {
-            return externalPath;
-        }
-
-        // if not external path, return original path
-        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        if (workspace == null) {
-            return externalPath; // protection during shutdown (30487)
-        }
-        if (workspace.getRoot().findMember(externalPath) != null) {
-            return externalPath;
-        }
-
-        IPath canonicalPath = null;
-        try {
-            canonicalPath = new Path(
-                    new File(externalPath.toOSString()).getCanonicalPath());
-        } catch (final IOException e) {
-            // default to original path
-            return externalPath;
-        }
-
-        IPath result;
-        final int canonicalLength = canonicalPath.segmentCount();
-        if (canonicalLength == 0) {
-            // the java.io.File canonicalization failed
-            return externalPath;
-        } else if (externalPath.isAbsolute()) {
-            result = canonicalPath;
-        } else {
-            // if path is relative, remove the first segments that were added by
-            // the java.io.File canonicalization
-            // e.g. 'lib/classes.zip' was converted to
-            // 'd:/myfolder/lib/classes.zip'
-            final int externalLength = externalPath.segmentCount();
-            if (canonicalLength >= externalLength) {
-                result = canonicalPath
-                        .removeFirstSegments(canonicalLength - externalLength);
-            } else {
-                return externalPath;
-            }
-        }
-
-        // keep device only if it was specified (this is because
-        // File.getCanonicalPath() converts '/lib/classed.zip' to
-        // 'd:/lib/classes/zip')
-        if (externalPath.getDevice() == null) {
-            result = result.setDevice(null);
-        }
-        return result;
-    }
-
     @Override
     public IErlModule getModule(final String name) {
         try {
@@ -489,7 +398,10 @@ public class ErlProject extends Openable
                         || element.getKind() == ErlElementKind.PROJECT;
                 if (element instanceof IErlModule) {
                     final IErlModule module = (IErlModule) element;
-                    result.add(module);
+                    if (module.getAncestorOfKind(
+                            ErlElementKind.PROJECT) == ErlProject.this) {
+                        result.add(module);
+                    }
                     return false;
                 } else if (isExternalOrProject && element instanceof IOpenable) {
                     final IOpenable openable = (IOpenable) element;
@@ -611,13 +523,17 @@ public class ErlProject extends Openable
 
             @Override
             public boolean visit(final IErlElement element) throws ErlModelException {
-                final boolean isExternalOrProject = element.getKind() == ErlElementKind.EXTERNAL_ROOT
+                final boolean isExternalOrProject = element
+                        .getKind() == ErlElementKind.EXTERNAL_ROOT
                         || element.getKind() == ErlElementKind.EXTERNAL_APP
                         || element.getKind() == ErlElementKind.EXTERNAL_FOLDER
                         || element.getKind() == ErlElementKind.PROJECT;
                 if (element instanceof IErlModule) {
                     final IErlModule module = (IErlModule) element;
-                    if (module.getSourceKind() == SourceKind.HRL) {
+                    if (module.getSourceKind() == SourceKind.HRL && (module
+                            .getAncestorOfKind(ErlElementKind.PROJECT) == ErlProject.this
+                            || element.getKind() == ErlElementKind.EXTERNAL_APP
+                            || element.getKind() == ErlElementKind.EXTERNAL_FOLDER)) {
                         result.add(module);
                     }
                     return false;
@@ -718,8 +634,7 @@ public class ErlProject extends Openable
     }
 
     private IProjectConfigurator getConfig() {
-        return ErlangEngine.getInstance().getProjectConfiguratorFactory()
-                .getConfig(getConfigType(), this);
+        return ProjectConfiguratorFactory.getDefault().getConfig(getConfigType(), this);
     }
 
     private void storeProperties() {

@@ -11,6 +11,16 @@
 	</parent>
 
 	<artifactId>org.erlide.testing.libs</artifactId>
-	<version>1.2.1</version>
+	<version>1.2.3</version>
 	<packaging>eclipse-plugin</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

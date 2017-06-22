@@ -43,24 +43,4 @@ class FunctionExtensions {
         fn.apply(p)
     }
 
-    /** Let the _ operator also work on Procedure1.apply */
-    def static <Param> _(Procedure1<Param> fn, Param p) {
-        fn.apply(p)
-    }
-
-    /** Let the _ operator also work on Function1.apply */
-    def static <Param, T> T _(Function1<Param, T> fn, Param p) {
-        fn.apply(p)
-    }
-
-    /** Let the _ operator also work on Procedure1.apply */
-    def static <Param> _(Param p, (Param)=>void fn) {
-        fn.apply(p)
-    }
-
-    /** Let the _ operator also work on Function1.apply */
-    def static <Param, T> T _(Param p, (Param)=>T fn) {
-        fn.apply(p)
-    }
-
 }

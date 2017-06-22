@@ -42,6 +42,8 @@ import org.erlide.util.NodeHostClassifier;
 import org.erlide.util.NodeHostClassifier.HostnameType;
 import org.erlide.util.NodeHostClassifier.NodeType;
 
+import com.google.common.base.Strings;
+
 public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
     private Button shortNameButton;
@@ -268,11 +270,15 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         } catch (final CoreException e) {
             runtimesCombo.setText("");
         }
-        try {
-            final String node = config.getAttribute(ErlRuntimeAttributes.NODE_NAME, "");
+        String aname = Long.toHexString(System.currentTimeMillis() & 0xFFFFFF);
+		try {
+            String node = config.getAttribute(ErlRuntimeAttributes.NODE_NAME, aname);
+			if (Strings.isNullOrEmpty(node)) {
+				node = aname;
+			}
             nameText.setText(node);
         } catch (final CoreException e) {
-            nameText.setText("");
+            nameText.setText(aname);
         }
         try {
             final boolean longName = config
@@ -280,7 +286,6 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             longNameButton.setSelection(longName);
             shortNameButton.setSelection(!longName);
         } catch (final CoreException e) {
-            nameText.setText("");
         }
         try {
             final String cookie = config.getAttribute(ErlRuntimeAttributes.COOKIE, "");
@@ -341,7 +346,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
     public boolean isValid(final ILaunchConfiguration config) {
         setErrorMessage(null);
         final String name = nameText.getText().trim();
-        if (!"".equals(name) && !RuntimeData.validateNodeName(name)) {
+        if (!RuntimeData.validateNodeName(name)) {
             setErrorMessage(String.format("Node name '%s' is invalid.", name));
             return false;
         }

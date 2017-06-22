@@ -23,8 +23,6 @@ import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.ErlRuntimeAttributes;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
-import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.root.IBeamLocator;
 import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -76,20 +74,25 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
             ErlLogger.error("Can't create backend without a runtime defined!");
             return null;
         }
-        final String nodeName = config.getAttribute(ErlRuntimeAttributes.NODE_NAME, "");
+		String defaultNodeName = getDefaultNodeNameFromProjects(config, Long.toHexString(System.currentTimeMillis() & 0xFFFFFF));
+		final String nodeName = config.getAttribute(ErlRuntimeAttributes.NODE_NAME, defaultNodeName);
         final boolean managed = shouldManageNode(nodeName, BackendCore.getEpmdWatcher());
         BackendData data = new BackendData(runtimeInfo, config, mode, managed);
         data = configureBackend(data, mode, launch);
         return data;
     }
 
+	private String getDefaultNodeNameFromProjects(ILaunchConfiguration config, String defaultDefault) throws CoreException {
+		String projects = config.getAttribute(ErlRuntimeAttributes.PROJECTS, defaultDefault);
+		final String[] names = projects.split(BackendData.PROJECT_NAME_SEPARATOR);
+		return names[0];
+	}
+
     /*
      * Child classes override this to set specific information
      */
-    protected BackendData configureBackend(final BackendData data, final String mode,
-            final ILaunch launch) {
+	protected BackendData configureBackend(final BackendData data, final String mode, final ILaunch launch) {
         data.setLaunch(launch);
-        data.setBeamLocator(ErlangEngine.getInstance().getService(IBeamLocator.class));
         if (mode.equals("debug")) {
             data.setContext(CodeContext.DEBUGGER);
         }

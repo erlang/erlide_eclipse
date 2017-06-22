@@ -495,7 +495,7 @@ public class ErlProjectPropertyPage extends PropertyPage {
     }
 
     private IProject getProject() {
-        return (IProject) getElement().getAdapter(IProject.class);
+        return getElement().getAdapter(IProject.class);
     }
 
     @Override

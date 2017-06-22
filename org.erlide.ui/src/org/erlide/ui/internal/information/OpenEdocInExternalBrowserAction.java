@@ -21,7 +21,6 @@ import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 
 /**
  * This action opens the selected element's Javadoc in a browser as defined by
@@ -39,7 +38,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
 
     private Shell fShell;
 
-    private ErlBrowserInformationControlInput input;
+    private ErlangBrowserInformationControlInput input;
 
     /**
      * Creates a new <code>OpenAttachedJavadocAction</code>. The action requires
@@ -52,7 +51,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
      *            action
      */
     public OpenEdocInExternalBrowserAction(final IWorkbenchSite site,
-            final ErlBrowserInformationControlInput input) {
+            final ErlangBrowserInformationControlInput input) {
         super(site);
         this.input = input;
         setText(ActionMessages.OpenEdocInExternalBrowser_label);
@@ -233,8 +232,8 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
     }
 
     public void setInput(final Object newInput) {
-        if (newInput instanceof ErlBrowserInformationControlInput) {
-            input = (ErlBrowserInformationControlInput) newInput;
+        if (newInput instanceof ErlangBrowserInformationControlInput) {
+            input = (ErlangBrowserInformationControlInput) newInput;
         }
     }
 

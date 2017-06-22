@@ -116,23 +116,25 @@ function update_feature {
 
 	  if [ "$CMD" != "" ]
 	  then
-		sed "s/  version=\"$OLD\"/  version=\"$VER\"/" < $FEATURE/feature.xml > $FEATURE/feature.xml1
-		mv $FEATURE/feature.xml1 $FEATURE/feature.xml
+		sed "s/  version=\"$OLD\"/  version=\"$VER\"/" < $FEATURE/feature.xml > $FEATURE/feature.xml.1
+		mv $FEATURE/feature.xml.1 $FEATURE/feature.xml
 	  fi
 
-	if [ "$FEATURE" == "org.erlide" ]
-	then
-  		NEW_=$(echo $NEW | sed 's/.qualifier//')
-		VER_=$(echo $VER | sed 's/.qualifier//')
-		mv CHANGES CHANGES.old
-		echo "List of user visible changes between $NEW_ and $VER_ ($(date +%Y%m%d))" > CHANGES
-		echo "" >> CHANGES
-		git log v$NEW_..$CRT --oneline >> CHANGES
-		echo "" >> CHANGES
-		cat CHANGES.old >> CHANGES
-		rm CHANGES.old
-	fi
+  else
+    VER=$NEW
   fi
+
+    NEW_=$(echo $NEW | sed 's/.qualifier//')
+    VER_=$(echo $VER | sed 's/.qualifier//')
+    echo "## $VER_ ($(date +%Y%m%d))" > CHANGES
+    echo "" >> CHANGES
+    MSG=$(git log v$NEW_..$CRT --oneline --pretty=tformat:"- %s")
+    # TODO search body for #nnn reference and append to MSG
+    echo $MSG | sed 's!#\([0-9]\+\)![#\1](https://github.com/erlang/erlide_eclipse/issues/\1)!g'>> CHANGES
+    echo "" >> CHANGES
+    cat CHANGES CHANGELOG.md > CHANGES.2
+    rm CHANGES
+    mv CHANGES.2 CHANGELOG.md
 }
 
 CHANGED="none"
@@ -172,8 +174,10 @@ echo "final changed: $CHANGED..."
 if [ "$CHANGED" != "none" ]
 then
 	update_feature "org.erlide" $CMD
-	update_feature "org.erlide.sdk" $CMD
 fi
+pushd org.erlide.parent
+./mvnw -q tycho-versions:update-pom -Dtycho.mode=maven
+popd
 
 if [ "$CMD" = "commit" ]
 then

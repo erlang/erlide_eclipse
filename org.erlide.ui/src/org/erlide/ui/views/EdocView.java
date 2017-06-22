@@ -44,8 +44,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IAbstractTextEditorHelpContextIds;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.hover.ErlTextHover;
-import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.ui.internal.information.ErlangBrowserInformationControlInput;
 import org.erlide.ui.internal.information.HandleEdocLinksLocationListener;
 import org.erlide.ui.internal.information.OpenDeclarationAction;
 import org.erlide.util.ErlLogger;
@@ -83,7 +83,7 @@ public class EdocView extends AbstractInfoView {
 
     private static URL fgStyleSheet;
     private HandleEdocLinksLocationListener locationListener;
-    private ErlBrowserInformationControlInput input;
+    private ErlangBrowserInformationControlInput input;
     protected OpenDeclarationAction openDeclarationAction;
 
     /**
@@ -334,19 +334,19 @@ public class EdocView extends AbstractInfoView {
         String edocHtml = null;
         if (info instanceof String) {
             edocHtml = (String) info;
-        } else if (info instanceof ErlBrowserInformationControlInput) {
-            final ErlBrowserInformationControlInput myInput = (ErlBrowserInformationControlInput) info;
+        } else if (info instanceof ErlangBrowserInformationControlInput) {
+            final ErlangBrowserInformationControlInput myInput = (ErlangBrowserInformationControlInput) info;
             setInput(myInput);
             edocHtml = myInput.getHtml();
         }
         fBrowser.setText(edocHtml);
     }
 
-    private void setInput(final ErlBrowserInformationControlInput input) {
+    private void setInput(final ErlangBrowserInformationControlInput input) {
         this.input = input;
     }
 
-    public ErlBrowserInformationControlInput getInput() {
+    public ErlangBrowserInformationControlInput getInput() {
         return input;
     }
 

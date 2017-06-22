@@ -44,7 +44,7 @@ public class OpenErlangAction extends Action {
         provider = selectionProvider;
         selectedElement = null;
         selectedClosedProjects = Sets.newHashSet();
-        final IShellProvider shellProvider = (IShellProvider) site.getViewSite()
+        final IShellProvider shellProvider = site.getViewSite()
                 .getAdapter(IShellProvider.class);
         openResourceAction = new OpenResourceAction(shellProvider);
     }

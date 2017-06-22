@@ -44,4 +44,15 @@
       <super type="org.eclipse.debug.core.breakpointMarker"/>
       <persistent value="true"/>
    </extension>
+   <extension
+         point="org.eclipse.core.resources.markers"
+         id="dialyzewarningmarker"
+         name="Dialyzer Warning">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
 </plugin>

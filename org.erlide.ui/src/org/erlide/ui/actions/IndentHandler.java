@@ -65,7 +65,7 @@ public class IndentHandler extends ErlangAbstractHandler {
         display.syncExec(new Runnable() {
             @Override
             public void run() {
-                final IRewriteTarget target = (IRewriteTarget) textEditor
+                final IRewriteTarget target = textEditor
                         .getAdapter(IRewriteTarget.class);
                 if (target != null) {
                     target.beginCompoundChange();
@@ -98,8 +98,7 @@ public class IndentHandler extends ErlangAbstractHandler {
             final String text, final boolean template, final String prefix)
             throws RpcException {
 
-        final IndentService indentService = ErlangEngine.getInstance()
-                .getService(IndentService.class);
+        final IndentService indentService = ErlangEngine.getInstance().getIndentService();
 
         final int tabw = EditorsUI.getPreferenceStore()
                 .getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);

@@ -1,14 +1,14 @@
 package org.erlide.core.internal.builder
 
-import com.google.common.base.Charsets
-import com.google.common.io.Files
 import java.net.URI
+import java.nio.charset.StandardCharsets
 import org.eclipse.core.filesystem.EFS
 import org.eclipse.core.resources.IContainer
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.NullProgressMonitor
+import com.google.common.io.Files
 
 class ErlangToolExtensions {
 
@@ -24,7 +24,7 @@ class ErlangToolExtensions {
         val file = getRealFile(makefile)
         if(file === null) return false
 
-        val top = Files.readFirstLine(file, Charsets.ISO_8859_1)
+        val top = Files.readFirstLine(file, StandardCharsets.ISO_8859_1)
         return top == "# Copyright 2012 Erlware, LLC. All Rights Reserved."
     }
 
@@ -37,7 +37,7 @@ class ErlangToolExtensions {
     }
 
     def static getMakefileTargets(IFile makefile) {
-        val lines = Files.readLines(getRealFile(makefile), Charsets.ISO_8859_1)
+        val lines = Files.readLines(getRealFile(makefile), StandardCharsets.ISO_8859_1)
         lines.map[if(hasTarget) split(":").head else null].filterNull
     }
 

@@ -245,12 +245,6 @@ public abstract class ErlElement extends PlatformObject
         return false;
     }
 
-    /**
-     */
-    public String readableName() {
-        return getName();
-    }
-
     protected String tabString(final int tab) {
         return " ";
         // final StringBuilder buffer = new StringBuilder();
@@ -426,15 +420,6 @@ public abstract class ErlElement extends PlatformObject
     @Override
     public IErlElement getChildWithResource(final IResource rsrc) {
         return getChildWithResource(this, rsrc);
-    }
-
-    /**
-     * Returns <code>true</code> if this child is in my children collection
-     */
-    protected boolean includesChild(final IErlElement child) {
-        synchronized (getModelLock()) {
-            return internalGetChildren().contains(child);
-        }
     }
 
     /**

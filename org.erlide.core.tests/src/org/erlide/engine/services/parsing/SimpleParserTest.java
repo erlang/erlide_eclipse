@@ -1,7 +1,6 @@
 package org.erlide.engine.services.parsing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
+import static com.google.common.truth.Truth.assertThat;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class SimpleParserTest {
         final List<OtpErlangObject> expected = Lists.newArrayList(new OtpErlangAtom("a"),
                 new OtpErlangLong(1), new OtpErlangList(new OtpErlangAtom("c")));
         final List<OtpErlangObject> actual = parser.parse(input);
-        assertThat(actual, contains(expected.toArray()));
+        assertThat(actual).containsAllIn(expected).inOrder();
     }
 
 }

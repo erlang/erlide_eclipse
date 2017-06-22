@@ -12,6 +12,7 @@ public final class RuntimePreferenceMessages extends NLS {
     public static String add;
     public static String edit;
     public static String remove;
+    public static String detect;
     public static String add_title;
     public static String edit_title;
     public static String info_title;

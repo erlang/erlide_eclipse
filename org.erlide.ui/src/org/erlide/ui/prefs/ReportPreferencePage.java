@@ -182,7 +182,7 @@ public class ReportPreferencePage extends PreferencePage
 
     private static void fetchErlangSystemInfo() {
         final SystemInfoService sysinfo = ErlangEngine.getInstance()
-                .getService(SystemInfoService.class);
+                .getSystemInfoService();
         final String info = sysinfo.get();
         ErlLogger.info("\n++++++++++++++++++++++\n" + info);
     }

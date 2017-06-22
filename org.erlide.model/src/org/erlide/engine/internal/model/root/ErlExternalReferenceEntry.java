@@ -14,7 +14,6 @@ import org.erlide.engine.model.OtpRpcFactory;
 import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.runtime.rpc.IOtpRpc;
 
@@ -22,15 +21,15 @@ import com.google.common.collect.Lists;
 
 public class ErlExternalReferenceEntry extends Openable implements IErlExternal {
 
-    private final String entry;
+    private final IPath path;
     private final boolean prebuilt;
     private final boolean hasHeaders;
     private String group;
 
     public ErlExternalReferenceEntry(final IParent parent, final String name,
-            final String entry, final boolean prebuilt, final boolean hasHeaders) {
+            final IPath path, final boolean prebuilt, final boolean hasHeaders) {
         super(parent, name);
-        this.entry = entry;
+        this.path = path;
         this.prebuilt = prebuilt;
         this.hasHeaders = hasHeaders;
     }
@@ -55,8 +54,8 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
                 .getProject(this);
         final IOtpRpc backend = OtpRpcFactory.getOtpRpcForProject(project);
         if (backend != null) {
-            final List<String> files = ErlangEngine.getInstance()
-                    .getService(OpenService.class).getLibFiles(entry);
+            final List<String> files = ErlangEngine.getInstance().getOpenService()
+                    .getLibFiles(path.toPortableString());
             final List<IErlModule> children = Lists
                     .newArrayListWithCapacity(files.size());
             for (final String file : files) {
@@ -77,11 +76,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
 
     @Override
     public String getFilePath() {
-        return null;
-    }
-
-    public String getExternalName() {
-        return entry;
+        return path.toPortableString();
     }
 
     @Override

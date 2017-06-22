@@ -20,11 +20,12 @@ import org.erlide.backend.api.BackendException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlElement;
+import org.erlide.engine.model.OtpRpcFactory;
 import org.erlide.engine.model.erlang.FunctionRef;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
 import org.erlide.engine.model.root.IErlModule;
-import org.erlide.engine.services.search.XrefService;
+import org.erlide.engine.services.search.ErlangXref;
 import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.jinterface.AsyncCaller;
@@ -35,14 +36,13 @@ public class CallHierarchyAction extends Action {
 
     private final ErlangEditor editor;
     IErlModule module;
-    private final XrefService xrefService;
+    private final ErlangXref xrefService;
 
-    public CallHierarchyAction(final ErlangEditor erlangEditor, final IErlModule module,
-            final XrefService xrefService) {
+    public CallHierarchyAction(final ErlangEditor erlangEditor, final IErlModule module) {
         super("Call hierarchy");
         editor = erlangEditor;
         this.module = module;
-        this.xrefService = xrefService;
+        this.xrefService = new ErlangXref(OtpRpcFactory.getOtpRpc());
     }
 
     @Override
@@ -78,7 +78,7 @@ public class CallHierarchyAction extends Action {
             protected CallHierarchyView prepare() {
                 try {
                     final IViewPart p = page.showView("org.erlide.ui.callhierarchy");
-                    final CallHierarchyView cvh = (CallHierarchyView) p
+                    final CallHierarchyView cvh = p
                             .getAdapter(CallHierarchyView.class);
 
                     cvh.setMessage("<searching... project " + ErlangEngine.getInstance()

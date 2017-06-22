@@ -56,7 +56,7 @@ public class ToggleCommentHandler extends ErlangAbstractHandler {
         display.syncExec(new Runnable() {
             @Override
             public void run() {
-                final ITextOperationTarget target1 = (ITextOperationTarget) textEditor
+                final ITextOperationTarget target1 = textEditor
                         .getAdapter(ITextOperationTarget.class);
                 if (target1 instanceof ITextViewer) {
                     final ITextViewer textViewer = (ITextViewer) target1;
@@ -78,10 +78,8 @@ public class ToggleCommentHandler extends ErlangAbstractHandler {
 
     private OtpErlangObject callErlang(final int offset, final int length,
             final String aText) {
-        final String fErlModule = "erlide_comment";
-        final String fErlFunction = "toggle_comment";
-        final OtpErlangObject r1 = ErlangEngine.getInstance().getGenericService()
-                .call(fErlModule, fErlFunction, offset, length, aText);
+        final OtpErlangObject r1 = ErlangEngine.getInstance().getToggleCommentService()
+                .call(offset, length, aText);
         return r1;
     }
 }

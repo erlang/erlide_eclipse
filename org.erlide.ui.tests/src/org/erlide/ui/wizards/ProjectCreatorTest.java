@@ -62,13 +62,13 @@ public class ProjectCreatorTest {
     // creator = new ProjectCreator(name, location, new IProject[] {}, info, context,
     // null);
     // prj = creator.createProject();
-    // assertThat(prj, is(not(nullValue())));
+    // assertThat(prj).isNotNull());
     //
     // final IErlProject erlPrj = ErlangEngine.getInstance().getModel().findProject(prj);
-    // assertThat(erlPrj, is(not(nullValue())));
+    // assertThat(erlPrj).isNotNull());
     //
     // final ErlangProjectProperties props = erlPrj.getProperties();
-    // assertThat(props.getOutputDir(), is((IPath) new Path("ebin")));
+    // assertThat(props.getOutputDir()).isEqualTo((IPath) new Path("ebin")));
     //
     // }
 

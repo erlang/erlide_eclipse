@@ -97,10 +97,6 @@ public class ExecutableExtensionsFactory
     }
 
     private Object injectParameter(final Class<? extends ErlangService> serviceClass) {
-        final Object parameter = ErlangEngine.getInstance().getService(serviceClass);
-        if (parameter != null) {
-            return parameter;
-        }
         throw new InjectionException("Constructor parameter " + serviceClass.getName()
                 + " could not be instantiated");
 

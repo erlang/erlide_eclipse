@@ -2,17 +2,26 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: erlide model
 Bundle-SymbolicName: org.erlide.model;singleton:=true
-Bundle-Version: 0.50.0.qualifier
+Bundle-Version: 0.50.1.qualifier
 Bundle-Vendor: erlide.org project
-Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.10.0",
  org.eclipse.core.resources;bundle-version="3.7.0",
  org.eclipse.core.filesystem;bundle-version="1.3.0",
  org.erlide.model.api,
  org.erlide.runtime,
  org.erlide.util,
  org.erlide.libs,
- org.erlide.libs2;bundle-version="[1.16.1,2.0.0)"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+ org.erlide.libs2;bundle-version="[1.16.1,2.0.0)",
+ org.erlide.libs.annotations;bundle-version="1.0.0",
+ org.erlide.backend,
+ com.google.guava;bundle-version="[15.0.0,16.0.0)",
+ javax.inject;bundle-version="1.0.0",
+ org.eclipse.xtend.lib;bundle-version="2.11.0",
+ org.eclipse.xtend.lib.macro;bundle-version="2.11.0",
+ org.eclipse.xtext.xbase.lib;bundle-version="2.11.0",
+ org.eclipse.lsp4j;bundle-version="[0.1.0,0.2.0)",
+ org.eclipse.lsp4j.jsonrpc;bundle-version="[0.1.0,0.2.0)"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.engine.internal;x-internal:=true,
  org.erlide.engine.internal.model,

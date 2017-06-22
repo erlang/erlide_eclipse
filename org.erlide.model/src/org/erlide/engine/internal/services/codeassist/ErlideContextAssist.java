@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.erlide.engine.services.codeassist.ContextAssistService;
-import org.erlide.engine.services.codeassist.RecordCompletion;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
@@ -16,7 +14,13 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlideContextAssist implements ContextAssistService {
+public class ErlideContextAssist {
+
+    // -define(NO_RECORD, 0).
+    // -define(RECORD_NAME, 1).
+    // -define(RECORD_FIELD, 2).
+    public static final int RECORD_NAME = 1;
+    public static final int RECORD_FIELD = 2;
 
     private final IOtpRpc backend;
 
@@ -24,7 +28,6 @@ public class ErlideContextAssist implements ContextAssistService {
         this.backend = backend;
     }
 
-    @Override
     public Collection<String> getVariables(final String src, final String prefix) {
         final SortedSet<String> result = new TreeSet<>();
         try {
@@ -43,7 +46,6 @@ public class ErlideContextAssist implements ContextAssistService {
         return result;
     }
 
-    @Override
     public RecordCompletion checkRecordCompletion(final IOtpRpc buildBackend,
             final String prefix) {
         try {
@@ -57,21 +59,6 @@ public class ErlideContextAssist implements ContextAssistService {
         } catch (final RpcException e) {
             ErlLogger.error(e);
         } catch (final OtpErlangRangeException e) {
-            ErlLogger.error(e);
-        }
-        return null;
-    }
-
-    @Override
-    @SuppressWarnings("boxing")
-    public OtpErlangList getFunctionHead(final String name, final int arity) {
-        try {
-            final OtpErlangObject res = backend.call("erlide_content_assist",
-                    "get_function_head", "ai", name, arity);
-            if (res instanceof OtpErlangList) {
-                return (OtpErlangList) res;
-            }
-        } catch (final RpcException e) {
             ErlLogger.error(e);
         }
         return null;

@@ -1,9 +1,6 @@
 package org.erlide.backend;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static com.google.common.truth.Truth.assertThat;
 
 import java.util.Enumeration;
 
@@ -15,41 +12,41 @@ public class ErlangPluginsTest {
 
     @Test
     public void commonIsAvailable() {
-        checkBundleForTwoEbinElements("org.erlide.kernel", "/common");
+        checkBundleForTwoEbinElements("org.erlide.kernel.common", "/ebin");
     }
 
     @Test
     public void ideIsAvailable() {
-        checkBundleForTwoEbinElements("org.erlide.kernel", "/ide");
+        checkBundleForTwoEbinElements("org.erlide.kernel.ide", "/ebin");
     }
 
     @Test
     public void debuggerIsAvailable() {
-        checkBundleForTwoEbinElements("org.erlide.kernel", "/debugger");
-    }
-
-    @Test
-    public void debuggerR16IsAvailable() {
-        checkBundleForTwoEbinElements("org.erlide.kernel", "/debugger/r16");
+        checkBundleForTwoEbinElements("org.erlide.kernel.debugger", "/ebin");
     }
 
     @Test
     public void debugger17IsAvailable() {
-        checkBundleForTwoEbinElements("org.erlide.kernel", "/debugger/17");
+        checkBundleForTwoEbinElements("org.erlide.kernel.debugger", "/ebin/17");
     }
 
     @Test
     public void debugger18IsAvailable() {
-        checkBundleForTwoEbinElements("org.erlide.kernel", "/debugger/18");
+        checkBundleForTwoEbinElements("org.erlide.kernel.debugger", "/ebin/18");
+    }
+
+    @Test
+    public void debugger19IsAvailable() {
+        checkBundleForTwoEbinElements("org.erlide.kernel.debugger", "/ebin/19");
     }
 
     private void checkBundleForTwoEbinElements(final String pluginId, final String path) {
         final Bundle b = Platform.getBundle(pluginId);
         final Enumeration<String> paths = b.getEntryPaths(path);
-        assertThat(paths, is(not(nullValue())));
+        assertThat(paths).isNotNull();
         // we check for at least two elements
-        assertThat(paths.hasMoreElements(), is(true));
-        assertThat(paths.hasMoreElements(), is(true));
+        assertThat(paths.hasMoreElements()).isEqualTo(true);
+        assertThat(paths.hasMoreElements()).isEqualTo(true);
     }
 
 }

@@ -320,7 +320,7 @@ public class EditorUtility {
             if (part != null) {
                 final IEditorInput editorInput = part.getEditorInput();
                 if (editorInput != null) {
-                    return (IErlElement) editorInput.getAdapter(IErlElement.class);
+                    return editorInput.getAdapter(IErlElement.class);
                     // return JavaUI.getEditorInputJavaElement(editorInput);
                 }
             }

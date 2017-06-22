@@ -2,18 +2,16 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: erlide core Tests Fragment
 Bundle-SymbolicName: org.erlide.core.tests;singleton:=true
-Bundle-Version: 0.32.1.qualifier
+Bundle-Version: 0.50.1.qualifier
 Bundle-Vendor: erlide.org
 Fragment-Host: org.erlide.core;bundle-version="0.14.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.erlide.core,
  org.erlide.core.builder,
  org.erlide.core.preferences,
  org.erlide.core.services.builder,
  org.erlide.engine.services.parsing
-Require-Bundle: org.erlide.model,
- org.erlide.testing.libs,
- org.hamcrest.library;bundle-version="1.3.0",
- org.hamcrest.core;bundle-version="1.3.0",
+Require-Bundle: org.erlide.testing.libs,
  org.junit
 Eclipse-ExtensibleAPI: true 
+Import-Package: org.erlide.engine.internal

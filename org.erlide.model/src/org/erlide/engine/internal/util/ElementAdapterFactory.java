@@ -11,18 +11,16 @@ public class ElementAdapterFactory implements IAdapterFactory {
     private static final Class[] ADAPTER_LIST = new Class[] { IErlElement.class };
 
     @Override
-    public Object getAdapter(final Object adaptableObject,
-            @SuppressWarnings("rawtypes") final Class adapterType) {
+    public <T> T getAdapter(final Object adaptableObject, final Class<T> adapterType) {
         if (adapterType == IErlElement.class && adaptableObject instanceof IResource) {
-            return ErlangEngine.getInstance().getModel()
-                    .findElement((IResource) adaptableObject);
+            return adapterType.cast(ErlangEngine.getInstance().getModel()
+                    .findElement((IResource) adaptableObject));
         }
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public Class[] getAdapterList() {
+    public Class<?>[] getAdapterList() {
         return ADAPTER_LIST;
     }
 

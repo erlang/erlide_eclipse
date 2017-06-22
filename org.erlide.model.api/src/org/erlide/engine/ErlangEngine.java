@@ -14,7 +14,7 @@ public class ErlangEngine {
     public static synchronized IErlangEngine getInstance() {
         if (engine == null) {
             // TODO inject backend in factory
-            engine = ModelActivator.getErlangEngine();
+            engine = ModelApiActivator.getErlangServer();
         }
         return engine;
     }

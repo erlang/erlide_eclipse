@@ -1,7 +1,6 @@
 package org.erlide.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import org.erlide.util.erlang.OtpErlang;
@@ -157,7 +156,7 @@ public class UtilTest {
         final OtpErlangObject input = new OtpErlangBinary(bytes);
         final byte[] expected = bytes;
         final String actual = Util.stringValue(input);
-        assertThat(actual.getBytes(Charsets.ISO_8859_1), is(expected));
+        assertThat(actual.getBytes(Charsets.ISO_8859_1)).isEqualTo(expected);
     }
 
     @Test
@@ -166,7 +165,7 @@ public class UtilTest {
         final OtpErlangObject input = new OtpErlangBinary(bytes);
         final byte[] expected = bytes;
         final String actual = Util.stringValue(input);
-        assertThat(actual.getBytes(Charsets.UTF_8), is(expected));
+        assertThat(actual.getBytes(Charsets.UTF_8)).isEqualTo(expected);
     }
 
     @Test

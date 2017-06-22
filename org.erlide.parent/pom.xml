@@ -11,19 +11,20 @@
 
 	<properties>
 		<tycho.version>0.24.0</tycho.version>
+		<tycho-extras-version>${tycho.version}</tycho-extras-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<repositories>
 		<repository>
-			<id>luna</id>
+			<id>mars</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/luna</url>
+			<url>http://download.eclipse.org/releases/mars/201602261000</url>
 		</repository>
 		<repository>
-			<id>luna updates</id>
+			<id>mars updates</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/eclipse/updates/4.4</url>
+			<url>http://download.eclipse.org/eclipse/updates/4.5/R-4.5.2-201602121500</url>
 		</repository>
 		<repository>
 			<id>graphviz</id>
@@ -31,9 +32,29 @@
 			<url>http://download.erlide.org/update/graphviz</url>
 		</repository>
 		<repository>
-			<id>orbit luna</id>
+			<id>orbit mars</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository</url>
+			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository</url>
+		</repository>
+		<repository>
+			<id>xtend</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.11.0</url>
+		</repository>
+		<repository>
+			<id>lsp4j</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/lsp4j/updates/releases/0.1.0/</url>
+		</repository>
+		<repository>
+			<id>handly</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/handly/releases/0.6/repository</url>
+		</repository>
+		<repository>
+			<id>kernel</id>
+			<layout>p2</layout>
+			<url>http://download.erlide.org/update/kernel/0.114.0</url>
 		</repository>
 	</repositories>
 
@@ -45,31 +66,34 @@
 		<module>../org.erlide.target</module>
 		<!-- <module>../releng.tools</module> -->
 		<module>../org.erlide</module>
+		<module>../org.erlide.product.feature</module>
 
 		<module>../org.erlide.backend</module>
 		<module>../org.erlide.branding</module>
 		<module>../org.erlide.core</module>
-		<module>../org.erlide.dialyzer.core</module>
-		<module>../org.erlide.dialyzer.ui</module>
+
+
 		<module>../org.erlide.help</module>
-		<module>../org.erlide.kernel</module>
+		
+		<module>../org.erlide.jvmcheck</module>
 		<module>../org.erlide.libs</module>
+		<module>../org.erlide.libs.annotations</module>
 		<module>../org.erlide.libs2</module>
 		<module>../org.erlide.licenses</module>
+		<module>../org.erlide.server</module>
 		<module>../org.erlide.model</module>
 		<module>../org.erlide.model.api</module>
 		<module>../org.erlide.runtime</module>
 		<module>../org.erlide.test_support</module>
 		<module>../org.erlide.ui</module>
 		<module>../org.erlide.util</module>
-		<module>../org.erlide.util_eclipse</module>
+
 		<module>../org.erlide.cover.api</module>
 		<module>../org.erlide.cover.core</module>
 		<module>../org.erlide.cover.ui</module>
 		<module>../org.erlide.tracing.core</module>
 
 		<module>../org.erlide.site</module>
-		<!-- <module>../org.erlide.product.site</module> -->
 
 		<module>../org.erlide.testing.libs</module>
 
@@ -77,7 +101,7 @@
 		<module>../org.erlide.backend.tests</module>
 		<module>../org.erlide.model.tests</module>
 		<module>../org.erlide.core.tests</module>
-		<module>../org.erlide.dialyzer.tests</module>
+
 		<module>../org.erlide.ui.tests</module>
 		<module>../org.erlide.test_support.tests</module>
 		<module>../org.erlide.util.tests</module>
@@ -88,6 +112,7 @@
 		<module>../org.erlide.wrangler.refactoring</module>
 		<module>../org.erlide.wrangler.refactoring.codeinspection</module>
 		<module>../org.erlide.wrangler.refactoring.duplicatedcode</module>
+
 	</modules>
 
 	<profiles>
@@ -116,8 +141,7 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<!-- <version>0.7.5.201505241946</version> -->
-						<version>0.7.6.201602180812</version>
+						<version>0.7.8</version>
 						<executions>
 							<!-- Prepares the property pointing to the JaCoCo runtime agent which
 								is passed as VM argument when Maven the Surefire plugin is executed. -->
@@ -154,6 +178,15 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>build-product</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<modules>
+				<module>../org.erlide.product.site</module>
+			</modules>
+		</profile>
 	</profiles>
 
 	<build>
@@ -163,6 +196,14 @@
 				<artifactId>tycho-maven-plugin</artifactId>
 				<version>${tycho.version}</version>
 				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-p2-extras-plugin</artifactId>
 			</plugin>
 		</plugins>
 		<pluginManagement>
@@ -176,24 +217,14 @@
 							<artifact>
 								<groupId>org.erlide</groupId>
 								<artifactId>org.erlide.target</artifactId>
-								<version>0.29.0-SNAPSHOT</version>
+								<version>0.30.0-SNAPSHOT</version>
 							</artifact>
 						</target>
 						<environments>
 							<environment>
 								<os>linux</os>
 								<ws>gtk</ws>
-								<arch>x86</arch>
-							</environment>
-							<environment>
-								<os>linux</os>
-								<ws>gtk</ws>
 								<arch>x86_64</arch>
-							</environment>
-							<environment>
-								<os>win32</os>
-								<ws>win32</ws>
-								<arch>x86</arch>
 							</environment>
 							<environment>
 								<os>win32</os>
@@ -244,7 +275,7 @@
 							<excludeResource>*._trace</excludeResource>
 						</excludeResources>
 						<compilerArgs>
-							<arg>-1.7</arg>
+							<arg>-1.8</arg>
 						</compilerArgs>
 					</configuration>
 					<dependencies>
@@ -264,7 +295,7 @@
 				<plugin>
 					<groupId>org.eclipse.xtend</groupId>
 					<artifactId>xtend-maven-plugin</artifactId>
-					<version>2.9.0</version>
+					<version>2.11.0</version>
 					<executions>
 						<execution>
 							<goals>
@@ -289,11 +320,30 @@
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-packaging-plugin</artifactId>
 					<version>${tycho.version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.eclipse.tycho.extras</groupId>
+							<artifactId>tycho-buildtimestamp-jgit</artifactId>
+							<version>${tycho-extras-version}</version>
+						</dependency>
+					</dependencies>
 					<configuration>
-						<format>'v'yyyyMMdd-HHmm</format>
-						<archive>
-							<addMavenDescriptor>false</addMavenDescriptor>
-						</archive>
+						<timestampProvider>jgit</timestampProvider>
+						<jgit.ignore>pom.xml</jgit.ignore>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-p2-plugin</artifactId>
+					<version>${tycho.version}</version>
+					<configuration>
+						<baselineMode>failCommon</baselineMode>
+						<baselineReplace>none</baselineReplace>
+						<baselineRepositories>
+							<repository>
+								<url>http://download.erlide.org/update/</url>
+							</repository>
+						</baselineRepositories>
 					</configuration>
 				</plugin>
 				<!--This plugin's configuration is used to store Eclipse m2e settings
@@ -366,18 +416,18 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
-                <plugin>
-                    <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>tycho-surefire-plugin</artifactId>
-                    <version>${tycho.version}</version>
-                    <configuration>
-                        <failIfNoTests>false</failIfNoTests>
-                        <!-- Sets the VM argument line used when unit tests are run. -->
-                        <argLine>${surefireArgLine}</argLine>
-                        <!-- Skips unit tests if the value of skip.unit.tests property is true -->
-                        <skipTests>${skip.unit.tests}</skipTests>
-                    </configuration>
-                </plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-surefire-plugin</artifactId>
+					<version>${tycho.version}</version>
+					<configuration>
+						<failIfNoTests>false</failIfNoTests>
+						<!-- Sets the VM argument line used when unit tests are run. -->
+						<argLine>${surefireArgLine}</argLine>
+						<!-- Skips unit tests if the value of skip.unit.tests property is true -->
+						<skipTests>${skip.unit.tests}</skipTests>
+					</configuration>
+				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-p2-director-plugin</artifactId>
@@ -393,6 +443,18 @@
 	</build>
 	<reporting>
 		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.8</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>

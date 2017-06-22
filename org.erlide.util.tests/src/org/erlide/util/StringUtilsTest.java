@@ -67,22 +67,6 @@ public class StringUtilsTest {
     }
 
     @Test
-    public void withoutInterrogationMark_1() {
-        final String input = "?hello";
-        final String expected = "hello";
-        final String actual = StringUtils.withoutInterrogationMark(input);
-        Assert.assertEquals(expected, actual);
-    }
-
-    @Test
-    public void withoutInterrogationMark_2() {
-        final String input = "hello";
-        final String expected = "hello";
-        final String actual = StringUtils.withoutInterrogationMark(input);
-        Assert.assertEquals(expected, actual);
-    }
-
-    @Test
     public void unquote_1() {
         final String input = "'hello'";
         final String expected = "hello";

@@ -36,9 +36,10 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.OtpRpcFactory;
 import org.erlide.engine.model.erlang.FunctionRef;
 import org.erlide.engine.model.erlang.IErlFunction;
-import org.erlide.engine.services.search.XrefService;
+import org.erlide.engine.services.search.ErlangXref;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.util.ErlLogger;
 
@@ -46,7 +47,7 @@ public class CallHierarchyView extends ViewPart {
     Tree tree;
     TreeViewer treeViewer;
     Label lblRoot;
-    private final XrefService xrefService;
+    private final ErlangXref xrefService;
 
     static class ViewerLabelProvider extends LabelProvider {
         @Override
@@ -135,8 +136,8 @@ public class CallHierarchyView extends ViewPart {
         }
     }
 
-    public CallHierarchyView(final XrefService xrefService) {
-        this.xrefService = xrefService;
+    public CallHierarchyView() {
+        this.xrefService = new ErlangXref(OtpRpcFactory.getOtpRpc());
         xrefService.start();
     }
 

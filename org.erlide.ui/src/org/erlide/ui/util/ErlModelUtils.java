@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
+import java.nio.charset.Charset;
+
 import org.eclipse.core.resources.IEncodedStorage;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
@@ -27,7 +29,6 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.IErlFunction;
-import org.erlide.engine.model.erlang.IErlTypespec;
 import org.erlide.engine.model.erlang.ISourceRange;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlModel;
@@ -36,6 +37,8 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.editors.util.ErlangExternalEditorInput;
+
+import com.google.common.base.Charsets;
 
 public class ErlModelUtils {
 
@@ -86,23 +89,6 @@ public class ErlModelUtils {
         return true;
     }
 
-    public static boolean openTypeInEditor(final String typeName,
-            final IEditorPart editor) throws CoreException {
-        final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) editor;
-        final IErlModule module = erlangEditor.getModule();
-        if (module == null) {
-            return false;
-        }
-        module.open(null);
-        final IErlTypespec typespec = ErlangEngine.getInstance().getModelFindService()
-                .findTypespec(module, typeName);
-        if (typespec == null) {
-            return false;
-        }
-        EditorUtility.revealInEditor(editor, typespec);
-        return true;
-    }
-
     public static IErlModule getModule(final IEditorInput editorInput)
             throws CoreException {
         if (editorInput instanceof IFileEditorInput) {
@@ -113,9 +99,14 @@ public class ErlModelUtils {
             if (module != null) {
                 return module;
             }
-            final String path = file.getLocation().toPortableString();
-            module = model.getModuleFromFile(model, file.getName(), path,
-                    file.getCharset(), path);
+            final IPath path = file.getLocation();
+            Charset encoding;
+            try {
+                encoding = Charset.forName(file.getCharset());
+            } catch (Exception e) {
+                encoding = Charsets.UTF_8;
+            }
+            module = model.getModuleFromFile(model, file.getName(), path, encoding);
             module.setResource(file);
             return module;
         }
@@ -134,10 +125,10 @@ public class ErlModelUtils {
         if (module != null) {
             return module;
         }
-        final String encoding = getEncodingForInput(editorInput);
+        final Charset encoding = getEncodingForInput(editorInput);
         final IPath p = new Path(path);
         return ErlangEngine.getInstance().getModel().getModuleFromFile(null,
-                p.lastSegment(), path, encoding, path);
+                p.lastSegment(), p, encoding);
 
     }
 
@@ -158,19 +149,27 @@ public class ErlModelUtils {
         return null;
     }
 
-    private static String getEncodingForInput(final IEditorInput editorInput) {
+    private static Charset getEncodingForInput(final IEditorInput editorInput) {
         if (editorInput instanceof IStorageEditorInput) {
             final IStorageEditorInput sei = (IStorageEditorInput) editorInput;
             try {
                 final IStorage storage = sei.getStorage();
                 if (storage instanceof IEncodedStorage) {
                     final IEncodedStorage encodedStorage = (IEncodedStorage) storage;
-                    return encodedStorage.getCharset();
+                    try {
+                        return Charset.forName(encodedStorage.getCharset());
+                    } catch (Exception e) {
+                        return Charsets.UTF_8;
+                    }
                 }
             } catch (final CoreException e) {
             }
         }
-        return ResourcesPlugin.getEncoding();
+        try {
+            return Charset.forName(ResourcesPlugin.getEncoding());
+        } catch (Exception e) {
+            return Charsets.UTF_8;
+        }
     }
 
     public static void openMFA(final String module, final String function,

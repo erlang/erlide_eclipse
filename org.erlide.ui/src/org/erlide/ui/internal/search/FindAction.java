@@ -38,7 +38,6 @@ import org.erlide.engine.services.search.ErlSearchScope;
 import org.erlide.engine.services.search.ErlangSearchPattern;
 import org.erlide.engine.services.search.LimitTo;
 import org.erlide.engine.services.search.OpenResult;
-import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.services.search.SearchPatternFactory;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
@@ -114,13 +113,14 @@ public abstract class FindAction extends SelectionDispatchAction {
     // }
     // }
 
-    IErlElement getErlElement(final IStructuredSelection selection, final boolean silent) {
+    IErlElement getErlElement(final IStructuredSelection selection,
+            final boolean silent) {
         if (selection.size() == 1) {
             final Object firstElement = selection.getFirstElement();
             if (firstElement instanceof IErlElement) {
                 return (IErlElement) firstElement;
             } else if (firstElement instanceof IAdaptable) {
-                return (IErlElement) ((IAdaptable) firstElement)
+                return ((IAdaptable) firstElement)
                         .getAdapter(IErlElement.class);
             }
         }
@@ -210,14 +210,11 @@ public abstract class FindAction extends SelectionDispatchAction {
             final ISelection sel = getSelection();
             final ITextSelection textSel = (ITextSelection) sel;
             final int offset = textSel.getOffset();
-            final OpenResult res = ErlangEngine
-                    .getInstance()
-                    .getService(OpenService.class)
-                    .open(module.getScannerName(),
-                            offset,
-                            ErlangEngine.getInstance().getModelUtilService()
-                                    .getImportsAsList(module), "",
-                            ErlangEngine.getInstance().getModel().getPathVars());
+            final OpenResult res = ErlangEngine.getInstance().getOpenService().open(
+                    module.getScannerName(), offset,
+                    ErlangEngine.getInstance().getModelUtilService()
+                            .getImportsAsList(module),
+                    "", ErlangEngine.getInstance().getModel().getPathVars());
             ErlLogger.debug("find " + res);
             final ErlangSearchPattern ref = SearchUtil
                     .getSearchPatternFromOpenResultAndLimitTo(module, offset, res,
@@ -261,9 +258,10 @@ public abstract class FindAction extends SelectionDispatchAction {
      */
     public void run(final IErlElement element) {
         try {
-            final ErlangSearchPattern pattern = new SearchPatternFactory(ErlangEngine
-                    .getInstance().getModelUtilService())
-                    .getSearchPatternFromErlElementAndLimitTo(element, getLimitTo());
+            final ErlangSearchPattern pattern = new SearchPatternFactory(
+                    ErlangEngine.getInstance().getModelUtilService())
+                            .getSearchPatternFromErlElementAndLimitTo(element,
+                                    getLimitTo());
             SearchUtil.runQuery(pattern, getScope(), getScopeDescription(), getShell());
         } catch (final CoreException e) {
             handleException(e);

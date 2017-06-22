@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.backend;singleton:=true
-Bundle-Version: 0.50.0.qualifier
+Bundle-Version: 0.50.1.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -24,11 +24,18 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.erlide.model.api,
  org.erlide.runtime,
  org.erlide.util,
- org.erlide.util_eclipse,
  org.erlide.libs,
  org.erlide.libs2;bundle-version="[1.16.1,2.0.0)",
- org.erlide.kernel;bundle-version="0.110.0"
+ org.erlide.kernel.common;bundle-version="0.113.0",
+ org.erlide.kernel.debugger;bundle-version="0.113.0",
+ org.erlide.kernel.ide;bundle-version="0.113.0",
+ org.erlide.libs.annotations;bundle-version="1.0.0",
+ com.google.guava;bundle-version="[15.0.0,16.0.0)",
+ javax.inject;bundle-version="1.0.0",
+ org.eclipse.xtend.lib;bundle-version="2.11.0",
+ org.eclipse.xtend.lib.macro;bundle-version="2.11.0",
+ org.eclipse.xtext.xbase.lib;bundle-version="2.11.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.erlide.backend.internal.BackendActivator

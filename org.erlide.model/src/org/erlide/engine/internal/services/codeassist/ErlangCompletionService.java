@@ -28,9 +28,7 @@ import org.erlide.engine.services.codeassist.CompletionNameComparer;
 import org.erlide.engine.services.codeassist.CompletionService;
 import org.erlide.engine.services.codeassist.FunctionCompletionData;
 import org.erlide.engine.services.codeassist.Location;
-import org.erlide.engine.services.codeassist.RecordCompletion;
 import org.erlide.engine.services.search.ModelFindService;
-import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.engine.services.text.DocumentationFormatter;
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.util.ErlLogger;
@@ -48,23 +46,27 @@ import com.google.common.collect.Lists;
 
 public class ErlangCompletionService implements CompletionService {
 
-    private final IErlProject project;
-    private final IErlModule module;
-    private final String elementBefore;
+    private IErlProject project;
+    private IErlModule module;
+    private String elementBefore;
+    private final ErlideContextAssist contextAssistService;
 
     private static final List<CompletionData> EMPTY_COMPLETIONS = new ArrayList<>();
 
-    public ErlangCompletionService(final IErlProject project, final IErlModule module,
-            final String elementBefore) {
-        this.project = project;
-        this.module = module;
-        this.elementBefore = elementBefore;
+    public ErlangCompletionService(IOtpRpc backend) {
+        contextAssistService = new ErlideContextAssist(backend);
     }
 
     @Override
     public List<CompletionData> computeCompletions(final IOtpRpc backend,
+            IErlProject project0, IErlModule module0, String elementBefore0,
             final int offset, final String before0, final boolean inString)
             throws CoreException {
+        // FIXME these should be passed on as parameters, where needed
+        project = project0;
+        module = module0;
+        elementBefore = elementBefore0;
+
         String before = before0;
         final int commaPos = before.lastIndexOf(',');
         final int colonPos = before.lastIndexOf(':');
@@ -89,8 +91,7 @@ public class ErlangCompletionService implements CompletionService {
         if (hashMarkPos >= 0) {
             final IErlProject aproject = project;
             if (aproject != null) {
-                rc = ErlangEngine.getInstance().getContextAssistService()
-                        .checkRecordCompletion(backend, before);
+                rc = contextAssistService.checkRecordCompletion(backend, before);
             }
         }
         if (rc != null && rc.isNameWanted()) {
@@ -216,8 +217,7 @@ public class ErlangCompletionService implements CompletionService {
         final List<String> names = ErlangEngine.getInstance().getModelUtilService()
                 .findUnitsWithPrefix(prefix, project, kind != CompletionFlag.INCLUDES,
                         includes);
-        final OtpErlangObject res = ErlangEngine.getInstance()
-                .getService(OtpDocService.class)
+        final OtpErlangObject res = ErlangEngine.getInstance().getOtpDocService()
                 .getModules(backend, prefix, names, includes);
         if (res instanceof OtpErlangList) {
             final OtpErlangList resList = (OtpErlangList) res;
@@ -272,8 +272,8 @@ public class ErlangCompletionService implements CompletionService {
     List<CompletionData> getVariables(final IOtpRpc b, final int offset,
             final String prefix) {
         final List<CompletionData> result = new ArrayList<>();
-        final Collection<String> vars = ErlangEngine.getInstance()
-                .getContextAssistService().getVariables(elementBefore, prefix);
+        final Collection<String> vars = contextAssistService.getVariables(elementBefore,
+                prefix);
         for (final String var : vars) {
             result.add(new CompletionData(null, var, offset - prefix.length(),
                     prefix.length(), var.length()));
@@ -288,8 +288,7 @@ public class ErlangCompletionService implements CompletionService {
         }
         final List<CompletionData> result = new ArrayList<>();
         try {
-            final List<IErlPreprocessorDef> defs = ErlangEngine.getInstance()
-                    .getModelUtilService().getAllPreprocessorDefs(module, kind);
+            final List<IErlPreprocessorDef> defs = getAllPreprocessorDefs(module, kind);
             for (final IErlPreprocessorDef pd : defs) {
                 final String name = pd.getDefinedName();
                 addIfMatches(name, prefix, offset, result);
@@ -303,6 +302,18 @@ public class ErlangCompletionService implements CompletionService {
             for (final String name : names) {
                 addIfMatches(name, prefix, offset, result);
             }
+        }
+        return result;
+    }
+
+    public static List<IErlPreprocessorDef> getAllPreprocessorDefs(
+            final IErlModule module, final ErlElementKind kind) throws CoreException {
+        final List<IErlPreprocessorDef> result = Lists.newArrayList();
+        final List<IErlModule> modulesWithIncludes = Lists.newArrayList(ErlangEngine
+                .getInstance().getModelFindService().findAllIncludedFiles(module));
+        modulesWithIncludes.add(module);
+        for (final IErlModule m : modulesWithIncludes) {
+            result.addAll(m.getPreprocessorDefs(kind));
         }
         return result;
     }
@@ -321,8 +332,7 @@ public class ErlangCompletionService implements CompletionService {
         // FIXME or IErlElementLocator.Scope.REFERENCED_PROJECTS
         if (theModule != null) {
             if (ErlangEngine.getInstance().getModelUtilService().isOtpModule(theModule)) {
-                final OtpErlangObject res = ErlangEngine.getInstance()
-                        .getService(OtpDocService.class)
+                final OtpErlangObject res = ErlangEngine.getInstance().getOtpDocService()
                         .getProposalsWithDoc(b, moduleName, prefix);
                 addFunctionProposalsWithDoc(offset, prefix, result, res, null, arityOnly);
             } else {
@@ -640,8 +650,7 @@ public class ErlangCompletionService implements CompletionService {
 
     List<CompletionData> getAutoImportedFunctions(final IOtpRpc backend, final int offset,
             final String prefix) {
-        final OtpErlangObject res = ErlangEngine.getInstance()
-                .getService(OtpDocService.class)
+        final OtpErlangObject res = ErlangEngine.getInstance().getOtpDocService()
                 .getProposalsWithDoc(backend, "<auto_imported>", prefix);
         final List<CompletionData> result = new ArrayList<>();
         addFunctionProposalsWithDoc(offset, prefix, result, res, null, false);
@@ -652,8 +661,7 @@ public class ErlangCompletionService implements CompletionService {
             final String prefix) {
         final List<CompletionData> result = new ArrayList<>();
         for (final IErlImport imp : module.getImports()) {
-            final OtpErlangObject res = ErlangEngine.getInstance()
-                    .getService(OtpDocService.class)
+            final OtpErlangObject res = ErlangEngine.getInstance().getOtpDocService()
                     .getProposalsWithDoc(backend, imp.getImportModule(), prefix);
             addFunctionProposalsWithDoc(offset, prefix, result, res, imp, false);
         }

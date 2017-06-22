@@ -1,0 +1,19 @@
+projectRoot ../
+
+ignoreProject org.erlide.parent
+ignoreProject org.erlide.site
+ignoreProject org.erlide.target
+ignoreProject org.erlide.product.site
+ignoreProject org.erlide.licenses
+ignoreProject org.erlide.libs
+ignoreProject org.erlide.libs2
+ignoreProject org.erlide.libs.annotations
+ignoreProject org.erlide.kernel
+ignoreProject org.erlide.jvmcheck
+
+ignoreProject org.erlide.wrangler
+ignoreProject org.erlide.wrangler.core
+ignoreProject org.erlide.wrangler.help
+ignoreProject org.erlide.wrangler.refactoring
+ignoreProject org.erlide.wrangler.refactoring.codeinspection
+ignoreProject org.erlide.wrangler.refactoring.duplicatedcode

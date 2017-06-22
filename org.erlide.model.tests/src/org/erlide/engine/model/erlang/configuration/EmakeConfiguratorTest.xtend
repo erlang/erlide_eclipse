@@ -1,15 +1,12 @@
 package org.erlide.engine.model.erlang.configuration
 
-import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.Path
-import org.erlide.engine.internal.model.root.EmakeConfigurationSerializer
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.junit.Before
 import org.junit.Test
 
-import static org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher.*
-import static org.hamcrest.MatcherAssert.*
-import static org.hamcrest.Matchers.*
+import static com.google.common.truth.Truth.assertThat
+import org.erlide.engine.model.root.EmakeConfigurationSerializer
 
 class EmakeConfiguratorTest {
 
@@ -26,7 +23,7 @@ class EmakeConfiguratorTest {
         expected.setOutputDir(new Path("ebin"))
         expected.setSourceDirs()
         val actual = configurator.decodeConfig("")
-        assertThat(actual, sameAs(expected))
+        assertThat(actual).isEqualTo(expected)
     }
 
     @Test
@@ -35,10 +32,9 @@ class EmakeConfiguratorTest {
             {'src1/*',[debug_info,{i,"myinclude"}]}.
         '''
         val actual = configurator.decodeConfig(input)
-        assertThat(actual.getIncludeDirs,
-            contains(
-                new Path("myinclude") as IPath
-            ))
+        assertThat(actual.getIncludeDirs).contains(
+            new Path("myinclude")
+        )
     }
 
     @Test
@@ -47,11 +43,9 @@ class EmakeConfiguratorTest {
             {'src1/*',[debug_info,{i, "myinclude"}, {i, "myinclude2"}]}.
         '''
         val actual = configurator.decodeConfig(input)
-        assertThat(actual.getIncludeDirs,
-            contains(
-                new Path("myinclude") as IPath,
-                new Path("myinclude2") as IPath
-            ))
+        assertThat(actual.getIncludeDirs).containsAllIn(
+            #[new Path("myinclude"), new Path("myinclude2")]
+        )
     }
 
     @Test
@@ -61,11 +55,9 @@ class EmakeConfiguratorTest {
             {'src2/*',[debug_info]}.
         '''
         val actual = configurator.decodeConfig(input)
-        assertThat(actual.getSourceDirs,
-            contains(
-                new Path("src1") as IPath,
-                new Path("src2") as IPath
-            ))
+        assertThat(actual.getSourceDirs).containsAllIn(
+            #[new Path("src1"), new Path("src2")]
+        )
     }
 
     @Test
@@ -74,7 +66,7 @@ class EmakeConfiguratorTest {
             {'src/*',[]}.
         '''
         val actual = configurator.decodeConfig(input)
-        assertThat(actual.getOutputDir, is(new Path("ebin")))
+        assertThat(actual.getOutputDir).isEqualTo(new Path("ebin"))
     }
 
 }

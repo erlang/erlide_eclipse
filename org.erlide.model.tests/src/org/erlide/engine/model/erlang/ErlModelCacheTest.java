@@ -48,8 +48,7 @@ public class ErlModelCacheTest {
             // a project with a module, and some searches that fills the model
             // cache
             final String projectName = "testprojectx";
-            project = ErlideTestUtils
-                    .createProject(ErlideTestUtils.getTmpPath(projectName), projectName);
+            project = ErlideTestUtils.createErlProject(projectName);
             final String moduleName = "f.erl";
             final IErlModule module = ErlideTestUtils.createModule(project, moduleName,
                     "-module(f).\n-include(\"a.hrl\").\n-export([f/0]).\n-record(rec2, {a, b}).\n"
@@ -88,8 +87,7 @@ public class ErlModelCacheTest {
             // cache
             // is updated
             final String projectName = "testprojecta";
-            project = ErlideTestUtils
-                    .createProject(ErlideTestUtils.getTmpPath(projectName), projectName);
+            project = ErlideTestUtils.createErlProject(projectName);
             final String externalName = "xyz.erl";
             final File externalFile = ErlideTestUtils.createTmpFile(externalName,
                     "-module(xyz).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
@@ -111,8 +109,7 @@ public class ErlModelCacheTest {
             // searching
             // for it
             final String projectName2 = "testprojectb";
-            project2 = ErlideTestUtils.createProject(
-                    ErlideTestUtils.getTmpPath(projectName2), projectName2);
+            project2 = ErlideTestUtils.createErlProject(projectName2);
             final IErlModule module = ErlideTestUtils.createModule(project2, externalName,
                     "-module(xyz).\n");
             final IErlModule findModule2 = model.findModuleFromProject(project,

@@ -269,7 +269,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
             if (part instanceof ISetSelectionTarget) {
                 target = (ISetSelectionTarget) part;
             } else {
-                target = (ISetSelectionTarget) part.getAdapter(ISetSelectionTarget.class);
+                target = part.getAdapter(ISetSelectionTarget.class);
             }
 
             if (target != null) {

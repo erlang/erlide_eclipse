@@ -32,7 +32,6 @@ import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.backend.debug.ErlDebugConstants;
 import org.erlide.backend.launch.IErlangLaunchDelegateConstants;
 import org.erlide.engine.model.erlang.SourceKind;
-import org.erlide.engine.model.root.IBeamLocator;
 import org.erlide.runtime.api.ErlDebugFlags;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -48,7 +47,6 @@ public final class BackendData extends RuntimeData {
 
     public static final String PROJECT_NAME_SEPARATOR = ";";
 
-    private IBeamLocator beamLocator;
     protected ILaunch launch;
     private Collection<IProject> projects;
     private CodeContext context = CodeContext.COMMON;
@@ -200,14 +198,6 @@ public final class BackendData extends RuntimeData {
         final String[] projectNames = prjs.length() == 0 ? new String[] {}
                 : prjs.split(PROJECT_NAME_SEPARATOR);
         return gatherProjects(projectNames);
-    }
-
-    public void setBeamLocator(final IBeamLocator beamLocator) {
-        this.beamLocator = beamLocator;
-    }
-
-    public IBeamLocator getBeamLocator() {
-        return beamLocator;
     }
 
     @Override

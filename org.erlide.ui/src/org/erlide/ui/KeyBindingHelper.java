@@ -65,7 +65,7 @@ public class KeyBindingHelper {
      */
     public static boolean matchesKeybinding(final KeyEvent event,
             final String commandId) {
-        final IBindingService bindingSvc = (IBindingService) PlatformUI.getWorkbench()
+        final IBindingService bindingSvc = PlatformUI.getWorkbench()
                 .getAdapter(IBindingService.class);
         final TriggerSequence[] activeBindingsFor = bindingSvc
                 .getActiveBindingsFor(commandId);
@@ -95,7 +95,7 @@ public class KeyBindingHelper {
      * @return the 'best' key sequence that will activate the given command
      */
     public static KeySequence getCommandKeyBinding(final String commandId) {
-        final IBindingService bindingSvc = (IBindingService) PlatformUI.getWorkbench()
+        final IBindingService bindingSvc = PlatformUI.getWorkbench()
                 .getAdapter(IBindingService.class);
         final TriggerSequence binding = bindingSvc.getBestActiveBindingFor(commandId);
         if (binding instanceof KeySequence) {

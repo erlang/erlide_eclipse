@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.ModelPlugin;
 import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.ErlangProjectProperties;
@@ -44,7 +46,7 @@ public class ErlideTestUtils {
     // TODO replace ResourceDeltaStub with a mock object
     public static class ResourceDeltaStub implements IResourceDelta {
         @Override
-        public Object getAdapter(@SuppressWarnings("rawtypes") final Class adapter) {
+        public <T> T getAdapter(final Class<T> adapter) {
             return null;
         }
 
@@ -162,23 +164,24 @@ public class ErlideTestUtils {
 
     public static IErlModule createModule(final String moduleName,
             final String moduleContents, final IFolder folder) throws CoreException {
-        final IFile file = createFile(moduleName, moduleContents, folder);
+        final IFile file = createFile(folder.getProject(),
+                folder.getName() + "/" + moduleName, moduleContents);
         final IErlModel model = ErlangEngine.getInstance().getModel();
         IErlModule module = model.findModule(file);
         if (module == null) {
-            final String path = file.getLocation().toPortableString();
+            final IPath path = file.getLocation();
             module = model.getModuleFromFile(model, file.getName(), path,
-                    Charset.defaultCharset().name(), path);
+                    Charset.defaultCharset());
         }
         return module;
     }
 
-    public static IFile createFile(final String name, final String contents,
-            final IFolder folder) throws CoreException {
-        final IFile file = folder.getFile(name);
+    public static IFile createFile(IProject project, final String name,
+            final String contents) throws CoreException {
+        final IFile file = project.getFile(name);
         final File f = new File(file.getLocation().toOSString());
         f.delete();
-        file.create(new ByteArrayInputStream(contents.getBytes(Charset.defaultCharset())),
+        file.create(new ByteArrayInputStream(contents.getBytes(StandardCharsets.UTF_8)),
                 true, null);
         return file;
     }
@@ -207,20 +210,37 @@ public class ErlideTestUtils {
         modulesAndIncludes.remove(module);
     }
 
-    public static IErlProject createProject(final IPath path, final String name)
+    public static IProject createProject(final String name) throws CoreException {
+        return createProject(name, ModelPlugin.NATURE_ID);
+    }
+
+    public static IProject createProject(final String name, String nature)
+            throws CoreException {
+        final IWorkspace ws = ResourcesPlugin.getWorkspace();
+        final IProject project = ws.getRoot().getProject(name);
+        if (project.exists()) {
+            project.delete(true, null);
+        }
+        project.create(null);
+        project.open(null);
+        final IProjectDescription description = project.getDescription();
+        description.setNatureIds(new String[] { nature });
+        description.setName(name);
+        project.setDescription(description, null);
+
+        if (!project.isOpen()) {
+            project.open(null);
+        }
+        return project;
+    }
+
+    public static IErlProject createErlProject(final IProject project)
             throws CoreException {
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        final IProject project2 = root.getProject(name);
-        try {
-            project2.delete(true, null);
-        } catch (final CoreException x) {
-            // ignore
-        }
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
-                .newProject(name, path.toPortableString());
+                .findProject(project);
         erlProject.getBuilderProperties().setBuilderTool(BuilderTool.INTERNAL);
 
-        final IProject project = erlProject.getWorkspaceProject();
         final ErlangProjectProperties prefs = erlProject.getProperties();
 
         final List<IPath> srcDirs = new ArrayList<>();
@@ -233,6 +253,42 @@ public class ErlideTestUtils {
         buildPaths(root, project, includeDirs);
         prefs.setIncludeDirs(includeDirs);
 
+        final IPath ebinDir = new Path("ebin");
+        buildPaths(root, project, Lists.newArrayList(ebinDir));
+        prefs.setOutputDir(ebinDir);
+
+        projects.add(erlProject);
+        return erlProject;
+    }
+
+    public static IErlProject createErlProject(final String name) throws CoreException {
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        final IProject project2 = root.getProject(name);
+        try {
+            project2.delete(true, null);
+        } catch (final CoreException x) {
+            // ignore
+        }
+        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
+                .newProject(name);
+        erlProject.getBuilderProperties().setBuilderTool(BuilderTool.INTERNAL);
+
+        final IProject project = erlProject.getWorkspaceProject();
+        final ErlangProjectProperties prefs = erlProject.getProperties();
+
+        final List<IPath> srcDirs = new ArrayList<>();
+        createFolder(project2, "src");
+        srcDirs.add(new Path("src"));
+        prefs.setSourceDirs(srcDirs);
+        buildPaths(root, project, srcDirs);
+
+        final List<IPath> includeDirs = new ArrayList<>();
+        createFolder(project2, "include");
+        includeDirs.add(new Path("include"));
+        buildPaths(root, project, includeDirs);
+        prefs.setIncludeDirs(includeDirs);
+
+        createFolder(project2, "ebin");
         final IPath ebinDir = new Path("ebin");
         buildPaths(root, project, Lists.newArrayList(ebinDir));
         prefs.setOutputDir(ebinDir);
@@ -261,16 +317,18 @@ public class ErlideTestUtils {
         }
     }
 
-    public static IErlProject getExistingProject(final String name) {
+    public static IErlProject importProject(final String name, URI uri) {
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        final IProjectDescription description = ResourcesPlugin.getWorkspace()
+                .newProjectDescription(name);
+        description.setLocationURI(uri);
         final IProject project = root.getProject(name);
         try {
-            project.open(null);
+            project.create(description, null);
+            return ErlangEngine.getInstance().getModel().getErlangProject(project);
         } catch (final CoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            return null;
         }
-        return ErlangEngine.getInstance().getModel().getErlangProject(project);
     }
 
     public static void createFolderHelper(final IFolder folder) throws CoreException {
@@ -369,14 +427,9 @@ public class ErlideTestUtils {
     public static IErlModule createModuleFromText(final String initialText) {
         final IErlModel model = ErlangEngine.getInstance().getModel();
         final IErlModule module = model.getModuleFromText(model, "test1", initialText,
-                "test1");
+                null);
         modulesAndIncludes.add(module);
         return module;
-    }
-
-    public static IErlProject createTmpErlProject(final String projectName)
-            throws CoreException {
-        return createProject(getTmpPath(projectName), projectName);
     }
 
     public static IPath[] splitPathAfter(final int i, final IPath p) {
@@ -389,6 +442,10 @@ public class ErlideTestUtils {
         for (final IErlProject project : projects) {
             project.resourceChanged(new ResourceDeltaStub());
         }
+    }
+
+    public static void createFolder(IProject project, String name) throws CoreException {
+        project.getFolder(name).create(true, true, null);
     }
 
 }
