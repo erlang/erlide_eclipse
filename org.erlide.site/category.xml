@@ -9,7 +9,7 @@
    <feature url="features/org.eclipse.handly_0.6.0.v20161109-0701.jar" id="org.eclipse.handly" version="0.6.0.v20161109-0701"/>
    <feature url="features/com.abstratt.eclipsegraphviz.feature_2.2.201606.201701211537.jar" id="com.abstratt.eclipsegraphviz.feature" version="2.2.201606.201701211537"/>
    <feature url="features/org.eclipse.lsp4j.sdk_0.1.0.v20170106-1037.jar" id="org.eclipse.lsp4j.sdk" version="0.1.0.v20170106-1037"/>
-   <feature url="features/org.erlide.kernel.feature_0.115.0.201706211837.jar" id="org.erlide.kernel.feature" version="0.115.0.201706211837">
+   <feature url="features/org.erlide.kernel.feature_0.115.1.201707181335.jar" id="org.erlide.kernel.feature" version="0.115.1.201707181335">
       <category name="erlide"/>
    </feature>
    <bundle id="com.google.guava" version="15.0.0.v201403281430"/>
