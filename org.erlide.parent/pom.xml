@@ -332,7 +332,7 @@
 						<jgit.ignore>pom.xml</jgit.ignore>
 					</configuration>
 				</plugin>
-				<plugin>
+				<!--plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-p2-plugin</artifactId>
 					<version>${tycho.version}</version>
@@ -345,7 +345,7 @@
 							</repository>
 						</baselineRepositories>
 					</configuration>
-				</plugin>
+				</plugin-->
 				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
