@@ -2,18 +2,18 @@
 
 pipeline {
 	agent any
-	options { 
-		disableConcurrentBuilds() 
+	options {
+		disableConcurrentBuilds()
 		timestamps()
-		skipDefaultCheckout() 
-		buildDiscarder(logRotator(numToKeepStr: '10')) 
+		skipDefaultCheckout()
+		buildDiscarder(logRotator(numToKeepStr: '10'))
 	}
 	stages {
 		stage('Checkout') {
 			steps{
 				retry(3) {
 					timeout(time: 30, unit: 'SECONDS') {
-						script { 
+						script {
 							checkout()
 						}
 					}
@@ -32,8 +32,8 @@ pipeline {
 
 		stage('Archive') {
 			steps{
-				script { 
-					archive = archive() 
+				script {
+					archive = archive()
 				}
 			}
 		}
@@ -188,7 +188,7 @@ def p2_add_composite(def dir, def base) {
 }
 
 def generate_version_info(def vsn, def base) {
-	sh 'git describe > GIT_INFO'
+	sh 'git describe --tags > GIT_INFO'
 	def info = readFile('GIT_INFO').trim()
 	writeFile file: "${base}/info.js", text: "document.write('${info}');"
 	writeFile file: "${base}/version.js", text: "document.write('${vsn}');"
