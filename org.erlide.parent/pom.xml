@@ -54,7 +54,7 @@
 		<repository>
 			<id>kernel</id>
 			<layout>p2</layout>
-			<url>http://download.erlide.org/update/kernel/0.114.0</url>
+			<url>http://download.erlide.org/update/kernel/0.115.1</url>
 		</repository>
 	</repositories>
 
@@ -74,7 +74,7 @@
 
 
 		<module>../org.erlide.help</module>
-		
+
 		<module>../org.erlide.jvmcheck</module>
 		<module>../org.erlide.libs</module>
 		<module>../org.erlide.libs.annotations</module>
