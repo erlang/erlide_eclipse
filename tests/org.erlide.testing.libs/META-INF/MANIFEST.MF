@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Testing Support Libraries
+Bundle-SymbolicName: org.erlide.testing.libs;singleton:=true
+Bundle-Version: 1.2.3
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.10.0",
+ org.eclipse.core.resources;bundle-version="3.9.1",
+ org.erlide.model.api;bundle-version="0.50.0",
+ org.junit;bundle-version="4.11.0",
+ com.google.guava;bundle-version="[15.0.0,16.0.0)",
+ javax.inject;bundle-version="1.0.0",
+ org.eclipse.xtend.lib;bundle-version="2.11.0",
+ org.eclipse.xtend.lib.macro;bundle-version="2.11.0",
+ org.eclipse.xtext.xbase.lib;bundle-version="2.11.0",
+ com.ericsson.otp.jinterface;bundle-version="1.8.0"
+Export-Package: org.erlide.testing.utils

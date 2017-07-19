@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Duplicated code detection fragment
+Bundle-SymbolicName: org.erlide.wrangler.refactoring.duplicatedcode;singleton:=true
+Bundle-Version: 0.9.21.qualifier
+Bundle-Vendor: UKC
+Fragment-Host: org.erlide.wrangler.refactoring;bundle-version="0.9"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.erlide.wrangler.refactoring.core.exception,
+ org.erlide.wrangler.refactoring.duplicatedcode,
+ org.erlide.wrangler.refactoring.duplicatedcode.actions,
+ org.erlide.wrangler.refactoring.duplicatedcode.core,
+ org.erlide.wrangler.refactoring.duplicatedcode.ui,
+ org.erlide.wrangler.refactoring.duplicatedcode.ui.elements,
+ org.erlide.wrangler.refactoring.util
+Import-Package: org.erlide.wrangler.refactoring.exception,
+ org.erlide.wrangler.refactoring.util
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.resources,
+ com.google.guava;bundle-version="[15.0.0,16.0.0)",
+ javax.inject;bundle-version="1.0.0",
+ org.eclipse.xtend.lib;bundle-version="2.11.0",
+ org.eclipse.xtend.lib.macro;bundle-version="2.11.0",
+ org.eclipse.xtext.xbase.lib;bundle-version="2.11.0",
+ com.ericsson.otp.jinterface;bundle-version="1.8.0"
+

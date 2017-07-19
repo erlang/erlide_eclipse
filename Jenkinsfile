@@ -53,7 +53,6 @@ pipeline {
 		}
 	}
 
-
 }
 
 ///////////////////////////////////
@@ -76,20 +75,18 @@ def checkout() {
 }
 
 def compile() {
-	dir('org.erlide.parent') {
-		sh "chmod u+x mvnw"
-		def product
-		if(env.BRANCH_NAME=="master")
-			product=",build-product"
-		else
-			product=""
-		profiles="help${product}"
-		wrap([$class: 'Xvfb', displayNameOffset: 100, installationName: 'xvfb', screen: '1024x768x24']) {
-			sh "PATH=$PATH:~jenkins/erlide_tools && ./mvnw -B -U clean verify -P ${profiles} -Dmaven.test.failure.ignore=true -X"
-		}
-		if(env.BRANCH_NAME=="master") {
-			// TODO rename product artifacts
-		}
+	sh "chmod u+x mvnw"
+	def product
+	if(env.BRANCH_NAME=="master")
+		product=",build-product"
+	else
+		product=""
+	profiles="help${product}"
+	wrap([$class: 'Xvfb', displayNameOffset: 100, installationName: 'xvfb', screen: '1024x768x24']) {
+		sh "PATH=$PATH:~jenkins/erlide_tools && ./mvnw -B -U clean verify -P ${profiles} -Dmaven.test.failure.ignore=true -X"
+	}
+	if(env.BRANCH_NAME=="master") {
+		// TODO rename product artifacts
 	}
 }
 
@@ -105,16 +102,16 @@ def analyze() {
 
 def archive() {
 	sh 'rm -rf VSN'
-	sh 'ls org.erlide.site/target/repository/features/org.erlide_*.jar | xargs basename > VSN || true'
+	sh 'ls releng/org.erlide.site/target/repository/features/org.erlide_*.jar | xargs basename > VSN || true'
 	def archive = readFile('VSN').trim().replace('.jar', '.zip')
 	if(archive != '') {
-	    dir('org.erlide.site/target/repository') {
+	    dir('releng/org.erlide.site/target/repository') {
 		    sh "zip -r ${archive} * "
 		    step([$class: 'ArtifactArchiver', artifacts: archive, fingerprint: true])
 	    }
 	}
     if(env.BRANCH_NAME=="master") {
-    	step([$class: 'ArtifactArchiver', artifacts: 'org.erlide.product.site/target/products/*.zip', fingerprint: true])
+    	step([$class: 'ArtifactArchiver', artifacts: 'releng/org.erlide.product.site/target/products/*.zip', fingerprint: true])
     }
 	return archive
 }
@@ -165,7 +162,7 @@ def publish(def archive) {
 	def full_dest = "${output_base}/archive/${repo}/${dest}"
 	sh "umask 002"
 	sh "mkdir -p ${full_dest}"
-	sh "cp -r org.erlide.site/target/repository/* ${full_dest}"
+	sh "cp -r releng/org.erlide.site/target/repository/* ${full_dest}"
 	sh "chown -R :www-data ${full_dest}"
 
 	if(kind == "R") {
@@ -184,7 +181,7 @@ def run_eclipse(def dir, def opts) {
 
 def p2_add_composite(def dir, def base) {
 	def relpath = java.nio.file.Paths.get(base).relativize(java.nio.file.Paths.get(dir)).toString()
-	sh "chmod u+x org.erlide.releng/comp-repo.sh && org.erlide.releng/comp-repo.sh ${base} --eclipse ${env.HOME}/erlide_tools/buckminster/ add ${relpath}"
+	sh "chmod u+x releng/org.erlide.releng/comp-repo.sh && releng/org.erlide.releng/comp-repo.sh ${base} --eclipse ${env.HOME}/erlide_tools/buckminster/ add ${relpath}"
 }
 
 def generate_version_info(def vsn, def base) {
@@ -237,13 +234,13 @@ def publishRelease(def archive) {
 	def release = readFile('RELEASE').trim()
 	def info = getReleaseInfo(release)
 	def release_id = info[1]
-	sh "curl -X POST --header \"Content-Type:application/edn\" --data-binary @org.erlide.site/target/repository/${archive} https://uploads.github.com/repos/${owner}/${repository}/releases/${release_id}/assets?access_token=${access_token}\\&name=${archive}"
+	sh "curl -X POST --header \"Content-Type:application/edn\" --data-binary @releng/org.erlide.site/target/repository/${archive} https://uploads.github.com/repos/${owner}/${repository}/releases/${release_id}/assets?access_token=${access_token}\\&name=${archive}"
 
 	// publish help to github.io
-	val dest = "org.erlide.help/target/erlide.github.io"
+	val dest = "plugins/org.erlide.help/target/erlide.github.io"
 	sh "rm -rf ${dest} && mkdir -p ${dest}"
 	sh "git clone --depth 1 git@github.com:erlide/erlide.github.io -b master ${dest}"
-	sh "cp -R org.erlide.help/articles/* ${dest}/articles/eclipse"
+	sh "cp -R plugins/org.erlide.help/articles/* ${dest}/articles/eclipse"
 	dir(dest) {
 		sh "git add . && git commit -a -m 'autoupdate eclipse docs (${vsn})' && git push origin master"
 	}

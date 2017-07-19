@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Incava JavaDiff
+Bundle-SymbolicName: org.incava.util.diff
+Bundle-ActivationPolicy: lazy
+Bundle-Version: 1.1.0
+Bundle-Vendor: Erlide project
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ClassPath: java-diff-1.1.jar
+Export-Package: org.incava.util.diff

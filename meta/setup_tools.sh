@@ -51,7 +51,8 @@ if [ ! -d ~/.rbenv ] ; then
 fi
 rbenv install 2.1.2
 rbenv global 2.1.2
-gem install bundler
+gem install bundler --user-install
+export PATH=PATH:~/.gem/ruby/2.3.0/bin
 
 # these are supposed to be installed (jenkins user is not a sudoer anyway)
 # sudo apt-get update

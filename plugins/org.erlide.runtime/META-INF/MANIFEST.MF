@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Erlang backend support (no eclipse dependencies)
+Bundle-SymbolicName: org.erlide.runtime;singleton:=true
+Bundle-Version: 0.50.1.qualifier
+Bundle-Vendor: erlide.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle:  org.fishwife.jrugged,
+ org.erlide.util,
+ com.google.guava;bundle-version="[15.0.0,16.0.0)",
+ org.eclipse.xtend.lib;bundle-version="2.11.0",
+ org.eclipse.xtend.lib.macro;bundle-version="2.11.0",
+ org.eclipse.xtext.xbase.lib;bundle-version="2.11.0",
+ javax.inject;bundle-version="1.0.0",
+ com.ericsson.otp.jinterface;bundle-version="1.8.0"
+Export-Package: org.erlide.runtime,
+ org.erlide.runtime.api,
+ org.erlide.runtime.epmd,
+ org.erlide.runtime.events,
+ org.erlide.runtime.internal;x-internal:=true,
+ org.erlide.runtime.internal.rpc;x-internal:=true,
+ org.erlide.runtime.rpc,
+ org.erlide.runtime.runtimeinfo,
+ org.erlide.runtime.service,
+ org.erlide.runtime.shell
+Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.jdt.annotation
