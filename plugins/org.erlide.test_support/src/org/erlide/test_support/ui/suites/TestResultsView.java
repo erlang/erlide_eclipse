@@ -64,7 +64,7 @@ public class TestResultsView extends ViewPart {
         label.setText("");
 
         treeViewer = new TreeViewer(control, SWT.NONE);
-        treeViewer.setSorter(new TestResultSorter());
+        treeViewer.setComparator(new TestResultSorter());
         final Tree tree = treeViewer.getTree();
         tree.addMouseListener(new MouseAdapter() {
             @Override

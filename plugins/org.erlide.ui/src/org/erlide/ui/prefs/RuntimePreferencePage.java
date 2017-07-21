@@ -39,7 +39,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -120,7 +120,7 @@ public class RuntimePreferencePage extends PreferencePage implements
     /**
      * Selection listeners (checked Backend changes)
      */
-    private final ListenerList fSelectionListeners = new ListenerList();
+    private final ListenerList<ISelectionChangedListener> fSelectionListeners = new ListenerList<>();
 
     /**
      * Previous selection
@@ -186,7 +186,7 @@ public class RuntimePreferencePage extends PreferencePage implements
      * Sorts by VM name.
      */
     protected void sortByName() {
-        fRuntimeList.setSorter(new ViewerSorter() {
+        fRuntimeList.setComparator(new ViewerComparator() {
 
             @Override
             public int compare(final Viewer viewer, final Object e1, final Object e2) {
@@ -210,7 +210,7 @@ public class RuntimePreferencePage extends PreferencePage implements
      * Sorts by VM location.
      */
     protected void sortByDirectory() {
-        fRuntimeList.setSorter(new ViewerSorter() {
+        fRuntimeList.setComparator(new ViewerComparator() {
 
             @Override
             public int compare(final Viewer viewer, final Object e1, final Object e2) {

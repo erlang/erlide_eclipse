@@ -39,7 +39,7 @@ public final class OpenModuleHandler extends Action
      * A collection of objects listening to changes to this manager. This
      * collection is <code>null</code> if there are no listeners.
      */
-    private transient ListenerList listenerList = null;
+    private transient ListenerList<IHandlerListener> listenerList = null;
 
     /**
      * Creates a new instance of the class.
@@ -53,7 +53,7 @@ public final class OpenModuleHandler extends Action
     @Override
     public final void addHandlerListener(final IHandlerListener listener) {
         if (listenerList == null) {
-            listenerList = new ListenerList(ListenerList.IDENTITY);
+            listenerList = new ListenerList<>(ListenerList.IDENTITY);
         }
 
         listenerList.add(listener);

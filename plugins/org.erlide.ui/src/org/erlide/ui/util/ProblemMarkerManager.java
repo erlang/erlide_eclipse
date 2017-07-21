@@ -102,10 +102,10 @@ public class ProblemMarkerManager implements IResourceChangeListener,
         }
     }
 
-    private final ListenerList fListeners;
+    private final ListenerList<IProblemChangedListener> fListeners;
 
     public ProblemMarkerManager() {
-        fListeners = new ListenerList();
+        fListeners = new ListenerList<>();
     }
 
     /*

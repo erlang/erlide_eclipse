@@ -210,9 +210,9 @@ public class EditorUtility {
         try {
             if (input instanceof IFileEditorInput) {
                 editorDescriptor = IDE
-                        .getEditorDescriptor(((IFileEditorInput) input).getFile());
+                        .getEditorDescriptor(((IFileEditorInput) input).getFile(), true, true);
             } else {
-                editorDescriptor = IDE.getEditorDescriptor(input.getName());
+                editorDescriptor = IDE.getEditorDescriptor(input.getName(), true, true);
             }
         } catch (final PartInitException e) {
             return null;

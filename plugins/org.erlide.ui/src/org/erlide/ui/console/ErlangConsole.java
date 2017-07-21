@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.console;
 
-import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.ui.console.IConsoleDocumentPartitioner;
@@ -23,7 +22,6 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 
 public class ErlangConsole extends TextConsole implements IErlangConsole {
     private final IBackendShell shell;
-    protected ListenerList consoleListeners;
     protected ErlangConsolePartitioner partitioner;
     private boolean stopped = false;
     private final IBackend backend;
@@ -33,7 +31,6 @@ public class ErlangConsole extends TextConsole implements IErlangConsole {
         this.backend = backend;
 
         shell = backend.getShell("main");
-        consoleListeners = new ListenerList(ListenerList.IDENTITY);
 
         partitioner = new ErlangConsolePartitioner();
         getDocument().setDocumentPartitioner(partitioner);
