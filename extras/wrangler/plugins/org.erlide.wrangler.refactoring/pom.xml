@@ -11,6 +11,6 @@
 	</parent>
 
 	<artifactId>org.erlide.wrangler.refactoring</artifactId>
-	<version>0.10.46-SNAPSHOT</version>
+	<version>0.11.0-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 </project>
