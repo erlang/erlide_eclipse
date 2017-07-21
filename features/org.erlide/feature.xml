@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.erlide"
+      label="Erlang language tools IDE"
+      version="0.53.0.qualifier"
+      provider-name="%vendorName"
+      plugin="org.erlide.branding"
+      image="erlang-64.gif"
+      license-feature="org.erlide.licenses"
+      license-feature-version="1.0.1">
+   <install-handler/>
+
+   <description>
+      This feature provides Erlang IDE support for Eclipse.
+
+For bug reports and feature requests, please use the tracker
+at https://github.com/erlang/erlide_eclipse/issues.
+   </description>
+
+   <copyright>
+      Copyright (c) 2004-2013 Vlad Dumitrescu, Jakob Cederlund, the
+Wrangler team and others.
+All rights reserved. Unless otherwise specified, this program
+and the accompanying materials are made available under the terms
+of the Eclipse Public License v1.0 which accompanies this distribution,
+and is available at http://www.eclipse.org/legal/epl-v10.html
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      Eclipse Public License - v 1.0
+is available from http://www.eclipse.org/legal/epl-v10.html
+   </license>
+
+   <url>
+      <update label="Erlide main update site" url="http://download.erlide.org/update/"/>
+      <discovery label="Handly" url="https://hudson.eclipse.org/handly/job/0.3.x/lastSuccessfulBuild/artifact/build/repository/"/>
+   </url>
+
+   <includes
+         id="org.erlide.kernel.feature"
+         version="0.0.0"/>
+
+   <requires>
+      <import feature="org.eclipse.platform" version="4.5.0" match="compatible"/>
+   </requires>
+
+   <plugin
+         id="org.erlide.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.help"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.erlide.test_support"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.erlide.branding"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.backend"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.incava.util.diff"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.fishwife.jrugged"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.erlide.model"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.model.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.cover.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.cover.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.cover.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.tracing.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.ericsson.otp.jinterface"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.server"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.jvmcheck"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="nl.kii.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

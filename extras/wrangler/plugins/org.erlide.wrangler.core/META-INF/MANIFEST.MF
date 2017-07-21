@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Wrangler Core Plugin
+Bundle-SymbolicName: org.erlide.wrangler.core;singleton:=true
+Bundle-Version: 0.11.0.qualifier
+Bundle-Vendor: UKC
+Require-Bundle: org.erlide.core;bundle-version="0.32.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

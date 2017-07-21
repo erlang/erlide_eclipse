@@ -1,8 +1,6 @@
 .eunit
 deps/
 *.o
-*.beam
-!org.erlide.kernel/**/*.beam
 *.plt
 erl_crash.dump
 target/
@@ -15,7 +13,6 @@ hs_err_pid*
 
 workspaces
 **/bin/
-**/ebin/
 *.orig
 *.rej
 hs_err*.log
@@ -38,7 +35,7 @@ ttb_last_config
 .sonar
 
 Rerun\ *.launch
-org.erlide.ui.tests/projects/Erlide_tests (1).launch
+tests/org.erlide.ui.tests/projects/Erlide_tests (1).launch
 
 buildroot/
 coverage.data
