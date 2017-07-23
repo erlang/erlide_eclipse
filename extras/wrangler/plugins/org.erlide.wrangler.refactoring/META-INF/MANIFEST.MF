@@ -48,3 +48,4 @@ Export-Package: org.erlide.wrangler.refactoring;x-internal:=true,
 Bundle-Localization: plugin
 Bundle-Vendor: UKC
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.eclipse.jdt.annotation;bundle-version="[2.0.0,3.0.0)";resolution:=optional

@@ -40,4 +40,4 @@ Export-Package: org.erlide.tracing.core;x-internal:=true,
  org.erlide.tracing.core.ui.menu;x-internal:=true,
  org.erlide.tracing.core.utils;x-internal:=true,
  org.erlide.tracing.core.views;x-internal:=true
-Import-Package: org.eclipse.jdt.annotation
+Import-Package: org.eclipse.jdt.annotation;bundle-version="[2.0.0,3.0.0)";resolution:=optional

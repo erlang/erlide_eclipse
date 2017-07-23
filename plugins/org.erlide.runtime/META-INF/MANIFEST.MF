@@ -24,4 +24,4 @@ Export-Package: org.erlide.runtime,
  org.erlide.runtime.service,
  org.erlide.runtime.shell
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.jdt.annotation
+Import-Package: org.eclipse.jdt.annotation;bundle-version="[2.0.0,3.0.0)";resolution:=optional

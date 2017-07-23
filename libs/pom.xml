@@ -21,7 +21,6 @@
 		<module>org.erlide.annotations</module>
 		<module>com.ericsson.otp.jinterface</module>
 		<module>com.google.truth</module>
-		<module>org.eclipse.jdt.annotations</module>
 		<module>nl.kii.util</module>
 	</modules>
 </project>

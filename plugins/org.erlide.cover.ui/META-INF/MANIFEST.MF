@@ -35,3 +35,4 @@ Export-Package: org.erlide.cover.ui;x-internal:=true,
  org.erlide.cover.ui.views.helpers;x-internal:=true,
  org.erlide.cover.ui.views.util;x-internal:=true
 Bundle-ClassPath: .
+Import-Package: org.eclipse.jdt.annotation;bundle-version="[2.0.0,3.0.0)";resolution:=optional

@@ -19,3 +19,4 @@ Bundle-Vendor: %vendor
 Bundle-ClassPath: .
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.jdt.annotation;bundle-version="[2.0.0,3.0.0)";resolution:=optional
