@@ -25,11 +25,11 @@ public class FunctionRef {
                 final OtpBindings bb = OtpErlang.match("{M:a, F:a, A:i}", t);
                 final String m = bb.getAs("M", String.class);
                 final String f = bb.getAs("F", String.class);
-                final int a = bb.getAs("A", Integer.class);
+                final Integer a = bb.getAs("A", Integer.class);
 
                 module = m;
                 function = f;
-                arity = a;
+                arity = a == null ? 0 : a.intValue();
             } catch (final Exception e2) {
                 throw new IllegalArgumentException();
             }

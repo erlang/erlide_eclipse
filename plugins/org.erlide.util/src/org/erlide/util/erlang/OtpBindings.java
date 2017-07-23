@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2008 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.util.erlang;
 
@@ -15,6 +13,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -110,7 +110,8 @@ public final class OtpBindings implements Map<String, OtpErlangObject> {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getAs(final String name, final Class<T> cls) throws SignatureException {
+    public <T> @Nullable T getAs(final String name, final Class<T> cls)
+            throws SignatureException {
         final OtpErlangObject v = get(name);
         return (T) TypeConverter.erlang2java(v, cls);
     }

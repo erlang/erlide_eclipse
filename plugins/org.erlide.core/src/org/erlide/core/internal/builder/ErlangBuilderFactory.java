@@ -17,6 +17,8 @@ public class ErlangBuilderFactory {
             return new EmakeBuilder();
         case MAKE:
             return new MakeBuilder();
+        default:
+            break;
         }
         return null;
     }

@@ -159,6 +159,8 @@ public class ErlangFileContentProvider
             doRefresh(file);
             // }
             return false;
+        default:
+            break;
         }
         return false;
     }

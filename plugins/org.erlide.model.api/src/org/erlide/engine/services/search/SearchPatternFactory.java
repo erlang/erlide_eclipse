@@ -38,6 +38,8 @@ public class SearchPatternFactory {
             return new RecordFieldPattern(name, limitTo);
         case VARIABLE:
             return new VariablePattern("", -1, "", name, limitTo, module);
+        default:
+            break;
         }
         return null;
     }

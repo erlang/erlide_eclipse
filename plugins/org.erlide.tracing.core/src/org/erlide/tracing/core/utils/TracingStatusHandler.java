@@ -56,6 +56,8 @@ public final class TracingStatusHandler {
             break;
         case OK:
             break;
+        default:
+            break;
         }
         if (executionStatus != null) {
             StatusManager.getManager().handle(executionStatus, StatusManager.SHOW);

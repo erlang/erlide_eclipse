@@ -139,6 +139,8 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
                 }
             }
                 break;
+            default:
+                break;
             }
         }
     }

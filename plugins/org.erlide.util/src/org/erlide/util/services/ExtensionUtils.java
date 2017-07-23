@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.jdt.annotation.Nullable;
 import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;
@@ -21,10 +22,10 @@ import com.google.common.collect.Lists;
 public final class ExtensionUtils {
 
     /**
-     * Get an executable extension that has only one implementor. We do no hard
-     * checks, but take the first one.
+     * Get an executable extension that has only one implementor. We do no hard checks,
+     * but take the first one.
      */
-    public static <T> T getSingletonExtension(final String id,
+    public static <@Nullable T> T getSingletonExtension(final String id,
             final Class<? extends T> clazz) {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         final IConfigurationElement[] elements = reg.getConfigurationElementsFor(id);
@@ -66,8 +67,7 @@ public final class ExtensionUtils {
     }
 
     /**
-     * Get the underlying class for a type, or null if the type is a variable
-     * type.
+     * Get the underlying class for a type, or null if the type is a variable type.
      *
      * @param type
      *            the type
@@ -110,8 +110,8 @@ public final class ExtensionUtils {
     }
 
     /**
-     * This should be used to add participants at test-time. It should be the
-     * name of the extension point to a list (which will be returned)
+     * This should be used to add participants at test-time. It should be the name of the
+     * extension point to a list (which will be returned)
      */
     public static Map<String, List<Object>> testingParticipants;
 

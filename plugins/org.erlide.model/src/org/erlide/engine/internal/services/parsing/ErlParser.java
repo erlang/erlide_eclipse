@@ -61,7 +61,7 @@ import com.google.common.collect.Lists;
  */
 public final class ErlParser {
 
-    private static final class SourceOffsetComparator
+    static final class SourceOffsetComparator
             implements Comparator<ISourceReference> {
         @Override
         public int compare(final ISourceReference o1, final ISourceReference o2) {

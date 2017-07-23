@@ -754,6 +754,8 @@ public final class BuilderHelper {
 					notifier.worked(1);
 				}
 				break;
+            default:
+                break;
 			}
 		}
 
@@ -789,6 +791,8 @@ public final class BuilderHelper {
 					notifier.worked(1);
 				}
 				break;
+            default:
+                break;
 			}
 		}
 
@@ -804,6 +808,8 @@ public final class BuilderHelper {
 				}
 				notifier.worked(result.size() - n);
 				break;
+            default:
+                break;
 			}
 		}
 
@@ -841,6 +847,8 @@ public final class BuilderHelper {
 				}
 
 				break;
+            default:
+                break;
 			}
 		}
 

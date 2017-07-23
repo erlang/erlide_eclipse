@@ -115,8 +115,10 @@ public class OutlineFilterUtils {
             erlangOutlinePage = (ErlangOutlinePage) activePart;
         } else {
             final ContentOutline outline = (ContentOutline) activePart;
-            erlangOutlinePage = outline
-                    .getAdapter(ErlangOutlinePage.class);
+            erlangOutlinePage = outline.getAdapter(ErlangOutlinePage.class); 
+        }
+        if (erlangOutlinePage == null) {
+            return;
         }
         final TreeViewer viewer = erlangOutlinePage.getTreeViewer();
         if (viewer == null) {
@@ -145,8 +147,10 @@ public class OutlineFilterUtils {
             erlangOutlinePage = (ErlangOutlinePage) activePart;
         } else {
             final ContentOutline outline = (ContentOutline) activePart;
-            erlangOutlinePage = outline
-                    .getAdapter(ErlangOutlinePage.class);
+            erlangOutlinePage = outline.getAdapter(ErlangOutlinePage.class);
+        }
+        if (erlangOutlinePage == null) {
+            return;
         }
         final TreeViewer viewer = erlangOutlinePage.getTreeViewer();
         if (viewer == null) {

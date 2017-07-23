@@ -544,6 +544,8 @@ public class RuntimePreferencePage extends PreferencePage implements
         case 2:
             sortByDirectory();
             break;
+        default:
+            break;
         }
     }
 
@@ -891,6 +893,8 @@ public class RuntimePreferencePage extends PreferencePage implements
                     return otpHome;
                 case 2:
                     return vm.getVersion().toString();
+                default:
+                    break;
                 }
             }
             return element.toString();

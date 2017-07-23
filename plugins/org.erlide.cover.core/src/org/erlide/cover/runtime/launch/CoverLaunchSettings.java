@@ -83,6 +83,8 @@ public class CoverLaunchSettings {
 
         case CUSTOM:
             break;
+        default:
+            break;
         }
 
     }

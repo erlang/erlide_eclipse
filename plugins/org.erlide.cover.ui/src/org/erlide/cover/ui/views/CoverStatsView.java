@@ -130,6 +130,8 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
                 hideCoverage.setEnabled(true);
                 openItem.setEnabled(false);
                 break;
+            default:
+                break;
             }
 
             if (StatsTreeModel.getInstance().isChanged()) {

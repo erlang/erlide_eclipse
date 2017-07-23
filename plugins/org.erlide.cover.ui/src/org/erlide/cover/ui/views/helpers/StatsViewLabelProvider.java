@@ -64,6 +64,8 @@ public class StatsViewLabelProvider extends LabelProvider implements ITableLabel
                         .getImageDescriptor(IDE.SharedImages.IMG_OBJ_PROJECT)
                         .createImage();
                 break;
+            default:
+                break;
             }
             break;
         case 3:
@@ -94,6 +96,8 @@ public class StatsViewLabelProvider extends LabelProvider implements ITableLabel
         case 3:
 
             text = String.format("%.2f ", statsEl.getPercentage()) + "%";
+            break;
+        default:
             break;
         }
         return text;

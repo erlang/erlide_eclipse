@@ -241,8 +241,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     }
 
     /**
-     * Creates either checkboxes for setting global flags or table for setting
-     * flags individually for each process.
+     * Creates either checkboxes for setting global flags or table for setting flags
+     * individually for each process.
      *
      * @param newMode
      * @param oldMode
@@ -652,9 +652,11 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 for (final IBackend backend : NodeHelper.getBackends(true)) {
-                    final TracedNode node = new TracedNode();
-                    node.setNodeName(backend.getName());
-                    TraceBackend.getInstance().addTracedNode(node);
+                    if (backend != null) {
+                        final TracedNode node = new TracedNode();
+                        node.setNodeName(backend.getName());
+                        TraceBackend.getInstance().addTracedNode(node);
+                    }
                 }
                 nodesTableViewer.refresh();
             }

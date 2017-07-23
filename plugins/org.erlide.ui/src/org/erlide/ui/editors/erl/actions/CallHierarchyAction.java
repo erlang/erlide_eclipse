@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available
- * at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.editors.erl.actions;
 
@@ -78,9 +76,10 @@ public class CallHierarchyAction extends Action {
             protected CallHierarchyView prepare() {
                 try {
                     final IViewPart p = page.showView("org.erlide.ui.callhierarchy");
-                    final CallHierarchyView cvh = p
-                            .getAdapter(CallHierarchyView.class);
-
+                    final CallHierarchyView cvh = p.getAdapter(CallHierarchyView.class);
+                    if (cvh == null) {
+                        return null;
+                    }
                     cvh.setMessage("<searching... project " + ErlangEngine.getInstance()
                             .getModelUtilService().getProject(module).getName() + ">");
                     return cvh;

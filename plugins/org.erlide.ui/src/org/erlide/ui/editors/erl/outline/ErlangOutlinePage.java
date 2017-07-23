@@ -209,9 +209,10 @@ public class ErlangOutlinePage extends ContentOutlinePage
         fOpenAndLinkWithEditorHelper = new OpenAndLinkWithEditorHelper(fOutlineViewer,
                 fEditor, site.getPage());
 
-        final IContextService service = site
-                .getService(IContextService.class);
-        service.activateContext("org.erlide.ui.erlangOutlineAndNavigatorScope");
+        final IContextService service = site.getService(IContextService.class);
+        if (service != null) {
+            service.activateContext("org.erlide.ui.erlangOutlineAndNavigatorScope");
+        }
 
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
@@ -238,11 +239,12 @@ public class ErlangOutlinePage extends ContentOutlinePage
                 fEditor.getAction(ITextEditorActionConstants.REDO));
         fActionGroups.fillActionBars(actionBars);
         registerToolbarActions(actionBars);
-        final IHandlerService handlerService = site
-                .getService(IHandlerService.class);
-        handlerService.activateHandler(
-                IWorkbenchCommandConstants.NAVIGATE_TOGGLE_LINK_WITH_EDITOR,
-                new ActionHandler(fToggleLinkingAction));
+        final IHandlerService handlerService = site.getService(IHandlerService.class);
+        if (handlerService != null) {
+            handlerService.activateHandler(
+                    IWorkbenchCommandConstants.NAVIGATE_TOGGLE_LINK_WITH_EDITOR,
+                    new ActionHandler(fToggleLinkingAction));
+        }
         fPartListener = new IPartListener() {
 
             @Override

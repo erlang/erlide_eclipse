@@ -22,8 +22,8 @@ import org.erlide.ui.ErlideImage;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
-public class ErlangSearchResult extends AbstractTextSearchResult implements
-        IEditorMatchAdapter, IFileMatchAdapter {
+public class ErlangSearchResult extends AbstractTextSearchResult
+        implements IEditorMatchAdapter, IFileMatchAdapter {
 
     private List<ErlangSearchElement> result;
     private final ErlSearchQuery query;
@@ -110,6 +110,8 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
             return matchCount == 1 ? "definition" : "definitions";
         case REFERENCES:
             return matchCount == 1 ? "reference" : "references";
+        default:
+            break;
         }
         Assert.isTrue(false, "shouldNeverHappen"); //$NON-NLS-1$
         return null;

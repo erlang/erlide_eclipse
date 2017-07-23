@@ -405,6 +405,8 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
                 shortNameButton.setSelection(true);
             }
             break;
+        default:
+            break;
         }
 
         final boolean isLong = longNameButton.getSelection();

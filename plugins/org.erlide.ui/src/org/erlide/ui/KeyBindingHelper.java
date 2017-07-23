@@ -20,8 +20,8 @@ public class KeyBindingHelper {
 
     // pre-defined helpers
     /**
-     * @return true if the given event matches a content assistant keystroke
-     *         (and false otherwise).
+     * @return true if the given event matches a content assistant keystroke (and false
+     *         otherwise).
      */
     public static boolean matchesContentAssistKeybinding(final KeyEvent event) {
         return matchesKeybinding(event,
@@ -29,8 +29,7 @@ public class KeyBindingHelper {
     }
 
     /**
-     * @return the key sequence that is the best match for a content assist
-     *         request.
+     * @return the key sequence that is the best match for a content assist request.
      */
     public static KeySequence getContentAssistProposalBinding() {
         return getCommandKeyBinding(
@@ -38,16 +37,15 @@ public class KeyBindingHelper {
     }
 
     /**
-     * @return true if the given event matches a quick assistant keystroke (and
-     *         false otherwise).
+     * @return true if the given event matches a quick assistant keystroke (and false
+     *         otherwise).
      */
     public static boolean matchesQuickAssistKeybinding(final KeyEvent event) {
         return matchesKeybinding(event, ITextEditorActionDefinitionIds.QUICK_ASSIST);
     }
 
     /**
-     * @return the key sequence that is the best match for a quick assist
-     *         request.
+     * @return the key sequence that is the best match for a quick assist request.
      */
     public static KeySequence getQuickAssistProposalBinding() {
         return getCommandKeyBinding(ITextEditorActionDefinitionIds.QUICK_ASSIST);
@@ -60,16 +58,18 @@ public class KeyBindingHelper {
      *            the key event to be checked
      * @param commandId
      *            the command to be checked
-     * @return true if the given key event can trigger the passed command (and
-     *         false otherwise).
+     * @return true if the given key event can trigger the passed command (and false
+     *         otherwise).
      */
     public static boolean matchesKeybinding(final KeyEvent event,
             final String commandId) {
         final IBindingService bindingSvc = PlatformUI.getWorkbench()
                 .getAdapter(IBindingService.class);
+        if (bindingSvc == null) {
+            return false;
+        }
         final TriggerSequence[] activeBindingsFor = bindingSvc
                 .getActiveBindingsFor(commandId);
-
         for (final TriggerSequence seq : activeBindingsFor) {
             if (seq instanceof KeySequence) {
                 final KeySequence keySequence = (KeySequence) seq;
@@ -85,7 +85,6 @@ public class KeyBindingHelper {
                 }
             }
         }
-
         return false;
     }
 
@@ -97,11 +96,13 @@ public class KeyBindingHelper {
     public static KeySequence getCommandKeyBinding(final String commandId) {
         final IBindingService bindingSvc = PlatformUI.getWorkbench()
                 .getAdapter(IBindingService.class);
+        if (bindingSvc == null) {
+            return null;
+        }
         final TriggerSequence binding = bindingSvc.getBestActiveBindingFor(commandId);
         if (binding instanceof KeySequence) {
             return (KeySequence) binding;
         }
-
         return null;
     }
 

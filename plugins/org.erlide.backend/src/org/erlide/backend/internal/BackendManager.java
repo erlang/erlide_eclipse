@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2005 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.backend.internal;
 
@@ -220,7 +218,7 @@ public final class BackendManager implements IBackendManager {
                 final String dir = el.getAttribute("path");
                 final String t = el.getAttribute("context").toUpperCase();
 
-                final CodeContext type = Enum.valueOf(CodeContext.class, t);
+                final @NonNull CodeContext type = Enum.valueOf(CodeContext.class, t);
                 paths.put(type, dir);
             } else if ("init".equals(el.getName())) {
                 final String module = el.getAttribute("module");

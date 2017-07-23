@@ -262,6 +262,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             }
             SearchUtil.updateLRUWorkingSets(workingSets);
         }
+        break;
+        default:
+            break;
         }
         final ErlangSearchPattern searchPattern = SearchUtil.getSearchPattern(null,
                 data.getSearchFor(), data.getPattern(), data.getLimitTo());

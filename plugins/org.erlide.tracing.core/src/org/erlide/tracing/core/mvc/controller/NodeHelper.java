@@ -23,17 +23,17 @@ public class NodeHelper {
     }
 
     /**
-     * Checks if node with given name was started from erlide or was started
-     * outside it (in this case it is considered as <i>external</i>).
+     * Checks if node with given name was started from erlide or was started outside it
+     * (in this case it is considered as <i>external</i>).
      *
      * @param nodeName
      *            node name
-     * @return <code>true</code> if node was started outside erlide,
-     *         <code>false</code> otherwise
+     * @return <code>true</code> if node was started outside erlide, <code>false</code>
+     *         otherwise
      */
     public static boolean isExternal(final String nodeName) {
         for (final IBackend backend : getBackends(false)) {
-            if (backend.getName().equals(nodeName)) {
+            if (backend != null && backend.getName().equals(nodeName)) {
                 return false;
             }
         }
@@ -41,9 +41,8 @@ public class NodeHelper {
     }
 
     /**
-     * Returns backends managed by erlide. Depending on argument nodes
-     * irrelevant from user's point of view (tracing and ide backends) can be
-     * omitted in resulting list.
+     * Returns backends managed by erlide. Depending on argument nodes irrelevant from
+     * user's point of view (tracing and ide backends) can be omitted in resulting list.
      *
      * @param ignore
      *            if nodes should be omitted
