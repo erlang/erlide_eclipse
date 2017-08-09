@@ -29,6 +29,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.annotation.Nullable;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.ModelPlugin;
 import org.erlide.engine.model.IErlElement;
@@ -46,7 +47,7 @@ public class ErlideTestUtils {
     // TODO replace ResourceDeltaStub with a mock object
     public static class ResourceDeltaStub implements IResourceDelta {
         @Override
-        public <T> T getAdapter(final Class<T> adapter) {
+        public <@Nullable T> T getAdapter(final Class<T> adapter) {
             return null;
         }
 
@@ -65,7 +66,7 @@ public class ErlideTestUtils {
         }
 
         @Override
-        public IResourceDelta findMember(final IPath path) {
+        public IResourceDelta findMember(final IPath path) { 
             return null;
         }
 

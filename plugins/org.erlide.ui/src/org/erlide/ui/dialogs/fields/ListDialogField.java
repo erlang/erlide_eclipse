@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.viewers.ColumnLayoutData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -770,7 +771,7 @@ public class ListDialogField<Element> extends DialogField {
     private List<Element> moveUp(final List<Element> elements, final List<Element> move) {
         final int nElements = elements.size();
         final List<Element> res = new ArrayList<>(nElements);
-        Element floating = null;
+        @Nullable Element floating = null;
         for (int i = 0; i < nElements; i++) {
             final Element curr = elements.get(i);
             if (move.contains(curr)) {

@@ -118,6 +118,8 @@ public class OutlineFilterUtils {
             erlangOutlinePage = outline
                     .getAdapter(ErlangOutlinePage.class);
         }
+        if(erlangOutlinePage==null)
+        	return;
         final TreeViewer viewer = erlangOutlinePage.getTreeViewer();
         if (viewer == null) {
             return;
@@ -148,6 +150,8 @@ public class OutlineFilterUtils {
             erlangOutlinePage = outline
                     .getAdapter(ErlangOutlinePage.class);
         }
+        if(erlangOutlinePage==null)
+        	return;
         final TreeViewer viewer = erlangOutlinePage.getTreeViewer();
         if (viewer == null) {
             return;

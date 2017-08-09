@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
@@ -49,12 +50,12 @@ public class NodeHelper {
      *            if nodes should be omitted
      * @return list of backends
      */
-    public static Collection<? extends IBackend> getBackends(final boolean ignore) {
+    public static Collection<? extends @NonNull IBackend> getBackends(final boolean ignore) {
         if (!ignore) {
             return BackendCore.getBackendManager().getAllBackends();
         }
 
-        final List<IBackend> backends = new ArrayList<>();
+        final List<@NonNull IBackend> backends = new ArrayList<>();
         final IBackendManager backendManager = BackendCore.getBackendManager();
         final Set<IBackend> ignored = new HashSet<>();
         IBackend backend;

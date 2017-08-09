@@ -38,8 +38,8 @@ public class ShowCustomOutlineFiltersDialogHandler extends AbstractHandler {
                     .getAdapter(ErlangOutlinePage.class);
             shell = outline.getSite().getShell();
             targetId = "org.eclipse.ui.views.ContentOutline";
-            patternFilter = erlangOutlinePage.getPatternFilter();
-            viewer = erlangOutlinePage.getTreeViewer();
+            patternFilter = (erlangOutlinePage==null?null:erlangOutlinePage.getPatternFilter());
+            viewer = (erlangOutlinePage==null?null:erlangOutlinePage.getTreeViewer());
         } else if (activePart instanceof CommonNavigator) {
             final CommonNavigator commonNavigator = (CommonNavigator) activePart;
             targetId = "commonNavigator";

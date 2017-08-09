@@ -22,7 +22,7 @@ public interface IBackendManager extends IEpmdListener {
 
     Set<IBackend> getExecutionBackends(@NonNull final IProject project);
 
-    Collection<IBackend> getAllBackends();
+    Collection<@NonNull IBackend> getAllBackends();
 
     void addBackendListener(final IBackendListener listener);
 

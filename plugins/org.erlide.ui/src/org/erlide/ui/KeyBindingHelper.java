@@ -67,6 +67,8 @@ public class KeyBindingHelper {
             final String commandId) {
         final IBindingService bindingSvc = PlatformUI.getWorkbench()
                 .getAdapter(IBindingService.class);
+        if(bindingSvc==null)
+        	return false;
         final TriggerSequence[] activeBindingsFor = bindingSvc
                 .getActiveBindingsFor(commandId);
 
@@ -97,6 +99,8 @@ public class KeyBindingHelper {
     public static KeySequence getCommandKeyBinding(final String commandId) {
         final IBindingService bindingSvc = PlatformUI.getWorkbench()
                 .getAdapter(IBindingService.class);
+        if(bindingSvc==null)
+        	return null;
         final TriggerSequence binding = bindingSvc.getBestActiveBindingFor(commandId);
         if (binding instanceof KeySequence) {
             return (KeySequence) binding;

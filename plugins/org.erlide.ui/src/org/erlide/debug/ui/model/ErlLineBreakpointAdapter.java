@@ -33,6 +33,8 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
         if (textEditor != null) {
             final IResource resource = textEditor.getEditorInput()
                     .getAdapter(IResource.class);
+            if(resource==null)
+            	return;
             final ITextSelection textSelection = (ITextSelection) selection;
             final int lineNumber = textSelection.getStartLine();
             final IBreakpoint[] breakpoints = DebugPlugin.getDefault()

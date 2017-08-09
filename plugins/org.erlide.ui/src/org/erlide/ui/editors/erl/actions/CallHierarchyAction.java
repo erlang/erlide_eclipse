@@ -81,7 +81,8 @@ public class CallHierarchyAction extends Action {
                     final CallHierarchyView cvh = p
                             .getAdapter(CallHierarchyView.class);
 
-                    cvh.setMessage("<searching... project " + ErlangEngine.getInstance()
+                    if(cvh!=null)
+                    	cvh.setMessage("<searching... project " + ErlangEngine.getInstance()
                             .getModelUtilService().getProject(module).getName() + ">");
                     return cvh;
                 } catch (final PartInitException e) {
