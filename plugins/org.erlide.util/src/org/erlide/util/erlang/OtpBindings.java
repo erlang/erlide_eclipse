@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -110,7 +112,7 @@ public final class OtpBindings implements Map<String, OtpErlangObject> {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getAs(final String name, final Class<T> cls) throws SignatureException {
+    public <@Nullable T> T getAs(final String name, final Class<T> cls) throws SignatureException {
         final OtpErlangObject v = get(name);
         return (T) TypeConverter.erlang2java(v, cls);
     }

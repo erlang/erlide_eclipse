@@ -1,5 +1,6 @@
 package org.erlide.ui.navigator.actions;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -30,7 +31,7 @@ public class ErlangFileActionProvider extends CommonActionProvider {
             openAction = new OpenErlangAction(aSite,
                     workbenchSite.getSelectionProvider());
             searchActionGroup = new ErlangSearchActionGroup(site);
-            final IContextService service = site
+            final @Nullable IContextService service = site
                     .getService(IContextService.class);
             service.activateContext("org.erlide.ui.erlangOutlineAndNavigatorScope");
         }

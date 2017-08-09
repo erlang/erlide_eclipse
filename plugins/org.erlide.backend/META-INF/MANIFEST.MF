@@ -38,4 +38,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.erlide.backend.internal.BackendActivator
-Import-Package: org.eclipse.jdt.annotation
+Import-Package: org.eclipse.jdt.annotation;version="[2.0.0,3.0.0)";resolution:=optional

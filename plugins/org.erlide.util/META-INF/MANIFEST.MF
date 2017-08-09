@@ -19,4 +19,4 @@ Export-Package: org.erlide.util,
  org.erlide.util.erlang,
  org.erlide.util.event_tracer,
  org.erlide.util.services
-Import-Package: org.eclipse.jdt.annotation
+Import-Package: org.eclipse.jdt.annotation;version="[2.0.0,3.0.0)";resolution:=optional

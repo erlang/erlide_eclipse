@@ -1,5 +1,6 @@
 package org.erlide.ui.internal.util;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.ui.IWorkbench;
@@ -17,7 +18,7 @@ public final class CommandRunnerSelectionAdapter extends SelectionAdapter {
     @Override
     public void widgetSelected(final SelectionEvent e) {
         final IWorkbench workbench = PlatformUI.getWorkbench();
-        final IHandlerService handlerService = workbench
+        final @Nullable IHandlerService handlerService = workbench
                 .getService(IHandlerService.class);
         try {
             handlerService.executeCommand(commandId, null);

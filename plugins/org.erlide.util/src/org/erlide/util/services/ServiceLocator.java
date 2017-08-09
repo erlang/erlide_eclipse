@@ -3,6 +3,7 @@ package org.erlide.util.services;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.xtext.xbase.lib.Pair;
 
 public class ServiceLocator {

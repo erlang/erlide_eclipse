@@ -37,5 +37,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: .
 Eclipse-ExtensibleAPI: true
-Import-Package: org.eclipse.jdt.annotation
+Import-Package: org.eclipse.jdt.annotation;version="[2.0.0,3.0.0)";resolution:=optional
 

@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * <p>
@@ -63,7 +64,7 @@ public class ResourceUtil {
         if (element instanceof IResource) {
             result = (IResource) element;
         } else if (element instanceof IAdaptable) {
-            final Object adapter = ((IAdaptable) element).getAdapter(IResource.class);
+            final @Nullable Object adapter = ((IAdaptable) element).getAdapter(IResource.class);
             if (adapter instanceof IResource) {
                 result = (IResource) adapter;
             }

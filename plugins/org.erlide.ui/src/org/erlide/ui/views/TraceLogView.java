@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -68,7 +69,7 @@ public class TraceLogView extends ViewPart {
         }
 
         @Override
-        public <T> T getAdapter(final Class<T> adapter) {
+        public <T> @Nullable T getAdapter(final Class<T> adapter) {
             return null;
         }
     }

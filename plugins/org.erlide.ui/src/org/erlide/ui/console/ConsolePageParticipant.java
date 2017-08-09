@@ -25,6 +25,7 @@ import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.contexts.DebugContextEvent;
 import org.eclipse.debug.ui.contexts.IDebugContextListener;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreePath;
@@ -157,7 +158,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
     }
 
     @Override
-    public <T> T getAdapter(final Class<T> required) {
+    public <T> @Nullable T getAdapter(final Class<T> required) {
         if (IShowInSource.class.equals(required)) {
             return required.cast(this);
         }
@@ -227,9 +228,9 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
     public void activated() {
         // add EOF submissions
         final IPageSite site = fPage.getSite();
-        final IHandlerService handlerService = site
+        final @Nullable IHandlerService handlerService = site
                 .getService(IHandlerService.class);
-        final IContextService contextService = site
+        final @Nullable IContextService contextService = site
                 .getService(IContextService.class);
         fActivatedContext = contextService.activateContext(fContextId);
         fActivatedHandler = handlerService
@@ -240,9 +241,9 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
     public void deactivated() {
         // remove EOF submissions
         final IPageSite site = fPage.getSite();
-        final IHandlerService handlerService = site
+        final @Nullable IHandlerService handlerService = site
                 .getService(IHandlerService.class);
-        final IContextService contextService = site
+        final @Nullable IContextService contextService = site
                 .getService(IContextService.class);
         handlerService.deactivateHandler(fActivatedHandler);
         contextService.deactivateContext(fActivatedContext);

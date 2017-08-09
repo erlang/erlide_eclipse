@@ -18,6 +18,7 @@ import java.util.ResourceBundle;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -414,7 +415,7 @@ public class ErlangConsolePage extends Page
     }
 
     @Override
-    public <T> T getAdapter(final Class<T> adapter) {
+    public <T> @Nullable T getAdapter(final Class<T> adapter) {
         if (IFindReplaceTarget.class.equals(adapter)) {
             return adapter.cast(consoleOutputViewer.getFindReplaceTarget());
         }

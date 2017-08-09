@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -209,7 +210,7 @@ public class ErlangOutlinePage extends ContentOutlinePage
         fOpenAndLinkWithEditorHelper = new OpenAndLinkWithEditorHelper(fOutlineViewer,
                 fEditor, site.getPage());
 
-        final IContextService service = site
+        final @Nullable IContextService service = site
                 .getService(IContextService.class);
         service.activateContext("org.erlide.ui.erlangOutlineAndNavigatorScope");
 
@@ -238,7 +239,7 @@ public class ErlangOutlinePage extends ContentOutlinePage
                 fEditor.getAction(ITextEditorActionConstants.REDO));
         fActionGroups.fillActionBars(actionBars);
         registerToolbarActions(actionBars);
-        final IHandlerService handlerService = site
+        final @Nullable IHandlerService handlerService = site
                 .getService(IHandlerService.class);
         handlerService.activateHandler(
                 IWorkbenchCommandConstants.NAVIGATE_TOGGLE_LINK_WITH_EDITOR,
@@ -293,7 +294,7 @@ public class ErlangOutlinePage extends ContentOutlinePage
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
          */
         @Override
-        public <T> T getAdapter(final Class<T> adapter) {
+        public <T> @Nullable T getAdapter(final Class<T> adapter) {
             if (adapter == IWorkbenchAdapter.class) {
                 return adapter.cast(this);
             }

@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
@@ -220,7 +221,7 @@ public final class BackendManager implements IBackendManager {
                 final String dir = el.getAttribute("path");
                 final String t = el.getAttribute("context").toUpperCase();
 
-                final CodeContext type = Enum.valueOf(CodeContext.class, t);
+                final @Nullable CodeContext type = Enum.valueOf(CodeContext.class, t);
                 paths.put(type, dir);
             } else if ("init".equals(el.getName())) {
                 final String module = el.getAttribute("module");

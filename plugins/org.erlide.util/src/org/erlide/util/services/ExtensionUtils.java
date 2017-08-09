@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.jdt.annotation.Nullable;
 import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;
@@ -24,7 +25,7 @@ public final class ExtensionUtils {
      * Get an executable extension that has only one implementor. We do no hard
      * checks, but take the first one.
      */
-    public static <T> T getSingletonExtension(final String id,
+    public static <@Nullable T> T getSingletonExtension(final String id,
             final Class<? extends T> clazz) {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         final IConfigurationElement[] elements = reg.getConfigurationElementsFor(id);

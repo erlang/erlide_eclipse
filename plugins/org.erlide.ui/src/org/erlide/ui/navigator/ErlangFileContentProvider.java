@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -195,7 +196,7 @@ public class ErlangFileContentProvider
     }
 
     @Override
-    public <T> T getAdapter(final Class<T> adapter) {
+    public <T> @Nullable T getAdapter(final Class<T> adapter) {
         if (SaveablesProvider.class.equals(adapter)) {
             // TODO return something useful
             return null;

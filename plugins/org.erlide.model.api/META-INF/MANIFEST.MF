@@ -37,4 +37,4 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  com.ericsson.otp.jinterface;bundle-version="1.8.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.erlide.engine.ModelApiActivator
-Import-Package: org.eclipse.jdt.annotation
+Import-Package: org.eclipse.jdt.annotation;version="[2.0.0,3.0.0)";resolution:=optional

@@ -12,6 +12,7 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamsProxy;
+import org.eclipse.jdt.annotation.Nullable;
 import org.erlide.util.ErlLogger;
 
 public class DummyProcess implements IProcess {
@@ -53,7 +54,7 @@ public class DummyProcess implements IProcess {
     }
 
     @Override
-    public <T> T getAdapter(final Class<T> adapter) {
+    public <T> @Nullable T getAdapter(final Class<T> adapter) {
         ErlLogger.debug("--> adapt as " + adapter.getName());
         return null;
     }

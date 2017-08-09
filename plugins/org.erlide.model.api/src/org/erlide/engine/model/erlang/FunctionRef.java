@@ -24,7 +24,7 @@ public class FunctionRef {
             try {
                 final OtpBindings bb = OtpErlang.match("{M:a, F:a, A:i}", t);
                 final String m = bb.getAs("M", String.class);
-                final String f = bb.getAs("F", String.class);
+                final String f = bb.getAs("F", String.class); 
                 final int a = bb.getAs("A", Integer.class);
 
                 module = m;

@@ -4,7 +4,7 @@ Bundle-Name: JRugged
 Bundle-SymbolicName: org.fishwife.jrugged
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 3.2.2
-Bundle-Vendor: Erlide project
+Bundle-Vendor: fishwife.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: jrugged-core-3.2.2.jar,
  jrugged-aspects-3.2.2.jar
