@@ -117,21 +117,24 @@ public abstract class AbstractErlangEditor extends TextEditor {
 
         final ResourceBundle keyBundle = ErlangEditorMessages
                 .getBundleForConstructedKeys();
-        sendToConsole = new SendToConsoleAction(getSite(), keyBundle, "SendToConsole.",
-                this, false, getProject().getWorkspaceProject());
-        sendToConsole
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE);
-        setAction("SendToConsole", sendToConsole);
-        markAsStateDependentAction("sendToConsole", true);
-        markAsSelectionDependentAction("sendToConsole", true);
+        if (getProject() != null) {
+            sendToConsole = new SendToConsoleAction(getSite(), keyBundle,
+                    "SendToConsole.", this, false, getProject().getWorkspaceProject());
+            sendToConsole.setActionDefinitionId(
+                    IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE);
+            setAction("SendToConsole", sendToConsole);
+            markAsStateDependentAction("sendToConsole", true);
+            markAsSelectionDependentAction("sendToConsole", true);
 
-        sendToConsoleWithResult = new SendToConsoleAction(getSite(), keyBundle,
-                "SendToConsoleWithResult.", this, true, getProject().getWorkspaceProject());
-        sendToConsoleWithResult.setActionDefinitionId(
-                IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE_WITH_RESULT);
-        setAction("SendToConsoleWithResult", sendToConsoleWithResult);
-        markAsStateDependentAction("sendToConsoleWithResult", true);
-        markAsSelectionDependentAction("sendToConsoleWithResult", true);
+            sendToConsoleWithResult = new SendToConsoleAction(getSite(), keyBundle,
+                    "SendToConsoleWithResult.", this, true,
+                    getProject().getWorkspaceProject());
+            sendToConsoleWithResult.setActionDefinitionId(
+                    IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE_WITH_RESULT);
+            setAction("SendToConsoleWithResult", sendToConsoleWithResult);
+            markAsStateDependentAction("sendToConsoleWithResult", true);
+            markAsSelectionDependentAction("sendToConsoleWithResult", true);
+        }
 
         final Action contentAssistAction = new ContentAssistAction(keyBundle,
                 "ContentAssistProposal.", this);
@@ -165,8 +168,8 @@ public abstract class AbstractErlangEditor extends TextEditor {
                 .getConfiguredDocumentPartitioning(getSourceViewer()));
     }
 
-	public InformationPresenter getInformationPresenter() {
-		return fInformationPresenter;
-	}
+    public InformationPresenter getInformationPresenter() {
+        return fInformationPresenter;
+    }
 
 }
