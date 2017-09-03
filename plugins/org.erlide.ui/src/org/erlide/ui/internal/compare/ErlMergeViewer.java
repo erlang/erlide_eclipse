@@ -42,8 +42,6 @@ public class ErlMergeViewer extends TextMergeViewer {
 
     private ErlangSourceViewerConfiguration fSourceViewerConfiguration;
 
-    private IDocumentPartitioner documentPartitioner = null;
-
     public ErlMergeViewer(final Composite parent, final int styles,
             final CompareConfiguration mp) {
         super(parent, styles, mp);
@@ -165,12 +163,7 @@ public class ErlMergeViewer extends TextMergeViewer {
 
     @Override
     protected IDocumentPartitioner getDocumentPartitioner() {
-        if (documentPartitioner == null) {
-            documentPartitioner = ErlangDocumentSetupParticipant
-                    .createDocumentPartitioner();
-        }
-        return documentPartitioner;
-        // return null;
+        return ErlangDocumentSetupParticipant.createDocumentPartitioner();
     }
 
 }
