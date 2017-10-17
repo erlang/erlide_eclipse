@@ -48,7 +48,7 @@ public class ErlangOtpSourceContainer extends CompositeSourceContainer {
                 return name.startsWith(prefix);
             }
         });
-        if (candidates.length == 0) {
+		if (candidates == null || candidates.length == 0) {
             return null;
         }
         String r = candidates[0];
