@@ -185,8 +185,8 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
 
             final int firstLine = document.getLineOfOffset(offset + prefixEnd);
             final int captionLine = document.getLineOfOffset(offset + contentStart);
-            final int lastLine = document.getLineOfOffset(offset + length);
-
+            final int lastLine = document.getLineOfOffset(offset + length)-1;
+            
             Assert.isTrue(firstLine <= captionLine,
                     "first folded line is greater than the caption line"); //$NON-NLS-1$
             Assert.isTrue(captionLine <= lastLine,
@@ -206,8 +206,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
 
             if (captionLine < lastLine) {
                 final int postOffset = document.getLineOffset(captionLine + 1);
-                final IRegion postRegion = new Region(postOffset, offset + length
-                        - postOffset);
+                final IRegion postRegion = new Region(postOffset, document.getLineOffset(lastLine)-postOffset);
 
                 if (preRegion == null) {
                     return new IRegion[] { postRegion };
