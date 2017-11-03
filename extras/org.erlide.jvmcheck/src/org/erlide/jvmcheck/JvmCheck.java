@@ -30,16 +30,22 @@ public class JvmCheck implements IStartup, JvmCheckConstants_Actual {
 	    if(versionSegments.length < 2) {
 	    	return -1;
 	    }
-	    String javaVersionStr = versionSegments[1];
-		
-	    try {
-			return Integer.parseInt(javaVersionStr);
-		} catch(NumberFormatException e) {
-			return -1;
-		}
-	}
-	
-	@Override
+        // v<9: 1.8...
+        // v>9: 9.x...
+        String javaVersionStr = versionSegments[0];
+        try {
+            int v = Integer.parseInt(javaVersionStr);
+            if (v == 1) {
+                javaVersionStr = versionSegments[1];
+                return Integer.parseInt(javaVersionStr);
+            }
+            return v;
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+    @Override
 	public void earlyStartup() {
 		final int javaVersion = getJavaVersion();
 		
