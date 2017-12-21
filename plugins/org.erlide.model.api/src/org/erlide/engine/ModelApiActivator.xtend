@@ -32,8 +32,7 @@ class ModelApiActivator implements BundleActivator {
         val params = new ErlangInitializeParamsImpl => [
             stateDir = Platform.getStateLocation(modelPlugin).toPortableString()
             processId = getProcessId(0)
-            rootPath = ResourcesPlugin.workspace.root.location.toPortableString
-            clientName = "erlide-eclipse"
+            rootUri = '''file://«ResourcesPlugin.workspace.root.location.toPortableString»'''
             capabilities = new ClientCapabilities
         ]
         engine.initialize(params);

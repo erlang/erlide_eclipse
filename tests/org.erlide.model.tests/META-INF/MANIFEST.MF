@@ -19,4 +19,5 @@ Export-Package: org.erlide.engine.model.builder,
  org.erlide.engine.model.erlang.configuration,
  org.erlide.engine.services.codeassist,
  org.erlide.engine.util
-Import-Package: org.eclipse.jdt.annotation;bundle-version="[2.0.0,3.0.0)";resolution:=optional
+Import-Package: org.eclipse.jdt.annotation;resolution:=optional
+Automatic-Module-Name: org.erlide.model.tests

@@ -10,3 +10,4 @@ Require-Bundle: org.erlide.testing.libs;bundle-version="1.2.0",
  org.junit,
  com.google.truth;bundle-version="0.28.0"
 Export-Package: org.erlide.backend
+Automatic-Module-Name: org.erlide.backend.tests

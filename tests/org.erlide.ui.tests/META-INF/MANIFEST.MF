@@ -14,4 +14,5 @@ Export-Package: org.erlide.ui.editors.erl.scanner,
  org.erlide.ui.tests.util,
  org.erlide.ui.wizards
 Import-Package: org.erlide.engine.internal,
- org.eclipse.jdt.annotation;bundle-version="[2.0.0,3.0.0)";resolution:=optional
+ org.eclipse.jdt.annotation;resolution:=optional
+Automatic-Module-Name: org.erlide.ui.tests
