@@ -47,7 +47,7 @@ public class ErlModelCache implements IDisposable {
         return fgInstance;
     }
 
-    private class ModelChangeListener implements IErlModelChangeListener {
+    class ModelChangeListener implements IErlModelChangeListener {
         // TODO should we handle changes of projects and includes too?
         // Which is hard, since the IOldErlangProjectProperties doesn't have
         // listeners
@@ -67,7 +67,7 @@ public class ErlModelCache implements IDisposable {
         return cache;
     }
 
-    private ErlModelCache() {
+    ErlModelCache() {
         pathToModuleCache = newCache();
         editedModulesMap = Maps.newHashMap();
         // nameToModuleCache = newCache();
@@ -271,7 +271,7 @@ public class ErlModelCache implements IDisposable {
         projectIncludeCache.invalidateAll();
     }
 
-    private static class DisabledErlModelCache extends ErlModelCache {
+    static class DisabledErlModelCache extends ErlModelCache {
         @Override
         public void putEdited(final String path, final IErlModule module) {
         }

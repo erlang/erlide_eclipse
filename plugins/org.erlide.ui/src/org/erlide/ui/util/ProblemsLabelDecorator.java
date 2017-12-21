@@ -66,7 +66,7 @@ public class ProblemsLabelDecorator
 
     private static final int ERRORTICK_WARNING = ErlangElementImageDescriptor.WARNING;
     private static final int ERRORTICK_ERROR = ErlangElementImageDescriptor.ERROR;
-    private ListenerList fListeners;
+    private ListenerList<ILabelProviderListener> fListeners;
     private IProblemChangedListener fProblemChangedListener;
 
     /*
@@ -201,7 +201,7 @@ public class ProblemsLabelDecorator
     @Override
     public void addListener(final ILabelProviderListener listener) {
         if (fListeners == null) {
-            fListeners = new ListenerList();
+            fListeners = new ListenerList<>();
         }
         fListeners.add(listener);
         if (fProblemChangedListener == null) {

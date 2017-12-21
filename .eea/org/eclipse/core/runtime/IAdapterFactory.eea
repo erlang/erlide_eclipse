@@ -1,0 +1,4 @@
+class org/eclipse/core/runtime/IAdapterFactory
+getAdapter
+ <T:Ljava/lang/Object;>(Ljava/lang/Object;Ljava/lang/Class<TT;>;)TT;
+ <T:Ljava/lang/Object;>(Ljava/lang/Object;Ljava/lang/Class<TT;>;)T0T;

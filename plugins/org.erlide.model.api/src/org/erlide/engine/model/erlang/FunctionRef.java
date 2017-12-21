@@ -17,23 +17,22 @@ public class FunctionRef {
 		this.arity = arity;
 	}
 
-	@SuppressWarnings("boxing")
-	public FunctionRef(final OtpErlangObject e) {
-		if (e instanceof OtpErlangTuple) {
-			final OtpErlangTuple t = (OtpErlangTuple) e;
-			try {
-				final OtpBindings bb = OtpErlang.match("{M:a, F:a, A:i}", t);
-				final String m = bb.getAs("M", String.class);
-				final String f = bb.getAs("F", String.class);
-				Integer ai = bb.getAs("A", Integer.class);
-				final int a = (ai == null ? 0 : ai.intValue());
+    @SuppressWarnings("boxing")
+    public FunctionRef(final OtpErlangObject e) {
+        if (e instanceof OtpErlangTuple) {
+            final OtpErlangTuple t = (OtpErlangTuple) e;
+            try {
+                final OtpBindings bb = OtpErlang.match("{M:a, F:a, A:i}", t);
+                final String m = bb.getAs("M", String.class);
+                final String f = bb.getAs("F", String.class);
+                final Integer a = bb.getAs("A", Integer.class);
 
-				module = m;
-				function = f;
-				arity = a;
-			} catch (final Exception e2) {
-				throw new IllegalArgumentException();
-			}
+                module = m;
+                function = f;
+                arity = a == null ? 0 : a.intValue();
+            } catch (final Exception e2) {
+                throw new IllegalArgumentException();
+            }
 
 		} else {
 			throw new IllegalArgumentException();

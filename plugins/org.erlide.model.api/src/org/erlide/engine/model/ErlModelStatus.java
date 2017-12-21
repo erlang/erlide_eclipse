@@ -295,6 +295,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 
             case ErlModelStatusConstants.NO_LOCAL_CONTENTS:
                 return Util.bind("status.noLocalContents", getPath().toString()); //$NON-NLS-1$
+            default:
+                break;
             }
             if (fString != null) {
                 return fString;

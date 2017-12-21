@@ -29,7 +29,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 public class MockupPreferenceStore implements IPreferenceStore {
 
     /** Listeners on this store */
-    private final ListenerList fListeners = new ListenerList();
+    private final ListenerList<IPropertyChangeListener> fListeners = new ListenerList<>();
 
     /**
      * {@inheritDoc}

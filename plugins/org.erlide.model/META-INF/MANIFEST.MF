@@ -35,3 +35,4 @@ Export-Package: org.erlide.engine.internal;x-internal:=true,
  org.erlide.engine.internal.services.search;x-internal:=true,
  org.erlide.engine.internal.services.text;x-internal:=true,
  org.erlide.engine.internal.util;x-internal:=true
+Import-Package: org.eclipse.jdt.annotation;bundle-version="[2.0.0,3.0.0)";resolution:=optional

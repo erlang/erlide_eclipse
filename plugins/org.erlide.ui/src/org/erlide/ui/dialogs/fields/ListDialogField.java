@@ -28,7 +28,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -96,7 +96,7 @@ public class ListDialogField<Element> extends DialogField {
 
     protected List<Element> fElements;
 
-    protected ViewerSorter fViewerSorter;
+    protected ViewerComparator fViewerSorter;
 
     protected String[] fButtonLabels;
 
@@ -192,13 +192,13 @@ public class ListDialogField<Element> extends DialogField {
     }
 
     /**
-     * Sets the viewerSorter.
+     * Sets the ViewerComparator.
      *
-     * @param viewerSorter
-     *            The viewerSorter to set
+     * @param ViewerComparator
+     *            The ViewerComparator to set
      */
-    public void setViewerSorter(final ViewerSorter viewerSorter) {
-        fViewerSorter = viewerSorter;
+    public void setViewerSorter(final ViewerComparator ViewerComparator) {
+        fViewerSorter = ViewerComparator;
     }
 
     public void setTableColumns(final ColumnsDescription column) {
@@ -352,7 +352,7 @@ public class ListDialogField<Element> extends DialogField {
             fTable.setInput(fParentElement);
 
             if (fViewerSorter != null) {
-                fTable.setSorter(fViewerSorter);
+                fTable.setComparator(fViewerSorter);
             }
 
             fTableControl.setEnabled(isEnabled());
@@ -771,7 +771,8 @@ public class ListDialogField<Element> extends DialogField {
     private List<Element> moveUp(final List<Element> elements, final List<Element> move) {
         final int nElements = elements.size();
         final List<Element> res = new ArrayList<>(nElements);
-        @Nullable Element floating = null;
+        @Nullable
+        Element floating = null;
         for (int i = 0; i < nElements; i++) {
             final Element curr = elements.get(i);
             if (move.contains(curr)) {

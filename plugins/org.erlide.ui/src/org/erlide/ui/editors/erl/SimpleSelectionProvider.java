@@ -28,14 +28,14 @@ import org.erlide.ui.actions.SelectionDispatchAction;
  */
 public class SimpleSelectionProvider implements ISelectionProvider {
 
-    private final ListenerList fSelectionChangedListeners;
+    private final ListenerList<ISelectionChangedListener> fSelectionChangedListeners;
     private ISelection fSelection;
 
     /**
      * Create a new SimpleSelectionProvider
      */
     public SimpleSelectionProvider() {
-        fSelectionChangedListeners = new ListenerList();
+        fSelectionChangedListeners = new ListenerList<>();
     }
 
     @Override

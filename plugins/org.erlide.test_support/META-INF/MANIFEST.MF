@@ -42,4 +42,4 @@ Export-Package: org.erlide.test_support,
  org.erlide.test_support.ui.suites,
  org.erlide.test_support.ui.trace
 Bundle-ClassPath: .
-
+Import-Package: org.eclipse.jdt.annotation;bundle-version="[2.0.0,3.0.0)";resolution:=optional

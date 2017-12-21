@@ -34,6 +34,9 @@ public class ProjectConfiguratorFactory implements IProjectConfiguratorFactory {
         case EMAKE:
             result = getConfig(configType, new File(
                     project.getWorkspaceProject().getLocation().toPortableString()));
+            break;
+        default:
+            break;
         }
         return result;
     }
@@ -72,6 +75,9 @@ public class ProjectConfiguratorFactory implements IProjectConfiguratorFactory {
             default:
                 break;
             }
+            break;
+        default:
+            break;
         }
         return result;
     }

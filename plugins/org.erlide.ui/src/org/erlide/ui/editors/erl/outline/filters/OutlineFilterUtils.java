@@ -115,8 +115,10 @@ public class OutlineFilterUtils {
             erlangOutlinePage = (ErlangOutlinePage) activePart;
         } else {
             final ContentOutline outline = (ContentOutline) activePart;
-            erlangOutlinePage = outline
-                    .getAdapter(ErlangOutlinePage.class);
+            erlangOutlinePage = outline.getAdapter(ErlangOutlinePage.class); 
+        }
+        if (erlangOutlinePage == null) {
+            return;
         }
         if(erlangOutlinePage==null)
         	return;
@@ -147,8 +149,10 @@ public class OutlineFilterUtils {
             erlangOutlinePage = (ErlangOutlinePage) activePart;
         } else {
             final ContentOutline outline = (ContentOutline) activePart;
-            erlangOutlinePage = outline
-                    .getAdapter(ErlangOutlinePage.class);
+            erlangOutlinePage = outline.getAdapter(ErlangOutlinePage.class);
+        }
+        if (erlangOutlinePage == null) {
+            return;
         }
         if(erlangOutlinePage==null)
         	return;

@@ -31,9 +31,10 @@ public class ErlangFileActionProvider extends CommonActionProvider {
             openAction = new OpenErlangAction(aSite,
                     workbenchSite.getSelectionProvider());
             searchActionGroup = new ErlangSearchActionGroup(site);
-            final @Nullable IContextService service = site
-                    .getService(IContextService.class);
-            service.activateContext("org.erlide.ui.erlangOutlineAndNavigatorScope");
+            final IContextService service = site.getService(IContextService.class);
+            if (service != null) {
+                service.activateContext("org.erlide.ui.erlangOutlineAndNavigatorScope");
+            }
         }
     }
 

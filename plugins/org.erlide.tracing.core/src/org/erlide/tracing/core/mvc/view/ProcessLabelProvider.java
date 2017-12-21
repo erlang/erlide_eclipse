@@ -52,6 +52,8 @@ public class ProcessLabelProvider extends LabelProvider implements ITableLabelPr
                 return process.getNode();
             case INITIAL_CALL:
                 return process.getInitialCall();
+            default:
+                break;
             }
         }
         return "";

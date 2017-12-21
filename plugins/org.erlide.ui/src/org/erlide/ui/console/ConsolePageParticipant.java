@@ -163,7 +163,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
             return required.cast(this);
         }
         if (IShowInTargetList.class.equals(required)) {
-        	return required.cast(this);
+            return required.cast(this);
         }
         // CONTEXTLAUNCHING
         if (ILaunchConfiguration.class.equals(required)) {
@@ -228,10 +228,11 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
     public void activated() {
         // add EOF submissions
         final IPageSite site = fPage.getSite();
-        final @Nullable IHandlerService handlerService = site
-                .getService(IHandlerService.class);
-        final @Nullable IContextService contextService = site
-                .getService(IContextService.class);
+        final IHandlerService handlerService = site.getService(IHandlerService.class);
+        final IContextService contextService = site.getService(IContextService.class);
+        if (handlerService == null || contextService == null) {
+            return;
+        }
         fActivatedContext = contextService.activateContext(fContextId);
         fActivatedHandler = handlerService
                 .activateHandler("org.eclipse.debug.ui.commands.eof", fEOFHandler); //$NON-NLS-1$
@@ -241,10 +242,11 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
     public void deactivated() {
         // remove EOF submissions
         final IPageSite site = fPage.getSite();
-        final @Nullable IHandlerService handlerService = site
-                .getService(IHandlerService.class);
-        final @Nullable IContextService contextService = site
-                .getService(IContextService.class);
+        final IHandlerService handlerService = site.getService(IHandlerService.class);
+        final IContextService contextService = site.getService(IContextService.class);
+        if (handlerService == null || contextService == null) {
+            return;
+        }
         handlerService.deactivateHandler(fActivatedHandler);
         contextService.deactivateContext(fActivatedContext);
     }

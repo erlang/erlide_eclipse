@@ -31,7 +31,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -139,6 +139,8 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
                 }
             }
                 break;
+            default:
+                break;
             }
         }
     }
@@ -244,7 +246,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
         }
     }
 
-    static class NameSorter extends ViewerSorter {
+    static class NameSorter extends ViewerComparator {
     }
 
     public LiveExpressionsView() {

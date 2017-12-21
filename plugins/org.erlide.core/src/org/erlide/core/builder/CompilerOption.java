@@ -249,7 +249,7 @@ public abstract class CompilerOption {
     private final String description;
     private final String tooltip;
 
-    private CompilerOption(final String name, final String description,
+    CompilerOption(final String name, final String description,
             final String tooltip) {
         this.name = name;
         this.description = description;

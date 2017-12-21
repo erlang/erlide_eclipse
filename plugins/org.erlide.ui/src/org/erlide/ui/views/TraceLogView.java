@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -197,7 +197,7 @@ public class TraceLogView extends ViewPart {
         }
     }
 
-    static class NameSorter extends ViewerSorter {
+    static class NameSorter extends ViewerComparator {
     }
 
     /**
@@ -215,7 +215,7 @@ public class TraceLogView extends ViewPart {
         drillDownAdapter = new DrillDownAdapter(viewer);
         viewer.setContentProvider(new ViewContentProvider());
         viewer.setLabelProvider(new ViewLabelProvider());
-        viewer.setSorter(new NameSorter());
+        viewer.setComparator(new NameSorter());
         viewer.setInput(getViewSite());
         makeActions();
         hookContextMenu();

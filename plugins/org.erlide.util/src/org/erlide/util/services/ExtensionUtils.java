@@ -22,8 +22,8 @@ import com.google.common.collect.Lists;
 public final class ExtensionUtils {
 
     /**
-     * Get an executable extension that has only one implementor. We do no hard
-     * checks, but take the first one.
+     * Get an executable extension that has only one implementor. We do no hard checks,
+     * but take the first one.
      */
     public static <@Nullable T> T getSingletonExtension(final String id,
             final Class<? extends T> clazz) {
@@ -67,8 +67,7 @@ public final class ExtensionUtils {
     }
 
     /**
-     * Get the underlying class for a type, or null if the type is a variable
-     * type.
+     * Get the underlying class for a type, or null if the type is a variable type.
      *
      * @param type
      *            the type
@@ -111,8 +110,8 @@ public final class ExtensionUtils {
     }
 
     /**
-     * This should be used to add participants at test-time. It should be the
-     * name of the extension point to a list (which will be returned)
+     * This should be used to add participants at test-time. It should be the name of the
+     * extension point to a list (which will be returned)
      */
     public static Map<String, List<Object>> testingParticipants;
 

@@ -33,7 +33,9 @@ public class OtpErlang {
     public static OtpErlangList mkStringList(final Collection<?> args) {
         final List<OtpErlangObject> result = Lists.newArrayList();
         for (final Object s : args) {
-            result.add(new OtpErlangString(s.toString()));
+            if (s != null) {
+                result.add(new OtpErlangString(s.toString()));
+            }
         }
         return mkList(result);
     }

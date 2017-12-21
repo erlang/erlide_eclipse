@@ -100,8 +100,8 @@ public class ErlElementDelta implements IErlElementDelta {
     }
 
     /**
-     * Creates the delta tree for the given element and delta, and then inserts
-     * the tree as an affected child of this node.
+     * Creates the delta tree for the given element and delta, and then inserts the tree
+     * as an affected child of this node.
      */
     public void insertDeltaTree(final IErlElement element, final ErlElementDelta delta) {
         final ErlElementDelta childDelta = createDeltaTree(element, delta);
@@ -111,9 +111,8 @@ public class ErlElementDelta implements IErlElementDelta {
     }
 
     /**
-     * Creates the nested delta deltas based on the affected element its delta,
-     * and the root of this delta tree. Returns the root of the created delta
-     * tree.
+     * Creates the nested delta deltas based on the affected element its delta, and the
+     * root of this delta tree. Returns the root of the created delta tree.
      */
     protected ErlElementDelta createDeltaTree(final IErlElement element,
             final ErlElementDelta delta) {
@@ -154,11 +153,11 @@ public class ErlElementDelta implements IErlElementDelta {
     }
 
     /**
-     * Adds the child delta to the collection of affected children. If the child
-     * is already in the collection, walk down the hierarchy.
+     * Adds the child delta to the collection of affected children. If the child is
+     * already in the collection, walk down the hierarchy.
      *
-     * JC: this sucks a little bit, too much code, as always... (from C model,
-     * not my fault)
+     * JC: this sucks a little bit, too much code, as always... (from C model, not my
+     * fault)
      */
     protected void addAffectedChild(final ErlElementDelta child) {
         switch (fKind) {
@@ -204,6 +203,8 @@ public class ErlElementDelta implements IErlElementDelta {
                 case REMOVED:
                     fChildren.remove(existingChildIndex);
                     return;
+                default:
+                    break;
                 }
                 break;
             case REMOVED:
@@ -219,6 +220,8 @@ public class ErlElementDelta implements IErlElementDelta {
                     // child was removed then removed -> it is removed
                 case REMOVED:
                     return;
+                default:
+                    break;
                 }
                 break;
             case CHANGED:
@@ -244,6 +247,8 @@ public class ErlElementDelta implements IErlElementDelta {
                     // created last (by the DeltaProcessor)
                     ((ErlElementDelta) existingChild).fResourceDeltas = child.fResourceDeltas;
                     return;
+                default:
+                    break;
                 }
                 break;
             default:
@@ -289,8 +294,8 @@ public class ErlElementDelta implements IErlElementDelta {
     }
 
     /**
-     * Adds the child delta to the collection of affected children. If the child
-     * is already in the collection, walk down the hierarchy.
+     * Adds the child delta to the collection of affected children. If the child is
+     * already in the collection, walk down the hierarchy.
      */
     public void addResourceDelta(final IResourceDelta child) {
         switch (fKind) {
@@ -309,10 +314,9 @@ public class ErlElementDelta implements IErlElementDelta {
     }
 
     /**
-     * Creates the nested deltas resulting from a change operation. Convenience
-     * method for creating change deltas. The constructor should be used to
-     * create the root delta and then a change operation should call this
-     * method.
+     * Creates the nested deltas resulting from a change operation. Convenience method for
+     * creating change deltas. The constructor should be used to create the root delta and
+     * then a change operation should call this method.
      */
     public void changed(final IErlElement element, final int flag) {
         final ErlElementDelta changedDelta = new ErlElementDelta(0, 0, element);

@@ -130,6 +130,8 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
                 hideCoverage.setEnabled(true);
                 openItem.setEnabled(false);
                 break;
+            default:
+                break;
             }
 
             if (StatsTreeModel.getInstance().isChanged()) {
@@ -168,7 +170,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         drillDownAdapter = new DrillDownAdapter(viewer);
         viewer.setContentProvider(new StatsViewContentProvider(getViewSite()));
         viewer.setLabelProvider(new StatsViewLabelProvider());
-        viewer.setSorter(new StatsNameSorter());
+        viewer.setComparator(new StatsNameSorter());
         viewer.setInput(getViewSite());
         viewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         viewer.addSelectionChangedListener(viewerSelectionChanged);

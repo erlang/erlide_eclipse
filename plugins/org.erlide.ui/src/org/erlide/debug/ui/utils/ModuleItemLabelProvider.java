@@ -20,7 +20,7 @@ public class ModuleItemLabelProvider extends LabelProvider
         implements ILabelProviderListener, IStyledLabelProvider {
 
     // Need to keep our own list of listeners
-    protected final ListenerList listeners = new ListenerList();
+    protected final ListenerList<ILabelProviderListener> listeners = new ListenerList<>();
 
     protected WorkbenchLabelProvider provider = new WorkbenchLabelProvider();
 

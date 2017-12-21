@@ -15,4 +15,5 @@ Require-Bundle: org.erlide.testing.libs,
  org.junit,
  com.google.truth;bundle-version="0.28.0"
 Eclipse-ExtensibleAPI: true 
-Import-Package: org.erlide.engine.internal
+Import-Package: org.erlide.engine.internal,
+ org.eclipse.jdt.annotation;bundle-version="[2.0.0,3.0.0)";resolution:=optional

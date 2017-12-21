@@ -252,6 +252,8 @@ public class ErlangElementImageProvider {
         case PROJECT:
             result = ErlideImage.UNKNOWN;
             break;
+        default:
+            break;
         }
         return result.getDescriptor();
     }

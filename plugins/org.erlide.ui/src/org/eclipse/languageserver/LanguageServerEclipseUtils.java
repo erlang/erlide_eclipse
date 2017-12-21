@@ -50,9 +50,7 @@ public class LanguageServerEclipseUtils {
         final Position start = toPosition(offset, document);
         final TextDocumentPositionParams param = new TextDocumentPositionParams();
         param.setPosition(start);
-        param.setUri(fileUri.toString());
-        final TextDocumentIdentifier id = new TextDocumentIdentifier();
-        id.setUri(fileUri.toString());
+        final TextDocumentIdentifier id = new TextDocumentIdentifier(fileUri.toString());
         param.setTextDocument(id);
         return param;
     }

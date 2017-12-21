@@ -21,7 +21,9 @@ public final class CommandRunnerSelectionAdapter extends SelectionAdapter {
         final @Nullable IHandlerService handlerService = workbench
                 .getService(IHandlerService.class);
         try {
-            handlerService.executeCommand(commandId, null);
+            if (handlerService != null) {
+                handlerService.executeCommand(commandId, null);
+            }
         } catch (final Exception ex) {
             throw new RuntimeException(commandId + " not found");
         }

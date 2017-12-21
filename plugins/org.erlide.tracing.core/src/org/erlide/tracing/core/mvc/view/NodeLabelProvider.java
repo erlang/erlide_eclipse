@@ -43,6 +43,8 @@ public class NodeLabelProvider extends LabelProvider implements ITableLabelProvi
             return node.getNodeName();
         case TYPE:
             return NodeHelper.isExternal(node.getNodeName()) ? "external" : "erlide";
+        default:
+            break;
         }
         return "";
     }

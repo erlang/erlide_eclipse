@@ -1,0 +1,4 @@
+class com/google/common/collect/Iterables
+toArray
+ <T:Ljava/lang/Object;>(Ljava/lang/Iterable<+TT;>;Ljava/lang/Class<TT;>;)[TT;
+ <T:Ljava/lang/Object;>(Ljava/lang/Iterable<+T0T;>;Ljava/lang/Class<TT;>;)[TT;

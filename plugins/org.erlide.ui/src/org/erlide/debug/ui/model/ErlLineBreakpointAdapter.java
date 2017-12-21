@@ -1,13 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2004 IBM Corporation and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *     Bjorn Freeman-Benson - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation Bjorn Freeman-Benson -
+ * initial API and implementation
  *******************************************************************************/
 package org.erlide.debug.ui.model;
 
@@ -33,8 +31,9 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
         if (textEditor != null) {
             final IResource resource = textEditor.getEditorInput()
                     .getAdapter(IResource.class);
-            if(resource==null)
-            	return;
+            if (resource == null) {
+                return;
+            }
             final ITextSelection textSelection = (ITextSelection) selection;
             final int lineNumber = textSelection.getStartLine();
             final IBreakpoint[] breakpoints = DebugPlugin.getDefault()
@@ -65,13 +64,13 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
     }
 
     /**
-     * Returns the editor being used to edit a PDA file, associated with the
-     * given part, or <code>null</code> if none.
+     * Returns the editor being used to edit a PDA file, associated with the given part,
+     * or <code>null</code> if none.
      *
      * @param part
      *            workbench part
-     * @return the editor being used to edit a PDA file, associated with the
-     *         given part, or <code>null</code> if none
+     * @return the editor being used to edit a PDA file, associated with the given part,
+     *         or <code>null</code> if none
      */
     private ITextEditor getEditor(final IWorkbenchPart part) {
         if (part instanceof ErlangEditor) {

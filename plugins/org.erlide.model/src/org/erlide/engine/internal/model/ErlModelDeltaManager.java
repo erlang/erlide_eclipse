@@ -92,6 +92,8 @@ public class ErlModelDeltaManager {
             case ElementChangedEvent.POST_SHIFT:
                 fireShiftEvent(deltaToNotify, listeners, listenerMask, listenerCount);
                 return;
+            default:
+                break;
             }
         }
     }

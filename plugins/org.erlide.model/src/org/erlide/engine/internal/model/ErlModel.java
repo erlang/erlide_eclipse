@@ -357,7 +357,7 @@ public class ErlModel extends Openable implements IErlModel {
 		}
 	}
 
-	private final class PathVariableChangeListener implements IPathVariableChangeListener {
+	final class PathVariableChangeListener implements IPathVariableChangeListener {
 
 		@Override
 		public void pathVariableChanged(final IPathVariableChangeEvent event) {
@@ -764,17 +764,17 @@ public class ErlModel extends Openable implements IErlModel {
 	}
 
 	class ResourceChangeListener implements IResourceChangeListener {
-		private final class NoOpVisitor implements IResourceDeltaVisitor {
+		final class NoOpVisitor implements IResourceDeltaVisitor {
 			@Override
 			public boolean visit(final IResourceDelta delta) throws CoreException {
 				return false;
 			}
 		}
 
-		private final class PreCloseVisitor implements IResourceDeltaVisitor {
+		final class PreCloseVisitor implements IResourceDeltaVisitor {
 			private final List<IResource> removed;
 
-			private PreCloseVisitor(final List<IResource> removed) {
+			PreCloseVisitor(final List<IResource> removed) {
 				this.removed = removed;
 			}
 
@@ -789,13 +789,13 @@ public class ErlModel extends Openable implements IErlModel {
 			}
 		}
 
-		private final class PostChangeVisitor implements IResourceDeltaVisitor {
+		final class PostChangeVisitor implements IResourceDeltaVisitor {
 			private final List<IResource> removed;
 			private final List<IResource> added;
 			private final List<IResource> changed;
 			private final Map<IResource, IResourceDelta> changedDelta;
 
-			private PostChangeVisitor(final List<IResource> removed, final List<IResource> added, final List<IResource> changed, final Map<IResource, IResourceDelta> changedDelta) {
+			PostChangeVisitor(final List<IResource> removed, final List<IResource> added, final List<IResource> changed, final Map<IResource, IResourceDelta> changedDelta) {
 				this.removed = removed;
 				this.added = added;
 				this.changed = changed;

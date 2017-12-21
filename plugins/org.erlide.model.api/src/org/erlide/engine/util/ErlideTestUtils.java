@@ -177,7 +177,7 @@ public class ErlideTestUtils {
         return module;
     }
 
-    public static IFile createFile(IProject project, final String name,
+    public static IFile createFile(final IProject project, final String name,
             final String contents) throws CoreException {
         final IFile file = project.getFile(name);
         final File f = new File(file.getLocation().toOSString());
@@ -215,7 +215,7 @@ public class ErlideTestUtils {
         return createProject(name, ModelPlugin.NATURE_ID);
     }
 
-    public static IProject createProject(final String name, String nature)
+    public static IProject createProject(final String name, final String nature)
             throws CoreException {
         final IWorkspace ws = ResourcesPlugin.getWorkspace();
         final IProject project = ws.getRoot().getProject(name);
@@ -318,7 +318,7 @@ public class ErlideTestUtils {
         }
     }
 
-    public static IErlProject importProject(final String name, URI uri) {
+    public static IErlProject importProject(final String name, final URI uri) {
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         final IProjectDescription description = ResourcesPlugin.getWorkspace()
                 .newProjectDescription(name);
@@ -445,7 +445,8 @@ public class ErlideTestUtils {
         }
     }
 
-    public static void createFolder(IProject project, String name) throws CoreException {
+    public static void createFolder(final IProject project, final String name)
+            throws CoreException {
         project.getFolder(name).create(true, true, null);
     }
 

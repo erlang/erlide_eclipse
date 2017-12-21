@@ -128,6 +128,8 @@ class MessageDialogPage extends DialogPage {
                 newImage = JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_ERROR);
                 showingError = true;
                 break;
+            default:
+                break;
             }
 
             if (newMessage == null) {// No message so clear the area

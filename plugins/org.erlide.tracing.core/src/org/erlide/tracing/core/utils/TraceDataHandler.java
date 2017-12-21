@@ -188,6 +188,8 @@ public class TraceDataHandler {
                     case UNREGISTER:
                         return processRegisterTrace("Unregister", Images.UNREGISTER_NODE,
                                 tuple);
+                    default:
+                        break;
                     }
                 } else if (atomValue.equals(ATOM_FILE_INFO)) {
                     return processFileInfo(tuple);

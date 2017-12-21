@@ -10,7 +10,7 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho.version>0.24.0</tycho.version>
+		<tycho.version>0.25.0</tycho.version>
 		<tycho-extras-version>${tycho.version}</tycho-extras-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jacoco-maven-version>0.7.8</jacoco-maven-version>
@@ -18,14 +18,14 @@
 
 	<repositories>
 		<repository>
-			<id>mars</id>
+			<id>neon</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/mars/201602261000</url>
+			<url>http://download.eclipse.org/releases/neon/</url>
 		</repository>
 		<repository>
-			<id>mars updates</id>
+			<id>neon updates</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/eclipse/updates/4.5/R-4.5.2-201602121500</url>
+			<url>http://download.eclipse.org/eclipse/updates/4.6/</url>
 		</repository>
 		<repository>
 			<id>erlide libs</id>
@@ -33,9 +33,9 @@
 			<url>http://download.erlide.org/update/libs</url>
 		</repository>
 		<repository>
-			<id>orbit mars</id>
+			<id>orbit neon</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository</url>
+			<url>http://download.eclipse.org/tools/orbit/R-builds/R20170307180635/repository</url>
 		</repository>
 		<repository>
 			<id>xtend</id>
@@ -267,18 +267,12 @@
 						<compilerArgs>
 							<arg>-1.8</arg>
 						</compilerArgs>
-					</configuration>
+						</configuration>
 					<dependencies>
 						<dependency>
 							<groupId>org.eclipse.tycho</groupId>
 							<artifactId>tycho-compiler-jdt</artifactId>
 							<version>${tycho.version}</version>
-							<exclusions>
-								<exclusion>
-									<groupId>org.eclipse.tycho</groupId>
-									<artifactId>org.eclipse.jdt.compiler.apt</artifactId>
-								</exclusion>
-							</exclusions>
 						</dependency>
 					</dependencies>
 				</plugin>
