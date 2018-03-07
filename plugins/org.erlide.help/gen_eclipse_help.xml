@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ======================================================================
+	 This ant script uses Jekyll to build a specialized version of the
+	 website for use as Eclipse help content.
+     ====================================================================== -->
+<project name="project" default="gen_eclipse_help">
+
+	<property name="destination" location="contents"/>
+	<property name="gen_toc" location="gen_toc.jar"/>
+
+	<target name="gen_eclipse_help">
+		<delete dir="_site"/>
+		<mkdir  dir="_site"/>
+		<!-- Generate -->
+		<exec executable="bash" searchpath="true" failonerror="true">
+			<arg value="-l"/>
+			<arg value="-c"/>
+			<arg value="gem install bundler --user-install"/>
+		</exec>
+		<exec executable="bash" searchpath="true" failonerror="true">
+			<arg value="-l"/>
+			<arg value="-c"/>
+			<arg value="bundle install"/>
+		</exec>
+		<exec executable="bash" searchpath="true" failonerror="true">
+			<arg value="-l"/>
+			<arg value="-c"/>
+			<arg value="bundle exec jekyll build"/>
+		</exec>
+		<!--java jar="${gen_toc}" fork="true" failonerror="true">
+			<arg value="articles"/>
+		</java-->
+
+		<!-- Copy results to destination -->
+		<delete quiet="true">
+			<fileset dir="${destination}">
+				<include name="**/*.html"/>
+				<include name="**/*.png"/>
+				<include name="**/*.gif"/>
+				<include name="**/*.jpg"/>
+			</fileset>
+		</delete>
+
+		<copy todir="${destination}" overwrite="true">
+			<fileset dir="_site/articles/eclipse">
+				<include name="**/*.html"/>
+				<include name="**/*.png"/>
+				<include name="**/*.gif"/>
+				<include name="**/*.jpg"/>
+			</fileset>
+		</copy>
+	</target>
+
+</project>

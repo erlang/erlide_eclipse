@@ -1,0 +1,4 @@
+class org/eclipse/ui/views/contentoutline/ContentOutline
+getAdapter
+ <T:Ljava/lang/Object;>(Ljava/lang/Class<TT;>;)TT;
+ <T:Ljava/lang/Object;>(Ljava/lang/Class<TT;>;)T0T;

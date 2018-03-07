@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test Support tests
+Bundle-SymbolicName: org.erlide.test_support.tests
+Bundle-Version: 0.50.1.qualifier
+Bundle-Vendor: erlide.org
+Fragment-Host: org.erlide.test_support
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.junit
+Export-Package: org.erlide.test_support
+Import-Package: org.eclipse.jdt.annotation;resolution:=optional
+Automatic-Module-Name: org.erlide.test_support.tests
