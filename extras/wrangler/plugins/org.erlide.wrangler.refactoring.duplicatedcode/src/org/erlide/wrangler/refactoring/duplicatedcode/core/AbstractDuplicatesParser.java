@@ -24,37 +24,37 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  */
 public abstract class AbstractDuplicatesParser implements IResultParser {
 
-    protected String errorMessage;
-    protected boolean isSuccessful;
-    protected List<DuplicatedCodeElement> duplicates;
+	protected String errorMessage;
+	protected boolean isSuccessful;
+	protected List<DuplicatedCodeElement> duplicates;
 
-    /**
-     * Constructor
-     *
-     * @param obj
-     *            object to be parsed
-     */
-    public AbstractDuplicatesParser(final OtpErlangObject obj) {
-        parse(obj);
-    }
+	/**
+	 * Constructor
+	 *
+	 * @param obj
+	 *            object to be parsed
+	 */
+	public AbstractDuplicatesParser(final OtpErlangObject obj) {
+		parse(obj);
+	}
 
-    @Override
-    public List<DuplicatedCodeElement> getDuplicates() {
-        return duplicates;
-    }
+	@Override
+	public List<DuplicatedCodeElement> getDuplicates() {
+		return duplicates;
+	}
 
-    @Override
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	@Override
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 
-    @Override
-    public boolean isSuccessful() {
-        return isSuccessful;
-    }
+	@Override
+	public boolean isSuccessful() {
+		return isSuccessful;
+	}
 
-    protected void setUnSuccessful(final String errorMessage) {
-        isSuccessful = false;
-        this.errorMessage = errorMessage;
-    }
+	protected void setUnSuccessful(final String errorMessage) {
+		isSuccessful = false;
+		this.errorMessage = errorMessage;
+	}
 }

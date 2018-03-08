@@ -37,110 +37,101 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class SimilarExpressionSearchParser extends AbstractDuplicatesParser {
 
-    /**
-     * Constructor
-     *
-     * @param obj
-     *            object to be parsed
-     */
-    public SimilarExpressionSearchParser(final OtpErlangObject obj) {
-        super(obj);
-    }
+	/**
+	 * Constructor
+	 *
+	 * @param obj
+	 *            object to be parsed
+	 */
+	public SimilarExpressionSearchParser(final OtpErlangObject obj) {
+		super(obj);
+	}
 
-    /*
-     * Parse Wrangler messages which are in the following format: {ok,
-     * {[{{filename, startLine, startCol},{filePath, endLine, endCol}}],
-     * generalisation}
-     *
-     * @see
-     * org.erlide.wrangler.refactoring.duplicatedcode.core.IResultParser#parse
-     * (com.ericsson.otp.erlang.OtpErlangObject)
-     */
-    @Override
-    public void parse(final OtpErlangObject object) {
-        try {
-            final OtpErlangTuple res = (OtpErlangTuple) object;
-            if (!"ok".equals(res.elementAt(0).toString())) {
-                setUnSuccessful(((OtpErlangString) res.elementAt(1)).stringValue());
-                return;
-            }
+	/*
+	 * Parse Wrangler messages which are in the following format: {ok, {[{{filename,
+	 * startLine, startCol},{filePath, endLine, endCol}}], generalisation}
+	 *
+	 * @see org.erlide.wrangler.refactoring.duplicatedcode.core.IResultParser#parse
+	 * (com.ericsson.otp.erlang.OtpErlangObject)
+	 */
+	@Override
+	public void parse(final OtpErlangObject object) {
+		try {
+			final OtpErlangTuple res = (OtpErlangTuple) object;
+			if (!"ok".equals(res.elementAt(0).toString())) {
+				setUnSuccessful(((OtpErlangString) res.elementAt(1)).stringValue());
+				return;
+			}
 
-            final OtpErlangTuple result = (OtpErlangTuple) res.elementAt(1);
+			final OtpErlangTuple result = (OtpErlangTuple) res.elementAt(1);
 
-            if (result.elementAt(0).equals(new OtpErlangList())) {
-                setUnSuccessful("No more instances found!");
-                return;
-            }
+			if (result.elementAt(0).equals(new OtpErlangList())) {
+				setUnSuccessful("No more instances found!");
+				return;
+			}
 
-            final DuplicatedCodeElement dup = parseDuplicates(result);
-            duplicates = new ArrayList<>();
-            duplicates.add(dup);
-            isSuccessful = true;
-            errorMessage = null;
-        } catch (final Exception e) {
-            setUnSuccessful(e.getMessage());
-        }
+			final DuplicatedCodeElement dup = parseDuplicates(result);
+			duplicates = new ArrayList<>();
+			duplicates.add(dup);
+			isSuccessful = true;
+			errorMessage = null;
+		} catch (final Exception e) {
+			setUnSuccessful(e.getMessage());
+		}
 
-    }
+	}
 
-    // { [{ {filename(), integer(), integer()} , {filename(), integer(),
-    // integer()} }], integer(), integer(), string()}
-    protected DuplicatedCodeElement parseDuplicates(final OtpErlangObject object)
-            throws OtpErlangRangeException {
-        final OtpErlangTuple listElementTuple = (OtpErlangTuple) object;
-        final OtpErlangList duplicateCodeList = (OtpErlangList) listElementTuple
-                .elementAt(0);
-        final Map<IFile, List<DuplicatedCodeInstanceElement>> values = new LinkedHashMap<>();
+	// { [{ {filename(), integer(), integer()} , {filename(), integer(),
+	// integer()} }], integer(), integer(), string()}
+	protected DuplicatedCodeElement parseDuplicates(final OtpErlangObject object) throws OtpErlangRangeException {
+		final OtpErlangTuple listElementTuple = (OtpErlangTuple) object;
+		final OtpErlangList duplicateCodeList = (OtpErlangList) listElementTuple.elementAt(0);
+		final Map<IFile, List<DuplicatedCodeInstanceElement>> values = new LinkedHashMap<>();
 
-        final OtpErlangString suggestion = (OtpErlangString) listElementTuple
-                .elementAt(1);
-        final String suggStr = suggestion.stringValue();
+		final OtpErlangString suggestion = (OtpErlangString) listElementTuple.elementAt(1);
+		final String suggStr = suggestion.stringValue();
 
-        final OtpErlangObject[] elements = duplicateCodeList.elements();
+		final OtpErlangObject[] elements = duplicateCodeList.elements();
 
-        for (OtpErlangObject element : elements) {
-            final OtpErlangTuple elementPair = (OtpErlangTuple) element;
-            final OtpErlangTuple firstElement = (OtpErlangTuple) elementPair.elementAt(0);
-            final OtpErlangTuple secondElement = (OtpErlangTuple) elementPair
-                    .elementAt(1);
-            final OtpErlangString fileName = (OtpErlangString) firstElement.elementAt(0);
-            final OtpErlangLong startLine = (OtpErlangLong) firstElement.elementAt(1);
-            final OtpErlangLong startCol = (OtpErlangLong) firstElement.elementAt(2);
-            final OtpErlangLong endLine = (OtpErlangLong) secondElement.elementAt(1);
-            final OtpErlangLong endCol = (OtpErlangLong) secondElement.elementAt(2);
+		for (final OtpErlangObject element : elements) {
+			final OtpErlangTuple elementPair = (OtpErlangTuple) element;
+			final OtpErlangTuple firstElement = (OtpErlangTuple) elementPair.elementAt(0);
+			final OtpErlangTuple secondElement = (OtpErlangTuple) elementPair.elementAt(1);
+			final OtpErlangString fileName = (OtpErlangString) firstElement.elementAt(0);
+			final OtpErlangLong startLine = (OtpErlangLong) firstElement.elementAt(1);
+			final OtpErlangLong startCol = (OtpErlangLong) firstElement.elementAt(2);
+			final OtpErlangLong endLine = (OtpErlangLong) secondElement.elementAt(1);
+			final OtpErlangLong endCol = (OtpErlangLong) secondElement.elementAt(2);
 
-            final String fileNameStr = fileName.stringValue();
-            final IFile file = WranglerUtils.getFileFromPath(fileNameStr);
-            final DuplicatedCodeInstanceElement instance = new DuplicatedCodeInstanceElement(
-                    file, startLine.intValue(), startCol.intValue(), endLine.intValue(),
-                    endCol.intValue() + 1);
-            instance.setSuggestedCode(suggStr);
-            if (values.containsKey(file)) {
-                values.get(file).add(instance);
-            } else {
-                final List<DuplicatedCodeInstanceElement> dupList = new ArrayList<>();
-                dupList.add(instance);
-                values.put(file, dupList);
-            }
-        }
+			final String fileNameStr = fileName.stringValue();
+			final IFile file = WranglerUtils.getFileFromPath(fileNameStr);
+			final DuplicatedCodeInstanceElement instance = new DuplicatedCodeInstanceElement(file, startLine.intValue(),
+					startCol.intValue(), endLine.intValue(), endCol.intValue() + 1);
+			instance.setSuggestedCode(suggStr);
+			if (values.containsKey(file)) {
+				values.get(file).add(instance);
+			} else {
+				final List<DuplicatedCodeInstanceElement> dupList = new ArrayList<>();
+				dupList.add(instance);
+				values.put(file, dupList);
+			}
+		}
 
-        final DuplicatedCodeElement result = new DuplicatedCodeElement(
-                values.entrySet().iterator().next().getValue().get(0));
-        result.setSuggestedCode(suggStr);
+		final DuplicatedCodeElement result = new DuplicatedCodeElement(
+				values.entrySet().iterator().next().getValue().get(0));
+		result.setSuggestedCode(suggStr);
 
-        for (final Map.Entry<IFile, List<DuplicatedCodeInstanceElement>> entry : values
-                .entrySet()) {
-            final DuplicatedFileElement dupFile = new DuplicatedFileElement(
-                    entry.getKey());
-            dupFile.setSuggestedCode(suggStr);
-            for (final DuplicatedCodeInstanceElement instance : entry.getValue()) {
-                dupFile.addChild(instance);
-            }
+		for (final Map.Entry<IFile, List<DuplicatedCodeInstanceElement>> entry : values.entrySet()) {
+			final DuplicatedFileElement dupFile = new DuplicatedFileElement(entry.getKey());
+			dupFile.setSuggestedCode(suggStr);
+			for (final DuplicatedCodeInstanceElement instance : entry.getValue()) {
+				dupFile.addChild(instance);
+			}
 
-            result.addChild(dupFile);
-        }
+			result.addChild(dupFile);
+		}
 
-        return result;
-    }
+		return result;
+	}
 
 }
