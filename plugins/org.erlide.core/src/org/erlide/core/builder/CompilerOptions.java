@@ -30,6 +30,82 @@ public class CompilerOptions {
 
     private static final String QUALIFIER = ErlangCore.PLUGIN_ID + "/compiler";
 
+    public static final BooleanOption COMPRESSED = new BooleanOption("compressed", false,
+            "Compress beam file",
+            "The compiler will compress the generated object code, which can be useful for embedded systems");
+    public static final BooleanOption DEBUG_INFO = new BooleanOption("debug_info", false,
+            "Debug info", "Include debug info in BEAM file");
+    public static final BooleanOption ENCRYPT_DEBUG_INFO = new BooleanOption(
+            "encrypt_debug_info", false, "Encrypt debug info",
+            "Encrypt debug info, the key will be read from .erlang.crypt");
+    public static final DefineOption DEFINE = new DefineOption("d",
+            new String[] { "Name", "Value" }, "", "");
+
+    public static final WarningOption WARN_UNUSED_RECORD = new WarningOption(
+            "warn_unused_record", true, "Unused records", "Unused records");
+    public static final WarningOption WARN_UNUSED_VARS = new WarningOption(
+            "warn_unused_vars", true, "Unused variables", "Unused variables");
+    public static final WarningOption WARN_UNUSED_IMPORT = new WarningOption(
+            "warn_unused_import", false, "Unused imports", "Unused imported functions");
+    public static final WarningOption WARN_OBSOLETE_GUARD = new WarningOption(
+            "warn_obsolete_guard", false, "Obsolete guards",
+            "Old type testing BIFs such as pid/1 and list/1");
+    public static final WarningOption WARN_DEPRECATED_FUNCTION = new WarningOption(
+            "warn_deprecated_function", true, "Deprecated functions",
+            "Call to a function known by the compiler to be deprecated");
+    public static final WarningOption WARN_UNUSED_FUNCTION = new WarningOption(
+            "warn_unused_function", true, "Unused functions",
+            "Local functions are not being called");
+    public static final WarningOption WARN_SHADOW_VARS = new WarningOption(
+            "warn_shadow_vars", false, "Shadowed variables",
+            "Warn for \"fresh\" variables in functional objects or list comprehensions with the same name as some already defined variable");
+    public static final WarningOption WARN_EXPORT_VARS = new WarningOption(
+            "warn_export_vars", false, "Implicitely exported variables",
+            "Warn for implicitly exported variables referred to after the primitives where they were first defined");
+    public static final WarningOption WARN_EXPORT_ALL = new WarningOption(
+            "warn_export_all", false, "Use of export_all",
+            "The compiler option export_all");
+    public static final PathsOption INCLUDE_DIRS = new PathsOption("i",
+            "Additional include dirs: ", "Comma-separated list of paths");
+    public static final ModuleOption PARSE_TRANSFORM = new ModuleOption("parse_transform",
+            "Global parse transform module: ",
+            "Specify a module to be used as a global parse transform");
+
+    public static final RawOption CUSTOM = new RawOption("raw", "Other options: ",
+            "A list of compiler options as Erlang terms (the list brackets can be omitted).");
+
+    //@formatter:off
+    public static final Collection<WarningOption> WARNINGS =
+            Lists.newArrayList(
+                    WARN_EXPORT_ALL,
+                    WARN_EXPORT_VARS,
+                    WARN_SHADOW_VARS,
+                    WARN_UNUSED_FUNCTION,
+                    WARN_DEPRECATED_FUNCTION,
+                    WARN_OBSOLETE_GUARD,
+                    WARN_UNUSED_IMPORT,
+                    WARN_UNUSED_VARS,
+                    WARN_UNUSED_RECORD);
+    public static final Collection<CompilerOption> ALL_OPTIONS =
+            Lists.newArrayList(
+                    CUSTOM,
+                    INCLUDE_DIRS,
+                    PARSE_TRANSFORM,
+                    DEFINE,
+                    COMPRESSED,
+                    DEBUG_INFO,
+                    ENCRYPT_DEBUG_INFO,
+                    WARN_EXPORT_ALL,
+                    WARN_EXPORT_VARS,
+                    WARN_SHADOW_VARS,
+                    WARN_UNUSED_FUNCTION,
+                    WARN_DEPRECATED_FUNCTION,
+                    WARN_OBSOLETE_GUARD,
+                    WARN_UNUSED_IMPORT,
+                    WARN_UNUSED_VARS,
+                    WARN_UNUSED_RECORD);
+    //@formatter:on
+
     private final Map<CompilerOption, Object> options;
     private PreferencesHelper helper;
 
@@ -43,7 +119,7 @@ public class CompilerOptions {
     public CompilerOptions() {
         helper = PreferencesHelper.getHelper(QUALIFIER);
         options = Maps.newHashMap();
-        for (final CompilerOption option : CompilerOption.ALL_OPTIONS) {
+        for (final CompilerOption option : ALL_OPTIONS) {
             if (option instanceof BooleanOption) {
                 options.put(option, ((BooleanOption) option).getDefaultValue());
             }
@@ -63,7 +139,7 @@ public class CompilerOptions {
     }
 
     public void store() throws BackingStoreException {
-        for (final CompilerOption option : CompilerOption.ALL_OPTIONS) {
+        for (final CompilerOption option : ALL_OPTIONS) {
             final Object value = options.get(option);
             if (option instanceof BooleanOption) {
                 final Boolean val = (Boolean) value;
@@ -105,7 +181,7 @@ public class CompilerOptions {
 
     public void load() {
         options.clear();
-        for (final CompilerOption option : CompilerOption.ALL_OPTIONS) {
+        for (final CompilerOption option : ALL_OPTIONS) {
             final String value = helper.getString(option.getName(), null);
             if (option instanceof BooleanOption) {
                 options.put(option, value != null ? Boolean.parseBoolean(value)
@@ -129,13 +205,13 @@ public class CompilerOptions {
                 }
             }
         }
-        options.put(CompilerOption.DEBUG_INFO, true);
+        options.put(CompilerOptions.DEBUG_INFO, true);
     }
 
     @SuppressWarnings("unchecked")
     public OtpErlangList export() {
         final List<OtpErlangObject> result = new ArrayList<>();
-        for (final CompilerOption option : CompilerOption.ALL_OPTIONS) {
+        for (final CompilerOption option : ALL_OPTIONS) {
             final Object optionValue = options.get(option);
             if (optionValue != null) {
                 if (option instanceof BooleanOption) {

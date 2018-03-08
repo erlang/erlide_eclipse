@@ -103,25 +103,25 @@ public class CompilerPreferencePage extends PropertyPage
             optionsGroup.setLayoutData(gd_optionsGroup);
         }
         optionsGroup.setLayout(new GridLayout(2, true));
-        final Button b = newCheckButton(optionsGroup, CompilerOption.DEBUG_INFO);
+        final Button b = newCheckButton(optionsGroup, CompilerOptions.DEBUG_INFO);
         b.setEnabled(false);
         b.setSelection(true);
-        newCheckButton(optionsGroup, CompilerOption.ENCRYPT_DEBUG_INFO);
-        newCheckButton(optionsGroup, CompilerOption.COMPRESSED);
+        newCheckButton(optionsGroup, CompilerOptions.ENCRYPT_DEBUG_INFO);
+        newCheckButton(optionsGroup, CompilerOptions.COMPRESSED);
 
         final Label lblNewLabel = new Label(prefsComposite, SWT.NONE);
         lblNewLabel
                 .setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-        lblNewLabel.setText(CompilerOption.INCLUDE_DIRS.getDescription());
+        lblNewLabel.setText(CompilerOptions.INCLUDE_DIRS.getDescription());
 
         includeDirsText = new Text(prefsComposite, SWT.BORDER);
         includeDirsText
                 .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        includeDirsText.setToolTipText(CompilerOption.INCLUDE_DIRS.getTooltip());
+        includeDirsText.setToolTipText(CompilerOptions.INCLUDE_DIRS.getTooltip());
         includeDirsText.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
-                prefs.setPathOption(CompilerOption.INCLUDE_DIRS,
+                prefs.setPathOption(CompilerOptions.INCLUDE_DIRS,
                         PathsOption.fromString(includeDirsText.getText()));
             }
         });
@@ -136,7 +136,7 @@ public class CompilerPreferencePage extends PropertyPage
         warningsGroup.setText("Warnings");
         final GridLayout gridLayout = new GridLayout(2, true);
         warningsGroup.setLayout(gridLayout);
-        for (final CompilerOption option : CompilerOption.WARNINGS) {
+        for (final CompilerOption option : CompilerOptions.WARNINGS) {
             newCheckButton(warningsGroup, option);
         }
         new Label(optionsGroup, SWT.NONE);
@@ -144,16 +144,16 @@ public class CompilerPreferencePage extends PropertyPage
         final Label lblNewLabel_1 = new Label(prefsComposite, SWT.NONE);
         lblNewLabel_1
                 .setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-        lblNewLabel_1.setText(CompilerOption.PARSE_TRANSFORM.getDescription());
+        lblNewLabel_1.setText(CompilerOptions.PARSE_TRANSFORM.getDescription());
 
         parseTransformText = new Text(prefsComposite, SWT.BORDER);
-        parseTransformText.setToolTipText(CompilerOption.PARSE_TRANSFORM.getTooltip());
+        parseTransformText.setToolTipText(CompilerOptions.PARSE_TRANSFORM.getTooltip());
         parseTransformText
                 .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         parseTransformText.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
-                prefs.setSimpleOption(CompilerOption.PARSE_TRANSFORM,
+                prefs.setSimpleOption(CompilerOptions.PARSE_TRANSFORM,
                         parseTransformText.getText());
             }
         });
@@ -170,7 +170,7 @@ public class CompilerPreferencePage extends PropertyPage
         customOptionsText.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
-                prefs.setSimpleOption(CompilerOption.CUSTOM, customOptionsText.getText());
+                prefs.setSimpleOption(CompilerOptions.CUSTOM, customOptionsText.getText());
             }
         });
 
@@ -414,16 +414,16 @@ public class CompilerPreferencePage extends PropertyPage
             final CompilerOption key = (CompilerOption) b.getData();
             b.setSelection(prefs.getBooleanOption(key));
         }
-        final Iterable<String> paths = prefs.getPathsOption(CompilerOption.INCLUDE_DIRS);
+        final Iterable<String> paths = prefs.getPathsOption(CompilerOptions.INCLUDE_DIRS);
         if (paths != null) {
             includeDirsText.setText(PathsOption.toString(paths));
         }
         final String parseTransform = prefs
-                .getSimpleOption(CompilerOption.PARSE_TRANSFORM);
+                .getSimpleOption(CompilerOptions.PARSE_TRANSFORM);
         if (parseTransform != null) {
             parseTransformText.setText(parseTransform);
         }
-        final String custom = prefs.getSimpleOption(CompilerOption.CUSTOM);
+        final String custom = prefs.getSimpleOption(CompilerOptions.CUSTOM);
         if (custom != null) {
             customOptionsText.setText(custom);
         }

@@ -7,6 +7,7 @@ import org.erlide.core.builder.CompilerOption;
 import org.erlide.core.builder.CompilerOption.BooleanOption;
 import org.erlide.core.builder.CompilerOption.DefineOption;
 import org.erlide.core.builder.CompilerOption.WarningOption;
+import org.erlide.core.builder.CompilerOptions;
 import org.erlide.util.erlang.OtpParserException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,14 +19,14 @@ public class CompilerOptionTest {
 
     @Test
     public void testFind() {
-        final CompilerOption option = CompilerOption.WARN_EXPORT_ALL;
+        final CompilerOption option = CompilerOptions.WARN_EXPORT_ALL;
         Assert.assertEquals("warn_export_all", option.getName());
         Assert.assertEquals(WarningOption.class, option.getClass());
     }
 
     @Test
     public void testToTerm_1() {
-        final BooleanOption option = CompilerOption.WARN_EXPORT_ALL;
+        final BooleanOption option = CompilerOptions.WARN_EXPORT_ALL;
         final OtpErlangObject actual = option.toTerm(true);
         final String expected = "warn_export_all";
         Assert.assertEquals(expected, actual.toString());
@@ -33,7 +34,7 @@ public class CompilerOptionTest {
 
     @Test
     public void testToTerm_2() {
-        final BooleanOption option = CompilerOption.WARN_EXPORT_ALL;
+        final BooleanOption option = CompilerOptions.WARN_EXPORT_ALL;
         final OtpErlangObject actual = option.toTerm(false);
         final String expected = "nowarn_export_all";
         Assert.assertEquals(expected, actual.toString());
@@ -41,7 +42,7 @@ public class CompilerOptionTest {
 
     @Test
     public void testToTerm_3() {
-        final BooleanOption option = CompilerOption.DEBUG_INFO;
+        final BooleanOption option = CompilerOptions.DEBUG_INFO;
         final OtpErlangObject actual = option.toTerm(true);
         final String expected = "debug_info";
         Assert.assertEquals(expected, actual.toString());
@@ -49,7 +50,7 @@ public class CompilerOptionTest {
 
     @Test
     public void testToTerm_4() {
-        final BooleanOption option = CompilerOption.DEBUG_INFO;
+        final BooleanOption option = CompilerOptions.DEBUG_INFO;
         final OtpErlangObject actual = option.toTerm(false);
         final String expected = null;
         Assert.assertEquals(expected, actual);
@@ -57,7 +58,7 @@ public class CompilerOptionTest {
 
     @Test
     public void testToTerm_5() throws OtpParserException {
-        final DefineOption option = CompilerOption.DEFINE;
+        final DefineOption option = CompilerOptions.DEFINE;
         @SuppressWarnings("unchecked")
         final List<Pair<String, String>> values = Lists
                 .newArrayList(new Pair<>("Macro", "[hej,1]"));
@@ -68,7 +69,7 @@ public class CompilerOptionTest {
 
     @Test
     public void testToTerm_5a() throws OtpParserException {
-        final DefineOption option = CompilerOption.DEFINE;
+        final DefineOption option = CompilerOptions.DEFINE;
         @SuppressWarnings("unchecked")
         final List<Pair<String, String>> values = Lists
                 .newArrayList(new Pair<>("Macro", ""));
@@ -79,7 +80,7 @@ public class CompilerOptionTest {
 
     @Test
     public void testToTerm_6() {
-        final BooleanOption option = CompilerOption.WARN_EXPORT_ALL;
+        final BooleanOption option = CompilerOptions.WARN_EXPORT_ALL;
         final OtpErlangObject actual = option.toTerm(false);
         final String expected = "nowarn_export_all";
         Assert.assertEquals(expected, actual.toString());
