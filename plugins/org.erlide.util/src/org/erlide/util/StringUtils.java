@@ -95,7 +95,7 @@ public final class StringUtils {
      * @note the new line characters are also added to the returned string.
      */
     public static List<String> splitLines(final String string) {
-        final ArrayList<String> ret = new ArrayList<>();
+        final List<String> ret = new ArrayList<>();
         final int len = string.length();
 
         char c;

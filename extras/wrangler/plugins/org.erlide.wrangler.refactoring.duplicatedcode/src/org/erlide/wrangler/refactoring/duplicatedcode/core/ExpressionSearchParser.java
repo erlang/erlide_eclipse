@@ -11,6 +11,7 @@
 package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeElement;
@@ -60,7 +61,7 @@ public class ExpressionSearchParser extends AbstractDuplicatesParser {
             OtpErlangTuple actPos;
             OtpErlangLong startLine, startColumn, endLine, endColumn;
 
-            final ArrayList<DuplicatedCodeInstanceElement> instances = new ArrayList<>();
+            final List<DuplicatedCodeInstanceElement> instances = new ArrayList<>();
 
             for (OtpErlangObject aPosList : posList) {
                 actPos = (OtpErlangTuple) aPosList;

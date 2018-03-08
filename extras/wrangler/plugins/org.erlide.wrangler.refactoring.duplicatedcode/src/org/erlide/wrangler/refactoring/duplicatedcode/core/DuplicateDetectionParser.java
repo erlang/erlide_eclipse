@@ -85,7 +85,7 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
         final OtpErlangTuple listElementTuple = (OtpErlangTuple) object;
         final OtpErlangList duplicateCodeList = (OtpErlangList) listElementTuple
                 .elementAt(0);
-        final LinkedHashMap<IFile, List<DuplicatedCodeInstanceElement>> values = new LinkedHashMap<>();
+        final Map<IFile, List<DuplicatedCodeInstanceElement>> values = new LinkedHashMap<>();
 
         final OtpErlangString suggestion = (OtpErlangString) listElementTuple
                 .elementAt(3);
@@ -124,7 +124,7 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
             if (values.containsKey(file)) {
                 values.get(file).add(instance);
             } else {
-                final ArrayList<DuplicatedCodeInstanceElement> dupList = new ArrayList<>();
+                final List<DuplicatedCodeInstanceElement> dupList = new ArrayList<>();
                 dupList.add(instance);
                 values.put(file, dupList);
             }

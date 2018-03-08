@@ -577,7 +577,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      *            the entry to add to the history
      */
     protected String[] addToHistory(final String[] history, final String newEntry) {
-        final java.util.ArrayList<String> l = new java.util.ArrayList<>(
+        final List<String> l = new java.util.ArrayList<>(
                 Arrays.asList(history));
         addToHistory(l, newEntry);
         final String[] r = new String[l.size()];

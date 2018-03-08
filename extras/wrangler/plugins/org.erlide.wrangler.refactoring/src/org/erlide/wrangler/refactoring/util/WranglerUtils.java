@@ -153,7 +153,7 @@ public final class WranglerUtils {
      * @return module names' list
      */
     static public ArrayList<String> getModuleNames(final IProject project) {
-        final ArrayList<IFile> erlangFiles = getModules(project);
+        final Iterable<IFile> erlangFiles = getModules(project);
 
         final ArrayList<String> moduleNames = new ArrayList<>();
         for (final IFile f : erlangFiles) {

@@ -11,6 +11,7 @@
 package org.erlide.wrangler.refactoring.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -505,7 +506,7 @@ public class RefactoringHandler extends AbstractHandler {
      * @throws OtpErlangRangeException
      */
     protected WranglerRefactoring runGenFunRefactoring(
-            final ArrayList<WranglerPage> pages, final Shell activeShell)
+            final List<WranglerPage> pages, final Shell activeShell)
             throws OtpErlangRangeException {
         WranglerRefactoring refactoring = null;
 

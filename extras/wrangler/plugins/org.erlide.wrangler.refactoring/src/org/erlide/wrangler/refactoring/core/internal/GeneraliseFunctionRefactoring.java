@@ -11,6 +11,7 @@
 package org.erlide.wrangler.refactoring.core.internal;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -199,7 +200,7 @@ public class GeneraliseFunctionRefactoring
         } else if (state == State.error) {
             return null;
         } else {
-            final HashMap<GenFunReturnParameterName, OtpErlangObject> p = message
+            final Map<GenFunReturnParameterName, OtpErlangObject> p = message
                     .getParameters();
             OtpErlangObject sideEffectPar, parName, funName, arity, funDefPos, exp,
                     logCmd;

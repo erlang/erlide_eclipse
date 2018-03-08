@@ -601,7 +601,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
         private Set<IPath> getFullPaths(final IProject project,
                 final Collection<IPath> sourcePaths) {
-            final HashSet<IPath> result = new HashSet<>();
+            final Set<IPath> result = new HashSet<>();
             for (final IPath path : sourcePaths) {
                 final String path_string = path.toString();
                 if (".".equals(path_string)) {

@@ -21,10 +21,7 @@ package com.ericsson.otp.erlang;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * <p>
@@ -63,7 +60,7 @@ public class OtpNode extends OtpLocalNode {
     private Acceptor acceptor = null;
 
     // keep track of all connections
-    Hashtable<String, OtpCookedConnection> connections = null;
+    Map<String, OtpCookedConnection> connections = null;
 
     // keep track of all mailboxes
     Mailboxes mboxes = null;
@@ -626,7 +623,7 @@ public class OtpNode extends OtpLocalNode {
      */
     public class Mailboxes {
         // mbox pids here
-        private Hashtable<OtpErlangPid, WeakReference<OtpMbox>> byPid = null;
+        private Map<OtpErlangPid, WeakReference<OtpMbox>> byPid = null;
         // mbox names here
         private Hashtable<String, WeakReference<OtpMbox>> byName = null;
 

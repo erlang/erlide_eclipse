@@ -489,7 +489,7 @@ public class ResourceTreeAndListGroup extends EventManager
      */
     public List<Object> getAllCheckedListItems() {
 
-        final ArrayList<Object> returnValue = new ArrayList<>();
+        final List<Object> returnValue = new ArrayList<>();
 
         final IElementFilter passThroughFilter = new IElementFilter() {
 

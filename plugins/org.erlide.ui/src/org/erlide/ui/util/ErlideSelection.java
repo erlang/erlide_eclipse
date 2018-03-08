@@ -672,7 +672,7 @@ public class ErlideSelection {
     }
 
     public static List<Integer> getLineStartOffsets(final String replacementString) {
-        final ArrayList<Integer> ret = new ArrayList<>();
+        final List<Integer> ret = new ArrayList<>();
         ret.add(0);// there is always a starting one at 0
 
         // we may have line breaks with \r\n, or only \n or \r
@@ -700,7 +700,7 @@ public class ErlideSelection {
     }
 
     public static List<Integer> getLineBreakOffsets(final String replacementString) {
-        final ArrayList<Integer> ret = new ArrayList<>();
+        final List<Integer> ret = new ArrayList<>();
 
         int ignoreNextNAt = -1;
 

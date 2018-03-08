@@ -23,7 +23,7 @@ import org.erlide.wrangler.refactoring.ui.wizardpages.WranglerPage;
  */
 public class DefaultWranglerRefactoringWizard extends AbstractWranglerRefactoringWizard {
 
-    private final ArrayList<WranglerPage> pages;
+    private final Iterable<WranglerPage> pages;
 
     /**
      * Default constructor

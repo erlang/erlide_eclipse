@@ -41,7 +41,7 @@ public class ComboInputPage extends InputPage {
 
     protected Label inputLabel;
 
-    protected ArrayList<String> moduleNames;
+    protected Iterable<String> moduleNames;
 
     protected Combo selectionList;
 

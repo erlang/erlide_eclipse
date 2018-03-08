@@ -10,11 +10,7 @@
  *******************************************************************************/
 package org.erlide.engine.internal.services.parsing;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.erlang.ErlAttribute;
@@ -213,7 +209,7 @@ public final class ErlParser {
     }
 
     private int considerPrevious(final int i, final List<IErlMember> all,
-            final LinkedList<IErlComment> comments, final IErlFunction function) {
+                                 final Deque<IErlComment> comments, final IErlFunction function) {
         final int j = i - 1;
         if (j > 0) {
             final IErlMember member = all.get(i);
