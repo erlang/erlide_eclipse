@@ -180,7 +180,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
 
     private void setDefaultRuntimes() {
         final List<RuntimeInfo> list = new ArrayList<>(getRuntimes());
-        Collections.sort(list, new Comparator<RuntimeInfo>() {
+        list.sort(new Comparator<RuntimeInfo>() {
             @Override
             public int compare(final RuntimeInfo o1, final RuntimeInfo o2) {
                 final int x = o2.getVersion().compareTo(o1.getVersion());

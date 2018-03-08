@@ -17,6 +17,6 @@ public final class RuntimeInfoCatalogData {
     }
 
     public RuntimeInfoCatalogData() {
-        this(new ArrayList<RuntimeInfo>(), null, null);
+        this(new ArrayList<>(), null, null);
     }
 }

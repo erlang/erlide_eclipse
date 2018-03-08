@@ -1052,7 +1052,7 @@ public class ErlideSelection {
      *         a colon is reached.
      */
     public String getToColon() {
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
 
         for (int i = getLineOffset(); i < doc.getLength(); i++) {
             try {

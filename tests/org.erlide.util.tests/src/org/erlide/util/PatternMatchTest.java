@@ -167,7 +167,7 @@ public class PatternMatchTest {
     public void testMatch_t() throws Exception {
         final OtpBindings r = OtpErlang.match("[W:a, V:i]", "[a, 1]");
         Assert.assertEquals(r.getAs("W", String.class), "a");
-        Assert.assertEquals(r.getAs("V", Integer.class), Integer.valueOf(1));
+        Assert.assertEquals(r.getAs("V", Integer.class), 1);
     }
 
 }

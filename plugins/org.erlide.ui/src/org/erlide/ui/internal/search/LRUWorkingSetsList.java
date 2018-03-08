@@ -61,7 +61,7 @@ public class LRUWorkingSetsList {
 
     public Collection<IWorkingSet[]> getSorted() {
         final List<IWorkingSet[]> sortedList = new ArrayList<>(fLRUList);
-        Collections.sort(sortedList, fComparator);
+        sortedList.sort(fComparator);
         return sortedList;
     }
 

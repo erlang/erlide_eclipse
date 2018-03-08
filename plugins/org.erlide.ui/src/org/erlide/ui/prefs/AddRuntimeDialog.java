@@ -178,7 +178,7 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
         if (fEditedRuntime == null) {
             fName.setText(""); //$NON-NLS-1$
             fOtpHome.setText(""); //$NON-NLS-1$
-            fCodePath.setElements(new ArrayList<String>());
+            fCodePath.setElements(new ArrayList<>());
             fArgs.setText(""); //$NON-NLS-1$
         } else {
             fName.setText(fEditedRuntime.getName());

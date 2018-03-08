@@ -191,7 +191,7 @@ public class BackendShell implements IBackendShell {
     @Override
     public void add(final List<OtpErlangObject> msgs) {
         final int prevLength = length;
-        final StringBuffer text = new StringBuffer();
+        final StringBuilder text = new StringBuilder();
         synchronized (requests) {
             deleteOldItems();
             for (final OtpErlangObject element : msgs) {
@@ -256,7 +256,7 @@ public class BackendShell implements IBackendShell {
 
     @Override
     public String getText() {
-        final StringBuffer result = new StringBuffer();
+        final StringBuilder result = new StringBuilder();
         synchronized (requests) {
             for (final IoRequest request : requests) {
                 result.append(request.getMessage());

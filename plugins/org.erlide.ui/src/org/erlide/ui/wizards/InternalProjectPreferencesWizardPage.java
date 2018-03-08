@@ -128,7 +128,7 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
     }
 
     private List<String> search(final String ext, final File file) {
-        return search(ext, file, new ArrayList<String>());
+        return search(ext, file, new ArrayList<>());
     }
 
     private List<String> search(final String ext, final File file,

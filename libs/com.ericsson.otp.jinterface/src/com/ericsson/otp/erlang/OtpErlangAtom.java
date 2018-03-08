@@ -96,7 +96,7 @@ public class OtpErlangAtom extends OtpErlangObject {
      *
      */
     public boolean booleanValue() {
-        return Boolean.valueOf(atomValue()).booleanValue();
+        return Boolean.valueOf(atomValue());
     }
 
     /**

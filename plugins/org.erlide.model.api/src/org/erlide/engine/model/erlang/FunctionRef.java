@@ -29,7 +29,7 @@ public class FunctionRef {
 
                 module = m;
                 function = f;
-                arity = a == null ? 0 : a.intValue();
+                arity = a == null ? 0 : a;
             } catch (final Exception e2) {
                 throw new IllegalArgumentException();
             }

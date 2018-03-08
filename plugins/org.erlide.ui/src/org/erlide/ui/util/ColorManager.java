@@ -99,11 +99,7 @@ public class ColorManager implements IColorManager {
             }
         }
 
-        Color color = colorTable.get(rgb);
-        if (color == null) {
-            color = new Color(Display.getCurrent(), rgb);
-            colorTable.put(rgb, color);
-        }
+        Color color = colorTable.computeIfAbsent(rgb, r -> new Color(Display.getCurrent(), r));
 
         return color;
     }

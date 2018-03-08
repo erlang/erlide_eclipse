@@ -219,7 +219,7 @@ public class OtpErlangMap extends OtpErlangObject {
      */
     @Override
     public String toString() {
-        final StringBuffer s = new StringBuffer();
+        final StringBuilder s = new StringBuilder();
 
         s.append("#{");
 

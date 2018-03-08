@@ -67,7 +67,7 @@ public class ErlInformationPresenter
      * platform
      */
     private String correctLineDelimiters(final String str) {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         for (String s : StringUtils.splitLines(str)) {
 
             boolean found = false;

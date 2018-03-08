@@ -62,7 +62,7 @@ public class StatsTreeObject implements ICoverageObject {
     @Override
     public String toString() {
 
-        final StringBuffer bf = new StringBuffer();
+        final StringBuilder bf = new StringBuilder();
         bf.append(label).append(" ").append(all).append(" ").append(covered).append(" ")
                 .append(getPercentage()).append('\n');
 

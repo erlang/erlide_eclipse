@@ -163,7 +163,7 @@ public class RestoreAction extends Action {
 
             log.info(df.format(d));
 
-            final StringBuffer buf = new StringBuffer();
+            final StringBuilder buf = new StringBuilder();
             buf.append(f.getName()).append(" (").append(df.format(d)).append(")");
             return buf.toString();
         }

@@ -28,7 +28,7 @@ public class CodePathEditor extends ListEditor {
 
     @Override
     protected String createList(final String[] items) {
-        final StringBuffer path = new StringBuffer(""); //$NON-NLS-1$
+        final StringBuilder path = new StringBuilder(""); //$NON-NLS-1$
 
         for (int i = 0; i < items.length; i++) {
             path.append(items[i]);

@@ -190,7 +190,7 @@ public final class ErlParser {
                     all.add((IErlMember) element);
                 }
             }
-            Collections.sort(all, new SourceOffsetComparator());
+            all.sort(new SourceOffsetComparator());
             for (int i = 1; i < all.size(); i++) {
                 checkForComment(all, i);
             }
@@ -543,7 +543,7 @@ public final class ErlParser {
                     }
                     r.setChildren(children);
                 } else {
-                    r.setChildren(new ArrayList<IErlElement>());
+                    r.setChildren(new ArrayList<>());
                 }
                 return r;
             }

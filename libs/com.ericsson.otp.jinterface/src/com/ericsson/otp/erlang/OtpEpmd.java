@@ -85,7 +85,7 @@ public class OtpEpmd {
         final String trace = System.getProperties().getProperty("OtpConnection.trace");
         try {
             if (trace != null) {
-                traceLevel = Integer.valueOf(trace).intValue();
+                traceLevel = Integer.valueOf(trace);
             }
         } catch (final NumberFormatException e) {
             traceLevel = 0;

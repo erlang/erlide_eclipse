@@ -185,11 +185,7 @@ public final class BackendManager implements IBackendManager {
             final IProjectCodeLoader b) {
         final IErlModel model = ErlangEngine.getInstance().getModel();
         b.removeProjectPath(model.findProject(project));
-        Set<IBackend> list = executionBackends.get(project);
-        if (list == null) {
-            list = Sets.newHashSet();
-            executionBackends.put(project, list);
-        }
+        Set<IBackend> list = executionBackends.computeIfAbsent(project, k -> Sets.newHashSet());
         list.remove(b);
     }
 
@@ -346,11 +342,7 @@ public final class BackendManager implements IBackendManager {
     @Override
     public synchronized void addExecutionBackend(final IProject project,
             final IBackend b) {
-        Set<IBackend> list = executionBackends.get(project);
-        if (list == null) {
-            list = Sets.newHashSet();
-            executionBackends.put(project, list);
-        }
+        Set<IBackend> list = executionBackends.computeIfAbsent(project, k -> Sets.newHashSet());
         list.add(b);
         final IErlModel model = ErlangEngine.getInstance().getModel();
         b.addProjectPath(model.findProject(project));

@@ -176,11 +176,7 @@ public final class MarkerUtils {
 
     private static void addMessage(final Map<String, List<OtpErlangTuple>> map,
             final String key, final OtpErlangTuple tuple) {
-        List<OtpErlangTuple> list = map.get(key);
-        if (list == null) {
-            list = Lists.newArrayList();
-            map.put(key, list);
-        }
+        List<OtpErlangTuple> list = map.computeIfAbsent(key, k -> Lists.newArrayList());
         list.add(tuple);
     }
 
@@ -268,8 +264,8 @@ public final class MarkerUtils {
 
         final int start = range == null ? 0 : range.getOffset();
         final int end = range == null ? 1 : start + range.getLength();
-        marker.setAttribute(IMarker.CHAR_START, Integer.valueOf(start));
-        marker.setAttribute(IMarker.CHAR_END, Integer.valueOf(end));
+        marker.setAttribute(IMarker.CHAR_START, start);
+        marker.setAttribute(IMarker.CHAR_END, end);
     }
 
     public static IMarker createSearchResultMarker(final IErlModule module,

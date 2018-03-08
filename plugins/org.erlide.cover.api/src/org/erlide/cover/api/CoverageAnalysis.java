@@ -41,7 +41,7 @@ public class CoverageAnalysis {
      */
     public static void prepareAnalysis(final IConfiguration configuration)
             throws CoverException {
-        prepareAnalysis(new ArrayList<String>(), configuration);
+        prepareAnalysis(new ArrayList<>(), configuration);
     }
 
     /**

@@ -14,7 +14,7 @@ public class MapUtils {
         for (final Map.Entry<K, List<V>> entry : map.entrySet()) {
             for (final V v : entry.getValue()) {
                 if (!result.containsKey(v)) {
-                    result.put(v, new ArrayList<K>());
+                    result.put(v, new ArrayList<>());
                 }
                 result.get(v).add(entry.getKey());
             }
@@ -27,7 +27,7 @@ public class MapUtils {
         for (final Map.Entry<K, Set<V>> entry : map.entrySet()) {
             for (final V v : entry.getValue()) {
                 if (!result.containsKey(v)) {
-                    result.put(v, new HashSet<K>());
+                    result.put(v, new HashSet<>());
                 }
                 result.get(v).add(entry.getKey());
             }

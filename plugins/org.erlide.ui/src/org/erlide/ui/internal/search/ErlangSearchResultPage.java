@@ -113,13 +113,13 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
         // SearchMessages.FileSearchPage_sort_path_label, this,
         // FileLabelProvider.SHOW_PATH_LABEL);
 
-        setElementLimit(Integer.valueOf(DEFAULT_ELEMENT_LIMIT));
+        setElementLimit(DEFAULT_ELEMENT_LIMIT);
     }
 
     @Override
     public void setElementLimit(final Integer elementLimit) {
         super.setElementLimit(elementLimit);
-        final int limit = elementLimit.intValue();
+        final int limit = elementLimit;
         getSettings().put(KEY_LIMIT, limit);
     }
 
@@ -301,15 +301,15 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
         if (memento != null) {
             Integer value = memento.getInteger(KEY_SORTING);
             if (value != null) {
-                fCurrentSortOrder = value.intValue();
+                fCurrentSortOrder = value;
             }
 
             value = memento.getInteger(KEY_LIMIT);
             if (value != null) {
-                elementLimit = value.intValue();
+                elementLimit = value;
             }
         }
-        setElementLimit(Integer.valueOf(elementLimit));
+        setElementLimit(elementLimit);
     }
 
     @Override
@@ -340,8 +340,8 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
                 final int fileCount = getInput().getElements().length;
                 if (itemCount < fileCount) {
                     final String format = "{0} (showing {1} of {2} files)";
-                    return MessageFormat.format(format, label, Integer.valueOf(itemCount),
-                            Integer.valueOf(fileCount));
+                    return MessageFormat.format(format, label, itemCount,
+                            fileCount);
                 }
             }
         }

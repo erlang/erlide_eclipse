@@ -33,7 +33,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     @Override
     public int describe(final InputStream input, final IContentDescription description)
             throws IOException {
-        return describe2(input, description, new HashMap<String, Object>());
+        return describe2(input, description, new HashMap<>());
     }
 
     int describe2(final InputStream input, final IContentDescription description,
@@ -47,7 +47,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     @Override
     public int describe(final Reader input, final IContentDescription description)
             throws IOException {
-        return describe2(input, description, new HashMap<String, Object>());
+        return describe2(input, description, new HashMap<>());
     }
 
     public static Charset detectEncoding(final String s) {

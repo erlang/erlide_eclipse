@@ -872,20 +872,20 @@ public class ErlModel extends Openable implements IErlModel {
 				change(rsrc, changedDelta.get(rsrc));
 			}
 			// make sure we don't dispose trees before leaves...
-			Collections.sort(removed, new Comparator<IResource>() {
+			removed.sort(new Comparator<IResource>() {
 
-				@Override
-				public int compare(final IResource o1, final IResource o2) {
-					if (o1.equals(o2)) {
-						return 0;
-					} else if (o1.getFullPath().isPrefixOf(o2.getFullPath())) {
-						return 1;
-					} else {
-						return -1;
-					}
-				}
+                @Override
+                public int compare(final IResource o1, final IResource o2) {
+                    if (o1.equals(o2)) {
+                        return 0;
+                    } else if (o1.getFullPath().isPrefixOf(o2.getFullPath())) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
 
-			});
+            });
 			for (final IResource rsrc : removed) {
 				remove(rsrc);
 			}

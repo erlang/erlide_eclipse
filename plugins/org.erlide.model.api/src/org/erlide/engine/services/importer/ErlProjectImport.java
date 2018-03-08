@@ -25,15 +25,15 @@ public class ErlProjectImport {
 
         OtpErlangList l = (OtpErlangList) t.elementAt(0);
         resources = (SortedSet<String>) erlangStringList2Collection(l,
-                new TreeSet<String>());
+                new TreeSet<>());
 
         l = (OtpErlangList) t.elementAt(1);
         sourceDirs = (List<String>) erlangStringList2Collection(l,
-                new ArrayList<String>());
+                new ArrayList<>());
 
         l = (OtpErlangList) t.elementAt(2);
         includeDirs = (List<String>) erlangStringList2Collection(l,
-                new ArrayList<String>());
+                new ArrayList<>());
 
         final OtpErlangObject beamDirElement = t.elementAt(3);
         if (beamDirElement instanceof OtpErlangAtom) {
@@ -44,7 +44,7 @@ public class ErlProjectImport {
 
         l = (OtpErlangList) t.elementAt(4);
         directories = (List<String>) erlangStringList2Collection(l,
-                new ArrayList<String>());
+                new ArrayList<>());
         directories.add(0, ".");
     }
 

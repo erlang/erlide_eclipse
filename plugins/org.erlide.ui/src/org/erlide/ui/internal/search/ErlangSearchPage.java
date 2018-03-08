@@ -570,7 +570,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             final int data, final boolean isSelected) {
         final Button button = new Button(parent, SWT.CHECK);
         button.setText(text);
-        button.setData(Integer.valueOf(data));
+        button.setData(data);
         button.setLayoutData(new GridData());
         button.setSelection(isSelected);
         return button;
@@ -640,7 +640,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     }
 
     private int getIntData(final Button button) {
-        return ((Integer) button.getData()).intValue();
+        return (Integer) button.getData();
     }
 
     private LimitTo getLimitTo() {

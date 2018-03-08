@@ -124,7 +124,7 @@ public class SearchResultLabelProvider extends LabelProvider implements
         }
         if (matchCount > 1) {
             final String countInfo = MessageFormat.format("({0} matches)",
-                    Integer.valueOf(matchCount));
+                    matchCount);
             return new StyledString(countInfo, StyledString.COUNTER_STYLER);
         }
         return new StyledString();

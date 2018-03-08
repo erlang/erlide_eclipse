@@ -109,7 +109,7 @@ public abstract class AbstractConnection extends Thread {
         final String trace = System.getProperties().getProperty("OtpConnection.trace");
         try {
             if (trace != null) {
-                defaultLevel = Integer.valueOf(trace).intValue();
+                defaultLevel = Integer.valueOf(trace);
             }
         } catch (final NumberFormatException e) {
             defaultLevel = 0;
@@ -1000,7 +1000,7 @@ public abstract class AbstractConnection extends Thread {
     }
 
     static String hex(final byte[] b) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         try {
             int i;
             for (i = 0; i < b.length; ++i) {

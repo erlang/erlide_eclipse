@@ -29,7 +29,7 @@ public class RegexpRule implements IPredicateRule {
 
     @Override
     public IToken evaluate(final ICharacterScanner scanner, final boolean resume) {
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         final char[][] lineDelimiters = scanner.getLegalLineDelimiters();
 
         int i = 1;

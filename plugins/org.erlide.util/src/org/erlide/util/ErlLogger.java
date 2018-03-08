@@ -184,7 +184,7 @@ public class ErlLogger {
 
         @Override
         public synchronized String format(final LogRecord record) {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             // Minimize memory allocations here.
             dat.setTime(record.getMillis());
             args[0] = dat;

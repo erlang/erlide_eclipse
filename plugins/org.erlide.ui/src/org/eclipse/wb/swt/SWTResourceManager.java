@@ -255,11 +255,7 @@ public class SWTResourceManager {
             cornerDecoratedImageMap = new HashMap<>();
             m_decoratedImageMap[corner] = cornerDecoratedImageMap;
         }
-        Map<Image, Image> decoratedMap = cornerDecoratedImageMap.get(baseImage);
-        if (decoratedMap == null) {
-            decoratedMap = new HashMap<>();
-            cornerDecoratedImageMap.put(baseImage, decoratedMap);
-        }
+        Map<Image, Image> decoratedMap = cornerDecoratedImageMap.computeIfAbsent(baseImage, k -> new HashMap<>());
         //
         Image result = decoratedMap.get(decorator);
         if (result == null) {
@@ -373,11 +369,11 @@ public class SWTResourceManager {
                     if (logFont != null && logFontClass != null) {
                         if (strikeout) {
                             logFontClass.getField("lfStrikeOut").set(logFont, //$NON-NLS-1$
-                                    Byte.valueOf((byte) 1));
+                                    (byte) 1);
                         }
                         if (underline) {
                             logFontClass.getField("lfUnderline").set(logFont, //$NON-NLS-1$
-                                    Byte.valueOf((byte) 1));
+                                    (byte) 1);
                         }
                     }
                 } catch (final Throwable e) {
@@ -444,12 +440,8 @@ public class SWTResourceManager {
      * @return Cursor The system cursor matching the specific ID
      */
     public static Cursor getCursor(final int id) {
-        final Integer key = Integer.valueOf(id);
-        Cursor cursor = m_idToCursorMap.get(key);
-        if (cursor == null) {
-            cursor = new Cursor(Display.getDefault(), id);
-            m_idToCursorMap.put(key, cursor);
-        }
+        final Integer key = id;
+        Cursor cursor = m_idToCursorMap.computeIfAbsent(key, k -> new Cursor(Display.getDefault(), id));
         return cursor;
     }
 

@@ -67,7 +67,7 @@ public class NavigationPreferencePage extends ErlidePreferencePage
                     .getBoolean(NAVIGATION_KEY + "/" + CHECK_ALL_PROJECTS_KEY, true);
             fCachedCheckAllProjects = checkAllProjects;
         }
-        return fCachedCheckAllProjects.booleanValue();
+        return fCachedCheckAllProjects;
     }
 
     @Override

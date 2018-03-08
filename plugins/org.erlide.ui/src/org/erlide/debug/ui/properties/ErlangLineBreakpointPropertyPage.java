@@ -84,7 +84,7 @@ public class ErlangLineBreakpointPropertyPage extends ErlangBreakpointPropertyPa
                 .setBackground(parent.getBackground());
         // Line number
         final ILineBreakpoint breakpoint = (ILineBreakpoint) getBreakpoint();
-        final StringBuffer lineNumber = new StringBuffer(4);
+        final StringBuilder lineNumber = new StringBuilder(4);
         try {
             final int lNumber = breakpoint.getLineNumber();
             if (lNumber > 0) {

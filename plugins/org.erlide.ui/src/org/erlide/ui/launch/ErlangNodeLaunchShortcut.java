@@ -82,7 +82,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         }
         projects.addAll(getDependentProjects(projects));
         final List<IErlProject> projectList = Lists.newArrayList(projects);
-        Collections.sort(projectList, new Comparator<IErlProject>() {
+        projectList.sort(new Comparator<IErlProject>() {
             @Override
             public int compare(final IErlProject o1, final IErlProject o2) {
                 return o1.getName().compareTo(o2.getName());

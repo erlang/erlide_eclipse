@@ -69,17 +69,17 @@ public class OtpParser {
             result = new OtpFormatPlaceholder(text);
             break;
         case TUPLESTART:
-            result = parseTuple(tokens, new Stack<OtpErlangObject>());
+            result = parseTuple(tokens, new Stack<>());
             break;
         case TUPLEEND:
             throw new OtpParserException("unexpected " + t.toString());
         case LISTSTART:
-            result = parseList(tokens, new Stack<OtpErlangObject>(), null);
+            result = parseList(tokens, new Stack<>(), null);
             break;
         case LISTEND:
             throw new OtpParserException("unexpected " + t.toString());
         case MAP:
-            result = parseMap(tokens, new Stack<OtpErlangObject>());
+            result = parseMap(tokens, new Stack<>());
             break;
         case COMMA:
             throw new OtpParserException("unexpected " + t.toString());

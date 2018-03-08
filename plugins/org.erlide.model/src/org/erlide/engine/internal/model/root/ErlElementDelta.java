@@ -34,7 +34,7 @@ public class ErlElementDelta implements IErlElementDelta {
      * @param element
      */
     public ErlElementDelta(final int kind, final int flags, final IErlElement element) {
-        this(kind, flags, element, new ArrayList<ErlElementDelta>(0),
+        this(kind, flags, element, new ArrayList<>(0),
                 new ArrayList<IResourceDelta>(0));
     }
 

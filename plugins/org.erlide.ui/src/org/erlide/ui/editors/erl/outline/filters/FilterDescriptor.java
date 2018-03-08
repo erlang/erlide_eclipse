@@ -226,7 +226,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
      */
     public boolean isEnabled() {
         final String strVal = fElement.getAttribute(ENABLED_ATTRIBUTE);
-        return strVal == null || Boolean.valueOf(strVal).booleanValue();
+        return strVal == null || Boolean.valueOf(strVal);
     }
 
     /*

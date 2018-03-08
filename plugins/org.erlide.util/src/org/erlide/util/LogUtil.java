@@ -33,7 +33,7 @@ public final class LogUtil {
     }
 
     public static String fetchErlideLog() {
-        final StringBuffer result = new StringBuffer();
+        final StringBuilder result = new StringBuilder();
         final File log = new File(ErlLogger.getInstance().getLogFile());
         try (final BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(log), "UTF-8"))) {
@@ -75,7 +75,7 @@ public final class LogUtil {
         } catch (final Exception e) {
             ErlLogger.warn(e);
         }
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         for (final String s : result) {
             buf.append(s).append('\n');
         }
@@ -83,7 +83,7 @@ public final class LogUtil {
     }
 
     public static String fetchStraceLog(final String filename) {
-        final StringBuffer result = new StringBuffer();
+        final StringBuilder result = new StringBuilder();
         final File log = new File(filename);
         if (log.exists()) {
             try (final BufferedReader reader = new BufferedReader(

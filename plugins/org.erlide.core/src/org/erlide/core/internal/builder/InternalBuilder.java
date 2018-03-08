@@ -208,7 +208,7 @@ public class InternalBuilder extends ErlangBuilder {
 			return;
 		}
 		// if (BuilderHelper.isDebugging()) {
-		ErlLogger.debug("Will compile %d resource(s)", Integer.valueOf(n));
+		ErlLogger.debug("Will compile %d resource(s)", n);
 		// }
 		final IBackend backend = BackendCore.getBackendManager().getBuildBackend(erlProject);
 		if (backend == null) {

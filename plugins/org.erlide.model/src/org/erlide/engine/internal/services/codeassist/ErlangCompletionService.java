@@ -443,7 +443,7 @@ public class ErlangCompletionService implements CompletionService {
             final List<CompletionData> completions) {
         final CompletionNameComparer completionNameComparer = new CompletionNameComparer(
                 prefix);
-        Collections.sort(completions, completionNameComparer);
+        completions.sort(completionNameComparer);
         result.addAll(completions);
     }
 

@@ -202,7 +202,7 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
     }
 
     protected String toString(final int start) {
-        final StringBuffer s = new StringBuffer();
+        final StringBuilder s = new StringBuilder();
         s.append("[");
 
         for (int i = start; i < arity(); i++) {

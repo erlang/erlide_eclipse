@@ -87,7 +87,7 @@ public final class RuntimeInfo {
     }
 
     public RuntimeInfo(final String name) {
-        this(name, ".", "", new ArrayList<String>());
+        this(name, ".", "", new ArrayList<>());
     }
 
     public RuntimeInfo(final String name, final String otpHomeDir, final String args,

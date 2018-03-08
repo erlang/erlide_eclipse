@@ -140,7 +140,7 @@ public class CompilerOptions {
             if (optionValue != null) {
                 if (option instanceof BooleanOption) {
                     final OtpErlangObject val = ((BooleanOption) option)
-                            .toTerm(((Boolean) optionValue).booleanValue());
+                            .toTerm((Boolean) optionValue);
                     if (val != null) {
                         result.add(val);
                     }
@@ -239,7 +239,7 @@ public class CompilerOptions {
     public boolean getBooleanOption(final CompilerOption opt) {
         final Object value = options.get(opt);
         if (opt instanceof BooleanOption) {
-            return ((Boolean) value).booleanValue();
+            return (Boolean) value;
         }
         return value != null;
     }

@@ -953,11 +953,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
             if (annotation instanceof ErlangProjectionAnnotation) {
                 final ErlangProjectionAnnotation epa = (ErlangProjectionAnnotation) annotation;
                 final Position position = model.getPosition(epa);
-                List<Tuple> list = map.get(epa.getElement());
-                if (list == null) {
-                    list = new ArrayList<>(2);
-                    map.put(epa.getElement(), list);
-                }
+                List<Tuple> list = map.computeIfAbsent(epa.getElement(), k -> new ArrayList<>(2));
                 list.add(new Tuple(epa, position));
             }
         }
@@ -971,7 +967,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
         };
         for (final List<Tuple> name : map.values()) {
             final List<Tuple> list = name;
-            Collections.sort(list, comparator);
+            list.sort(comparator);
         }
         return map;
     }

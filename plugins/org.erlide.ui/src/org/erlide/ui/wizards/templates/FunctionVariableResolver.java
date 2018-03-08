@@ -58,7 +58,7 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
         final StringBuilder buff = new StringBuilder();
 
         for (final Object[] element : functions) {
-            arg_var.setArity(((Integer) element[1]).intValue());
+            arg_var.setArity((Integer) element[1]);
             name_var.setFunctionName((String) element[0]);
 
             final Template commentTemplate = ErlangSourceContextTypeComment.getDefault()
@@ -115,7 +115,7 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
     }
 
     public void doAddFunction(final String name, final int arity) {
-        final Object[] data = { name, Integer.valueOf(arity) };
+        final Object[] data = { name, arity};
         functions.add(data);
     }
 

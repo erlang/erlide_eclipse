@@ -250,7 +250,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         }
 
         final Set<String> interpret = BackendData.addBreakpointProjectsAndModules(null,
-                new ArrayList<String>());
+                new ArrayList<>());
         contentProvider.addModules(interpret);
 
         EnumSet<ErlDebugFlags> debugFlags;

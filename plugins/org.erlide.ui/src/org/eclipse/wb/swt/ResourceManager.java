@@ -96,11 +96,7 @@ public class ResourceManager extends SWTResourceManager {
         if (descriptor == null) {
             return null;
         }
-        Image image = descriptorImageMap.get(descriptor);
-        if (image == null) {
-            image = descriptor.createImage();
-            descriptorImageMap.put(descriptor, image);
-        }
+        Image image = descriptorImageMap.computeIfAbsent(descriptor, d -> d.createImage());
         return image;
     }
 
@@ -146,11 +142,7 @@ public class ResourceManager extends SWTResourceManager {
             cornerDecoratedImageMap = new HashMap<>();
             m_decoratedImageMap[corner] = cornerDecoratedImageMap;
         }
-        Map<Image, Image> decoratedMap = cornerDecoratedImageMap.get(baseImage);
-        if (decoratedMap == null) {
-            decoratedMap = new HashMap<>();
-            cornerDecoratedImageMap.put(baseImage, decoratedMap);
-        }
+        Map<Image, Image> decoratedMap = cornerDecoratedImageMap.computeIfAbsent(baseImage, k -> new HashMap<>());
         //
         Image result = decoratedMap.get(decorator);
         if (result == null) {

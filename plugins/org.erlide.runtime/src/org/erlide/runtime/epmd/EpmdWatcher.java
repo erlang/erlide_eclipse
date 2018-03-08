@@ -49,7 +49,7 @@ public final class EpmdWatcher {
             return;
         }
         hosts.add(host);
-        nodeMap.put(host, new ArrayList<String>());
+        nodeMap.put(host, new ArrayList<>());
     }
 
     public synchronized void removeHost(final String host) {

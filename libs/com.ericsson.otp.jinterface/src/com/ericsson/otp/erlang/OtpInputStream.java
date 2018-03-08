@@ -335,7 +335,7 @@ public class OtpInputStream extends ByteArrayInputStream {
      *                if the next term in the stream is not an atom.
      */
     public boolean read_boolean() throws OtpErlangDecodeException {
-        return Boolean.valueOf(read_atom()).booleanValue();
+        return Boolean.valueOf(read_atom());
     }
 
     /**
@@ -534,7 +534,7 @@ public class OtpInputStream extends ByteArrayInputStream {
             }
 
             // now put the mantissa and exponent together
-            exp = Integer.valueOf(estr).intValue();
+            exp = Integer.valueOf(estr);
             val = new BigDecimal(str.substring(0, epos)).movePointRight(exp);
 
             return val.doubleValue();
