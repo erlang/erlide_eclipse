@@ -55,7 +55,7 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
 
     public static class Serializer {
 
-        private static final char[] minorMap = new char[] { 'A', 'B', 'C' };
+        private static final char[] minorMap = { 'A', 'B', 'C' };
 
         public static RuntimeVersion parse(final String version) {
             return parse(version, null);

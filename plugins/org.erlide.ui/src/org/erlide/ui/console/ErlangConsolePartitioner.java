@@ -19,7 +19,7 @@ import org.eclipse.ui.console.IConsoleDocumentPartitioner;
  */
 public class ErlangConsolePartitioner implements IConsoleDocumentPartitioner {
 
-    private static final String[] LEGAL_CONTENT_TYPES = new String[] {
+    private static final String[] LEGAL_CONTENT_TYPES = {
             IDocument.DEFAULT_CONTENT_TYPE };
 
     private final List<ScriptStyleRange> ranges = new ArrayList<>();

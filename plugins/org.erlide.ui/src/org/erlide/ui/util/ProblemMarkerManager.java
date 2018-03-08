@@ -141,7 +141,7 @@ public class ProblemMarkerManager implements IResourceChangeListener,
         if (event instanceof ErlangModuleAnnotationModelEvent) {
             final ErlangModuleAnnotationModelEvent emEvent = (ErlangModuleAnnotationModelEvent) event;
             if (emEvent.includesProblemMarkerAnnotationChanges()) {
-                final IResource[] changes = new IResource[] {
+                final IResource[] changes = {
                         emEvent.getUnderlyingResource() };
                 fireChanges(changes, false);
             }

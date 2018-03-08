@@ -139,7 +139,7 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
         fName = new StringDialogField();
         fName.setLabelText(RuntimePreferenceMessages.addDialog_ertsName);
 
-        final String[] buttons = new String[] { RuntimePreferenceMessages.addDialog_add,
+        final String[] buttons = { RuntimePreferenceMessages.addDialog_add,
                 RuntimePreferenceMessages.addDialog_remove, "Move up", "Move down" };
         fCodePath = new ListDialogField<>(this, buttons, new StringLabelProvider());
         fCodePath.setLabelText("Code path");

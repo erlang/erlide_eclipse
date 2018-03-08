@@ -68,7 +68,7 @@ import com.google.common.collect.Lists;
 public class ErlangDebugTarget extends ErlangDebugElement
         implements IDebugTarget, IErlangDebugNode, IDisposable {
 
-    public static final IThread[] NO_PROCS = new IThread[] {};
+    public static final IThread[] NO_PROCS = {};
 
     public static final int INTERPRETED_MODULES_CHANGED = 0;
     public static final int TRACE_CHANGED = 1;

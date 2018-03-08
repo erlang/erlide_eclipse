@@ -9,7 +9,7 @@ import org.erlide.engine.model.IErlElement;
 public class ElementAdapterFactory implements IAdapterFactory {
 
     @SuppressWarnings("rawtypes")
-    private static final Class[] ADAPTER_LIST = new Class[] { IErlElement.class };
+    private static final Class[] ADAPTER_LIST = { IErlElement.class };
 
     @Override
     public <T> @Nullable T getAdapter(final Object adaptableObject,

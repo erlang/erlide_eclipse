@@ -44,7 +44,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     /**
      * Empty children
      */
-    protected static final IStatus[] NO_CHILDREN = new IStatus[] {};
+    protected static final IStatus[] NO_CHILDREN = {};
 
     protected IStatus[] children = NO_CHILDREN;
 

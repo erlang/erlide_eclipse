@@ -372,7 +372,7 @@ public class ModelUtilsTest {
         // an erlang module
         final IProject project = projects[0].getWorkspaceProject();
         final IProjectDescription description = project.getDescription();
-        final IProject[] refs = new IProject[] { projects[1].getWorkspaceProject() };
+        final IProject[] refs = { projects[1].getWorkspaceProject() };
         description.setReferencedProjects(refs);
         project.setDescription(description, null);
         final IErlModule module = ErlideTestUtils.createModule(projects[1], "abc.erl",

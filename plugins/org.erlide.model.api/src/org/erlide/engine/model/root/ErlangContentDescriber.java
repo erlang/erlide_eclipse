@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.content.ITextContentDescriber;
 import com.google.common.io.Files;
 
 public class ErlangContentDescriber implements ITextContentDescriber {
-    private static final QualifiedName[] SUPPORTED_OPTIONS = new QualifiedName[] { IContentDescription.CHARSET };
+    private static final QualifiedName[] SUPPORTED_OPTIONS = { IContentDescription.CHARSET };
     private static final Pattern LATIN1 = Pattern.compile(
             "%+[ *-]+coding: *latin-1.*", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
     private static final Pattern UTF8 = Pattern.compile(

@@ -265,7 +265,7 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
         return new ErlTextHover(null);
     }
 
-    protected final static IAutoEditStrategy[] NO_AUTOEDIT = new IAutoEditStrategy[] {};
+    protected final static IAutoEditStrategy[] NO_AUTOEDIT = {};
 
     @Override
     public IAutoEditStrategy[] getAutoEditStrategies(final ISourceViewer sourceViewer,

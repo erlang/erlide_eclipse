@@ -381,7 +381,7 @@ public class IErlProjectTest extends ErlModelTestBase {
     public void getReferencedProjects() throws Exception {
         final IProject aProject = projects[0].getWorkspaceProject();
         final IProjectDescription description = aProject.getDescription();
-        final IProject[] refs = new IProject[] { projects[1].getWorkspaceProject() };
+        final IProject[] refs = { projects[1].getWorkspaceProject() };
         try {
             description.setReferencedProjects(refs);
             aProject.setDescription(description, null);
