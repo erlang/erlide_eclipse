@@ -195,7 +195,7 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
     protected IStatus validateName() {
         final StatusInfo status = new StatusInfo();
         final String name = fName.getText();
-        if (name == null || name.trim().length() == 0) {
+        if (name == null || name.trim().isEmpty()) {
             status.setError("Enter the runtime's name"); //$NON-NLS-1$
         } else {
             if (fRequestor.isDuplicateName(name) && (fEditedRuntime == null
@@ -216,7 +216,7 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
     protected IStatus validateLocation() {
         final StatusInfo status = new StatusInfo();
         final String loc = fOtpHome.getText();
-        if (loc == null || loc.trim().length() == 0) {
+        if (loc == null || loc.trim().isEmpty()) {
             status.setInfo("Enter the installation's location");
         } else {
             final File f = new File(loc);
@@ -388,7 +388,7 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
         dlg.open();
         final String value = dlg.getValue();
 
-        if (value != null && value.length() > 0) {
+        if (value != null && !value.isEmpty()) {
             final File f = new File(value);
             if (f.exists()) {
                 field.addElement(value);

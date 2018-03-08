@@ -61,7 +61,7 @@ public class MatchSpecCellEditor extends DialogCellEditor {
 
         @Override
         public String isValid(final String newText) {
-            if (newText == null || newText.length() == 0) {
+            if (newText == null || newText.isEmpty()) {
                 // no match spec
                 ((MatchSpec) getValue()).setFunctionString("");
                 ((MatchSpec) getValue()).setMsObject(null);

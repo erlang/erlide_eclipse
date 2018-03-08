@@ -58,7 +58,7 @@ public class ErlideSearchServer implements SearchServerService {
             final boolean updateSearchServer) throws RpcException {
         final OtpErlangList modules = getModulesFromScope(scope);
         final OtpErlangObject searchObject = pattern.getSearchObject();
-        final OtpErlangObject r = backend.call(SEARCH_LONG_TIMEOUT,
+        final OtpErlangObject r = backend.call(ErlideSearchServer.SEARCH_LONG_TIMEOUT,
                 "erlide_search_server", "find_refs", "xxso", searchObject, modules,
                 stateDir, updateSearchServer);
         if (Util.isOk(r)) {

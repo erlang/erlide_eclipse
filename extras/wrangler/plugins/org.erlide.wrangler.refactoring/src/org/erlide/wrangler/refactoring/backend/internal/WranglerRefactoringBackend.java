@@ -29,12 +29,12 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
     /**
      * Wrangler module name
      */
-    final static public String MODULE = "wrangler_refacs";
+    public static final String MODULE = "wrangler_refacs";
     /**
      * Wrangler code inspection module name
      */
-    final static public String INSPECTION_MODULE = "inspec_lib";
-    final static protected String RENAME_FUNCTION = "rename_fun_eclipse";
+    public static final String INSPECTION_MODULE = "inspec_lib";
+    protected static final String RENAME_FUNCTION = "rename_fun_eclipse";
 
     protected IOtpRpc backend;
     public static final int UNLIMITED_TIMEOUT = Integer.MAX_VALUE;
@@ -128,9 +128,9 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
         ErlLogger.info("Wrangler call: " + makeLogStr(functionName, parameters));
         RpcResult res;
         if (timeout < 0) {
-            res = backend.call_noexception(MODULE, functionName, signature, parameters);
+            res = backend.call_noexception(WranglerRefactoringBackend.MODULE, functionName, signature, parameters);
         } else {
-            res = backend.call_noexception(timeout, MODULE, functionName, signature,
+            res = backend.call_noexception(timeout, WranglerRefactoringBackend.MODULE, functionName, signature,
                     parameters);
         }
 
@@ -154,7 +154,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
         ErlLogger.info(
                 "Wrangler inspection call: " + makeLogStr(functionName, parameters));
         RpcResult res;
-        res = backend.call_noexception(UNLIMITED_TIMEOUT, INSPECTION_MODULE, functionName,
+        res = backend.call_noexception(WranglerRefactoringBackend.UNLIMITED_TIMEOUT, WranglerRefactoringBackend.INSPECTION_MODULE, functionName,
                 signature, parameters);
         try {
             if (res.isOk()) {
@@ -184,7 +184,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
         ErlLogger.info(
                 "Wrangler inspection call: " + makeLogStr(functionName, parameters));
         RpcResult res;
-        res = backend.call_noexception(UNLIMITED_TIMEOUT, INSPECTION_MODULE, functionName,
+        res = backend.call_noexception(WranglerRefactoringBackend.UNLIMITED_TIMEOUT, WranglerRefactoringBackend.INSPECTION_MODULE, functionName,
                 signature, parameters);
         return res;
 

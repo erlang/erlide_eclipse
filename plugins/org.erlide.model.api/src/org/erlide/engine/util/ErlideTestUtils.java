@@ -138,34 +138,34 @@ public class ErlideTestUtils {
             if (!pp.isAbsolute() && !".".equals(pp.toString()) && !pp.isEmpty()) {
                 final IPath path = projectPath.append(pp);
                 final IFolder folder = root.getFolder(path);
-                createFolderHelper(folder);
+                ErlideTestUtils.createFolderHelper(folder);
             }
         }
     }
 
     public static void initModulesAndIncludes() {
-        modulesAndIncludes = Lists.newArrayList();
+        ErlideTestUtils.modulesAndIncludes = Lists.newArrayList();
     }
 
     public static IErlModule createModule(final IErlProject project,
             final String moduleName, final String moduleContents) throws CoreException {
         final IFolder folder = project.getWorkspaceProject().getFolder("src");
-        final IErlModule module = createModule(moduleName, moduleContents, folder);
-        modulesAndIncludes.add(module);
+        final IErlModule module = ErlideTestUtils.createModule(moduleName, moduleContents, folder);
+        ErlideTestUtils.modulesAndIncludes.add(module);
         return module;
     }
 
     public static IErlModule createInclude(final IErlProject project,
             final String moduleName, final String moduleContents) throws CoreException {
         final IFolder folder = project.getWorkspaceProject().getFolder("include");
-        final IErlModule module = createModule(moduleName, moduleContents, folder);
-        modulesAndIncludes.add(module);
+        final IErlModule module = ErlideTestUtils.createModule(moduleName, moduleContents, folder);
+        ErlideTestUtils.modulesAndIncludes.add(module);
         return module;
     }
 
     public static IErlModule createModule(final String moduleName,
             final String moduleContents, final IFolder folder) throws CoreException {
-        final IFile file = createFile(folder.getProject(),
+        final IFile file = ErlideTestUtils.createFile(folder.getProject(),
                 folder.getName() + "/" + moduleName, moduleContents);
         final IErlModel model = ErlangEngine.getInstance().getModel();
         IErlModule module = model.findModule(file);
@@ -208,11 +208,11 @@ public class ErlideTestUtils {
             f.delete();
         }
         module.dispose();
-        modulesAndIncludes.remove(module);
+        ErlideTestUtils.modulesAndIncludes.remove(module);
     }
 
     public static IProject createProject(final String name) throws CoreException {
-        return createProject(name, ModelPlugin.NATURE_ID);
+        return ErlideTestUtils.createProject(name, ModelPlugin.NATURE_ID);
     }
 
     public static IProject createProject(final String name, final String nature)
@@ -247,18 +247,18 @@ public class ErlideTestUtils {
         final List<IPath> srcDirs = new ArrayList<>();
         srcDirs.add(new Path("src"));
         prefs.setSourceDirs(srcDirs);
-        buildPaths(root, project, srcDirs);
+        ErlideTestUtils.buildPaths(root, project, srcDirs);
 
         final List<IPath> includeDirs = new ArrayList<>();
         includeDirs.add(new Path("include"));
-        buildPaths(root, project, includeDirs);
+        ErlideTestUtils.buildPaths(root, project, includeDirs);
         prefs.setIncludeDirs(includeDirs);
 
         final IPath ebinDir = new Path("ebin");
-        buildPaths(root, project, Lists.newArrayList(ebinDir));
+        ErlideTestUtils.buildPaths(root, project, Lists.newArrayList(ebinDir));
         prefs.setOutputDir(ebinDir);
 
-        projects.add(erlProject);
+        ErlideTestUtils.projects.add(erlProject);
         return erlProject;
     }
 
@@ -278,23 +278,23 @@ public class ErlideTestUtils {
         final ErlangProjectProperties prefs = erlProject.getProperties();
 
         final List<IPath> srcDirs = new ArrayList<>();
-        createFolder(project2, "src");
+        ErlideTestUtils.createFolder(project2, "src");
         srcDirs.add(new Path("src"));
         prefs.setSourceDirs(srcDirs);
-        buildPaths(root, project, srcDirs);
+        ErlideTestUtils.buildPaths(root, project, srcDirs);
 
         final List<IPath> includeDirs = new ArrayList<>();
-        createFolder(project2, "include");
+        ErlideTestUtils.createFolder(project2, "include");
         includeDirs.add(new Path("include"));
-        buildPaths(root, project, includeDirs);
+        ErlideTestUtils.buildPaths(root, project, includeDirs);
         prefs.setIncludeDirs(includeDirs);
 
-        createFolder(project2, "ebin");
+        ErlideTestUtils.createFolder(project2, "ebin");
         final IPath ebinDir = new Path("ebin");
-        buildPaths(root, project, Lists.newArrayList(ebinDir));
+        ErlideTestUtils.buildPaths(root, project, Lists.newArrayList(ebinDir));
         prefs.setOutputDir(ebinDir);
 
-        projects.add(erlProject);
+        ErlideTestUtils.projects.add(erlProject);
         return erlProject;
     }
 
@@ -336,7 +336,7 @@ public class ErlideTestUtils {
         if (!folder.exists()) {
             final IContainer parent = folder.getParent();
             if (parent instanceof IFolder) {
-                createFolderHelper((IFolder) parent);
+                ErlideTestUtils.createFolderHelper((IFolder) parent);
             }
             folder.create(false, true, null);
         }
@@ -348,12 +348,12 @@ public class ErlideTestUtils {
     }
 
     public static URI getTmpURIPath(final String fileName) {
-        return URIUtil.toURI(getTmpPath(fileName).toPortableString());
+        return URIUtil.toURI(ErlideTestUtils.getTmpPath(fileName).toPortableString());
     }
 
     public static File createTmpFile(final String fileName, final String contentString)
             throws IOException, FileNotFoundException {
-        final String pathString = getTmpPath(fileName).toOSString();
+        final String pathString = ErlideTestUtils.getTmpPath(fileName).toOSString();
         final File f = new File(pathString);
         if (f.exists()) {
             f.delete();
@@ -372,18 +372,18 @@ public class ErlideTestUtils {
         if (location != null) {
             new File(location.toPortableString()).delete();
         }
-        if (modulesAndIncludes != null) {
-            final List<IErlModule> list = Lists.newArrayList(modulesAndIncludes);
+        if (ErlideTestUtils.modulesAndIncludes != null) {
+            final List<IErlModule> list = Lists.newArrayList(ErlideTestUtils.modulesAndIncludes);
             for (final IErlModule module : list) {
                 if (ErlangEngine.getInstance().getModelUtilService()
                         .getProject(module) == erlProject) {
-                    deleteModule(module);
+                    ErlideTestUtils.deleteModule(module);
                 }
             }
         }
         erlProject.dispose();
-        if (projects != null) {
-            projects.remove(ErlangEngine.getInstance().getModel().findProject(project));
+        if (ErlideTestUtils.projects != null) {
+            ErlideTestUtils.projects.remove(ErlangEngine.getInstance().getModel().findProject(project));
         }
         final IErlModel model = ErlangEngine.getInstance().getModel();
         model.resourceChanged(null);
@@ -397,21 +397,21 @@ public class ErlideTestUtils {
     }
 
     public static void deleteModules() throws CoreException {
-        final List<IErlModule> list = Lists.newArrayList(modulesAndIncludes);
+        final List<IErlModule> list = Lists.newArrayList(ErlideTestUtils.modulesAndIncludes);
         for (final IErlModule module : list) {
-            deleteModule(module);
+            ErlideTestUtils.deleteModule(module);
         }
     }
 
     public static void deleteProjects() throws CoreException {
-        final List<IErlProject> list = Lists.newArrayList(projects);
+        final List<IErlProject> list = Lists.newArrayList(ErlideTestUtils.projects);
         for (final IErlProject project : list) {
-            deleteProject(project);
+            ErlideTestUtils.deleteProject(project);
         }
     }
 
     public static void initProjects() throws CoreException {
-        projects = Lists.newArrayList();
+        ErlideTestUtils.projects = Lists.newArrayList();
         final IErlModel model = ErlangEngine.getInstance().getModel();
         model.open(null);
         final List<IErlElement> children = model.getChildren();
@@ -419,7 +419,7 @@ public class ErlideTestUtils {
             if (child instanceof IErlProject) {
                 final IErlProject project = (IErlProject) child;
                 if (project.getName().startsWith("testproject")) {
-                    deleteProject(project);
+                    ErlideTestUtils.deleteProject(project);
                 }
             }
         }
@@ -429,7 +429,7 @@ public class ErlideTestUtils {
         final IErlModel model = ErlangEngine.getInstance().getModel();
         final IErlModule module = model.getModuleFromText(model, "test1", initialText,
                 null);
-        modulesAndIncludes.add(module);
+        ErlideTestUtils.modulesAndIncludes.add(module);
         return module;
     }
 
@@ -440,7 +440,7 @@ public class ErlideTestUtils {
     }
 
     public static void refreshProjects() {
-        for (final IErlProject project : projects) {
+        for (final IErlProject project : ErlideTestUtils.projects) {
             project.resourceChanged(new ResourceDeltaStub());
         }
     }

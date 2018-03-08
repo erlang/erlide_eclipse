@@ -36,7 +36,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class IntroduceLetRefactoring extends CostumWorkflowRefactoring {
 
-    OtpErlangObject expr, parentExpr;
+    OtpErlangObject expr;
+    OtpErlangObject parentExpr;
 
     @Override
     public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)

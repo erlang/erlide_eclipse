@@ -49,7 +49,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
     private TreeViewer treeViewer;
     private Long index;
-    private boolean correctInput = false;
+    private boolean correctInput;
     private Text traceIndexField;
 
     private RunnableWithProgress task;

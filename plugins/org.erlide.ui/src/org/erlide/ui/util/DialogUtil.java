@@ -100,6 +100,6 @@ public final class DialogUtil {
      */
     public static boolean inRegularFontMode(final Composite parent) {
 
-        return availableRows(parent) > 50;
+        return DialogUtil.availableRows(parent) > 50;
     }
 }

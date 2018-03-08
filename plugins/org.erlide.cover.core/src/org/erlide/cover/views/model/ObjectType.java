@@ -7,5 +7,5 @@ package org.erlide.cover.views.model;
  *
  */
 public enum ObjectType {
-    PROJECT, FOLDER, MODULE, FUNCTION;
+    PROJECT, FOLDER, MODULE, FUNCTION
 }

@@ -22,7 +22,7 @@ public class InterpretedModuleListContentProvider extends ModuleListContentProvi
     @Override
     public void inputChanged(final Viewer viewer, final Object oldInput,
             final Object newInput) {
-        modules = EMPTY;
+        modules = ModuleListContentProvider.EMPTY;
         if (newInput instanceof ILaunchConfiguration) {
             final ILaunchConfiguration launchConfiguration = (ILaunchConfiguration) newInput;
             try {
@@ -38,7 +38,7 @@ public class InterpretedModuleListContentProvider extends ModuleListContentProvi
     }
 
     public void setModules(final Collection<String> interpret) {
-        modules = EMPTY;
+        modules = ModuleListContentProvider.EMPTY;
         addModules(interpret);
     }
 

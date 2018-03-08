@@ -207,7 +207,7 @@ public class ErlModel extends Openable implements IErlModel {
 	@Override
 	public void notifyChange(final IErlElement element) {
 		if (System.getProperty("erlide.model.notify") != null) {
-			ErlLogger.debug("   caller = " + getStack());
+			ErlLogger.debug("   caller = " + ErlModel.getStack());
 		}
 		for (final IErlModelChangeListener listener : fListeners) {
 			listener.elementChanged(element);
@@ -934,10 +934,10 @@ public class ErlModel extends Openable implements IErlModel {
 			}
 		}
 		for (final IErlProject project2 : projects) {
-			getAllModulesAux(project2.getIncludes(), result, paths);
+            ErlModel.getAllModulesAux(project2.getIncludes(), result, paths);
 		}
 		if (checkExternals && project != null) {
-			getAllModulesAux(project.getExternalIncludes(), result, paths);
+            ErlModel.getAllModulesAux(project.getExternalIncludes(), result, paths);
 		}
 		return result;
 	}
@@ -957,7 +957,7 @@ public class ErlModel extends Openable implements IErlModel {
 
 	private IErlModule findIncludeFromProject(final IErlProject project, final String includeName, final String includePath, final boolean checkExternals, final IErlElementLocator.Scope scope) throws ErlModelException {
 		if (project != null) {
-			final IErlModule module = getModuleFromCacheByNameOrPath((ErlProject) project, includeName, includePath, scope);
+			final IErlModule module = ErlModel.getModuleFromCacheByNameOrPath((ErlProject) project, includeName, includePath, scope);
 			if (module != null && module.isOnIncludePath()) {
 				return module;
 			}
@@ -997,7 +997,7 @@ public class ErlModel extends Openable implements IErlModel {
 	@Override
 	public IErlModule findModuleFromProject(final IErlProject project, final String moduleName, final String modulePath, final boolean checkExternals, final IErlElementLocator.Scope scope) throws ErlModelException {
 		if (project != null) {
-			final IErlModule module = getModuleFromCacheByNameOrPath((ErlProject) project, moduleName, modulePath, scope);
+			final IErlModule module = ErlModel.getModuleFromCacheByNameOrPath((ErlProject) project, moduleName, modulePath, scope);
 			if (module != null && module.isOnSourcePath()) {
 				return module;
 			}
@@ -1043,7 +1043,7 @@ public class ErlModel extends Openable implements IErlModel {
 		for (final IErlProject project : projects) {
 			final Collection<IErlModule> modules = Lists.newArrayList();
 			final Collection<IErlModule> modulesOrExternals = externalModules ? project.getExternalModules() : project.getModules();
-			getAllModulesAux(modulesOrExternals, modules, paths);
+            ErlModel.getAllModulesAux(modulesOrExternals, modules, paths);
 			allModules.addAll(modules);
 			module = findModule(modules, moduleName, modulePath);
 			if (module != null) {

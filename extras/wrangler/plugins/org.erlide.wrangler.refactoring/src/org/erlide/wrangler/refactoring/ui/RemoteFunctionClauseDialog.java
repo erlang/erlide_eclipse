@@ -69,7 +69,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
         super(parentShell, title);
     }
 
-    private IErlFunctionClause functionClause = null;
+    private IErlFunctionClause functionClause;
 
     @Override
     protected Control createDialogArea(final Composite parent) {

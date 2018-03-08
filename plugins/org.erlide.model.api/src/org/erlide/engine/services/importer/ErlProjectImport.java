@@ -24,15 +24,15 @@ public class ErlProjectImport {
         final OtpErlangTuple t = (OtpErlangTuple) o;
 
         OtpErlangList l = (OtpErlangList) t.elementAt(0);
-        resources = (SortedSet<String>) erlangStringList2Collection(l,
+        resources = (SortedSet<String>) ErlProjectImport.erlangStringList2Collection(l,
                 new TreeSet<>());
 
         l = (OtpErlangList) t.elementAt(1);
-        sourceDirs = (List<String>) erlangStringList2Collection(l,
+        sourceDirs = (List<String>) ErlProjectImport.erlangStringList2Collection(l,
                 new ArrayList<>());
 
         l = (OtpErlangList) t.elementAt(2);
-        includeDirs = (List<String>) erlangStringList2Collection(l,
+        includeDirs = (List<String>) ErlProjectImport.erlangStringList2Collection(l,
                 new ArrayList<>());
 
         final OtpErlangObject beamDirElement = t.elementAt(3);
@@ -43,7 +43,7 @@ public class ErlProjectImport {
         }
 
         l = (OtpErlangList) t.elementAt(4);
-        directories = (List<String>) erlangStringList2Collection(l,
+        directories = (List<String>) ErlProjectImport.erlangStringList2Collection(l,
                 new ArrayList<>());
         directories.add(0, ".");
     }

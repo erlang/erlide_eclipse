@@ -26,7 +26,8 @@ import com.google.common.collect.Maps;
 
 public class ErlExternalReferenceEntryList extends Openable implements IErlExternalRoot {
 
-    private final String externalIncludes, externalModules;
+    private final String externalIncludes;
+    private final String externalModules;
     private final List<String> projectIncludes;
 
     public ErlExternalReferenceEntryList(final IParent parent, final String name,
@@ -60,14 +61,14 @@ public class ErlExternalReferenceEntryList extends Openable implements IErlExter
             final OtpErlangList pathVars = ErlangEngine.getInstance().getModel()
                     .getPathVars();
             final IOtpRpc backend = OtpRpcFactory.getOtpRpcForProject(project);
-            if (externalModuleTree == null && externalModules.length() > 0) {
+            if (externalModuleTree == null && !externalModules.isEmpty()) {
                 if (pm != null) {
                     pm.worked(1);
                 }
                 externalModuleTree = ErlangEngine.getInstance().getOpenService()
                         .getExternalModuleTree(backend, externalModules, pathVars);
             }
-            if (externalIncludeTree == null && externalIncludes.length() > 0) {
+            if (externalIncludeTree == null && !externalIncludes.isEmpty()) {
                 if (pm != null) {
                     pm.worked(1);
                 }
@@ -108,7 +109,7 @@ public class ErlExternalReferenceEntryList extends Openable implements IErlExter
                             getNameFromPath(path), path, null);
                     parent.addChild(module);
                 } else {
-                    final String name = getNameFromExternalPath(path);
+                    final String name = ErlExternalReferenceEntryList.getNameFromExternalPath(path);
                     final ErlExternalReferenceEntry externalReferenceEntry = new ErlExternalReferenceEntry(
                             parent, name, path, true, includeDir);
                     pathToEntryMap.put(path, externalReferenceEntry);

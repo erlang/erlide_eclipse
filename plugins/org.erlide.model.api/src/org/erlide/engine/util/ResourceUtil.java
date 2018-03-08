@@ -64,7 +64,7 @@ public class ResourceUtil {
         if (element instanceof IResource) {
             result = (IResource) element;
         } else if (element instanceof IAdaptable) {
-            final @Nullable Object adapter = ((IAdaptable) element).getAdapter(IResource.class);
+            @Nullable final Object adapter = ((IAdaptable) element).getAdapter(IResource.class);
             if (adapter instanceof IResource) {
                 result = (IResource) adapter;
             }
@@ -85,7 +85,7 @@ public class ResourceUtil {
         for (final IResource element : members) {
             r = element;
             if (r instanceof IContainer) {
-                r = recursiveFindNamedResource((IContainer) r, name, filter);
+                r = ResourceUtil.recursiveFindNamedResource((IContainer) r, name, filter);
                 if (r != null) {
                     return r;
                 }
@@ -110,12 +110,12 @@ public class ResourceUtil {
         return p1.equalsIgnoreCase(p2);
     }
 
-    private final static class FindResourceVisitor implements IResourceVisitor {
+    private static final class FindResourceVisitor implements IResourceVisitor {
         private static final int FIND_BY_NAME = 1;
         private static final int FIND_BY_LOCATION = 2;
 
         private final String fileName;
-        private IResource found = null;
+        private IResource found;
         private final int how;
 
         private FindResourceVisitor(final String fileName, final int how) {
@@ -134,9 +134,9 @@ public class ResourceUtil {
 
         private boolean compare(final IResource resource, final String s,
                 final int theHow) {
-            if (theHow == FIND_BY_NAME) {
+            if (theHow == FindResourceVisitor.FIND_BY_NAME) {
                 return ResourceUtil.samePath(resource.getName(), s);
-            } else if (theHow == FIND_BY_LOCATION) {
+            } else if (theHow == FindResourceVisitor.FIND_BY_LOCATION) {
                 return ResourceUtil.samePath(resource.getLocation().toString(), s);
             } else {
                 return false;
@@ -150,12 +150,12 @@ public class ResourceUtil {
 
     public static IResource findResourceByLocation(final IContainer container,
             final String fileName) {
-        return findResource(container, fileName, FindResourceVisitor.FIND_BY_LOCATION);
+        return ResourceUtil.findResource(container, fileName, FindResourceVisitor.FIND_BY_LOCATION);
     }
 
     public static IResource findResourceByName(final IContainer container,
             final String fileName) {
-        return findResource(container, fileName, FindResourceVisitor.FIND_BY_NAME);
+        return ResourceUtil.findResource(container, fileName, FindResourceVisitor.FIND_BY_NAME);
     }
 
     private static IResource findResource(final IContainer container,

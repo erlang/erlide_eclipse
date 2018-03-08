@@ -54,7 +54,7 @@ public class ErlModelUtils {
                 .findModule(model, project, moduleName, modulePath, scope);
         if (module2 != null) {
             final IEditorPart editor = EditorUtility.openInEditor(module2);
-            return openFunctionInEditor(function, editor);
+            return ErlModelUtils.openFunctionInEditor(function, editor);
         }
         return false;
     }
@@ -114,7 +114,7 @@ public class ErlModelUtils {
             final ErlangExternalEditorInput erlangExternalEditorInput = (ErlangExternalEditorInput) editorInput;
             return erlangExternalEditorInput.getModule();
         }
-        final String path = getPathForInput(editorInput);
+        final String path = ErlModelUtils.getPathForInput(editorInput);
         if (path == null) {
             return null;
         }
@@ -125,7 +125,7 @@ public class ErlModelUtils {
         if (module != null) {
             return module;
         }
-        final Charset encoding = getEncodingForInput(editorInput);
+        final Charset encoding = ErlModelUtils.getEncodingForInput(editorInput);
         final IPath p = new Path(path);
         return ErlangEngine.getInstance().getModel().getModuleFromFile(null,
                 p.lastSegment(), p, encoding);
@@ -181,7 +181,7 @@ public class ErlModelUtils {
 
     public static void openMF(final String module, final String function)
             throws CoreException {
-        openMFA(module, function, ErlangFunction.ANY_ARITY);
+        ErlModelUtils.openMFA(module, function, ErlangFunction.ANY_ARITY);
     }
 
     public static void openModule(final String moduleName) throws CoreException {

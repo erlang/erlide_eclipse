@@ -28,10 +28,10 @@ public class Activator extends AbstractUIPlugin {
     @Override
     public void start(final BundleContext context) throws Exception {
         super.start(context);
-        plugin = this;
+        Activator.plugin = this;
 
         // loading images
-        final URL baseUrl = FileLocator.find(getBundle(), new Path(ICONS_PATH), null);
+        final URL baseUrl = FileLocator.find(getBundle(), new Path(Activator.ICONS_PATH), null);
         for (final Images image : Images.values()) {
             getImageRegistry().put(image.toString(), ImageDescriptor
                     .createFromURL(new URL(baseUrl + image.getFileName())));
@@ -40,12 +40,12 @@ public class Activator extends AbstractUIPlugin {
 
     @Override
     public void stop(final BundleContext context) throws Exception {
-        plugin = null;
+        Activator.plugin = null;
         super.stop(context);
     }
 
     public static Activator getDefault() {
-        return plugin;
+        return Activator.plugin;
     }
 
     /**
@@ -55,6 +55,6 @@ public class Activator extends AbstractUIPlugin {
      * @return image
      */
     public static Image getImage(final Images image) {
-        return getDefault().getImageRegistry().get(image.toString());
+        return Activator.getDefault().getImageRegistry().get(image.toString());
     }
 }

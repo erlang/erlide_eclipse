@@ -16,19 +16,19 @@ import com.google.common.eventbus.Subscribe;
 
 public class NoRuntimeHandler implements Runnable {
 
-    private static boolean running = false;
-    private static boolean reported = false;
+    private static boolean running;
+    private static boolean reported;
 
     @Override
     public void run() {
         final UIJob job = new UIJob("erlide set runtime") {
             @Override
             public IStatus runInUIThread(final IProgressMonitor monitor) {
-                if (running) {
+                if (NoRuntimeHandler.running) {
                     return Status.OK_STATUS;
                 }
-                running = true;
-                if (reported) {
+                NoRuntimeHandler.running = true;
+                if (NoRuntimeHandler.reported) {
                     MessageReporter
                             .showError("Erlang support requires an Erlang installation. "
                                     + "Did you configure it?");
@@ -38,7 +38,7 @@ public class NoRuntimeHandler implements Runnable {
                                     + "Please configure it. "
                                     + "Eclipse will restart afterwards.");
                 }
-                reported = true;
+                NoRuntimeHandler.reported = true;
 
                 final PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(
                         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
@@ -50,7 +50,7 @@ public class NoRuntimeHandler implements Runnable {
                         PlatformUI.getWorkbench().restart();
                     }
                 }
-                running = false;
+                NoRuntimeHandler.running = false;
                 return Status.OK_STATUS;
             }
         };

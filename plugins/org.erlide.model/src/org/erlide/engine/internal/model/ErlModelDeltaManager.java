@@ -70,7 +70,7 @@ public class ErlModelDeltaManager {
             }
 
             switch (eventType) {
-            case DEFAULT_CHANGE_EVENT:
+            case ErlModelDeltaManager.DEFAULT_CHANGE_EVENT:
                 // firePreAutoBuildDelta(deltaToNotify, listeners, listenerMask,
                 // listenerCount);
                 firePostChangeDelta(deltaToNotify, listeners, listenerMask,
@@ -103,7 +103,7 @@ public class ErlModelDeltaManager {
             final int listenerCount) {
 
         // post change deltas
-        if (verbose) {
+        if (ErlModelDeltaManager.verbose) {
             System.out.println(
                     "FIRING POST_CHANGE Delta [" + Thread.currentThread() + "]:"); //$NON-NLS-1$//$NON-NLS-2$
             System.out
@@ -122,7 +122,7 @@ public class ErlModelDeltaManager {
     private void fireReconcileDelta(final IElementChangedListener[] listeners,
             final int[] listenerMask, final int listenerCount) {
         final IErlElementDelta deltaToNotify = mergeDeltas(reconcileDeltas.values());
-        if (verbose) {
+        if (ErlModelDeltaManager.verbose) {
             System.out.println(
                     "FIRING POST_RECONCILE Delta [" + Thread.currentThread() + "]:"); //$NON-NLS-1$//$NON-NLS-2$
             System.out
@@ -143,7 +143,7 @@ public class ErlModelDeltaManager {
             final int listenerCount) {
 
         // post change deltas
-        if (verbose) {
+        if (ErlModelDeltaManager.verbose) {
             System.out
                     .println("FIRING POST_SHIFT event [" + Thread.currentThread() + "]:"); //$NON-NLS-1$//$NON-NLS-2$
             System.out

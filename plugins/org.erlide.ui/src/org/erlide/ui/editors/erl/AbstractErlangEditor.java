@@ -28,8 +28,8 @@ import org.erlide.ui.prefs.PreferenceConstants;
 
 public abstract class AbstractErlangEditor extends TextEditor {
 
-    protected final static String MATCHING_BRACKETS = PreferenceConstants.EDITOR_MATCHING_BRACKETS;
-    protected final static String MATCHING_BRACKETS_COLOR = PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR;
+    protected static final String MATCHING_BRACKETS = PreferenceConstants.EDITOR_MATCHING_BRACKETS;
+    protected static final String MATCHING_BRACKETS_COLOR = PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR;
     private ErlangBracketInserter fBracketInserter;
     private SendToConsoleAction sendToConsole;
     private SendToConsoleAction sendToConsoleWithResult;
@@ -56,8 +56,8 @@ public abstract class AbstractErlangEditor extends TextEditor {
     protected void configureSourceViewerDecorationSupport(
             final SourceViewerDecorationSupport support) {
         support.setCharacterPairMatcher(getBracketMatcher());
-        support.setMatchingCharacterPainterPreferenceKeys(MATCHING_BRACKETS,
-                MATCHING_BRACKETS_COLOR);
+        support.setMatchingCharacterPainterPreferenceKeys(AbstractErlangEditor.MATCHING_BRACKETS,
+                AbstractErlangEditor.MATCHING_BRACKETS_COLOR);
 
         super.configureSourceViewerDecorationSupport(support);
     }

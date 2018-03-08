@@ -63,7 +63,7 @@ public class EditorUtility {
 
     public static boolean isEditorInput(final Object element, final IEditorPart editor) {
         if (editor != null) {
-            return editor.getEditorInput().equals(getEditorInput(element));
+            return editor.getEditorInput().equals(EditorUtility.getEditorInput(element));
         }
         return false;
     }
@@ -88,7 +88,7 @@ public class EditorUtility {
                 }
             }
         }
-        final IEditorInput input = getEditorInput(inputElement);
+        final IEditorInput input = EditorUtility.getEditorInput(inputElement);
         if (input != null) {
             for (final IEditorPart editorPart : allErlangEditors) {
                 if (editorPart.getEditorInput().equals(input)) {
@@ -108,7 +108,7 @@ public class EditorUtility {
      */
     public static IEditorPart openInEditor(final Object inputElement)
             throws PartInitException {
-        return openInEditor(inputElement, true);
+        return EditorUtility.openInEditor(inputElement, true);
     }
 
     /**
@@ -118,20 +118,20 @@ public class EditorUtility {
      */
     public static IEditorPart openInEditor(final Object inputElement,
             final boolean activate) throws PartInitException {
-        final IEditorInput input = getEditorInput(inputElement);
+        final IEditorInput input = EditorUtility.getEditorInput(inputElement);
         if (input == null) {
             return null;
         }
-        final IEditorPart editorPart = openInEditor(input,
-                getEditorID(input, inputElement), activate);
+        final IEditorPart editorPart = EditorUtility.openInEditor(input,
+                EditorUtility.getEditorID(input, inputElement), activate);
 
         if (editorPart != null && inputElement instanceof IErlElement) {
-            revealInEditor(editorPart, (IErlElement) inputElement);
+            EditorUtility.revealInEditor(editorPart, (IErlElement) inputElement);
             return editorPart;
         }
 
         if (inputElement instanceof IFile) {
-            return openInEditor((IFile) inputElement, activate);
+            return EditorUtility.openInEditor((IFile) inputElement, activate);
         }
 
         return null;
@@ -154,7 +154,7 @@ public class EditorUtility {
      */
     public static void revealInEditor(final IEditorPart part, final IRegion region) {
         if (part != null && region != null) {
-            revealInEditor(part, region.getOffset(), region.getLength());
+            EditorUtility.revealInEditor(part, region.getOffset(), region.getLength());
         }
     }
 
@@ -163,7 +163,7 @@ public class EditorUtility {
         if (part != null && sourceRange != null) {
             final int offset = sourceRange.getOffset();
             final int length = sourceRange.getLength();
-            revealInEditor(part, offset, length);
+            EditorUtility.revealInEditor(part, offset, length);
         }
     }
 
@@ -230,7 +230,7 @@ public class EditorUtility {
         final IResource resource = element.getResource();
         if (resource instanceof IFile) {
             IFile file = (IFile) resource;
-            file = resolveFile(file);
+            file = EditorUtility.resolveFile(file);
             return new FileEditorInput(file);
         }
         String filePath = element.getFilePath();
@@ -285,7 +285,7 @@ public class EditorUtility {
 
     public static IEditorInput getEditorInput(final Object input) {
         if (input instanceof IErlElement) {
-            return getEditorInput((IErlElement) input);
+            return EditorUtility.getEditorInput((IErlElement) input);
         }
 
         if (input instanceof IFile) {

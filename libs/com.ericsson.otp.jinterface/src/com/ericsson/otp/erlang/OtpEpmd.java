@@ -48,23 +48,23 @@ import java.net.InetAddress;
 public class OtpEpmd {
 
     private static class EpmdPort {
-        private static int epmdPort = 0;
+        private static int epmdPort;
 
         public static int get() {
-            if (epmdPort == 0) {
+            if (EpmdPort.epmdPort == 0) {
                 String env;
                 try {
                     env = System.getenv("ERL_EPMD_PORT");
                 } catch (final java.lang.SecurityException e) {
                     env = null;
                 }
-                epmdPort = env != null ? Integer.parseInt(env) : 4369;
+                EpmdPort.epmdPort = env != null ? Integer.parseInt(env) : 4369;
             }
-            return epmdPort;
+            return EpmdPort.epmdPort;
         }
 
         public static void set(final int port) {
-            epmdPort = port;
+            EpmdPort.epmdPort = port;
         }
     }
 
@@ -77,7 +77,7 @@ public class OtpEpmd {
     private static final byte publish4resp = (byte) 121;
     private static final byte names4req = (byte) 110;
 
-    private static int traceLevel = 0;
+    private static int traceLevel;
     private static final int traceThreshold = 4;
 
     static {
@@ -85,10 +85,10 @@ public class OtpEpmd {
         final String trace = System.getProperties().getProperty("OtpConnection.trace");
         try {
             if (trace != null) {
-                traceLevel = Integer.valueOf(trace);
+                OtpEpmd.traceLevel = Integer.valueOf(trace);
             }
         } catch (final NumberFormatException e) {
-            traceLevel = 0;
+            OtpEpmd.traceLevel = 0;
         }
     }
 
@@ -116,7 +116,7 @@ public class OtpEpmd {
      *                if there was no response from the name server.
      */
     public static int lookupPort(final AbstractNode node) throws IOException {
-        return r4_lookupPort(node);
+        return OtpEpmd.r4_lookupPort(node);
     }
 
     /**
@@ -134,7 +134,7 @@ public class OtpEpmd {
     public static boolean publishPort(final OtpLocalNode node) throws IOException {
         OtpTransport s = null;
 
-        s = r4_publish(node);
+        s = OtpEpmd.r4_publish(node);
 
         node.setEpmd(s);
 
@@ -158,11 +158,11 @@ public class OtpEpmd {
             @SuppressWarnings("resource")
             final OtpOutputStream obuf = new OtpOutputStream();
             obuf.write2BE(node.alive().length() + 1);
-            obuf.write1(stopReq);
+            obuf.write1(OtpEpmd.stopReq);
             obuf.writeN(node.alive().getBytes());
             obuf.writeToAndFlush(s.getOutputStream());
             // don't even wait for a response (is there one?)
-            if (traceLevel >= traceThreshold) {
+            if (OtpEpmd.traceLevel >= OtpEpmd.traceThreshold) {
                 System.out.println("-> UNPUBLISH " + node + " port=" + node.port());
                 System.out.println("<- OK (assumed)");
             }
@@ -190,13 +190,13 @@ public class OtpEpmd {
             // build and send epmd request
             // length[2], tag[1], alivename[n] (length = n+1)
             obuf.write2BE(node.alive().length() + 1);
-            obuf.write1(port4req);
+            obuf.write1(OtpEpmd.port4req);
             obuf.writeN(node.alive().getBytes());
 
             // send request
             obuf.writeToAndFlush(s.getOutputStream());
 
-            if (traceLevel >= traceThreshold) {
+            if (OtpEpmd.traceLevel >= OtpEpmd.traceThreshold) {
                 System.out.println("-> LOOKUP (r4) " + node);
             }
 
@@ -218,7 +218,7 @@ public class OtpEpmd {
             final OtpInputStream ibuf = new OtpInputStream(tmpbuf, 0);
 
             final int response = ibuf.read1();
-            if (response == port4resp) {
+            if (response == OtpEpmd.port4resp) {
                 final int result = ibuf.read1();
                 if (result == 0) {
                     port = ibuf.read2BE();
@@ -231,13 +231,13 @@ public class OtpEpmd {
                 }
             }
         } catch (final IOException e) {
-            if (traceLevel >= traceThreshold) {
+            if (OtpEpmd.traceLevel >= OtpEpmd.traceThreshold) {
                 System.out.println("<- (no response)");
             }
             throw new IOException("Nameserver not responding on " + node.host()
                     + " when looking up " + node.alive(), e);
         } catch (final OtpErlangDecodeException e) {
-            if (traceLevel >= traceThreshold) {
+            if (OtpEpmd.traceLevel >= OtpEpmd.traceThreshold) {
                 System.out.println("<- (invalid response)");
             }
             throw new IOException("Nameserver not responding on " + node.host()
@@ -252,7 +252,7 @@ public class OtpEpmd {
             s = null;
         }
 
-        if (traceLevel >= traceThreshold) {
+        if (OtpEpmd.traceLevel >= OtpEpmd.traceThreshold) {
             if (port == 0) {
                 System.out.println("<- NOT FOUND");
             } else {
@@ -279,7 +279,7 @@ public class OtpEpmd {
 
             obuf.write2BE(node.alive().length() + 13);
 
-            obuf.write1(publish4req);
+            obuf.write1(OtpEpmd.publish4req);
             obuf.write2BE(node.port());
 
             obuf.write1(node.type());
@@ -295,7 +295,7 @@ public class OtpEpmd {
             // send request
             obuf.writeToAndFlush(s.getOutputStream());
 
-            if (traceLevel >= traceThreshold) {
+            if (OtpEpmd.traceLevel >= OtpEpmd.traceThreshold) {
                 System.out.println("-> PUBLISH (r4) " + node + " port=" + node.port());
             }
 
@@ -313,11 +313,11 @@ public class OtpEpmd {
             final OtpInputStream ibuf = new OtpInputStream(tmpbuf, 0);
 
             final int response = ibuf.read1();
-            if (response == publish4resp) {
+            if (response == OtpEpmd.publish4resp) {
                 final int result = ibuf.read1();
                 if (result == 0) {
                     node.creation = ibuf.read2BE();
-                    if (traceLevel >= traceThreshold) {
+                    if (OtpEpmd.traceLevel >= OtpEpmd.traceThreshold) {
                         System.out.println("<- OK");
                     }
                     return s; // success
@@ -328,14 +328,14 @@ public class OtpEpmd {
             if (s != null) {
                 s.close();
             }
-            if (traceLevel >= traceThreshold) {
+            if (OtpEpmd.traceLevel >= OtpEpmd.traceThreshold) {
                 System.out.println("<- (no response)");
             }
             throw new IOException("Nameserver not responding on " + node.host()
                     + " when publishing " + node.alive());
         } catch (final OtpErlangDecodeException e) {
             s.close();
-            if (traceLevel >= traceThreshold) {
+            if (OtpEpmd.traceLevel >= OtpEpmd.traceThreshold) {
                 System.out.println("<- (invalid response)");
             }
             throw new IOException("Nameserver not responding on " + node.host()
@@ -347,16 +347,16 @@ public class OtpEpmd {
     }
 
     public static String[] lookupNames() throws IOException {
-        return lookupNames(InetAddress.getByName(null), new OtpSocketTransportFactory());
+        return OtpEpmd.lookupNames(InetAddress.getByName(null), new OtpSocketTransportFactory());
     }
 
     public static String[] lookupNames(final OtpTransportFactory transportFactory)
             throws IOException {
-        return lookupNames(InetAddress.getByName(null), transportFactory);
+        return OtpEpmd.lookupNames(InetAddress.getByName(null), transportFactory);
     }
 
     public static String[] lookupNames(final InetAddress address) throws IOException {
-        return lookupNames(address, new OtpSocketTransportFactory());
+        return OtpEpmd.lookupNames(address, new OtpSocketTransportFactory());
     }
 
     public static String[] lookupNames(final InetAddress address,
@@ -370,11 +370,11 @@ public class OtpEpmd {
                 s = transportFactory.createTransport(address, EpmdPort.get());
 
                 obuf.write2BE(1);
-                obuf.write1(names4req);
+                obuf.write1(OtpEpmd.names4req);
                 // send request
                 obuf.writeToAndFlush(s.getOutputStream());
 
-                if (traceLevel >= traceThreshold) {
+                if (OtpEpmd.traceLevel >= OtpEpmd.traceThreshold) {
                     System.out.println("-> NAMES (r4) ");
                 }
 
@@ -407,12 +407,12 @@ public class OtpEpmd {
             }
 
         } catch (final IOException e) {
-            if (traceLevel >= traceThreshold) {
+            if (OtpEpmd.traceLevel >= OtpEpmd.traceThreshold) {
                 System.out.println("<- (no response)");
             }
             throw new IOException("Nameserver not responding when requesting names");
         } catch (final OtpErlangDecodeException e) {
-            if (traceLevel >= traceThreshold) {
+            if (OtpEpmd.traceLevel >= OtpEpmd.traceThreshold) {
                 System.out.println("<- (invalid response)");
             }
             throw new IOException("Nameserver not responding when requesting names");

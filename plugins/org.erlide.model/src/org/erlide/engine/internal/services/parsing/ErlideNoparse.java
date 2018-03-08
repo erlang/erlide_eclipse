@@ -22,7 +22,7 @@ public class ErlideNoparse {
             final String initialText, final String stateDir, final boolean updateRefs) {
         OtpErlangTuple res = null;
         try {
-            res = (OtpErlangTuple) b.call(200000, ERLIDE_NOPARSE, "initial_parse",
+            res = (OtpErlangTuple) b.call(200000, ErlideNoparse.ERLIDE_NOPARSE, "initial_parse",
                     "asssoo", scannerModuleName, moduleFileName, initialText, stateDir,
                     true, updateRefs);
         } catch (final RpcTimeoutException e) {
@@ -37,7 +37,7 @@ public class ErlideNoparse {
             final boolean updateSearchServer) {
         OtpErlangTuple res = null;
         try {
-            res = (OtpErlangTuple) b.call(20000, ERLIDE_NOPARSE, "reparse", "ao",
+            res = (OtpErlangTuple) b.call(20000, ErlideNoparse.ERLIDE_NOPARSE, "reparse", "ao",
                     scannerModuleName, updateSearchServer);
         } catch (final RpcTimeoutException e) {
             ErlLogger.warn(e);
@@ -67,7 +67,7 @@ public class ErlideNoparse {
     public static void removeCacheFiles(final IOtpRpc backend,
             final String scannerModuleName, final String stateDir) {
         try {
-            final OtpErlangObject res = backend.call(20000, ERLIDE_NOPARSE,
+            final OtpErlangObject res = backend.call(20000, ErlideNoparse.ERLIDE_NOPARSE,
                     "remove_cache_files", "as", scannerModuleName, stateDir);
             if (!Util.isOk(res)) {
                 ErlLogger.error("remove_cache_files %s %s", scannerModuleName,

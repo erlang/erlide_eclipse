@@ -20,7 +20,7 @@ public final class LaunchUtils {
         final List<IProject> projects = new ArrayList<>();
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         for (final String s : projectNames) {
-            if (s != null && s.length() > 0) {
+            if (s != null && !s.isEmpty()) {
                 final IProject p = root.getProject(s);
                 if (p != null) {
                     projects.add(p);

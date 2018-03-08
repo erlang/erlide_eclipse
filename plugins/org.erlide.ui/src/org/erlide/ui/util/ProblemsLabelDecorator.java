@@ -90,11 +90,11 @@ public class ProblemsLabelDecorator
             final ISourceReference r = obj instanceof ISourceReference
                     ? (ISourceReference) obj : null;
             if (obj instanceof IResource) {
-                return getErrorTicksFromMarkers((IResource) obj, IResource.DEPTH_INFINITE,
+                return ProblemsLabelDecorator.getErrorTicksFromMarkers((IResource) obj, IResource.DEPTH_INFINITE,
                         r);
             } else if (obj instanceof IErlElement) {
                 final IErlElement e = (IErlElement) obj;
-                return getErrorTicksFromMarkers(e.getResource(), IResource.DEPTH_INFINITE,
+                return ProblemsLabelDecorator.getErrorTicksFromMarkers(e.getResource(), IResource.DEPTH_INFINITE,
                         r);
             }
         } catch (final CoreException e) {
@@ -119,7 +119,7 @@ public class ProblemsLabelDecorator
                 for (int i = 0; i < markers.length
                         && severity != IMarker.SEVERITY_ERROR; i++) {
                     final IMarker curr = markers[i];
-                    if (isMarkerInRange(curr, sourceElement)) {
+                    if (ProblemsLabelDecorator.isMarkerInRange(curr, sourceElement)) {
                         final int val = curr.getAttribute(IMarker.SEVERITY, -1);
                         if (val == IMarker.SEVERITY_WARNING
                                 || val == IMarker.SEVERITY_ERROR) {
@@ -130,9 +130,9 @@ public class ProblemsLabelDecorator
             }
         }
         if (severity == IMarker.SEVERITY_ERROR) {
-            return ERRORTICK_ERROR;
+            return ProblemsLabelDecorator.ERRORTICK_ERROR;
         } else if (severity == IMarker.SEVERITY_WARNING) {
-            return ERRORTICK_WARNING;
+            return ProblemsLabelDecorator.ERRORTICK_WARNING;
         }
         return 0;
     }
@@ -141,11 +141,11 @@ public class ProblemsLabelDecorator
             final ISourceReference sourceElement) throws CoreException {
         final int pos = marker.getAttribute(IMarker.CHAR_START, -1);
         if (pos != -1) {
-            return isInside(pos, sourceElement);
+            return ProblemsLabelDecorator.isInside(pos, sourceElement);
         }
         final int line = marker.getAttribute(IMarker.LINE_NUMBER, -1);
         if (line != -1) {
-            return isInsideLines(line - 1, sourceElement);
+            return ProblemsLabelDecorator.isInsideLines(line - 1, sourceElement);
         }
         return false;
     }
@@ -190,9 +190,9 @@ public class ProblemsLabelDecorator
     @Override
     public void decorate(final Object element, final IDecoration decoration) {
         final int adornmentFlags = computeAdornmentFlags(element);
-        if (adornmentFlags == ERRORTICK_ERROR) {
+        if (adornmentFlags == ProblemsLabelDecorator.ERRORTICK_ERROR) {
             decoration.addOverlay(ErlideImage.OVR_ERROR.getDescriptor());
-        } else if (adornmentFlags == ERRORTICK_WARNING) {
+        } else if (adornmentFlags == ProblemsLabelDecorator.ERRORTICK_WARNING) {
             decoration.addOverlay(ErlideImage.OVR_WARNING.getDescriptor());
         }
 

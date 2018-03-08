@@ -58,13 +58,13 @@ public class HoverUtil {
 		//		p.setMarkupLanguage(new MarkdownLanguage());
 		//		result = p.parseToHtml(result);
 		result = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/></head><body>" + result + "</body></html>";
-		if (result.length() > 0) {
+		if (!result.isEmpty()) {
 			result = result.replace("javascript:erlhref('", "");
 			result = result.replace("');\">", "\">");
 		}
 		//		result = result.replaceFirst("<?[^>]+>", "");
 
-		String sheet = "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + getStyleSheet() + "\">";
+		String sheet = "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + HoverUtil.getStyleSheet() + "\">";
 		//		ColorRegistry colorRegistry = JFaceResources.getColorRegistry();
 		//		Color foreground = colorRegistry.get("org.eclipse.ui.workbench.HOVER_FOREGROUND"); //$NON-NLS-1$
 		//		Color background = colorRegistry.get("org.eclipse.ui.workbench.HOVER_BACKGROUND"); //$NON-NLS-1$
@@ -96,7 +96,7 @@ public class HoverUtil {
 				// return new URL("file:" + docPath + "#" + anchor);
 				final File file = new File(docPath);
 				URL url = file.toURI().toURL();
-				if (anchor != null && anchor.length() > 0) {
+				if (anchor != null && !anchor.isEmpty()) {
 					url = new URL(url, "#" + anchor);
 				}
 				return url;

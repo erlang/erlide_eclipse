@@ -20,12 +20,12 @@ public class ErlModelTestBase {
         final IErlProject project1 = ErlideTestUtils.createErlProject(name1);
         final String name2 = "testproject2";
         final IErlProject project2 = ErlideTestUtils.createErlProject(name2);
-        projects = new IErlProject[] { project1, project2 };
+        ErlModelTestBase.projects = new IErlProject[] { project1, project2 };
     }
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        setupProjects();
+        ErlModelTestBase.setupProjects();
     }
 
     @AfterClass
@@ -38,8 +38,8 @@ public class ErlModelTestBase {
 
     public void setupModules() throws CoreException {
         ErlideTestUtils.initModulesAndIncludes();
-        project = projects[0];
-        module = ErlideTestUtils.createModule(projects[0], "xx.erl",
+        project = ErlModelTestBase.projects[0];
+        module = ErlideTestUtils.createModule(ErlModelTestBase.projects[0], "xx.erl",
                 "-module(xx).\n-include(\"yy.hrl\").\n"
                         + "f(A) ->\n    lists:reverse(A).\n");
     }

@@ -34,9 +34,9 @@ class DuplicatesViewLabelProvider extends LabelProvider {
 
     private void createImages() {
 
-        erlangFileImage = getImageDescriptor("icons/erlFile.gif").createImage();
-        codeSnippetImage = getImageDescriptor("icons/match.gif").createImage();
-        duplicateImage = getImageDescriptor("icons/codeSnippet.gif").createImage();
+        erlangFileImage = DuplicatesViewLabelProvider.getImageDescriptor("icons/erlFile.gif").createImage();
+        codeSnippetImage = DuplicatesViewLabelProvider.getImageDescriptor("icons/match.gif").createImage();
+        duplicateImage = DuplicatesViewLabelProvider.getImageDescriptor("icons/codeSnippet.gif").createImage();
     }
 
     @Override

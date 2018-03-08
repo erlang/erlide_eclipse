@@ -112,10 +112,10 @@ public class RuntimePreferencePage extends PreferencePage implements
     protected float fWeight2 = 4 / 9F;
 
     // ignore column re-sizing when the table is being resized
-    protected boolean fResizingTable = false;
+    protected boolean fResizingTable;
 
     // index of column used for sorting
-    private int fSortColumn = 0;
+    private int fSortColumn;
 
     /**
      * Selection listeners (checked Backend changes)
@@ -813,7 +813,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 
         // save column widths
         final IDialogSettings settings = ErlideUIPlugin.getDefault().getDialogSettings();
-        saveColumnSettings(settings, RUNTIMES_PREFERENCE_PAGE);
+        saveColumnSettings(settings, RuntimePreferencePage.RUNTIMES_PREFERENCE_PAGE);
 
         if (restart) {
             new UIJob("restart") {
@@ -839,7 +839,7 @@ public class RuntimePreferencePage extends PreferencePage implements
     void checkValid() {
         final RuntimeInfo def = getCheckedRuntime();
 
-        if (def == null && getRuntimes().size() > 0) {
+        if (def == null && !getRuntimes().isEmpty()) {
             setValid(false);
             setErrorMessage("Please select a default runtime.");
         } else {

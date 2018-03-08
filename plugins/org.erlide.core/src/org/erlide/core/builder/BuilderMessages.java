@@ -33,7 +33,7 @@ public final class BuilderMessages extends NLS {
     public static String build_readingDelta;
 
     static {
-        NLS.initializeMessages(BUNDLE_NAME, BuilderMessages.class);
+        NLS.initializeMessages(BuilderMessages.BUNDLE_NAME, BuilderMessages.class);
     }
 
 }

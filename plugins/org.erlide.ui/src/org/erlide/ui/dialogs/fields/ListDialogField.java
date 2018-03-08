@@ -70,11 +70,11 @@ public class ListDialogField<Element> extends DialogField {
         }
 
         public ColumnsDescription(final String[] headers, final boolean drawLines) {
-            this(createColumnWeightData(headers.length), headers, drawLines);
+            this(ColumnsDescription.createColumnWeightData(headers.length), headers, drawLines);
         }
 
         public ColumnsDescription(final int nColumns, final boolean drawLines) {
-            this(createColumnWeightData(nColumns), null, drawLines);
+            this(ColumnsDescription.createColumnWeightData(nColumns), null, drawLines);
         }
 
         private static ColumnLayoutData[] createColumnWeightData(final int nColumns) {
@@ -249,7 +249,7 @@ public class ListDialogField<Element> extends DialogField {
         assertEnoughColumns(nColumns);
 
         final Label label = getLabelControl(parent);
-        GridData gd = gridDataForLabel(1);
+        GridData gd = DialogField.gridDataForLabel(1);
         gd.verticalAlignment = GridData.BEGINNING;
         label.setLayoutData(gd);
 

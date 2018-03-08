@@ -39,7 +39,7 @@ public class ErlideOpen implements OpenService {
     @Override
     public OtpErlangObject getSourceFromModule(final OtpErlangList pathVars,
             final String mod, final String externalModules) throws RpcException {
-        final OtpErlangObject res2 = ideBackend.call(ERLIDE_OPEN,
+        final OtpErlangObject res2 = ideBackend.call(ErlideOpen.ERLIDE_OPEN,
                 "get_source_from_module", "ax", mod,
                 mkContext(externalModules, null, pathVars, null, null));
         return res2;
@@ -52,7 +52,7 @@ public class ErlideOpen implements OpenService {
             final OtpErlangList pathVars) throws RpcException {
         // ErlLogger.debug("open offset " + offset);
         final Collection<IPath> extra = SourcePathUtils.getExtraSourcePaths();
-        final OtpErlangObject res = ideBackend.call(ERLIDE_OPEN, "open", "aix",
+        final OtpErlangObject res = ideBackend.call(ErlideOpen.ERLIDE_OPEN, "open", "aix",
                 scannerName, offset,
                 mkContext(externalModules, null, pathVars, extra, imports));
         return new OpenResult(res);
@@ -61,7 +61,7 @@ public class ErlideOpen implements OpenService {
     @Override
     @SuppressWarnings("boxing")
     public OpenResult openText(final String text, final int offset) throws RpcException {
-        final OtpErlangObject res = ideBackend.call(ERLIDE_OPEN, "open_text", "si", text,
+        final OtpErlangObject res = ideBackend.call(ErlideOpen.ERLIDE_OPEN, "open_text", "si", text,
                 offset);
         return new OpenResult(res);
     }
@@ -92,7 +92,7 @@ public class ErlideOpen implements OpenService {
     @Override
     public OtpErlangTuple findFirstVar(final String name, final String source) {
         try {
-            final OtpErlangObject res = ideBackend.call(ERLIDE_OPEN, "find_first_var",
+            final OtpErlangObject res = ideBackend.call(ErlideOpen.ERLIDE_OPEN, "find_first_var",
                     "as", name, source);
             if (res instanceof OtpErlangTuple) {
                 return (OtpErlangTuple) res;
@@ -109,7 +109,7 @@ public class ErlideOpen implements OpenService {
         ErlLogger.debug("open:external_module_tree -> " + externalModules);
         final Stopwatch stopwatch = Stopwatch.createStarted();
         try {
-            final OtpErlangObject res = backend.call(ERLIDE_OPEN,
+            final OtpErlangObject res = backend.call(ErlideOpen.ERLIDE_OPEN,
                     "get_external_module_tree", "x",
                     mkContext(externalModules, null, pathVars, null, null));
             if (Util.isOk(res)) {
@@ -144,7 +144,7 @@ public class ErlideOpen implements OpenService {
     public String getExternalInclude(final String filePath, final String externalIncludes,
             final OtpErlangList pathVars) {
         try {
-            final OtpErlangObject res = ideBackend.call(ERLIDE_OPEN,
+            final OtpErlangObject res = ideBackend.call(ErlideOpen.ERLIDE_OPEN,
                     "get_external_include", "sx", filePath,
                     mkContext(null, externalIncludes, pathVars, null, null));
             if (Util.isOk(res)) {
@@ -160,7 +160,7 @@ public class ErlideOpen implements OpenService {
     @Override
     public OtpErlangList getOtpLibStructure(final IOtpRpc backend) {
         try {
-            final OtpErlangObject res = backend.call(ERLIDE_OPEN, "get_otp_lib_structure",
+            final OtpErlangObject res = backend.call(ErlideOpen.ERLIDE_OPEN, "get_otp_lib_structure",
                     "s", stateDir);
             if (Util.isOk(res)) {
                 final OtpErlangTuple tres = (OtpErlangTuple) res;
@@ -177,7 +177,7 @@ public class ErlideOpen implements OpenService {
     @Override
     public List<String> getLibFiles(final String entry) {
         try {
-            final OtpErlangObject res = ideBackend.call(ERLIDE_OPEN, "get_lib_files",
+            final OtpErlangObject res = ideBackend.call(ErlideOpen.ERLIDE_OPEN, "get_lib_files",
                     "ss", entry, stateDir);
             if (Util.isOk(res)) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
@@ -197,7 +197,7 @@ public class ErlideOpen implements OpenService {
     @Override
     public Collection<String> getIncludesInDir(final String directory) {
         try {
-            final OtpErlangObject res = ideBackend.call(ERLIDE_OPEN,
+            final OtpErlangObject res = ideBackend.call(ErlideOpen.ERLIDE_OPEN,
                     "get_includes_in_dir", "s", directory);
             if (Util.isOk(res)) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;

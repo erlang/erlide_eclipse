@@ -151,6 +151,6 @@ public class WizardMessages extends NLS {
 
     static {
         // load message values from bundle file
-        NLS.initializeMessages(BUNDLE_NAME, WizardMessages.class);
+        NLS.initializeMessages(WizardMessages.BUNDLE_NAME, WizardMessages.class);
     }
 }

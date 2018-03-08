@@ -60,7 +60,7 @@ public class OtpCookedConnection extends AbstractConnection {
      * The connection needs to know which local pids have links that pass through here, so
      * that they can be notified in case of connection failure
      */
-    protected Links links = null;
+    protected Links links;
 
     /*
      * Accept an incoming connection from a remote node. Used by {@link OtpSelf#accept()

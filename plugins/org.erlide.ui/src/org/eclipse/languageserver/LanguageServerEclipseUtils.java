@@ -47,7 +47,7 @@ public class LanguageServerEclipseUtils {
     public static TextDocumentPositionParams toTextDocumentPosistionParams(
             final URI fileUri, final int offset, final IDocument document)
             throws BadLocationException {
-        final Position start = toPosition(offset, document);
+        final Position start = LanguageServerEclipseUtils.toPosition(offset, document);
         final TextDocumentPositionParams param = new TextDocumentPositionParams();
         param.setPosition(start);
         final TextDocumentIdentifier id = new TextDocumentIdentifier(fileUri.toString());

@@ -49,11 +49,11 @@ public final class DialyzerPreferences {
     }
 
     private DialyzerPreferences() {
-        helper = PreferencesHelper.getHelper(QUALIFIER);
+        helper = PreferencesHelper.getHelper(DialyzerPreferences.QUALIFIER);
     }
 
     private DialyzerPreferences(final IProject project) {
-        helper = PreferencesHelper.getHelper(QUALIFIER, project);
+        helper = PreferencesHelper.getHelper(DialyzerPreferences.QUALIFIER, project);
     }
 
     public boolean hasOptionsAtLowestScope() {
@@ -77,7 +77,7 @@ public final class DialyzerPreferences {
         final String key = "default_plt_files";
         final String pluginId = "org.erlide.ui";
         final String pltFilesString = service.getString(pluginId, key, "", null);
-        return getPltFiles(pltFilesString);
+        return DialyzerPreferences.getPltFiles(pltFilesString);
     }
 
     public static String getAlternatePLTFileDirectoryFromPreferences() {
@@ -89,7 +89,7 @@ public final class DialyzerPreferences {
 
     public void load() {
         pltPaths = helper.getString(DialyzerPreferencesConstants.PLT_PATHS, "");
-        pltPathsFromPrefs = getPLTPathsFromPreferences();
+        pltPathsFromPrefs = DialyzerPreferences.getPLTPathsFromPreferences();
         enabledPltPaths = helper.getString(DialyzerPreferencesConstants.ENABLED_PLT_PATHS,
                 pltPaths);
         setFromSource(helper.getBoolean(DialyzerPreferencesConstants.FROM_SOURCE, true));
@@ -170,7 +170,7 @@ public final class DialyzerPreferences {
 
     private static Collection<String> getPltFiles(final String pltFilesString) {
         final Iterable<String> files = Splitter.on(",").split(pltFilesString);
-        return getPltFiles(files);
+        return DialyzerPreferences.getPltFiles(files);
     }
 
     private static Collection<String> getPltFiles(final Iterable<String> files) {
@@ -185,7 +185,7 @@ public final class DialyzerPreferences {
             } else {
                 try {
                     final List<String> lines = Files.readLines(file, Charsets.UTF_8);
-                    result.addAll(getPltFiles(lines));
+                    result.addAll(DialyzerPreferences.getPltFiles(lines));
                 } catch (final IOException e) {
                     // ignore
                 }

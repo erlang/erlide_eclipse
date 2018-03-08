@@ -34,7 +34,7 @@ import org.osgi.service.prefs.BackingStoreException;
 
 public final class ErlangCore {
     public static final String PLUGIN_ID = "org.erlide.core";
-    public static final String NATURE_ID = PLUGIN_ID + ".erlnature";
+    public static final String NATURE_ID = ErlangCore.PLUGIN_ID + ".erlnature";
     public static final String ERLIDE_GLOBAL_TRACE_OPTION = "org.erlide.backend/debug";
 
     private String featureVersion;
@@ -149,9 +149,9 @@ public final class ErlangCore {
             return false;
         }
         final String globalTraceValue = Platform
-                .getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION);
+                .getDebugOption(ErlangCore.ERLIDE_GLOBAL_TRACE_OPTION);
         final String value = Platform
-                .getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION + "/" + traceOption);
+                .getDebugOption(ErlangCore.ERLIDE_GLOBAL_TRACE_OPTION + "/" + traceOption);
         if ("true".equalsIgnoreCase(globalTraceValue) && "true".equalsIgnoreCase(value)) {
             return true;
         }

@@ -42,7 +42,7 @@ public final class ConfigurationManager {
     public static TracePattern[] loadTPConfig(final String configName) {
         final ArrayList<TracePattern> patterns = new ArrayList<>();
 
-        final Object[] objects = loadConfiguration(configName, TP_DIR);
+        final Object[] objects = ConfigurationManager.loadConfiguration(configName, ConfigurationManager.TP_DIR);
         if (objects != null) {
             for (final Object object : objects) {
                 patterns.add((TracePattern) object);
@@ -61,7 +61,7 @@ public final class ConfigurationManager {
     public static TracedNode[] loadNodesConfig(final String configName) {
         final ArrayList<TracedNode> nodes = new ArrayList<>();
 
-        final Object[] objects = loadConfiguration(configName, NODES_DIR);
+        final Object[] objects = ConfigurationManager.loadConfiguration(configName, ConfigurationManager.NODES_DIR);
         if (objects != null) {
             for (final Object object : objects) {
                 nodes.add((TracedNode) object);
@@ -80,7 +80,7 @@ public final class ConfigurationManager {
      *         otherwise
      */
     public static boolean saveTPConfig(final String configName) {
-        return saveConfiguration(configName, TP_DIR,
+        return ConfigurationManager.saveConfiguration(configName, ConfigurationManager.TP_DIR,
                 TraceBackend.getInstance().getTracePatternsArray());
     }
 
@@ -93,7 +93,7 @@ public final class ConfigurationManager {
      *         otherwise
      */
     public static boolean saveNodesConfig(final String configName) {
-        return saveConfiguration(configName, NODES_DIR,
+        return ConfigurationManager.saveConfiguration(configName, ConfigurationManager.NODES_DIR,
                 TraceBackend.getInstance().getTracedNodesArray());
     }
 
@@ -106,7 +106,7 @@ public final class ConfigurationManager {
      *         <code>false</code> otherwise
      */
     public static boolean removeTPConfig(final String configName) {
-        return removeConfiguration(configName, TP_DIR);
+        return ConfigurationManager.removeConfiguration(configName, ConfigurationManager.TP_DIR);
     }
 
     /**
@@ -118,7 +118,7 @@ public final class ConfigurationManager {
      *         <code>false</code> otherwise
      */
     public static boolean removeNodesConfig(final String configName) {
-        return removeConfiguration(configName, NODES_DIR);
+        return ConfigurationManager.removeConfiguration(configName, ConfigurationManager.NODES_DIR);
     }
 
     /**
@@ -127,7 +127,7 @@ public final class ConfigurationManager {
      * @return list of trace pattern configuration names
      */
     public static String[] getTPConfigs() {
-        return getConfigurationsList(TP_DIR);
+        return ConfigurationManager.getConfigurationsList(ConfigurationManager.TP_DIR);
     }
 
     /**
@@ -136,7 +136,7 @@ public final class ConfigurationManager {
      * @return list of trace pattern configuration names
      */
     public static String[] getNodesConfig() {
-        return getConfigurationsList(NODES_DIR);
+        return ConfigurationManager.getConfigurationsList(ConfigurationManager.NODES_DIR);
     }
 
     private static Object[] loadConfiguration(final String configName,
@@ -169,7 +169,7 @@ public final class ConfigurationManager {
 
         try (final FileOutputStream out = new FileOutputStream(
                 location.append(configName).toFile());
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(out);) {
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(out)) {
             objectOutputStream.writeObject(configuration);
             return true;
         } catch (final Exception e) {

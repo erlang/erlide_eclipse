@@ -20,7 +20,7 @@ public class ExceptionUtils {
             "java.lang.reflect.Method", "sun.", "org.eclipse", "org.junit");
 
     public static String getFilteredStackTrace(final Throwable t) {
-        return getFilteredStackTrace(t, true);
+        return ExceptionUtils.getFilteredStackTrace(t, true);
     }
 
     public static String getFilteredStackTrace(final Throwable t,
@@ -28,7 +28,7 @@ public class ExceptionUtils {
         try {
             final StringWriter sw = new StringWriter();
             final PrintWriter pw = new PrintWriter(sw);
-            writeCleanStackTrace(t, pw, shouldFilter);
+            ExceptionUtils.writeCleanStackTrace(t, pw, shouldFilter);
             return sw.getBuffer().toString();
         } catch (final Exception e) {
             ErlLogger.error(e);
@@ -39,25 +39,25 @@ public class ExceptionUtils {
     private static void writeCleanStackTrace(final Throwable t, final PrintWriter s,
             final boolean wantsFilter) {
         s.print("Exception: ");
-        printExceptionChain(t, s);
+        ExceptionUtils.printExceptionChain(t, s);
         final Set<String> skippedPackages = newHashSet();
         int skippedLines = 0;
-        final boolean shouldFilter = wantsFilter && filtersEnabled();
-        for (final StackTraceElement traceElement : getBottomThrowable(t)
+        final boolean shouldFilter = wantsFilter && ExceptionUtils.filtersEnabled();
+        for (final StackTraceElement traceElement : ExceptionUtils.getBottomThrowable(t)
                 .getStackTrace()) {
             String forbiddenPackageName = null;
             if (shouldFilter) {
-                forbiddenPackageName = tryGetForbiddenPackageName(traceElement);
+                forbiddenPackageName = ExceptionUtils.tryGetForbiddenPackageName(traceElement);
             }
 
             if (forbiddenPackageName == null) {
-                if (skippedPackages.size() > 0) {
+                if (!skippedPackages.isEmpty()) {
                     // 37 lines skipped for [org.h2, org.hibernate, sun.,
                     // java.lang.reflect.Method, $Proxy]
-                    s.println(getSkippedPackagesMessage(skippedPackages, skippedLines));
+                    s.println(ExceptionUtils.getSkippedPackagesMessage(skippedPackages, skippedLines));
                 }
                 // at hib.HibExample.test(HibExample.java:18)
-                s.println(INDENT + "at " + traceElement);
+                s.println(ExceptionUtils.INDENT + "at " + traceElement);
                 skippedPackages.clear();
                 skippedLines = 0;
             } else {
@@ -66,7 +66,7 @@ public class ExceptionUtils {
             }
         }
         if (skippedLines > 0) {
-            s.println(getSkippedPackagesMessage(skippedPackages, skippedLines));
+            s.println(ExceptionUtils.getSkippedPackagesMessage(skippedPackages, skippedLines));
         }
     }
 
@@ -74,7 +74,7 @@ public class ExceptionUtils {
     // java.lang.reflect.Method, $Proxy]
     private static String getSkippedPackagesMessage(final Set<String> skippedPackages,
             final int skippedLines) {
-        return INDENT + skippedLines + " line" + (skippedLines == 1 ? "" : "s")
+        return ExceptionUtils.INDENT + skippedLines + " line" + (skippedLines == 1 ? "" : "s")
                 + " skipped for " + skippedPackages;
     }
 
@@ -97,7 +97,7 @@ public class ExceptionUtils {
         s.println(t);
         if (t.getCause() != null) {
             s.print("Caused by: ");
-            printExceptionChain(t.getCause(), s);
+            ExceptionUtils.printExceptionChain(t.getCause(), s);
         }
     }
 
@@ -110,7 +110,7 @@ public class ExceptionUtils {
             final StackTraceElement traceElement) {
         final String classAndMethod = traceElement.getClassName() + "."
                 + traceElement.getMethodName();
-        for (final String pkg : _suppressedPackages) {
+        for (final String pkg : ExceptionUtils._suppressedPackages) {
             if (classAndMethod.startsWith(pkg)) {
                 return pkg;
             }

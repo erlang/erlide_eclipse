@@ -119,7 +119,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
         boolean match(ErlangProjectionAnnotation annotation);
     }
 
-    private static abstract class MatchCollapsedFilter implements Filter {
+    private abstract static class MatchCollapsedFilter implements Filter {
 
         private final boolean fMatchCollapsed;
 
@@ -408,17 +408,17 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
 
     private IElementChangedListener fElementListener;
 
-    private boolean fAllowCollapsing = false;
+    private boolean fAllowCollapsing;
 
     private boolean fFirstTimeInitialCollapse = true;
 
     private boolean fCollapseHeaderComments = true;
 
-    private boolean fCollapseComments = false;
+    private boolean fCollapseComments;
 
-    private boolean fCollapseClauses = false;
+    private boolean fCollapseClauses;
 
-    private boolean fCollapseTypespecs = false;
+    private boolean fCollapseTypespecs;
 
     private static class FunctionsFilter extends MatchCollapsedFilter {
 

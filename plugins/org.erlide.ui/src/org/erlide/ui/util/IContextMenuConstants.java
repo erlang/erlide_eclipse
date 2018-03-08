@@ -97,7 +97,7 @@ public interface IContextMenuConstants {
      *
      * @since 2.0
      */
-    String GROUP_SOURCE = GROUP_GENERATE;
+    String GROUP_SOURCE = IContextMenuConstants.GROUP_GENERATE;
 
     /**
      * Pop-up menu: name of group for search actions (value

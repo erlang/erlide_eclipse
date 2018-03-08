@@ -103,18 +103,18 @@ public class BreakpointMarkerUpdater implements IMarkerUpdater {
                 return true;
             }
             // if there exists a breakpoint on the line remove this one
-            if (isLineBreakpointMarker(marker)) {
+            if (BreakpointMarkerUpdater.isLineBreakpointMarker(marker)) {
                 ensureRanges(document, marker, line);
                 return lineBreakpointExists(marker.getResource(), line, marker) == null;
             }
             // if the line info is a valid location with an invalid line
             // number,
             // a line breakpoint must be removed
-            if (isLineBreakpointMarker(marker) && line == -1) {
+            if (BreakpointMarkerUpdater.isLineBreakpointMarker(marker) && line == -1) {
                 return false;
             }
             MarkerUtilities.setLineNumber(marker, line);
-            if (isLineBreakpointMarker(marker)) {
+            if (BreakpointMarkerUpdater.isLineBreakpointMarker(marker)) {
                 ensureRanges(document, marker, line);
             }
             return true;

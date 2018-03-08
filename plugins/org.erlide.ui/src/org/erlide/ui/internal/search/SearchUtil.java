@@ -81,7 +81,7 @@ public class SearchUtil {
 
         @Override
         public int compare(final IWorkingSet o1, final IWorkingSet o2) {
-            return collator.compare(o1.getLabel(), o2.getLabel());
+            return WorkingSetComparator.collator.compare(o1.getLabel(), o2.getLabel());
         }
     }
 
@@ -110,7 +110,7 @@ public class SearchUtil {
 
     public static Match createMatch(final ModuleLineFunctionArityRef ref,
             final Map<String, IErlModule> pathToModuleMap) {
-        final ErlangSearchElement ese = createSearchElementFromRef(ref, pathToModuleMap);
+        final ErlangSearchElement ese = SearchUtil.createSearchElementFromRef(ref, pathToModuleMap);
         return new Match(ese, ref.getOffset(), ref.getLength());
     }
 
@@ -118,29 +118,29 @@ public class SearchUtil {
             final ModuleLineFunctionArityRef ref,
             final Map<String, IErlModule> pathToModuleMap) {
         final IErlModule module = pathToModuleMap.get(ref.getModulePath());
-        return createSearchElement(ref, module);
+        return SearchUtil.createSearchElement(ref, module);
     }
 
     public static ErlangSearchElement createSearchElement(
             final ModuleLineFunctionArityRef ref, final IErlModule module) {
         return new ErlangSearchElement(module, ref.getModulePath(), ref.getName(),
-                ref.getArity(), ref.getClauseHead(), ref.isSubClause(), refToKind(ref));
+                ref.getArity(), ref.getClauseHead(), ref.isSubClause(), SearchUtil.refToKind(ref));
     }
 
     public static ErlElementKind refToKind(final ModuleLineFunctionArityRef ref) {
         switch (ref.getArity()) {
-        case ARI_TYPESPEC:
+        case SearchUtil.ARI_TYPESPEC:
             return ErlElementKind.TYPESPEC;
-        case ARI_ATTRIBUTE:
+        case SearchUtil.ARI_ATTRIBUTE:
             return ErlElementKind.ATTRIBUTE; // Kind.MODULE; ?
-        case ARI_RECORD_DEF:
+        case SearchUtil.ARI_RECORD_DEF:
             return ErlElementKind.RECORD_DEF;
-        case ARI_MACRO_DEF:
+        case SearchUtil.ARI_MACRO_DEF:
             return ErlElementKind.MACRO_DEF;
-        case ARI_INCLUDE:
+        case SearchUtil.ARI_INCLUDE:
             return ErlElementKind.ATTRIBUTE;
             // include actually, attributes are not saved (yet)
-        case ARI_RECORD_FIELD_DEF:
+        case SearchUtil.ARI_RECORD_FIELD_DEF:
             return ErlElementKind.RECORD_FIELD;
         default:
             if (ref.isSubClause()) {
@@ -276,7 +276,7 @@ public class SearchUtil {
             return "";
         }
         final String s = workingSets.length == 1 ? wsS : wssS;
-        return workingSetLabels(workingSets, s, "'");
+        return SearchUtil.workingSetLabels(workingSets, s, "'");
     }
 
     private static String workingSetLabels(final IWorkingSet[] workingSets,
@@ -393,7 +393,7 @@ public class SearchUtil {
 
     public static String toString(final IWorkingSet[] workingSets) {
         Arrays.sort(workingSets, new WorkingSetComparator());
-        return workingSetLabels(workingSets, "", "");
+        return SearchUtil.workingSetLabels(workingSets, "", "");
     }
 
     // LRU working sets
@@ -414,27 +414,27 @@ public class SearchUtil {
     private static IDialogSettings getDialogStoreSection() {
         final IDialogSettings dialogSettings = ErlideUIPlugin.getDefault()
                 .getDialogSettings();
-        IDialogSettings settingsStore = dialogSettings.getSection(DIALOG_SETTINGS_KEY);
+        IDialogSettings settingsStore = dialogSettings.getSection(SearchUtil.DIALOG_SETTINGS_KEY);
         if (settingsStore == null) {
-            settingsStore = dialogSettings.addNewSection(DIALOG_SETTINGS_KEY);
+            settingsStore = dialogSettings.addNewSection(SearchUtil.DIALOG_SETTINGS_KEY);
         }
         return settingsStore;
     }
 
     public static LRUWorkingSetsList getLRUWorkingSets() {
-        if (fgLRUWorkingSets == null) {
-            restoreState();
+        if (SearchUtil.fgLRUWorkingSets == null) {
+            SearchUtil.restoreState();
         }
-        return fgLRUWorkingSets;
+        return SearchUtil.fgLRUWorkingSets;
     }
 
     private static void restoreState() {
-        fgLRUWorkingSets = new LRUWorkingSetsList(LRU_WORKINGSET_LIST_SIZE);
-        final IDialogSettings settingsStore = getDialogStoreSection();
+        SearchUtil.fgLRUWorkingSets = new LRUWorkingSetsList(SearchUtil.LRU_WORKINGSET_LIST_SIZE);
+        final IDialogSettings settingsStore = SearchUtil.getDialogStoreSection();
 
-        for (int i = LRU_WORKINGSET_LIST_SIZE - 1; i >= 0; i--) {
+        for (int i = SearchUtil.LRU_WORKINGSET_LIST_SIZE - 1; i >= 0; i--) {
             final String[] lruWorkingSetNames = settingsStore
-                    .getArray(STORE_LRU_WORKING_SET_NAMES + i);
+                    .getArray(SearchUtil.STORE_LRU_WORKING_SET_NAMES + i);
             if (lruWorkingSetNames != null) {
                 final Set<IWorkingSet> workingSets = new HashSet<>(2);
                 for (String lruWorkingSetName : lruWorkingSetNames) {
@@ -445,7 +445,7 @@ public class SearchUtil {
                     }
                 }
                 if (!workingSets.isEmpty()) {
-                    fgLRUWorkingSets.add(workingSets.toArray(new IWorkingSet[workingSets
+                    SearchUtil.fgLRUWorkingSets.add(workingSets.toArray(new IWorkingSet[workingSets
                             .size()]));
                 }
             }
@@ -479,18 +479,18 @@ public class SearchUtil {
         if (workingSets == null || workingSets.length < 1) {
             return;
         }
-        getLRUWorkingSets().add(workingSets);
-        saveState(getDialogStoreSection());
+        SearchUtil.getLRUWorkingSets().add(workingSets);
+        SearchUtil.saveState(SearchUtil.getDialogStoreSection());
     }
 
     private static void saveState(final IDialogSettings settingsStore) {
         int i = 0;
-        for (final IWorkingSet[] workingSets : fgLRUWorkingSets.get()) {
+        for (final IWorkingSet[] workingSets : SearchUtil.fgLRUWorkingSets.get()) {
             final String[] names = new String[workingSets.length];
             for (int j = 0; j < workingSets.length; j++) {
                 names[j] = workingSets[j].getName();
             }
-            settingsStore.put(STORE_LRU_WORKING_SET_NAMES + i, names);
+            settingsStore.put(SearchUtil.STORE_LRU_WORKING_SET_NAMES + i, names);
             i++;
         }
     }

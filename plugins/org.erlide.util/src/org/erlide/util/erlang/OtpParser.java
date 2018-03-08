@@ -31,14 +31,14 @@ import com.google.common.base.Strings;
 public class OtpParser {
 
     public OtpErlangObject parse(final String s) throws OtpParserException {
-        return doParse(s);
+        return OtpParser.doParse(s);
     }
 
     protected static OtpErlangObject doParse(final String s) throws OtpParserException {
         if (Strings.isNullOrEmpty(s)) {
             return null;
         }
-        return parse(scan(s));
+        return OtpParser.parse(OtpParser.scan(s));
     }
 
     private static OtpErlangObject parse(final List<Token> tokens)
@@ -69,17 +69,17 @@ public class OtpParser {
             result = new OtpFormatPlaceholder(text);
             break;
         case TUPLESTART:
-            result = parseTuple(tokens, new Stack<>());
+            result = OtpParser.parseTuple(tokens, new Stack<>());
             break;
         case TUPLEEND:
             throw new OtpParserException("unexpected " + t.toString());
         case LISTSTART:
-            result = parseList(tokens, new Stack<>(), null);
+            result = OtpParser.parseList(tokens, new Stack<>(), null);
             break;
         case LISTEND:
             throw new OtpParserException("unexpected " + t.toString());
         case MAP:
-            result = parseMap(tokens, new Stack<>());
+            result = OtpParser.parseMap(tokens, new Stack<>());
             break;
         case COMMA:
             throw new OtpParserException("unexpected " + t.toString());
@@ -110,9 +110,9 @@ public class OtpParser {
         OtpErlangObject atail = tail;
         if (t.kind == TokenKind.CONS) {
             tokens.remove(0);
-            atail = parse(tokens);
+            atail = OtpParser.parse(tokens);
         } else {
-            stack.push(parse(tokens));
+            stack.push(OtpParser.parse(tokens));
             if (tokens.get(0).kind == TokenKind.COMMA) {
                 tokens.remove(0);
             } else if (tokens.get(0).kind != TokenKind.LISTEND
@@ -120,7 +120,7 @@ public class OtpParser {
                 throw new OtpParserException("missing comma in list");
             }
         }
-        return parseList(tokens, stack, atail);
+        return OtpParser.parseList(tokens, stack, atail);
     }
 
     private static OtpErlangObject parseTuple(final List<Token> tokens,
@@ -136,13 +136,13 @@ public class OtpParser {
         if (t.kind == TokenKind.CONS) {
             throw new OtpParserException("cons is invalid in tuple");
         }
-        stack.push(parse(tokens));
+        stack.push(OtpParser.parse(tokens));
         if (tokens.get(0).kind == TokenKind.COMMA) {
             tokens.remove(0);
         } else if (tokens.get(0).kind != TokenKind.TUPLEEND) {
             throw new OtpParserException("missing comma in tuple");
         }
-        return parseTuple(tokens, stack);
+        return OtpParser.parseTuple(tokens, stack);
     }
 
     private static OtpErlangObject parseMap(final List<Token> tokens,
@@ -163,23 +163,23 @@ public class OtpParser {
             }
             return new OtpErlangMap(keys, values);
         }
-        stack.push(parse(tokens));
+        stack.push(OtpParser.parse(tokens));
         if (tokens.get(0).kind != TokenKind.ARROW) {
             throw new OtpParserException("badly constructed map");
         }
         tokens.remove(0);
-        stack.push(parse(tokens));
+        stack.push(OtpParser.parse(tokens));
         if (tokens.get(0).kind == TokenKind.COMMA) {
             tokens.remove(0);
         } else if (tokens.get(0).kind != TokenKind.TUPLEEND) {
             throw new OtpParserException("missing comma in map");
         }
 
-        return parseMap(tokens, stack);
+        return OtpParser.parseMap(tokens, stack);
     }
 
     private static enum TokenKind {
-        ATOM, VARIABLE, STRING, INTEGER, PLACEHOLDER, TUPLESTART, TUPLEEND, LISTSTART, LISTEND, COMMA, CONS, MAP, ARROW, UNKNOWN;
+        ATOM, VARIABLE, STRING, INTEGER, PLACEHOLDER, TUPLESTART, TUPLEEND, LISTSTART, LISTEND, COMMA, CONS, MAP, ARROW, UNKNOWN
     }
 
     private static class Token {
@@ -195,7 +195,7 @@ public class OtpParser {
         }
 
         public static Token nextToken(final String s) {
-            if (s == null || s.length() == 0) {
+            if (s == null || s.isEmpty()) {
                 return null;
             }
             final Token result = new Token();
@@ -212,17 +212,17 @@ public class OtpParser {
             result.start = i;
             result.end = i;
             if (c <= 'z' && c >= 'a') {
-                scanAtom(s, result);
+                Token.scanAtom(s, result);
             } else if (c == '\'') {
-                scanQAtom(s, result);
+                Token.scanQAtom(s, result);
             } else if (c == '"') {
-                scanString(s, result);
+                Token.scanString(s, result);
             } else if (c >= 'A' && c <= 'Z' || c == '_') {
-                scanVariable(s, result);
+                Token.scanVariable(s, result);
             } else if (c <= '9' && c >= '0' || c == '-') {
-                scanInteger(s, result);
+                Token.scanInteger(s, result);
             } else if (c == '~') {
-                scanPlaceholder(s, result);
+                Token.scanPlaceholder(s, result);
             } else if (c == '{') {
                 result.kind = TokenKind.TUPLESTART;
                 result.end = result.start + 1;
@@ -254,7 +254,7 @@ public class OtpParser {
             result.text = s.substring(result.start, result.end);
             final char ch = result.text.charAt(0);
             if (result.kind == TokenKind.STRING) {
-                result.text = unescape(result.text);
+                result.text = OtpParser.unescape(result.text);
             } else if (result.kind == TokenKind.PLACEHOLDER) {
                 result.text = result.text.substring(1);
             } else if (result.kind == TokenKind.ATOM && ch == '\'') {

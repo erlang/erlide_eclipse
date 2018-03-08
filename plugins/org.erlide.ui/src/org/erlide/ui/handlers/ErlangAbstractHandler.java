@@ -58,8 +58,8 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
             final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) editor;
             final IErlModule module = erlangEditor.getModule();
             if (module != null) {
-                final int offset1 = selection.getOffset(),
-                        offset2 = offset1 + selection.getLength();
+                final int offset1 = selection.getOffset();
+                final int offset2 = offset1 + selection.getLength();
                 try {
                     final IErlElement e1 = module.getElementAt(offset1);
                     final IErlElement e2 = module.getElementAt(offset2);
@@ -73,17 +73,17 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
                             if (offset + length > docLength) {
                                 length = docLength - offset;
                             }
-                            return extendSelectionToWholeLines(document,
+                            return ErlangAbstractHandler.extendSelectionToWholeLines(document,
                                     new TextSelection(document, offset, length));
                         } else if (e2 == null) {
-                            return extendSelectionToWholeLines(document,
+                            return ErlangAbstractHandler.extendSelectionToWholeLines(document,
                                     new TextSelection(document, offset,
                                             selection.getLength() + selection.getOffset()
                                                     - offset));
                         } else if (e2 instanceof ISourceReference) {
                             final ISourceReference ref2 = (ISourceReference) e2;
                             final ISourceRange r2 = ref2.getSourceRange();
-                            return extendSelectionToWholeLines(document,
+                            return ErlangAbstractHandler.extendSelectionToWholeLines(document,
                                     new TextSelection(document, offset,
                                             r2.getOffset() - offset + r2.getLength()));
                         }
@@ -92,7 +92,7 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
                 }
             }
         }
-        return extendSelectionToWholeLines(document, selection);
+        return ErlangAbstractHandler.extendSelectionToWholeLines(document, selection);
     }
 
     @Override

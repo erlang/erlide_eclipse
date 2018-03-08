@@ -117,7 +117,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 	public static final String ERLANG_EDITOR_ID = "org.erlide.ui.editors.erl.ErlangEditor";
 	public static final String EDITOR_INDENTATION_WIDTH = "indentationWidth";
 
-	private IErlModule fModule = null;
+	private IErlModule fModule;
 	private ColorManager colorManager;
 	private ErlangOutlinePage myOutlinePage;
 	private IPropertySource myPropertySource;
@@ -193,7 +193,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 		colorManager = new ColorManager();
 		setDocumentProvider(new TextFileDocumentProvider());
 
-		final IPreferenceStore store = getErlangEditorPreferenceStore();
+		final IPreferenceStore store = ErlangEditor.getErlangEditorPreferenceStore();
 		setPreferenceStore(store);
 
 		final ErlangSourceViewerConfiguration cfg = new EditorConfiguration(getPreferenceStore(), this, colorManager);

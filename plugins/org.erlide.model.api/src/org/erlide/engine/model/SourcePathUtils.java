@@ -15,7 +15,7 @@ import com.google.common.collect.Lists;
 public class SourcePathUtils {
 
     public static Collection<IPath> getExtraSourcePathsForBuild(final IProject project) {
-        return getExtraSourcePathsGeneric(project, new SPPMethod() {
+        return SourcePathUtils.getExtraSourcePathsGeneric(project, new SPPMethod() {
             @Override
             public Collection<IPath> call(final IProject myProject) {
                 return target.getSourcePathsForBuild(myProject);
@@ -24,7 +24,7 @@ public class SourcePathUtils {
     }
 
     public static Collection<IPath> getExtraSourcePathsForModel(final IProject project) {
-        return getExtraSourcePathsGeneric(project, new SPPMethod() {
+        return SourcePathUtils.getExtraSourcePathsGeneric(project, new SPPMethod() {
             @Override
             public Collection<IPath> call(final IProject myProject) {
                 return target.getSourcePathsForModel(myProject);
@@ -34,7 +34,7 @@ public class SourcePathUtils {
 
     public static Collection<IPath> getExtraSourcePathsForExecution(
             final IProject project) {
-        return getExtraSourcePathsGeneric(project, new SPPMethod() {
+        return SourcePathUtils.getExtraSourcePathsGeneric(project, new SPPMethod() {
             @Override
             public Collection<IPath> call(final IProject myProject) {
                 return target.getSourcePathsForExecution(myProject);
@@ -47,7 +47,7 @@ public class SourcePathUtils {
         final List<IPath> result = Lists.newArrayList();
         Collection<SourcePathProvider> spps;
         try {
-            spps = getSourcePathProviders();
+            spps = SourcePathUtils.getSourcePathProviders();
             for (final SourcePathProvider spp : spps) {
                 method.setTarget(spp);
                 final Collection<IPath> paths = method.call(project);
@@ -64,20 +64,20 @@ public class SourcePathUtils {
                 .getProjects();
         final List<IPath> result = Lists.newArrayList();
         for (final IProject project : projects) {
-            result.addAll(getExtraSourcePathsForModel(project));
+            result.addAll(SourcePathUtils.getExtraSourcePathsForModel(project));
         }
         return result;
     }
 
-    private static Collection<SourcePathProvider> sourcePathProviders = null;
+    private static Collection<SourcePathProvider> sourcePathProviders;
 
     public static synchronized Collection<SourcePathProvider> getSourcePathProviders() {
-        if (sourcePathProviders != null) {
-            return sourcePathProviders;
+        if (SourcePathUtils.sourcePathProviders != null) {
+            return SourcePathUtils.sourcePathProviders;
         }
-        sourcePathProviders = ExtensionUtils.getExtensions(
+        SourcePathUtils.sourcePathProviders = ExtensionUtils.getExtensions(
                 "org.erlide.model.sourcePathProvider", SourcePathProvider.class);
-        return sourcePathProviders;
+        return SourcePathUtils.sourcePathProviders;
     }
 
     private abstract static class SPPMethod {

@@ -29,7 +29,7 @@ public final class TraceCollections {
      * @return list
      */
     public static Collection<ITreeNode> getFilesList() {
-        return filesList;
+        return TraceCollections.filesList;
     }
 
     /**
@@ -38,6 +38,6 @@ public final class TraceCollections {
      * @return list
      */
     public static Collection<ITreeNode> getTracesList() {
-        return tracesList;
+        return TraceCollections.tracesList;
     }
 }

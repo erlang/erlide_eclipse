@@ -195,8 +195,8 @@ public class InternalBuilder extends ErlangBuilder {
 		}
 	}
 
-	private void handleErlangFiles(final IErlProject erlProject, final @NonNull IProject project, final BuildKind kind,
-			final IResourceDelta resourceDelta, final BuildNotifier notifier) throws CoreException, BackendException {
+	private void handleErlangFiles(final IErlProject erlProject, @NonNull final IProject project, final BuildKind kind,
+                                   final IResourceDelta resourceDelta, final BuildNotifier notifier) throws CoreException, BackendException {
 		final OtpErlangList compilerOptions = CompilerOptions.get(project);
 
 		final Set<BuildResource> resourcesToBuild = getResourcesToBuild(kind, project, resourceDelta, notifier);

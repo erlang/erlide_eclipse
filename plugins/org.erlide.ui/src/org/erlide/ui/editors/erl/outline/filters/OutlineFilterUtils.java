@@ -32,10 +32,10 @@ public class OutlineFilterUtils {
         final String userDefinedPatternsString = prefsNode
                 .get(PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS, "");
         userDefinedPatterns
-                .addAll(ListsUtils.unpackList(userDefinedPatternsString, SEPARATOR));
+                .addAll(ListsUtils.unpackList(userDefinedPatternsString, OutlineFilterUtils.SEPARATOR));
         final String enabledFilterIDsString = prefsNode
                 .get(PreferenceConstants.OUTLINE_ENABLED_FILTERS, "");
-        enabledFilterIDs.addAll(ListsUtils.unpackList(enabledFilterIDsString, SEPARATOR));
+        enabledFilterIDs.addAll(ListsUtils.unpackList(enabledFilterIDsString, OutlineFilterUtils.SEPARATOR));
         return areUserDefinedPatternsEnabled;
     }
 
@@ -45,9 +45,9 @@ public class OutlineFilterUtils {
         prefsNode.putBoolean(PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS_ENABLED,
                 areUserDefinedPatternsEnabled);
         prefsNode.put(PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS,
-                ListsUtils.packList(userDefinedPatterns, SEPARATOR));
+                ListsUtils.packList(userDefinedPatterns, OutlineFilterUtils.SEPARATOR));
         prefsNode.put(PreferenceConstants.OUTLINE_ENABLED_FILTERS,
-                ListsUtils.packList(enabledFilterIDs, SEPARATOR));
+                ListsUtils.packList(enabledFilterIDs, OutlineFilterUtils.SEPARATOR));
         try {
             prefsNode.flush();
         } catch (final BackingStoreException e) {

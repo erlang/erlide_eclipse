@@ -100,7 +100,7 @@ public class ErlangFoldingStructureProviderRegistry {
         final Map<String, ErlangFoldingStructureProviderDescriptor> map = new HashMap<>();
 
         final IConfigurationElement[] elements = registry.getConfigurationElementsFor(
-                ErlideUIPlugin.PLUGIN_ID, EXTENSION_POINT);
+                ErlideUIPlugin.PLUGIN_ID, ErlangFoldingStructureProviderRegistry.EXTENSION_POINT);
         for (final IConfigurationElement element : elements) {
             final ErlangFoldingStructureProviderDescriptor desc = new ErlangFoldingStructureProviderDescriptor(
                     element);

@@ -13,7 +13,8 @@ public class IErlMemberTest extends ErlModelTestBase {
         module.open(null);
         final IErlElement element = module.getElementAt(1);
         final IErlAttribute attribute = (IErlAttribute) element;
-        final int offset = 1, length = 2;
+        final int offset = 1;
+        final int length = 2;
         attribute.setNameRange(offset, length);
         final ISourceRange nameRange = attribute.getNameRange();
         assertEquals(offset, nameRange.getOffset());

@@ -39,7 +39,7 @@ public final class PreferencesMessages extends NLS {
     }
 
     static {
-        NLS.initializeMessages(BUNDLE_NAME, PreferencesMessages.class);
+        NLS.initializeMessages(PreferencesMessages.BUNDLE_NAME, PreferencesMessages.class);
     }
 
 }

@@ -33,7 +33,7 @@ public class OtpErlangTuple extends OtpErlangObject {
 
     private static final OtpErlangObject[] NO_ELEMENTS = new OtpErlangObject[0];
 
-    private OtpErlangObject[] elems = NO_ELEMENTS;
+    private OtpErlangObject[] elems = OtpErlangTuple.NO_ELEMENTS;
 
     /**
      * Create a unary tuple containing the given element.
@@ -82,7 +82,7 @@ public class OtpErlangTuple extends OtpErlangObject {
         if (elems == null) {
             throw new java.lang.IllegalArgumentException("Tuple content can't be null");
         } else if (count < 1) {
-            this.elems = NO_ELEMENTS;
+            this.elems = OtpErlangTuple.NO_ELEMENTS;
         } else {
             this.elems = new OtpErlangObject[count];
             for (int i = 0; i < count; i++) {
@@ -116,7 +116,7 @@ public class OtpErlangTuple extends OtpErlangObject {
                 elems[i] = buf.read_any();
             }
         } else {
-            elems = NO_ELEMENTS;
+            elems = OtpErlangTuple.NO_ELEMENTS;
         }
     }
 

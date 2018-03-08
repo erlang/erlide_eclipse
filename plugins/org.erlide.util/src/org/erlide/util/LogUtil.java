@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.Platform;
 public final class LogUtil {
 
     public static String getReportFile() {
-        final String s = getReportLocation();
+        final String s = LogUtil.getReportLocation();
         final String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         return s + "/" + System.getProperty("user.name") + "_" + tstamp + ".txt";
     }
@@ -42,7 +42,7 @@ public final class LogUtil {
                 if (line == null) {
                     break;
                 }
-                if (line.length() == 0) {
+                if (line.isEmpty()) {
                     continue;
                 }
                 result.append(line).append('\n');
@@ -64,7 +64,7 @@ public final class LogUtil {
                     break;
                 }
                 line = line.trim();
-                if (line.length() == 0) {
+                if (line.isEmpty()) {
                     continue;
                 }
                 if (line.startsWith("!SESSION ")) {
@@ -94,7 +94,7 @@ public final class LogUtil {
                         break;
                     }
                     line = line.trim();
-                    if (line.length() == 0) {
+                    if (line.isEmpty()) {
                         continue;
                     }
                     result.append(line).append('\n');

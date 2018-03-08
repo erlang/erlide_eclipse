@@ -40,7 +40,7 @@ public class ErlProjectTest {
         final IErlProject erlProject1 = ErlideTestUtils.createErlProject(name1);
         final String name2 = "testproject2";
         final IErlProject erlProject2 = ErlideTestUtils.createErlProject(name2);
-        projects = new IErlProject[] { erlProject1, erlProject2 };
+        ErlProjectTest.projects = new IErlProject[] { erlProject1, erlProject2 };
     }
 
     @AfterClass
@@ -62,7 +62,7 @@ public class ErlProjectTest {
     public void findIncludeFile() throws Exception {
         // given
         // a project with a module and an include including file.hrl
-        final IErlProject project = projects[0];
+        final IErlProject project = ErlProjectTest.projects[0];
         final String includeName = "a.hrl";
         final IErlModule include = ErlideTestUtils.createModule(project, includeName,
                 "-include_lib(\"kernel/include/file.hrl\").\n-record(rec1, {field, another=def}).\n-define(MACRO(A), lists:reverse(A)).\n");
@@ -128,7 +128,8 @@ public class ErlProjectTest {
     public void findIncludeFileOnIncludePathInOtherProject() throws Exception {
         // http://www.assembla.com/spaces/erlide/tickets/756-navigation--external-include-files-are-not-found
         IErlModule externalInclude = null;
-        IErlProject project = null, project2 = null;
+        IErlProject project = null;
+        IErlProject project2 = null;
         // given
         // a project with an include dir outside the model
         try {
@@ -168,7 +169,7 @@ public class ErlProjectTest {
     public void findFunctionInExternalFilesTest() throws Exception {
         // given
         // a module with calls to the lists module
-        final IErlProject project = projects[0];
+        final IErlProject project = ErlProjectTest.projects[0];
         final IErlModule moduleE = ErlideTestUtils.createModule(project, "e.erl",
                 "-module(e).\n-export([f/0]).\nf() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
         final ScannerService scanner = moduleE.getScanner();

@@ -109,7 +109,7 @@ public class ImplementorsSearchGroup extends ActionGroup {
      * @return the menu label
      */
     protected String getName() {
-        return MENU_TEXT;
+        return ImplementorsSearchGroup.MENU_TEXT;
     }
 
     @Override

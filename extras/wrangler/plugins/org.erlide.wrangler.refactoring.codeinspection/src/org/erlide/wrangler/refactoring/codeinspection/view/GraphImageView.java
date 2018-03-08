@@ -232,7 +232,7 @@ public class GraphImageView extends ViewPart {
      */
     public static String VIEW_ID = "org.erlide.wrangler.codeinspection.graphview";
     SWTImageCanvas imageCanvas;
-    private File dotFile = null;
+    private File dotFile;
 
     /**
      * The constructor.

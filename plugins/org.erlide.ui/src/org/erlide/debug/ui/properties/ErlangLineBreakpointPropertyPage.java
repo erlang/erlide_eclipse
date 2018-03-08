@@ -222,7 +222,7 @@ public class ErlangLineBreakpointPropertyPage extends ErlangBreakpointPropertyPa
         // }
         final Group g = new Group(parent, SWT.NONE);
         g.setLayout(new GridLayout(1, false));
-        g.setText(EMPTY_STRING);
+        g.setText(ErlangBreakpointPropertyPage.EMPTY_STRING);
         g.setFont(parent.getFont());
         final GridData gd = new GridData(GridData.FILL_BOTH);
         gd.horizontalSpan = 1;

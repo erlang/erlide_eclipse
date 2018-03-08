@@ -31,7 +31,8 @@ public abstract class SourceRefElement extends ErlElement implements ISourceRefe
 
     protected int fSourceRangeOffset;
     protected int fSourceRangeLength;
-    protected int lineStart, lineEnd;
+    protected int lineStart;
+    protected int lineEnd;
 
     protected SourceRefElement(final IParent parent, final String name) {
         super(parent, name);
@@ -137,7 +138,7 @@ public abstract class SourceRefElement extends ErlElement implements ISourceRefe
     @Override
     public boolean hasChildren() {
         synchronized (getModelLock()) {
-            return internalGetChildren().size() > 0;
+            return !internalGetChildren().isEmpty();
         }
     }
 

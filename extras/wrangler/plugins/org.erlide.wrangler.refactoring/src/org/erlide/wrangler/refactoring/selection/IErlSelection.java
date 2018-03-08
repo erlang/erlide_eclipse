@@ -34,7 +34,7 @@ public interface IErlSelection extends ISelection {
      * @version %I%, %G%
      */
     public enum SelectionKind {
-        MODULE, FUNCTION, FUNCTION_CLAUSE, EXPRESSION, VARIABLE;
+        MODULE, FUNCTION, FUNCTION_CLAUSE, EXPRESSION, VARIABLE
     }
 
     /**

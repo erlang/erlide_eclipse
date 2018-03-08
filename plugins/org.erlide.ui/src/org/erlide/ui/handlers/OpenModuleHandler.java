@@ -39,7 +39,7 @@ public final class OpenModuleHandler extends Action
      * A collection of objects listening to changes to this manager. This
      * collection is <code>null</code> if there are no listeners.
      */
-    private transient ListenerList<IHandlerListener> listenerList = null;
+    private transient ListenerList<IHandlerListener> listenerList;
 
     /**
      * Creates a new instance of the class.
@@ -68,7 +68,7 @@ public final class OpenModuleHandler extends Action
     public final Object execute(final ExecutionEvent event) throws ExecutionException {
         final List<IFile> files = new ArrayList<>();
 
-        if (event.getParameter(PARAM_ID_FILE_PATH) == null) {
+        if (event.getParameter(OpenModuleHandler.PARAM_ID_FILE_PATH) == null) {
             // Prompt the user for the resource to open.
             final Object[] result = queryFileResource();
             promptForFiles(files, result);
@@ -76,7 +76,7 @@ public final class OpenModuleHandler extends Action
         } else {
             // Use the given parameter.
             final IResource resource = (IResource) event
-                    .getObjectParameterForExecution(PARAM_ID_FILE_PATH);
+                    .getObjectParameterForExecution(OpenModuleHandler.PARAM_ID_FILE_PATH);
             if (!(resource instanceof IFile)) {
                 throw new ExecutionException("filePath parameter must identify a file"); //$NON-NLS-1$
             }

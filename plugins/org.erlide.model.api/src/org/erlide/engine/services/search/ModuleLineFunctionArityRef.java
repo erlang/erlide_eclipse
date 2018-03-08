@@ -3,7 +3,8 @@ package org.erlide.engine.services.search;
 public class ModuleLineFunctionArityRef {
 
     private final String modulePath;
-    private final int offset, length;
+    private final int offset;
+    private final int length;
     private final String name;
     private final int arity;
     private final String clauseHead;

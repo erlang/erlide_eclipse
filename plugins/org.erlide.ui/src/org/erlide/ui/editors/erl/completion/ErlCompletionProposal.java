@@ -188,7 +188,8 @@ public class ErlCompletionProposal implements ICompletionProposal {
         if (sourceViewer != null && !offsetsAndLengths.isEmpty()) {
             try {
                 final LinkedModeModel model = new LinkedModeModel();
-                int last = 0, i = 0;
+                int last = 0;
+                int i = 0;
                 for (final Location offsetAndLength : offsetsAndLengths) {
                     final LinkedPositionGroup group = new LinkedPositionGroup();
                     group.addPosition(

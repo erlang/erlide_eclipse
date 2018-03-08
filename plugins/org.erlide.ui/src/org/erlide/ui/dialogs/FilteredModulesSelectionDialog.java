@@ -108,8 +108,8 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
     private String title;
     final IContainer container;
     final int typeMask;
-    private Comparator<Object> fComparator = null;
-    private Collator fCollator = null;
+    private Comparator<Object> fComparator;
+    private Collator fCollator;
     private final boolean allowHrl;
 
     /**
@@ -153,7 +153,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
      *            the new subtitle
      */
     void setSubtitle(final String text) {
-        if (text == null || text.length() == 0) {
+        if (text == null || text.isEmpty()) {
             getShell().setText(title);
         } else {
             getShell().setText(title + " - " + text); //$NON-NLS-1$
@@ -163,11 +163,11 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
     @Override
     protected IDialogSettings getDialogSettings() {
         IDialogSettings settings = ErlideUIPlugin.getDefault().getDialogSettings()
-                .getSection(DIALOG_SETTINGS);
+                .getSection(FilteredModulesSelectionDialog.DIALOG_SETTINGS);
 
         if (settings == null) {
             settings = ErlideUIPlugin.getDefault().getDialogSettings()
-                    .addNewSection(DIALOG_SETTINGS);
+                    .addNewSection(FilteredModulesSelectionDialog.DIALOG_SETTINGS);
         }
 
         return settings;
@@ -183,7 +183,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
         final StringWriter writer = new StringWriter();
         try {
             memento.save(writer);
-            settings.put(WORKINGS_SET_SETTINGS, writer.getBuffer().toString());
+            settings.put(FilteredModulesSelectionDialog.WORKINGS_SET_SETTINGS, writer.getBuffer().toString());
         } catch (final IOException e) {
             StatusManager.getManager().handle(new Status(IStatus.ERROR,
                     ErlideUIPlugin.PLUGIN_ID, IStatus.ERROR, "", e)); //$NON-NLS-1$
@@ -195,7 +195,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
     protected void restoreDialog(final IDialogSettings settings) {
         super.restoreDialog(settings);
 
-        final String setting = settings.get(WORKINGS_SET_SETTINGS);
+        final String setting = settings.get(FilteredModulesSelectionDialog.WORKINGS_SET_SETTINGS);
         if (setting != null) {
             try {
                 final IMemento memento = XMLMemento
@@ -284,7 +284,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
                     String text = ((ITextSelection) selection).getText();
                     if (text != null) {
                         text = text.trim();
-                        if (text.length() > 0) {
+                        if (!text.isEmpty()) {
                             final IWorkspace workspace = ResourcesPlugin.getWorkspace();
                             final IStatus result = workspace.validateName(text,
                                     IResource.FILE);
@@ -542,8 +542,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
             if (erlProject != null) {
                 final ErlangProjectProperties properties = erlProject.getProperties();
                 final String extMods = properties.getExternalModules();
-                final List<String> files = new ArrayList<>();
-                files.addAll(PreferencesUtils.unpackList(extMods));
+                final List<String> files = new ArrayList<>(PreferencesUtils.unpackList(extMods));
                 final String extIncs = properties.getExternalIncludes();
                 files.addAll(PreferencesUtils.unpackList(extIncs));
 

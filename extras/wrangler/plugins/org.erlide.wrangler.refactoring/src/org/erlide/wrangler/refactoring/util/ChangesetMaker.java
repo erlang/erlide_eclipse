@@ -33,13 +33,13 @@ import org.incava.util.diff.Difference;
  */
 public final class ChangesetMaker {
 
-    static private File inFile;
+    private static File inFile;
     // static private File outFile;
 
     static Diff<Character> algorithm;
-    static private List<Character> inFileCharArray;
-    static private List<Character> outFileCharArray;
-    static private List<Difference> differencesList;
+    private static List<Character> inFileCharArray;
+    private static List<Character> outFileCharArray;
+    private static List<Difference> differencesList;
 
     /**
      * Converts the given char array to list.
@@ -72,13 +72,13 @@ public final class ChangesetMaker {
         }
         // replace
         else if (diff.getAddedEnd() != -1 && diff.getDeletedEnd() != -1) {
-            result = createReplaceEdit(diff.getAddedStart(), diff.getAddedEnd(),
+            result = ChangesetMaker.createReplaceEdit(diff.getAddedStart(), diff.getAddedEnd(),
                     diff.getDeletedStart(), diff.getDeletedEnd());
         }
         // insert
         else if (diff.getAddedEnd() != -1 && diff.getDeletedEnd() == -1) {
             result = new InsertEdit(diff.getDeletedStart(),
-                    getString(diff.getAddedStart(), diff.getAddedEnd()));
+                    ChangesetMaker.getString(diff.getAddedStart(), diff.getAddedEnd()));
         }
 
         return result;
@@ -119,23 +119,23 @@ public final class ChangesetMaker {
      * @throws IOException
      *             if the file could not be read
      */
-    static public List<TextEdit> createEdits(final File in, final String out)
+    public static List<TextEdit> createEdits(final File in, final String out)
             throws IOException {
-        inFile = in;
+        ChangesetMaker.inFile = in;
 
         final List<TextEdit> edits = new ArrayList<>();
-        inFileCharArray = null;
-        outFileCharArray = null;
+        ChangesetMaker.inFileCharArray = null;
+        ChangesetMaker.outFileCharArray = null;
 
-        inFileCharArray = readFile(inFile);
-        outFileCharArray = new ArrayList<>();
-        outFileCharArray = convertArrayToArrayList(out.toCharArray());
+        ChangesetMaker.inFileCharArray = ChangesetMaker.readFile(ChangesetMaker.inFile);
+        ChangesetMaker.outFileCharArray = new ArrayList<>();
+        ChangesetMaker.outFileCharArray = ChangesetMaker.convertArrayToArrayList(out.toCharArray());
 
-        algorithm = new Diff<>(inFileCharArray, outFileCharArray);
+        ChangesetMaker.algorithm = new Diff<>(ChangesetMaker.inFileCharArray, ChangesetMaker.outFileCharArray);
 
-        differencesList = algorithm.diff();
-        for (final Difference d : differencesList) {
-            edits.add(createEditFromDiff(d));
+        ChangesetMaker.differencesList = ChangesetMaker.algorithm.diff();
+        for (final Difference d : ChangesetMaker.differencesList) {
+            edits.add(ChangesetMaker.createEditFromDiff(d));
         }
 
         return edits;
@@ -161,11 +161,11 @@ public final class ChangesetMaker {
 
         if (deletedLength < addedLength) {
             result.addChild(new InsertEdit(deletedStart + minLength,
-                    getString(addedStart + minLength, addedEnd)));
+                    ChangesetMaker.getString(addedStart + minLength, addedEnd)));
         }
 
         result.addChild(new ReplaceEdit(deletedStart, minLength,
-                getString(addedStart, addedStart + minLength - 1)));
+                ChangesetMaker.getString(addedStart, addedStart + minLength - 1)));
 
         if (addedLength < deletedLength) {
             result.addChild(
@@ -188,7 +188,7 @@ public final class ChangesetMaker {
     private static String getString(final int from, final int to) {
         String s = "";
         // from, to+1
-        for (final char c : outFileCharArray) {
+        for (final char c : ChangesetMaker.outFileCharArray) {
             s += c;
         }
         return s.substring(from, to + 1);
@@ -204,7 +204,7 @@ public final class ChangesetMaker {
      *             if any i/o error occurs this exception is raised.
      */
     @SuppressWarnings("boxing")
-    static private List<Character> readFile(final File file) throws IOException {
+    private static List<Character> readFile(final File file) throws IOException {
 
         final List<Character> result = new ArrayList<>();
         try (final BufferedReader input = new BufferedReader(new FileReader(file))) {

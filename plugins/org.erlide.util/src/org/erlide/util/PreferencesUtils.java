@@ -14,11 +14,11 @@ public final class PreferencesUtils {
     private static final String SEP = ";";
 
     public static String packList(final Iterable<String> list) {
-        return ListsUtils.packList(list, SEP);
+        return ListsUtils.packList(list, PreferencesUtils.SEP);
     }
 
     public static List<String> unpackList(final String string) {
-        List<String> result = ListsUtils.unpackList(string, SEP);
+        List<String> result = ListsUtils.unpackList(string, PreferencesUtils.SEP);
         result = ListExtensions.map(result, new Functions.Function1<String, String>() {
             @Override
             public String apply(final String p) {
@@ -31,17 +31,17 @@ public final class PreferencesUtils {
     public static String packArray(final String[] strs) {
         final StringBuilder result = new StringBuilder();
         for (final String s : strs) {
-            if (s.length() > 0) {
-                result.append(s.trim()).append(SEP);
+            if (!s.isEmpty()) {
+                result.append(s.trim()).append(PreferencesUtils.SEP);
             }
         }
         final String r = result.length() == 0 ? ""
-                : result.substring(0, result.length() - SEP.length());
+                : result.substring(0, result.length() - PreferencesUtils.SEP.length());
         return r;
     }
 
     public static String[] unpackArray(final String str) {
-        return unpackList(str).toArray(new String[0]);
+        return PreferencesUtils.unpackList(str).toArray(new String[0]);
     }
 
     public static List<String> readFile(final String file) {
@@ -49,7 +49,7 @@ public final class PreferencesUtils {
         try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                if (line.length() > 0) {
+                if (!line.isEmpty()) {
                     res.add(line);
                 }
             }

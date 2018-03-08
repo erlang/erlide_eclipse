@@ -24,7 +24,7 @@ public class BeamUtil {
     public static OtpErlangBinary getBeamBinary(final String moduleName,
             final URL beamPath) {
         try (final FileInputStream s = (FileInputStream) beamPath.openStream()) {
-            return getBeamBinary(moduleName, s);
+            return BeamUtil.getBeamBinary(moduleName, s);
         } catch (final IOException e) {
             ErlLogger.warn(e);
             return null;
@@ -34,7 +34,7 @@ public class BeamUtil {
     public static OtpErlangBinary getBeamBinary(final String moduleName,
             final IPath beamPath) {
         try (FileInputStream s = new FileInputStream(beamPath.toPortableString())) {
-            return getBeamBinary(moduleName, s);
+            return BeamUtil.getBeamBinary(moduleName, s);
         } catch (final IOException e) {
             ErlLogger.warn(e);
             return null;
@@ -60,7 +60,7 @@ public class BeamUtil {
         final String entryName = name.replace(" ", "%20");
         URL entry = b.getEntry(entryName);
         if (entry != null) {
-            final String aPath = getPathFromUrl(entry);
+            final String aPath = BeamUtil.getPathFromUrl(entry);
             if (aPath != null) {
                 result.add(aPath);
             }
@@ -73,7 +73,7 @@ public class BeamUtil {
                 for (Bundle fragment : fragments) {
                     entry = fragment.getEntry(entryName);
                     if (entry != null) {
-                        final String aPath = getPathFromUrl(entry);
+                        final String aPath = BeamUtil.getPathFromUrl(entry);
                         result.add(aPath);
                     }
                 }

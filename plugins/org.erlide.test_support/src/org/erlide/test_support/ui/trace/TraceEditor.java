@@ -20,7 +20,7 @@ import org.erlide.util.ErlLogger;
 
 public class TraceEditor extends TextEditor {
 
-    private Annotation callMatchingLine = null;
+    private Annotation callMatchingLine;
 
     public TraceEditor() {
     }

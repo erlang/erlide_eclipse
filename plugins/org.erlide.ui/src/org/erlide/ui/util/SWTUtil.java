@@ -107,8 +107,8 @@ public final class SWTUtil {
         final Object gd = button.getLayoutData();
         if (gd instanceof GridData) {
             final GridData gridData = (GridData) gd;
-            gridData.heightHint = getButtonHeightHint(button);
-            gridData.widthHint = getButtonWidthHint(button);
+            gridData.heightHint = SWTUtil.getButtonHeightHint(button);
+            gridData.widthHint = SWTUtil.getButtonWidthHint(button);
             gridData.horizontalAlignment = GridData.FILL;
         }
     }
@@ -127,7 +127,7 @@ public final class SWTUtil {
      */
     public static Button createPushButton(final Composite parent, final String label,
             final Image image) {
-        final Button button = createButton(parent, label, SWT.PUSH);
+        final Button button = SWTUtil.createButton(parent, label, SWT.PUSH);
         if (image != null) {
             button.setImage(image);
         }
@@ -145,7 +145,7 @@ public final class SWTUtil {
      * @return a new radio button
      */
     public static Button createRadioButton(final Composite parent, final String label) {
-        final Button button = createButton(parent, label, SWT.RADIO);
+        final Button button = SWTUtil.createButton(parent, label, SWT.RADIO);
         return button;
     }
 
@@ -174,7 +174,7 @@ public final class SWTUtil {
      * @return
      */
     public static Button createCheckButton(final Composite parent, final String label) {
-        return createButton(parent, label, SWT.CHECK);
+        return SWTUtil.createButton(parent, label, SWT.CHECK);
     }
 
     /**

@@ -20,8 +20,8 @@ import org.erlide.util.ErlLogger;
 
 public class ExternalBackend extends Backend {
 
-    public ExternalBackend(final BackendData data, final @NonNull IOtpNodeProxy runtime,
-            final IBackendManager backendManager) {
+    public ExternalBackend(final BackendData data, @NonNull final IOtpNodeProxy runtime,
+                           final IBackendManager backendManager) {
         super(data, runtime, backendManager);
         assignStreamProxyListeners();
     }

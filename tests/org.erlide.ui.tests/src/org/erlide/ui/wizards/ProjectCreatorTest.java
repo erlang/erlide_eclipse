@@ -22,13 +22,13 @@ public class ProjectCreatorTest {
     private static URI location;
     private static IRunnableContext context;
     private static String name;
-    private IProject prj = null;
+    private IProject prj;
 
     @BeforeClass
     public static void init() {
-        name = "demo111";
-        location = null;
-        context = new DummyRunnableContext();
+        ProjectCreatorTest.name = "demo111";
+        ProjectCreatorTest.location = null;
+        ProjectCreatorTest.context = new DummyRunnableContext();
 
         WorkbenchHelper.waitForWorkbench();
     }
@@ -49,7 +49,7 @@ public class ProjectCreatorTest {
     @After
     public void teardown() throws CoreException {
         final IWorkspace w = ResourcesPlugin.getWorkspace();
-        final IProject p = w.getRoot().getProject(name);
+        final IProject p = w.getRoot().getProject(ProjectCreatorTest.name);
         if (p.exists()) {
             p.delete(true, null);
         }
@@ -76,7 +76,7 @@ public class ProjectCreatorTest {
     public void createExistingProjectShouldCrash() throws CoreException {
         final NewProjectData info = new NewProjectData();
         info.copyFrom(ErlangProjectProperties.DEFAULT);
-        creator = new ProjectCreator(name, location, new IProject[] {}, info, context,
+        creator = new ProjectCreator(ProjectCreatorTest.name, ProjectCreatorTest.location, new IProject[] {}, info, ProjectCreatorTest.context,
                 null);
         prj = creator.createProject();
         prj = creator.createProject();

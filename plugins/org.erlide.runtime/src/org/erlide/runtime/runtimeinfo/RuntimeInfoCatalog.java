@@ -22,7 +22,8 @@ import com.google.common.collect.Maps;
 
 public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
 
-    public @NonNull RuntimeInfo erlideRuntime;
+    @NonNull
+    public RuntimeInfo erlideRuntime;
     public final Map<String, RuntimeInfo> runtimes;
     public String defaultRuntimeName;
 
@@ -52,7 +53,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
 
     @Override
     public synchronized void addRuntime(final RuntimeInfo rt) {
-        if (rt.getVersion().isCompatible(OLDEST_SUPPORTED_VERSION)
+        if (rt.getVersion().isCompatible(IRuntimeInfoCatalog.OLDEST_SUPPORTED_VERSION)
                 && !runtimes.containsKey(rt.getName())) {
             runtimes.put(rt.getName(), rt);
         }
@@ -68,8 +69,9 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
         return runtimes.containsKey(name);
     }
 
+    @NonNull
     @Override
-    public @NonNull RuntimeInfo getRuntime(final String name) {
+    public RuntimeInfo getRuntime(final String name) {
         final RuntimeInfo rt = runtimes.get(name);
         if (rt != null && rt.isValid()) {
             return rt;
@@ -104,7 +106,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
         defaultRuntimeName = name;
     }
 
-    private synchronized void setErlideRuntime(final @NonNull RuntimeInfo runtime) {
+    private synchronized void setErlideRuntime(@NonNull final RuntimeInfo runtime) {
         final RuntimeInfo old = erlideRuntime;
         if (!old.equals(runtime)) {
             erlideRuntime = runtime;
@@ -113,13 +115,15 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
         }
     }
 
+    @NonNull
     @Override
-    public synchronized @NonNull RuntimeInfo getErlideRuntime() {
+    public synchronized RuntimeInfo getErlideRuntime() {
         return erlideRuntime;
     }
 
+    @NonNull
     @Override
-    public synchronized @NonNull RuntimeInfo getDefaultRuntime() {
+    public synchronized RuntimeInfo getDefaultRuntime() {
         return getRuntime(getDefaultRuntimeName());
     }
 

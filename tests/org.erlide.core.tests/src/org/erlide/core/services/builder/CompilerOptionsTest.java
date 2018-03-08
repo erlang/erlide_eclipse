@@ -15,7 +15,7 @@ public class CompilerOptionsTest {
     public void test_0() {
         final CompilerOptions prefs = new CompilerOptions();
         final String actual = prefs.export().toString();
-        final String expect = "[" + DEF_VALUES + "]";
+        final String expect = "[" + CompilerOptionsTest.DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
     }
 
@@ -24,7 +24,7 @@ public class CompilerOptionsTest {
         final CompilerOptions prefs = new CompilerOptions();
         prefs.setBooleanOption(CompilerOptions.DEBUG_INFO, true);
         final String actual = prefs.export().toString();
-        final String expect = "[debug_info," + DEF_VALUES + "]";
+        final String expect = "[debug_info," + CompilerOptionsTest.DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
     }
 
@@ -33,7 +33,7 @@ public class CompilerOptionsTest {
         final CompilerOptions prefs = new CompilerOptions();
         prefs.setBooleanOption(CompilerOptions.DEBUG_INFO, false);
         final String actual = prefs.export().toString();
-        final String expect = "[" + DEF_VALUES + "]";
+        final String expect = "[" + CompilerOptionsTest.DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
     }
 
@@ -44,7 +44,7 @@ public class CompilerOptionsTest {
         prefs.setListOption(CompilerOptions.DEFINE,
                 new Pair<String, String>("Macro", null));
         final String actual = prefs.export().toString();
-        final String expect = "[{d,'Macro'}," + DEF_VALUES + "]";
+        final String expect = "[{d,'Macro'}," + CompilerOptionsTest.DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
     }
 
@@ -55,7 +55,7 @@ public class CompilerOptionsTest {
         prefs.setListOption(CompilerOptions.DEFINE,
                 new Pair<>("Macro", "[value,1]"));
         final String actual = prefs.export().toString();
-        final String expect = "[{d,'Macro',[value,1]}," + DEF_VALUES + "]";
+        final String expect = "[{d,'Macro',[value,1]}," + CompilerOptionsTest.DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
     }
 
@@ -64,7 +64,7 @@ public class CompilerOptionsTest {
         final CompilerOptions prefs = new CompilerOptions();
         prefs.setBooleanOption(CompilerOptions.WARN_UNUSED_FUNCTION, true);
         final String actual = prefs.export().toString();
-        final String expect = "[" + DEF_VALUES + "]";
+        final String expect = "[" + CompilerOptionsTest.DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
     }
 
@@ -85,7 +85,7 @@ public class CompilerOptionsTest {
                 new Pair<String, String>("Macro", null));
         prefs.removeOption(CompilerOptions.DEFINE);
         final String actual = prefs.export().toString();
-        final String expect = "[" + DEF_VALUES + "]";
+        final String expect = "[" + CompilerOptionsTest.DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
     }
 
@@ -94,7 +94,7 @@ public class CompilerOptionsTest {
         final CompilerOptions prefs = new CompilerOptions();
         prefs.setBooleanOption(CompilerOptions.WARN_EXPORT_ALL, true);
         final String actual = prefs.export().toString();
-        final String expect = "[" + DEF_VALUES.substring(2) + "]";
+        final String expect = "[" + CompilerOptionsTest.DEF_VALUES.substring(2) + "]";
         Assert.assertEquals(expect, actual);
     }
 
@@ -103,7 +103,7 @@ public class CompilerOptionsTest {
         final CompilerOptions prefs = new CompilerOptions();
         prefs.setBooleanOption(CompilerOptions.WARN_EXPORT_ALL, false);
         final String actual = prefs.export().toString();
-        final String expect = "[" + DEF_VALUES + "]";
+        final String expect = "[" + CompilerOptionsTest.DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
     }
 
@@ -116,7 +116,7 @@ public class CompilerOptionsTest {
         final CompilerOptions prefs = new CompilerOptions();
         prefs.setPathOption(CompilerOptions.INCLUDE_DIRS, parseIncludes(""));
         final String actual = prefs.export().toString();
-        final String expect = "[" + DEF_VALUES + "]";
+        final String expect = "[" + CompilerOptionsTest.DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
     }
 
@@ -125,7 +125,7 @@ public class CompilerOptionsTest {
         final CompilerOptions prefs = new CompilerOptions();
         prefs.setPathOption(CompilerOptions.INCLUDE_DIRS, parseIncludes("/tmp/x"));
         final String actual = prefs.export().toString();
-        final String expect = "[{i,\"/tmp/x\"}," + DEF_VALUES + "]";
+        final String expect = "[{i,\"/tmp/x\"}," + CompilerOptionsTest.DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
     }
 
@@ -134,7 +134,7 @@ public class CompilerOptionsTest {
         final CompilerOptions prefs = new CompilerOptions();
         prefs.setPathOption(CompilerOptions.INCLUDE_DIRS, parseIncludes("/tmp/x,/tmp/y"));
         final String actual = prefs.export().toString();
-        final String expect = "[{i,\"/tmp/x\"},{i,\"/tmp/y\"}," + DEF_VALUES + "]";
+        final String expect = "[{i,\"/tmp/x\"},{i,\"/tmp/y\"}," + CompilerOptionsTest.DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
     }
 

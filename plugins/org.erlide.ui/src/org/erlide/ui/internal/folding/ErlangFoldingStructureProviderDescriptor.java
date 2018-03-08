@@ -54,18 +54,18 @@ public final class ErlangFoldingStructureProviderDescriptor {
      */
     public ErlangFoldingStructureProviderDescriptor(final IConfigurationElement element) {
         fElement = element;
-        fId = element.getAttribute(ID);
+        fId = element.getAttribute(ErlangFoldingStructureProviderDescriptor.ID);
         Assert.isLegal(fId != null);
 
-        fName = element.getAttribute(NAME);
+        fName = element.getAttribute(ErlangFoldingStructureProviderDescriptor.NAME);
         if (fName == null) {
             fName = fId;
         }
 
-        fClass = element.getAttribute(CLASS);
+        fClass = element.getAttribute(ErlangFoldingStructureProviderDescriptor.CLASS);
         Assert.isLegal(fClass != null);
 
-        if (element.getAttribute(PREFERENCES_CLASS) == null) {
+        if (element.getAttribute(ErlangFoldingStructureProviderDescriptor.PREFERENCES_CLASS) == null) {
             fHasPreferences = false;
         } else {
             fHasPreferences = true;
@@ -82,7 +82,7 @@ public final class ErlangFoldingStructureProviderDescriptor {
      */
     public IErlangFoldingStructureProvider createProvider() throws CoreException {
         final IErlangFoldingStructureProvider prov = (IErlangFoldingStructureProvider) fElement
-                .createExecutableExtension(CLASS);
+                .createExecutableExtension(ErlangFoldingStructureProviderDescriptor.CLASS);
         return prov;
     }
 
@@ -97,7 +97,7 @@ public final class ErlangFoldingStructureProviderDescriptor {
     public IErlangFoldingPreferenceBlock createPreferences() throws CoreException {
         if (fHasPreferences) {
             final IErlangFoldingPreferenceBlock prefs = (IErlangFoldingPreferenceBlock) fElement
-                    .createExecutableExtension(PREFERENCES_CLASS);
+                    .createExecutableExtension(ErlangFoldingStructureProviderDescriptor.PREFERENCES_CLASS);
             return prefs;
         }
         return new EmptyErlangFoldingPreferenceBlock();

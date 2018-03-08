@@ -25,7 +25,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class ProcessRpcMessage extends AbstractRefactoringRpcMessage {
 
-    protected boolean hasUndecidables = false;
+    protected boolean hasUndecidables;
 
     @Override
     protected void parseRefactoringMessage(final OtpErlangTuple resultTuple)

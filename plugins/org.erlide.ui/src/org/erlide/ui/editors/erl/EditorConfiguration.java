@@ -61,7 +61,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         if (contentType.equals(IDocument.DEFAULT_CONTENT_TYPE)) {
             return new IAutoEditStrategy[] { new AutoIndentStrategy(editor) };
         }
-        return NO_AUTOEDIT;
+        return ErlangSourceViewerConfiguration.NO_AUTOEDIT;
     }
 
     @Override

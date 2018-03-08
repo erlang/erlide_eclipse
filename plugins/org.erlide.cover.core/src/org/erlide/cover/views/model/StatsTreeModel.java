@@ -27,10 +27,10 @@ public class StatsTreeModel implements Serializable {
     }
 
     public static synchronized StatsTreeModel getInstance() {
-        if (model == null) {
-            model = new StatsTreeModel();
+        if (StatsTreeModel.model == null) {
+            StatsTreeModel.model = new StatsTreeModel();
         }
-        return model;
+        return StatsTreeModel.model;
     }
 
     /**
@@ -39,7 +39,7 @@ public class StatsTreeModel implements Serializable {
      * @param mod
      */
     public static void changeInstance(final StatsTreeModel mod) {
-        model = mod;
+        StatsTreeModel.model = mod;
     }
 
     public ICoverageObject getRoot() {

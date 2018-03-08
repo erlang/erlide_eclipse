@@ -49,18 +49,18 @@ public final class PreferenceMessages {
     public static String ErlangPreferencePage_5a;
 
     static {
-        NLS.initializeMessages(BUNDLE_NAME, PreferenceMessages.class);
+        NLS.initializeMessages(PreferenceMessages.BUNDLE_NAME, PreferenceMessages.class);
     }
 
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-            .getBundle(BUNDLE_NAME);
+            .getBundle(PreferenceMessages.BUNDLE_NAME);
 
     private PreferenceMessages() {
     }
 
     public static String getString(final String key) {
         try {
-            return RESOURCE_BUNDLE.getString(key);
+            return PreferenceMessages.RESOURCE_BUNDLE.getString(key);
         } catch (final MissingResourceException e) {
             return '!' + key + '!';
         }

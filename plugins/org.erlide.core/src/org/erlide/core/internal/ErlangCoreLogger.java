@@ -23,7 +23,7 @@ public class ErlangCoreLogger {
     public ErlangCoreLogger(final Plugin plugin) {
         this.plugin = plugin;
         logger = ErlLogger.getInstance();
-        final String logFile = getLogFile();
+        final String logFile = ErlangCoreLogger.getLogFile();
         log(Level.INFO, "Erlide log is in " + logFile);
         logger.setLogFile(logFile);
     }
@@ -35,7 +35,7 @@ public class ErlangCoreLogger {
     }
 
     public void log(final IStatus status) {
-        final Level lvl = getLevelFromSeverity(status.getSeverity());
+        final Level lvl = ErlangCoreLogger.getLevelFromSeverity(status.getSeverity());
         logger.log(lvl, status.getMessage());
         final Throwable exception = status.getException();
         if (exception != null) {
@@ -46,7 +46,7 @@ public class ErlangCoreLogger {
 
     public void log(final Level lvl, final String status) {
         logger.log(lvl, status);
-        plugin.getLog().log(new Status(getSeverityFromLevel(lvl),
+        plugin.getLog().log(new Status(ErlangCoreLogger.getSeverityFromLevel(lvl),
                 plugin.getBundle().getSymbolicName(), status));
     }
 

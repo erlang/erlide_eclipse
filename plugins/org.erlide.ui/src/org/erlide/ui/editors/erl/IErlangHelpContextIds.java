@@ -60,6 +60,6 @@ public class IErlangHelpContextIds {
 
     private static final String PREFIX = "org.erlide.help.";
 
-    public static final String ERLANG_SEARCH_PAGE = PREFIX + "erlangSearchPage";
+    public static final String ERLANG_SEARCH_PAGE = IErlangHelpContextIds.PREFIX + "erlangSearchPage";
 
 }

@@ -63,7 +63,7 @@ public class SyntaxInfo {
         /**
          * selection is sg. else
          */
-        NONE;
+        NONE
     }
 
 }

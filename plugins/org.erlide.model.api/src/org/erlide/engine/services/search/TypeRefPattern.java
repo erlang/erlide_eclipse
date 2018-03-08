@@ -22,13 +22,13 @@ public class TypeRefPattern extends ErlangSearchPattern {
 
     @Override
     public OtpErlangObject getSearchObject() {
-        return makeSSPatternObject(TYPE_DEF_ATOM, TYPE_REF_ATOM,
+        return makeSSPatternObject(ErlangSearchPattern.TYPE_DEF_ATOM, ErlangSearchPattern.TYPE_REF_ATOM,
                 module == null ? "_" : module, name);
     }
 
     @Override
     public String patternString() {
-        if (module != null && module.length() != 0) {
+        if (module != null && !module.isEmpty()) {
             return module + ":" + name;
         }
         return name;
@@ -41,7 +41,7 @@ public class TypeRefPattern extends ErlangSearchPattern {
 
     @Override
     public String labelString() {
-        if (module != null && module.length() != 0) {
+        if (module != null && !module.isEmpty()) {
             return module + ":" + name;
         }
         return name;

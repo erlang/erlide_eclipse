@@ -77,12 +77,12 @@ public class ErlangDebugTarget extends ErlangDebugElement
     private final List<ErlangProcess> localProcesses;
     final IBackend backend;
     private final ILaunch launch;
-    private boolean disconnected = false;
+    private boolean disconnected;
     // private final DebuggerListener fDbgListener;
     // private final DebuggerEventListener fDebuggerEventListener;
-    private boolean terminated = false;
-    private boolean showSystemProcesses = false;
-    private boolean showErlideProcesses = false;
+    private boolean terminated;
+    private boolean showSystemProcesses;
+    private boolean showErlideProcesses;
     private final Set<String> interpretedModules;
     private final Collection<IProject> projects;
 
@@ -90,7 +90,7 @@ public class ErlangDebugTarget extends ErlangDebugElement
     private final Map<OtpErlangPid, OtpErlangPid> pidsFromMeta = new TreeMap<>();
 
     private final DebuggerEventDaemon debuggerDaemon;
-    private boolean disposed = false;
+    private boolean disposed;
 
     public ErlangDebugTarget(final ILaunch launch, final IBackend backend,
             final Collection<IProject> projects) throws DebugException {
@@ -141,7 +141,7 @@ public class ErlangDebugTarget extends ErlangDebugElement
     @Override
     public IThread[] getThreads() throws DebugException {
         if (isTerminated()) {
-            return NO_PROCS;
+            return ErlangDebugTarget.NO_PROCS;
         }
         return localProcesses.toArray(new IThread[localProcesses.size()]);
     }

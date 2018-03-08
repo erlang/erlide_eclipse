@@ -203,7 +203,7 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
         return new IInformationControlCreator() {
             @Override
             public IInformationControl createInformationControl(final Shell parent) {
-                final String affordance = getAdditionalInfoAffordanceString();
+                final String affordance = ErlangSourceViewerConfiguration.getAdditionalInfoAffordanceString();
                 return new DefaultInformationControl(parent, affordance);
             }
         };
@@ -265,12 +265,12 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
         return new ErlTextHover(null);
     }
 
-    protected final static IAutoEditStrategy[] NO_AUTOEDIT = {};
+    protected static final IAutoEditStrategy[] NO_AUTOEDIT = {};
 
     @Override
     public IAutoEditStrategy[] getAutoEditStrategies(final ISourceViewer sourceViewer,
             final String contentType) {
-        return NO_AUTOEDIT;
+        return ErlangSourceViewerConfiguration.NO_AUTOEDIT;
     }
 
     @Override

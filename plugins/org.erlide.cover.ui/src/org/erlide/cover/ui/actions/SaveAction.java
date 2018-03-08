@@ -42,7 +42,7 @@ public class SaveAction extends Action {
         final StringBuilder statName = new StringBuilder();
         statName.append("cov_").append(StatsTreeModel.getInstance().getTimestamp());
 
-        final IPath location = Activator.getDefault().getStateLocation().append(DIR_NAME);
+        final IPath location = Activator.getDefault().getStateLocation().append(SaveAction.DIR_NAME);
         final File dir = location.toFile();
 
         if (!dir.exists() && !dir.mkdir()) {

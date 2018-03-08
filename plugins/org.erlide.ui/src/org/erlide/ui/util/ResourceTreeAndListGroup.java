@@ -233,7 +233,7 @@ public class ResourceTreeAndListGroup extends EventManager
         listViewer = CheckboxTableViewer.newCheckList(parent, SWT.BORDER);
         final GridData data = new GridData(GridData.FILL_BOTH);
         if (useHeightHint) {
-            data.heightHint = PREFERRED_HEIGHT;
+            data.heightHint = ResourceTreeAndListGroup.PREFERRED_HEIGHT;
         }
         listViewer.getTable().setLayoutData(data);
         listViewer.getTable().setFont(parent.getFont());
@@ -249,7 +249,7 @@ public class ResourceTreeAndListGroup extends EventManager
         final Tree tree = new Tree(parent, SWT.CHECK | SWT.BORDER);
         final GridData data = new GridData(GridData.FILL_BOTH);
         if (useHeightHint) {
-            data.heightHint = PREFERRED_HEIGHT;
+            data.heightHint = ResourceTreeAndListGroup.PREFERRED_HEIGHT;
         }
         tree.setLayoutData(data);
         tree.setFont(parent.getFont());

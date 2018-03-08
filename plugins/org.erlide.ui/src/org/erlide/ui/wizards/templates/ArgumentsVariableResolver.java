@@ -20,10 +20,10 @@ public class ArgumentsVariableResolver extends TemplateVariableResolver {
     private int fArity;
 
     public static ArgumentsVariableResolver getDefault() {
-        if (fInstance == null) {
-            fInstance = new ArgumentsVariableResolver();
+        if (ArgumentsVariableResolver.fInstance == null) {
+            ArgumentsVariableResolver.fInstance = new ArgumentsVariableResolver();
         }
-        return fInstance;
+        return ArgumentsVariableResolver.fInstance;
     }
 
     @Override

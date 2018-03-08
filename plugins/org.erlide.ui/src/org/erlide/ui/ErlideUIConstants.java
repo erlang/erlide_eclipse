@@ -127,7 +127,7 @@ public final class ErlideUIConstants {
      * The preference value is of type <code>Boolean</code>.
      * </p>
      */
-    public final static String EDITOR_ENABLE_HOVER = "enableHover"; //$NON-NLS-1$
+    public static final String EDITOR_ENABLE_HOVER = "enableHover"; //$NON-NLS-1$
 
     private ErlideUIConstants() {
     }

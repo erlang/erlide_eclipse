@@ -139,7 +139,7 @@ public class DebuggerTraceView extends AbstractDebugView
                 final List<DebugTraceEvent> events = eventMap.get(node);
                 return events.toArray();
             }
-            return NO_CHILDREN;
+            return DebuggerTraceView.NO_CHILDREN;
         }
 
         @Override
@@ -488,7 +488,8 @@ public class DebuggerTraceView extends AbstractDebugView
             part.setFocus();
             final ErlangEditor ee = (ErlangEditor) part;
             final IDocument d = ee.getDocument();
-            int lineStart, lineLength;
+            int lineStart;
+            int lineLength;
             try {
                 lineStart = d.getLineOffset(line - 1);
                 lineLength = d.getLineLength(line - 1);

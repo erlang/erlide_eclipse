@@ -40,10 +40,10 @@ public class BuildQueueProcessor extends Job {
     }
 
     public static synchronized BuildQueueProcessor getInstance() {
-        if (instance == null) {
-            instance = new BuildQueueProcessor("tasks");
+        if (BuildQueueProcessor.instance == null) {
+            BuildQueueProcessor.instance = new BuildQueueProcessor("tasks");
         }
-        return instance;
+        return BuildQueueProcessor.instance;
     }
 
 }

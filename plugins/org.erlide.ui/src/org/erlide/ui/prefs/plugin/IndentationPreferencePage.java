@@ -85,8 +85,8 @@ public class IndentationPreferencePage extends ErlidePreferencePage
     }
 
     private void createMyControls(final Composite parent) {
-        for (int i = 0; i < INDENT_DEFAULTS.length; ++i) {
-            final String desc = INDENT_FIELDS[i];
+        for (int i = 0; i < IndentationPreferencePage.INDENT_DEFAULTS.length; ++i) {
+            final String desc = IndentationPreferencePage.INDENT_FIELDS[i];
             final Composite c = parent;
             final Label label = new Label(c, SWT.NONE);
             label.setText(desc);
@@ -106,7 +106,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage
     static final String INDENT_KEY = "indentation"; //$NON-NLS-1$
 
     private void setToPreferences() {
-        final List<String> l = getPreferences(INDENT_KEYS, INDENT_DEFAULTS);
+        final List<String> l = getPreferences(IndentationPreferencePage.INDENT_KEYS, IndentationPreferencePage.INDENT_DEFAULTS);
         for (int i = 0; i < l.size(); ++i) {
             final String s = l.get(i);
             textFields.get(i).setText(s);
@@ -115,7 +115,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage
 
     @Override
     protected void putPreferences() {
-        putIntPreferences(INDENT_KEYS, textFields);
+        putIntPreferences(IndentationPreferencePage.INDENT_KEYS, textFields);
     }
 
     /*
@@ -123,19 +123,19 @@ public class IndentationPreferencePage extends ErlidePreferencePage
      */
     @Override
     protected void performDefaults() {
-        for (int i = 0; i < INDENT_KEYS.length; ++i) {
-            final String s = INDENT_DEFAULTS[i];
+        for (int i = 0; i < IndentationPreferencePage.INDENT_KEYS.length; ++i) {
+            final String s = IndentationPreferencePage.INDENT_DEFAULTS[i];
             textFields.get(i).setText(s);
         }
         super.performDefaults();
     }
 
     public static void addKeysAndPrefs(final Map<String, String> map) {
-        addKeysAndPrefs(INDENT_KEY, INDENT_KEYS, INDENT_DEFAULTS, map);
+        ErlidePreferencePage.addKeysAndPrefs(IndentationPreferencePage.INDENT_KEY, IndentationPreferencePage.INDENT_KEYS, IndentationPreferencePage.INDENT_DEFAULTS, map);
     }
 
     @Override
     protected String getDialogPreferenceKey() {
-        return INDENT_KEY;
+        return IndentationPreferencePage.INDENT_KEY;
     }
 }

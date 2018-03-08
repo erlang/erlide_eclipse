@@ -43,13 +43,13 @@ public class OtpRpc implements IOtpRpc {
 
     public static long DEFAULT_TIMEOUT;
     {
-        setDefaultTimeout();
+        OtpRpc.setDefaultTimeout();
     }
 
     private static final ThreadFactory threadFactory = new ThreadFactoryBuilder()
             .setDaemon(true).setNameFormat("rpc-%d").build();
     private static final ExecutorService threadPool = Executors
-            .newCachedThreadPool(threadFactory);
+            .newCachedThreadPool(OtpRpc.threadFactory);
 
     private final String nodeName;
     private final OtpNode localNode;
@@ -70,7 +70,7 @@ public class OtpRpc implements IOtpRpc {
     public void async_call_result(final IRpcResultCallback cb, final String m,
             final String f, final String signature, final Object... args)
             throws RpcException {
-        final OtpErlangAtom gleader = USER_ATOM;
+        final OtpErlangAtom gleader = OtpRpc.USER_ATOM;
         try {
             final Object[] args1 = new Object[args.length + 1];
             System.arraycopy(args, 0, args1, 1, args.length);
@@ -99,14 +99,14 @@ public class OtpRpc implements IOtpRpc {
     @Override
     public RpcFuture async_call(final String module, final String fun,
             final String signature, final Object... args0) throws RpcException {
-        return async_call(USER_ATOM, module, fun, signature, args0);
+        return async_call(OtpRpc.USER_ATOM, module, fun, signature, args0);
     }
 
     @Override
     public void async_call_cb(final IRpcCallback cb, final long timeout,
             final String module, final String fun, final String signature,
             final Object... args) throws RpcException {
-        async_call_cb(cb, timeout, USER_ATOM, module, fun, signature, args);
+        async_call_cb(cb, timeout, OtpRpc.USER_ATOM, module, fun, signature, args);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class OtpRpc implements IOtpRpc {
                 }
             };
             // We can't use jobs here, it's an Eclipse dependency
-            threadPool.execute(target);
+            OtpRpc.threadPool.execute(target);
         } catch (final SignatureException e) {
             throw new RpcException(e);
         }
@@ -148,7 +148,7 @@ public class OtpRpc implements IOtpRpc {
             final RpcFuture future = sendRpcCall(localNode, nodeName, false, gleader,
                     module, fun, signature, args0);
             result = future.checkedGet(timeout, TimeUnit.MILLISECONDS);
-            if (CHECK_RPC) {
+            if (OtpRpc.CHECK_RPC) {
                 ErlLogger.debug("RPC result:: " + result);
             }
             if (isBadRpc(result)) {
@@ -165,7 +165,7 @@ public class OtpRpc implements IOtpRpc {
     @Override
     public OtpErlangObject call(final long timeout, final String module, final String fun,
             final String signature, final Object... args0) throws RpcException {
-        return call(timeout, USER_ATOM, module, fun, signature, args0);
+        return call(timeout, OtpRpc.USER_ATOM, module, fun, signature, args0);
     }
 
     @Override
@@ -182,7 +182,7 @@ public class OtpRpc implements IOtpRpc {
     @Override
     public void cast(final String module, final String fun, final String signature,
             final Object... args0) throws RpcException {
-        cast(USER_ATOM, module, fun, signature, args0);
+        cast(OtpRpc.USER_ATOM, module, fun, signature, args0);
     }
 
     @Override
@@ -192,7 +192,7 @@ public class OtpRpc implements IOtpRpc {
             final OtpMbox mbox = localNode.createMbox();
             try {
                 if (mbox != null) {
-                    if (CHECK_RPC) {
+                    if (OtpRpc.CHECK_RPC) {
                         ErlLogger.debug("SEND " + pid + "-> " + msg);
                     }
                     mbox.send(pid, TypeConverter.java2erlang(msg, "x"));
@@ -216,7 +216,7 @@ public class OtpRpc implements IOtpRpc {
     @Override
     public RpcResult call_noexception(final String m, final String f,
             final String signature, final Object... args) {
-        return call_noexception(DEFAULT_TIMEOUT, m, f, signature, args);
+        return call_noexception(OtpRpc.DEFAULT_TIMEOUT, m, f, signature, args);
     }
 
     @Override
@@ -233,13 +233,13 @@ public class OtpRpc implements IOtpRpc {
     @Override
     public void async_call_cb(final IRpcCallback cb, final String m, final String f,
             final String signature, final Object... args) throws RpcException {
-        async_call_cb(cb, DEFAULT_TIMEOUT, m, f, signature, args);
+        async_call_cb(cb, OtpRpc.DEFAULT_TIMEOUT, m, f, signature, args);
     }
 
     @Override
     public OtpErlangObject call(final String m, final String f, final String signature,
             final Object... a) throws RpcException {
-        return call(DEFAULT_TIMEOUT, m, f, signature, a);
+        return call(OtpRpc.DEFAULT_TIMEOUT, m, f, signature, a);
     }
 
     @Override
@@ -264,12 +264,12 @@ public class OtpRpc implements IOtpRpc {
     private static void setDefaultTimeout() {
         final String t = System.getProperty("erlide.rpc.timeout", "9000");
         if ("infinity".equals(t)) {
-            DEFAULT_TIMEOUT = INFINITY;
+            OtpRpc.DEFAULT_TIMEOUT = OtpRpc.INFINITY;
         } else {
             try {
-                DEFAULT_TIMEOUT = Integer.parseInt(t);
+                OtpRpc.DEFAULT_TIMEOUT = Integer.parseInt(t);
             } catch (final Exception e) {
-                DEFAULT_TIMEOUT = 9000;
+                OtpRpc.DEFAULT_TIMEOUT = 9000;
             }
         }
     }
@@ -279,7 +279,7 @@ public class OtpRpc implements IOtpRpc {
         final OtpMbox mbox = node.createMbox();
         try {
             if (mbox != null) {
-                if (CHECK_RPC) {
+                if (OtpRpc.CHECK_RPC) {
                     ErlLogger.debug("SEND " + name + "-> " + msg);
                 }
                 mbox.send(name, peer, TypeConverter.java2erlang(msg, "x"));
@@ -318,7 +318,7 @@ public class OtpRpc implements IOtpRpc {
                 OtpErlang.sizeOf(res));
         //
         mbox.send("rex", peer, res);
-        if (CHECK_RPC) {
+        if (OtpRpc.CHECK_RPC) {
             ErlLogger.debug("RPC " + mbox.hashCode() + "=> " + res);
         }
         return new RpcFuture(ref, mbox, module + ":" + fun + "/" + args0.length, logCalls,
@@ -331,10 +331,10 @@ public class OtpRpc implements IOtpRpc {
         final StringBuilder result = new StringBuilder();
         for (final OtpErlangObject arg : args) {
             final String s = arg.toString();
-            result.append(s).append(SEP);
+            result.append(s).append(OtpRpc.SEP);
         }
         final String r = result.length() == 0 ? ""
-                : result.substring(0, result.length() - SEP.length());
+                : result.substring(0, result.length() - OtpRpc.SEP.length());
         return r;
     }
 
@@ -355,12 +355,12 @@ public class OtpRpc implements IOtpRpc {
         OtpErlangObject res = null;
         try {
             try {
-                if (timeout == INFINITY) {
+                if (timeout == OtpRpc.INFINITY) {
                     res = mbox.receive();
                 } else {
                     res = mbox.receive(timeout);
                 }
-                if (CHECK_RPC) {
+                if (OtpRpc.CHECK_RPC) {
                     ErlLogger.debug("RPC " + mbox.hashCode() + "<= " + res);
                 }
             } finally {
@@ -411,7 +411,7 @@ public class OtpRpc implements IOtpRpc {
             ErlLogger.debug("cast -> %s:%s(%s)", args01);
         }
         send(node, peer, "rex", msg);
-        if (CHECK_RPC) {
+        if (OtpRpc.CHECK_RPC) {
             ErlLogger.debug("RPC _cast_" + "=> " + msg);
         }
     }

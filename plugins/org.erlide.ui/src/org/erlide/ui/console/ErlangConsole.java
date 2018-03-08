@@ -23,7 +23,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 public class ErlangConsole extends TextConsole implements IErlangConsole {
     private final IBackendShell shell;
     protected ErlangConsolePartitioner partitioner;
-    private boolean stopped = false;
+    private boolean stopped;
     private final IBackend backend;
 
     public ErlangConsole(final IBackend backend) {

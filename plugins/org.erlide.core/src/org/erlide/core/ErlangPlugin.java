@@ -33,18 +33,18 @@ import org.osgi.framework.BundleContext;
 public class ErlangPlugin extends Plugin {
     private static ErlangPlugin plugin;
     private ErlangCore core;
-    private boolean stopping = false;
+    private boolean stopping;
 
     public ErlangPlugin() {
         super();
-        plugin = this;
+        ErlangPlugin.plugin = this;
     }
 
     public static ErlangPlugin getDefault() {
-        if (plugin == null) {
-            plugin = new ErlangPlugin();
+        if (ErlangPlugin.plugin == null) {
+            ErlangPlugin.plugin = new ErlangPlugin();
         }
-        return plugin;
+        return ErlangPlugin.plugin;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ErlangPlugin extends Plugin {
             }
         } finally {
             core = null;
-            plugin = null;
+            ErlangPlugin.plugin = null;
             // ensure we call super.stop as the last thing
             super.stop(context);
         }

@@ -19,18 +19,18 @@ public class CodeAssistTest {
     @BeforeClass
     public static void before() {
         final IOtpRpc backend = OtpRpcFactory.getOtpRpc();
-        assist = new ErlideContextAssist(backend);
+        CodeAssistTest.assist = new ErlideContextAssist(backend);
     }
 
     @Test
     public void getVariablesShouldReturnNonNull() {
-        final Collection<String> result = assist.getVariables("src", "");
+        final Collection<String> result = CodeAssistTest.assist.getVariables("src", "");
         assertThat(result).isNotNull();
     }
 
     @Test
     public void getVariables_1() {
-        final Collection<String> result = assist
+        final Collection<String> result = CodeAssistTest.assist
                 .getVariables("a(X)-> XY=-X, {Z, W}=XY, X.", "");
         final Collection<String> expected = Sets.newHashSet("X", "XY", "Z", "W");
         assertThat(result).isEqualTo(expected);
@@ -38,7 +38,7 @@ public class CodeAssistTest {
 
     @Test
     public void getVariables_2() {
-        final Collection<String> result = assist.getVariables("a(X)-> XY=-X, Z=XY, X.",
+        final Collection<String> result = CodeAssistTest.assist.getVariables("a(X)-> XY=-X, Z=XY, X.",
                 "X");
         final Collection<String> expected = Sets.newHashSet("X", "XY");
         assertThat(result).isEqualTo(expected);

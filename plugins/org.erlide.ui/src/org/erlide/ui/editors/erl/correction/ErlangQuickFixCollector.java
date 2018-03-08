@@ -36,8 +36,8 @@ public class ErlangQuickFixCollector {
     private static List<QuickFix> fixes;
 
     public ErlangQuickFixCollector() {
-        if (fixes == null) {
-            fixes = getQuickFixes();
+        if (ErlangQuickFixCollector.fixes == null) {
+            ErlangQuickFixCollector.fixes = getQuickFixes();
         }
     }
 
@@ -76,7 +76,7 @@ public class ErlangQuickFixCollector {
         final String strArgs = marker.getAttribute(ProblemData.ARGS, "");
         final List<String> args = Splitter.on('\0').splitToList(strArgs);
 
-        for (final QuickFix fix : fixes) {
+        for (final QuickFix fix : ErlangQuickFixCollector.fixes) {
             if (fix.getTags().contains(tag)) {
                 final QuickFix myfix = new QuickFix(fix);
                 myfix.setArgs(getMyArgs(myfix.getLabel(), args));
@@ -166,7 +166,7 @@ public class ErlangQuickFixCollector {
             final IQuickAssistInvocationContext invocationContext) {
         final List<ICompletionProposal> result = Lists.newArrayList();
 
-        for (final QuickFix fix : fixes) {
+        for (final QuickFix fix : ErlangQuickFixCollector.fixes) {
             if (fix.getTags().isEmpty() && fix.appliesAt(invocationContext)) {
                 result.add(new ResolutionProposal(fix));
             }

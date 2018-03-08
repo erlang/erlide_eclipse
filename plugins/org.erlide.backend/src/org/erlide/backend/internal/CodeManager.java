@@ -43,7 +43,7 @@ public class CodeManager {
         pathZ = new ArrayList<>();
     }
 
-    public void addPath(final boolean usePathZ, final @NonNull String path) {
+    public void addPath(final boolean usePathZ, @NonNull final String path) {
         if (usePathZ) {
             if (addPath(pathZ, path)) {
                 ErlangCode.addPathZ(site, path);
@@ -55,7 +55,7 @@ public class CodeManager {
         }
     }
 
-    public void removePath(final @NonNull String path) {
+    public void removePath(@NonNull final String path) {
         if (removePath(pathA, path)) {
             ErlangCode.removePath(site, path);
         }
@@ -132,7 +132,7 @@ public class CodeManager {
         }
     }
 
-    private boolean addPath(final List<PathItem> l, final @NonNull String path) {
+    private boolean addPath(final List<PathItem> l, @NonNull final String path) {
         final PathItem it = findItem(l, path);
         if (it == null) {
             l.add(new PathItem(path));
@@ -142,7 +142,7 @@ public class CodeManager {
         return false;
     }
 
-    private boolean removePath(final List<PathItem> l, final @NonNull String path) {
+    private boolean removePath(final List<PathItem> l, @NonNull final String path) {
         final PathItem it = findItem(l, path);
         if (it != null) {
             it.decRef();

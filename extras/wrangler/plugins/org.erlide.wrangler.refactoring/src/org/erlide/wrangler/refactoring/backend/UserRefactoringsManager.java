@@ -43,11 +43,11 @@ public class UserRefactoringsManager {
 
     }
 
-    public synchronized static UserRefactoringsManager getInstance() {
-        if (manager == null) {
-            manager = new UserRefactoringsManager();
+    public static synchronized UserRefactoringsManager getInstance() {
+        if (UserRefactoringsManager.manager == null) {
+            UserRefactoringsManager.manager = new UserRefactoringsManager();
         }
-        return manager;
+        return UserRefactoringsManager.manager;
     }
 
     public synchronized List<UserRefactoringInfo> getElementary() {

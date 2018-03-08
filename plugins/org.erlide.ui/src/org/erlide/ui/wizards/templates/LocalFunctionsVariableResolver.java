@@ -18,25 +18,25 @@ public class LocalFunctionsVariableResolver extends FunctionVariableResolver {
     private static final List<FunctionVariableResolver> fInstances = new ArrayList<>();
 
     public LocalFunctionsVariableResolver() {
-        fInstances.add(this);
+        LocalFunctionsVariableResolver.fInstances.add(this);
     }
 
     public static LocalFunctionsVariableResolver getDefault() {
-        if (fInstances.isEmpty()) {
-            fInstances.add(new LocalFunctionsVariableResolver());
+        if (LocalFunctionsVariableResolver.fInstances.isEmpty()) {
+            LocalFunctionsVariableResolver.fInstances.add(new LocalFunctionsVariableResolver());
         }
-        return (LocalFunctionsVariableResolver) fInstances.get(0);
+        return (LocalFunctionsVariableResolver) LocalFunctionsVariableResolver.fInstances.get(0);
     }
 
     public void addFunction(final String name, final int arity) {
-        for (final Object element0 : fInstances) {
+        for (final Object element0 : LocalFunctionsVariableResolver.fInstances) {
             final LocalFunctionsVariableResolver element = (LocalFunctionsVariableResolver) element0;
             element.doAddFunction(name, arity);
         }
     }
 
     public void clearFunctions() {
-        for (final Object element0 : fInstances) {
+        for (final Object element0 : LocalFunctionsVariableResolver.fInstances) {
             final LocalFunctionsVariableResolver element = (LocalFunctionsVariableResolver) element0;
             element.doClearFunctions();
         }

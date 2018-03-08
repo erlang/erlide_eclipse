@@ -120,7 +120,7 @@ public class SourceViewerInformationControl
 
         Composite composite = fShell;
         layout = new GridLayout(1, false);
-        final int border = (shellStyle & SWT.NO_TRIM) == 0 ? 0 : BORDER;
+        final int border = (shellStyle & SWT.NO_TRIM) == 0 ? 0 : SourceViewerInformationControl.BORDER;
         layout.marginHeight = border;
         layout.marginWidth = border;
         composite.setLayout(layout);

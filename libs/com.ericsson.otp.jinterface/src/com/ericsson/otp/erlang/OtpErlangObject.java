@@ -26,7 +26,7 @@ import java.io.Serializable;
  * arbitrary Erlang term.
  */
 public abstract class OtpErlangObject implements Serializable, Cloneable {
-    protected int hashCodeValue = 0;
+    protected int hashCodeValue;
 
     // don't change this!
     static final long serialVersionUID = -8435938572339430044L;
@@ -127,7 +127,7 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
         }
     }
 
-    protected final static class Hash {
+    protected static final class Hash {
         int abc[] = { 0, 0, 0 };
 
         /*
@@ -135,7 +135,7 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
          * utils.c.
          */
 
-        private final static int HASH_CONST[] = { 0, // not used
+        private static final int HASH_CONST[] = { 0, // not used
                 0x9e3779b9, // the golden ratio; an arbitrary value
                 0x3c6ef372, // (hashHConst[1] * 2) % (1<<32)
                 0xdaa66d2b, // 1 3
@@ -154,7 +154,7 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
         };
 
         protected Hash(final int i) {
-            abc[0] = abc[1] = HASH_CONST[i];
+            abc[0] = abc[1] = Hash.HASH_CONST[i];
             abc[2] = 0;
         }
 
@@ -208,7 +208,8 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
         }
 
         protected void combine(final byte b[]) {
-            int j, k;
+            int j;
+            int k;
             for (j = 0, k = 0; j + 4 < b.length; j += 4, k += 1, k %= 3) {
                 abc[k] += (b[j + 0] & 0xFF) + (b[j + 1] << 8 & 0xFF00)
                         + (b[j + 2] << 16 & 0xFF0000) + (b[j + 3] << 24);

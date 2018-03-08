@@ -64,13 +64,13 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
         }
     }
 
-    static protected final String LARGE_MODULES_VIEW_ID = "largemodules";
-    static protected final String DEPENECIES_1_VIEW_ID = "dependencies1";
-    static protected final String DEPENECIES_2_VIEW_ID = "dependencies2";
-    static protected final String NON_TAIL_RECURSIVE_VIEW_ID = "nontailrecursive";
-    static protected final String NOT_FLUSH_UNKNOWN_MESSAGES = "notflush";
-    static protected final String NESTED_EXPRESSIONS = "nested";
-    static protected final String LONG_FUNCTIONS = "longfunctions";
+    protected static final String LARGE_MODULES_VIEW_ID = "largemodules";
+    protected static final String DEPENECIES_1_VIEW_ID = "dependencies1";
+    protected static final String DEPENECIES_2_VIEW_ID = "dependencies2";
+    protected static final String NON_TAIL_RECURSIVE_VIEW_ID = "nontailrecursive";
+    protected static final String NOT_FLUSH_UNKNOWN_MESSAGES = "notflush";
+    protected static final String NESTED_EXPRESSIONS = "nested";
+    protected static final String LONG_FUNCTIONS = "longfunctions";
 
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
@@ -119,7 +119,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
     private void handleLongFunctions(final IErlSelection wranglerSelection,
             final Shell shell) {
         try {
-            CodeInspectionViewsManager.hideView(LONG_FUNCTIONS);
+            CodeInspectionViewsManager.hideView(SimpleCodeInspectionHandler.LONG_FUNCTIONS);
             // call inputdialog
             final InputDialogWithCheckbox dialog = new InputDialogWithCheckbox(shell,
                     "Search for long functions", "Number of lines:",
@@ -148,7 +148,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
                 // show result
                 if (!elements.isEmpty()) {
                     CodeInspectionViewsManager.showErlElements("Long functions", elements,
-                            LONG_FUNCTIONS);
+                            SimpleCodeInspectionHandler.LONG_FUNCTIONS);
                 } else {
                     MessageDialog.openInformation(shell, "No result",
                             "Could not found any function which is longer, than "
@@ -165,7 +165,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
     private void handleNested(final IErlSelection wranglerSelection, final Shell shell,
             final String type) {
         try {
-            CodeInspectionViewsManager.hideView(NESTED_EXPRESSIONS + type);
+            CodeInspectionViewsManager.hideView(SimpleCodeInspectionHandler.NESTED_EXPRESSIONS + type);
             // call inputdialog
             final InputDialogWithCheckbox dialog = new InputDialogWithCheckbox(shell,
                     "Search for nested expression", "Nest level:",
@@ -195,7 +195,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
                 if (!elements.isEmpty()) {
                     CodeInspectionViewsManager.showErlElements(
                             "Nested " + type + " expressions", elements,
-                            NESTED_EXPRESSIONS + type);
+                            SimpleCodeInspectionHandler.NESTED_EXPRESSIONS + type);
                 } else {
                     MessageDialog.openInformation(shell, "No result",
                             "Could not found any " + nestedVal + " levels nested " + type
@@ -213,7 +213,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             final Shell shell) {
         final String inFile = "not_flush_unknown_messages_in_file_eclipse";
         final String inProject = "not_flush_unknown_messages_in_dirs_eclipse";
-        CodeInspectionViewsManager.hideView(NOT_FLUSH_UNKNOWN_MESSAGES);
+        CodeInspectionViewsManager.hideView(SimpleCodeInspectionHandler.NOT_FLUSH_UNKNOWN_MESSAGES);
         final Boolean answer = MessageDialog.openQuestion(shell,
                 "Find incomplete receive patterns",
                 "Would you like to run the scan in the whole project?");
@@ -240,7 +240,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             }
             if (!elements.isEmpty()) {
                 CodeInspectionViewsManager.showErlElements("Incomplete receive patterns",
-                        elements, NOT_FLUSH_UNKNOWN_MESSAGES);
+                        elements, SimpleCodeInspectionHandler.NOT_FLUSH_UNKNOWN_MESSAGES);
             } else {
                 MessageDialog.openInformation(shell, "No result",
                         "Could not found any incomplete receive patterns!");
@@ -279,7 +279,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
 
     private void handleNonTailRecursiveCall(final IErlSelection wranglerSelection,
             final Shell shell) {
-        CodeInspectionViewsManager.hideView(NON_TAIL_RECURSIVE_VIEW_ID);
+        CodeInspectionViewsManager.hideView(SimpleCodeInspectionHandler.NON_TAIL_RECURSIVE_VIEW_ID);
 
         try {
             final String inFile = "non_tail_recursive_servers_in_file_eclipse";
@@ -309,7 +309,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             }
             if (!elements.isEmpty()) {
                 CodeInspectionViewsManager.showErlElements("Non tail recursive servers",
-                        elements, NON_TAIL_RECURSIVE_VIEW_ID);
+                        elements, SimpleCodeInspectionHandler.NON_TAIL_RECURSIVE_VIEW_ID);
             } else {
                 MessageDialog.openInformation(shell, "No result",
                         "Could not found any non tail recursive server!");
@@ -334,9 +334,9 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             final Shell shell) {
         // hiding the views
         CodeInspectionViewsManager.hideView(
-                CodeInspectionViewsManager.CODE_INSPECTION_VIEW, DEPENECIES_1_VIEW_ID);
+                CodeInspectionViewsManager.CODE_INSPECTION_VIEW, SimpleCodeInspectionHandler.DEPENECIES_1_VIEW_ID);
         CodeInspectionViewsManager.hideView(
-                CodeInspectionViewsManager.CODE_INSPECTION_VIEW, DEPENECIES_2_VIEW_ID);
+                CodeInspectionViewsManager.CODE_INSPECTION_VIEW, SimpleCodeInspectionHandler.DEPENECIES_2_VIEW_ID);
 
         // run the rpc
         try {
@@ -367,13 +367,13 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
                 CodeInspectionViewsManager.showErlElements(
                         "Modules which depends on " + wranglerSelection.getErlElement()
                                 .getAncestorOfKind(ErlElementKind.MODULE).getName(),
-                        modules1, DEPENECIES_1_VIEW_ID);
+                        modules1, SimpleCodeInspectionHandler.DEPENECIES_1_VIEW_ID);
             }
             if (!modules2.isEmpty()) {
                 CodeInspectionViewsManager.showErlElements("Modules, on which "
                         + wranglerSelection.getErlElement()
                                 .getAncestorOfKind(ErlElementKind.MODULE).getName()
-                        + " depends", modules2, DEPENECIES_2_VIEW_ID);
+                        + " depends", modules2, SimpleCodeInspectionHandler.DEPENECIES_2_VIEW_ID);
             } else {
                 MessageDialog.openInformation(shell, "No result",
                         "There is no large module with the specified parameter!");
@@ -414,7 +414,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
     private void handleLargeModulesCall(final IErlSelection wranglerSelection,
             final Shell shell) {
         CodeInspectionViewsManager.hideView(
-                CodeInspectionViewsManager.CODE_INSPECTION_VIEW, LARGE_MODULES_VIEW_ID);
+                CodeInspectionViewsManager.CODE_INSPECTION_VIEW, SimpleCodeInspectionHandler.LARGE_MODULES_VIEW_ID);
 
         final InputDialog dialog = new InputDialog(shell, "Lines of a large module",
                 "Lines of a large module:", "", new IntegerInputValidator());
@@ -447,7 +447,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
         }
         if (!modules.isEmpty()) {
             CodeInspectionViewsManager.showErlElements("Large modules", modules,
-                    LARGE_MODULES_VIEW_ID);
+                    SimpleCodeInspectionHandler.LARGE_MODULES_VIEW_ID);
         } else {
             MessageDialog.openInformation(shell, "No result",
                     "There is no large module with the specified parameter!");

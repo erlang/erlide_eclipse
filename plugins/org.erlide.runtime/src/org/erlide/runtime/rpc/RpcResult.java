@@ -26,7 +26,7 @@ public class RpcResult {
 
     private RpcResult(final boolean ok) {
         fOk = ok;
-        fValue = UNDEFINED;
+        fValue = RpcResult.UNDEFINED;
     }
 
     public RpcResult(final OtpErlangObject res) {

@@ -48,9 +48,9 @@ public class CodeInspectionViewsManager {
      * @param dotFile
      *            .dot file which is displayed
      */
-    static public void showDotImage(final Image img, final String title,
+    public static void showDotImage(final Image img, final String title,
             final String secondaryID, final File dotFile) {
-        final GraphImageView view = (GraphImageView) showView(GRAPH_VIEW, secondaryID);
+        final GraphImageView view = (GraphImageView) CodeInspectionViewsManager.showView(CodeInspectionViewsManager.GRAPH_VIEW, secondaryID);
         view.setViewTitle(title);
         view.setImage(img);
         view.setDotFile(dotFile);
@@ -64,11 +64,11 @@ public class CodeInspectionViewsManager {
      * @param e
      *            Erlang elements
      */
-    static public void showErlElements(final String title, final ArrayList<IErlElement> e,
+    public static void showErlElements(final String title, final ArrayList<IErlElement> e,
             final String secId) {
         try {
-            final CodeInspectionResultsView v = (CodeInspectionResultsView) showView(
-                    CODE_INSPECTION_VIEW, secId);
+            final CodeInspectionResultsView v = (CodeInspectionResultsView) CodeInspectionViewsManager.showView(
+                    CodeInspectionViewsManager.CODE_INSPECTION_VIEW, secId);
             v.addElements(e);
             v.setViewTitle(title);
             v.refresh();
@@ -85,7 +85,7 @@ public class CodeInspectionViewsManager {
      *
      * @return view which is shown
      */
-    static public IViewPart showView(final String viewId) {
+    public static IViewPart showView(final String viewId) {
 
         final IWorkbench workbench = PlatformUI.getWorkbench();
 
@@ -108,7 +108,7 @@ public class CodeInspectionViewsManager {
      *            view secondary id, to handle multiple instances
      * @return view object
      */
-    static public IViewPart showView(final String viewId, final String secondaryID) {
+    public static IViewPart showView(final String viewId, final String secondaryID) {
         final IWorkbench workbench = PlatformUI.getWorkbench();
 
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
@@ -128,8 +128,8 @@ public class CodeInspectionViewsManager {
      * @param viewId
      *            view, which will be hidden
      */
-    static public void hideView(final String viewId) {
-        hideView(viewId, null);
+    public static void hideView(final String viewId) {
+        CodeInspectionViewsManager.hideView(viewId, null);
     }
 
     /**
@@ -140,7 +140,7 @@ public class CodeInspectionViewsManager {
      * @param secondaryId
      *            secondary id of a view instance
      */
-    static public void hideView(final String viewId, final String secondaryId) {
+    public static void hideView(final String viewId, final String secondaryId) {
         final IWorkbench workbench = PlatformUI.getWorkbench();
 
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();

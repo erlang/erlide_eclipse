@@ -75,7 +75,7 @@ public final class ErlEditorMessages extends NLS {
     }
 
     static {
-        NLS.initializeMessages(BUNDLE_NAME, ErlEditorMessages.class);
+        NLS.initializeMessages(ErlEditorMessages.BUNDLE_NAME, ErlEditorMessages.class);
     }
 
 }

@@ -59,13 +59,13 @@ public class OtpNodeProxy implements IOtpNodeProxy {
 
 	private final Service service;
 	protected final RuntimeData data;
-	private OtpNode localNode = null;
+	private OtpNode localNode;
 	final ErlRuntimeReporter reporter;
 	private OtpMbox eventMBox;
 	private IOtpRpc otpRpc;
 	private final EventBus eventBus;
 	private final EventParser eventHelper;
-	private Process process = null;
+	private Process process;
 	private volatile int exitCode = -1;
 
     static final boolean DEBUG = Boolean
@@ -104,10 +104,10 @@ public class OtpNodeProxy implements IOtpNodeProxy {
 	private void receiveEventMessage(final OtpMbox eventBox) throws OtpErlangExit {
 		OtpErlangObject msg = null;
 		try {
-			msg = eventBox.receive(POLL_INTERVAL);
+			msg = eventBox.receive(OtpNodeProxy.POLL_INTERVAL);
 			final ErlEvent busEvent = eventHelper.parse(msg, this);
 			if (busEvent != null) {
-				if (DEBUG) {
+				if (OtpNodeProxy.DEBUG) {
                     ErlLogger.debug("MSG: %s", "[" + busEvent.getSender() + "::"
                             + busEvent.getTopic() + ": " + busEvent.getEvent() + "]");
 				}
@@ -165,7 +165,7 @@ public class OtpNodeProxy implements IOtpNodeProxy {
 			while (i-- > 0 && exitCode < 0) {
 				exitCode = -1;
 				try {
-					Thread.sleep(EXIT_POLL_INTERVAL);
+					Thread.sleep(OtpNodeProxy.EXIT_POLL_INTERVAL);
 					exitCode = process.exitValue();
 				} catch (final IllegalThreadStateException e) {
 				} catch (final InterruptedException e) {
@@ -214,18 +214,18 @@ public class OtpNodeProxy implements IOtpNodeProxy {
 
 		final boolean connected = pingPeer();
 		if (!connected) {
-			ErlLogger.error(COULD_NOT_CONNECT, label);
-			throw new Exception(String.format(COULD_NOT_CONNECT, label));
+			ErlLogger.error(OtpNodeProxy.COULD_NOT_CONNECT, label);
+			throw new Exception(String.format(OtpNodeProxy.COULD_NOT_CONNECT, label));
 		}
 		ErlLogger.debug("connected!");
 	}
 
 	private boolean pingPeer() {
-		int tries = MAX_RETRIES;
+		int tries = OtpNodeProxy.MAX_RETRIES;
 		boolean ok = false;
 		while (!ok && tries > 0) {
             ok = localNode.ping(getNodeName(),
-                    RETRY_DELAY + (MAX_RETRIES - tries) * RETRY_DELAY % 3);
+					OtpNodeProxy.RETRY_DELAY + (OtpNodeProxy.MAX_RETRIES - tries) * OtpNodeProxy.RETRY_DELAY % 3);
 			tries--;
 		}
 		return ok;
@@ -241,7 +241,7 @@ public class OtpNodeProxy implements IOtpNodeProxy {
 				gotIt = !(r instanceof OtpErlangPid);
 				if (!gotIt) {
 					try {
-						Thread.sleep(POLL_INTERVAL);
+						Thread.sleep(OtpNodeProxy.POLL_INTERVAL);
 					} catch (final InterruptedException e) {
 					}
 				}
@@ -369,7 +369,7 @@ public class OtpNodeProxy implements IOtpNodeProxy {
 			if (!waitForCodeServer()) {
 				// crash?
 				triggerShutdown();
-				ErlLogger.error(COULD_NOT_CONNECT, getNodeName());
+				ErlLogger.error(OtpNodeProxy.COULD_NOT_CONNECT, getNodeName());
 			}
 			stopped = false;
 			crashed = false;

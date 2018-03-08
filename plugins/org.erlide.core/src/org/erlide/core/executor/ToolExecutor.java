@@ -50,7 +50,7 @@ public class ToolExecutor {
 
 	@Deprecated
 	public ToolResults run_0(final String cmd0, final String args, final String wdir, final ProgressCallback progressCallback, final BuildNotifier notifier) {
-		final String cmd = new Path(cmd0).isAbsolute() ? cmd0 : getToolLocation(cmd0);
+		final String cmd = new Path(cmd0).isAbsolute() ? cmd0 : ToolExecutor.getToolLocation(cmd0);
 
 		if (cmd == null) {
 			ErlLogger.warn("Tool '" + cmd0 + "' can't be found in $PATH");
@@ -134,7 +134,7 @@ public class ToolExecutor {
 		String result = null;
 		final int MAX_TRIES = 5;
 		for (int i = 0; i < MAX_TRIES; i++) {
-			result = getToolLocation_1(cmd);
+			result = ToolExecutor.getToolLocation_1(cmd);
 			if (result != null) {
 				return result;
 			}
@@ -149,9 +149,9 @@ public class ToolExecutor {
 
 	private static String getToolLocation_1(final String cmd) {
 		if (SystemConfiguration.getInstance().isOnWindows()) {
-			return getWindowsToolLocation(cmd);
+			return ToolExecutor.getWindowsToolLocation(cmd);
 		}
-		return getUnixToolLocation(cmd);
+		return ToolExecutor.getUnixToolLocation(cmd);
 	}
 
 	private static String getUnixToolLocation(final String cmd) {
@@ -172,7 +172,7 @@ public class ToolExecutor {
 	}
 
 	static class ToolProgressCallback implements ProgressCallback {
-		String result = null;
+		String result;
 
 		@Override
 		public void stdout(final String line) {
@@ -190,7 +190,7 @@ public class ToolExecutor {
 		final ToolResults result = new ToolResults();
 
 		final List<String> cmds = new ArrayList<>();
-		final String cmd = new Path(cmd0).isAbsolute() ? cmd0 : getToolLocation(cmd0);
+		final String cmd = new Path(cmd0).isAbsolute() ? cmd0 : ToolExecutor.getToolLocation(cmd0);
 
 		if (cmd == null) {
 			result.exit = -1;

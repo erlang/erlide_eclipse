@@ -26,7 +26,7 @@ public class EditorInputToModuleAdapterFactory implements IAdapterFactory {
 
     @Override
     public Class<?>[] getAdapterList() {
-        return ADAPTER_LIST;
+        return EditorInputToModuleAdapterFactory.ADAPTER_LIST;
     }
 
 }

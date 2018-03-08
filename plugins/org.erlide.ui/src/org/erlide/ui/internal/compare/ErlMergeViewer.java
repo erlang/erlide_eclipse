@@ -59,10 +59,10 @@ public class ErlMergeViewer extends TextMergeViewer {
             fUseSystemColors = fPreferenceStore.getBoolean(
                     AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT);
             if (!fUseSystemColors) {
-                final RGB bg = createColor(fPreferenceStore,
+                final RGB bg = ErlMergeViewer.createColor(fPreferenceStore,
                         AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND);
                 setBackgroundColor(bg);
-                final RGB fg = createColor(fPreferenceStore,
+                final RGB fg = ErlMergeViewer.createColor(fPreferenceStore,
                         AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND);
                 setForegroundColor(fg);
             }
@@ -85,7 +85,7 @@ public class ErlMergeViewer extends TextMergeViewer {
         if (key.equals(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND)) {
 
             if (!fUseSystemColors) {
-                final RGB bg = createColor(fPreferenceStore,
+                final RGB bg = ErlMergeViewer.createColor(fPreferenceStore,
                         AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND);
                 setBackgroundColor(bg);
             }
@@ -99,17 +99,17 @@ public class ErlMergeViewer extends TextMergeViewer {
                 setBackgroundColor(null);
                 setForegroundColor(null);
             } else {
-                final RGB bg = createColor(fPreferenceStore,
+                final RGB bg = ErlMergeViewer.createColor(fPreferenceStore,
                         AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND);
                 setBackgroundColor(bg);
-                final RGB fg = createColor(fPreferenceStore,
+                final RGB fg = ErlMergeViewer.createColor(fPreferenceStore,
                         AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND);
                 setForegroundColor(fg);
             }
         } else if (key.equals(AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND)) {
 
             if (!fUseSystemColors) {
-                final RGB fg = createColor(fPreferenceStore,
+                final RGB fg = ErlMergeViewer.createColor(fPreferenceStore,
                         AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND);
                 setForegroundColor(fg);
             }

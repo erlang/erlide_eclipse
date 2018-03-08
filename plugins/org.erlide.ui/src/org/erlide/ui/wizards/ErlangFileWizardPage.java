@@ -62,14 +62,14 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 
 public class ErlangFileWizardPage extends WizardPage {
 
-    public boolean gettingInput = false;
+    public boolean gettingInput;
     private Text containerText;
     private Text fileText;
     private Combo skeleton;
     private final ISelection fSelection;
     private final Template[] moduleTemplates;
     private final ModifyListener fModifyListener;
-    private TemplateContextType fContextType = null;
+    private TemplateContextType fContextType;
     private Label lblfolder;
     private Label lblskeleton;
     private GridData gd_lblskeleton;
@@ -153,7 +153,8 @@ public class ErlangFileWizardPage extends WizardPage {
         gd_skeleton.widthHint = 139;
         skeleton.setLayoutData(gd_skeleton);
         // skeleton.add("None");
-        int i = 0, defaultSkeleton = 0;
+        int i = 0;
+        int defaultSkeleton = 0;
         for (final Template element : moduleTemplates) {
             final String name = element.getName();
             skeleton.add(name);
@@ -249,7 +250,7 @@ public class ErlangFileWizardPage extends WizardPage {
                 .findMember(new Path(getContainerName()));
         final String fileName = getFileName();
 
-        if (getContainerName().length() == 0) {
+        if (getContainerName().isEmpty()) {
             updateStatus("File container must be specified");
             return;
         }
@@ -262,7 +263,7 @@ public class ErlangFileWizardPage extends WizardPage {
             updateStatus("Project must be writable");
             return;
         }
-        if (fileName.length() == 0) {
+        if (fileName.isEmpty()) {
             updateStatus("File name must be specified");
             return;
         }

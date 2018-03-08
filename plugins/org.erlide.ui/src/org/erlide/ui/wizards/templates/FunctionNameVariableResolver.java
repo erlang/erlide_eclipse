@@ -20,10 +20,10 @@ public class FunctionNameVariableResolver extends TemplateVariableResolver {
     private String fFunctionName;
 
     public static FunctionNameVariableResolver getDefault() {
-        if (fInstance == null) {
-            fInstance = new FunctionNameVariableResolver();
+        if (FunctionNameVariableResolver.fInstance == null) {
+            FunctionNameVariableResolver.fInstance = new FunctionNameVariableResolver();
         }
-        return fInstance;
+        return FunctionNameVariableResolver.fInstance;
     }
 
     @Override

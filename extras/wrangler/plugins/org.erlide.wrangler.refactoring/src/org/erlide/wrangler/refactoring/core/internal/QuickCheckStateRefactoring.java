@@ -36,7 +36,7 @@ public abstract class QuickCheckStateRefactoring
         extends SimpleOneStepWranglerRefactoring {
 
     protected OtpErlangObject stateFuns;
-    protected int fieldCount = 0;
+    protected int fieldCount;
     private String recordName;
     private List<String> fieldsNames;
 

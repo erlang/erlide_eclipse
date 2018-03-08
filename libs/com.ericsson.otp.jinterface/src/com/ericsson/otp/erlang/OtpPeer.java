@@ -27,7 +27,7 @@ import java.net.UnknownHostException;
  * node-specific information that is needed by the {@link OtpConnection} class.
  */
 public class OtpPeer extends AbstractNode {
-    int distChoose = 0; /*
+    int distChoose; /*
                          * this is set by OtpConnection and is the highest common protocol
                          * version we both support
                          */

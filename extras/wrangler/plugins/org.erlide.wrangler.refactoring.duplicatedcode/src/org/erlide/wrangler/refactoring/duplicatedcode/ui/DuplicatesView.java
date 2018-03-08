@@ -60,7 +60,7 @@ public class DuplicatesView extends ViewPart {
     private Action copyGeneralisedToClipboard;
     private final Action copyFunCallToClipboard = new ClipboardAction(
             PlatformUI.getWorkbench().getDisplay()) {
-        private boolean hasText = false;
+        private boolean hasText;
 
         @Override
         public void run() {

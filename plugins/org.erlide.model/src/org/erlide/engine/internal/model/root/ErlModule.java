@@ -480,7 +480,7 @@ public class ErlModule extends Openable implements IErlModule {
         initialText = newText;
         parsed = false;
         setStructureKnown(false);
-        scanner.initialScan(newText, "", logging);
+        scanner.initialScan(newText, "", ErlModule.logging);
         final boolean built = buildStructure(null);
         setStructureKnown(built);
     }
@@ -512,7 +512,7 @@ public class ErlModule extends Openable implements IErlModule {
         final String filePath = getFilePath();
         final String text = getInitialText();
         scanner = ErlangEngine.getInstance().getScannerProviderService().get(scannerName);
-        scanner.initialScan(text, filePath, logging);
+        scanner.initialScan(text, filePath, ErlModule.logging);
         return scanner;
     }
 
@@ -582,7 +582,7 @@ public class ErlModule extends Openable implements IErlModule {
                     final IErlAttribute attr = (IErlAttribute) e;
                     if ("compile".equals(attr.getName())) {
                         final OtpErlangObject value = attr.getValue();
-                        if (value != null && value.equals(EXPORT_ALL)) {
+                        if (value != null && value.equals(ErlModule.EXPORT_ALL)) {
                             return true;
                         }
                     }

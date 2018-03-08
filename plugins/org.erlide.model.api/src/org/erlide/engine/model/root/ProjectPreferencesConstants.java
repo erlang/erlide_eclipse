@@ -39,7 +39,7 @@ public final class ProjectPreferencesConstants {
     public static final RuntimeVersion DEFAULT_RUNTIME_VERSION = new RuntimeVersion(19);
     public static final RuntimeVersion[] SUPPORTED_VERSIONS = { new RuntimeVersion(17),
             new RuntimeVersion(18), new RuntimeVersion(19), new RuntimeVersion(20) };
-    public static final RuntimeVersion FALLBACK_RUNTIME_VERSION = SUPPORTED_VERSIONS[0];
+    public static final RuntimeVersion FALLBACK_RUNTIME_VERSION = ProjectPreferencesConstants.SUPPORTED_VERSIONS[0];
 
     public static final String PROJECT_EXTERNAL_MODULES = "external_modules";
     public static final String DEFAULT_EXTERNAL_MODULES = "";

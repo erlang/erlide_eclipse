@@ -44,7 +44,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
 
     protected static void addKeysAndPrefs(final String dialogKey, final String[] keys,
             final String[] defaults, final Map<String, String> m) {
-        final List<String> prefs = getPreferences(dialogKey, keys, defaults);
+        final List<String> prefs = ErlidePreferencePage.getPreferences(dialogKey, keys, defaults);
         for (int i = 0; i < keys.length; ++i) {
             m.put(keys[i], prefs.get(i));
         }
@@ -52,8 +52,8 @@ public abstract class ErlidePreferencePage extends PreferencePage {
 
     public void setToPreferences(final String[] keys, final String[] defaults,
             final List<Button> buttons) {
-        final List<String> p = getPreferences(getDialogPreferenceKey(), keys, defaults);
-        final List<Boolean> l = getBooleanPreferences(p);
+        final List<String> p = ErlidePreferencePage.getPreferences(getDialogPreferenceKey(), keys, defaults);
+        final List<Boolean> l = ErlidePreferencePage.getBooleanPreferences(p);
         for (int i = 0; i < l.size(); ++i) {
             final boolean b = l.get(i);
             buttons.get(i).setSelection(b);
@@ -71,7 +71,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
 
     public static IStatus validatePositiveNumber(final String number) {
         final StatusInfo status = new StatusInfo();
-        if (number.length() == 0) {
+        if (number.isEmpty()) {
             status.setError(ErlEditorMessages.ErlEditorPreferencePage_empty_input);
         } else {
             try {
@@ -114,7 +114,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
             page.setErrorMessage(null);
             break;
         default:
-            if (message.length() == 0) {
+            if (message.isEmpty()) {
                 message = null;
             }
             page.setMessage(null);
@@ -227,7 +227,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
 
     protected void numberFieldChanged(final Text textControl) {
         final String number = textControl.getText();
-        final IStatus status = validatePositiveNumber(number);
+        final IStatus status = ErlidePreferencePage.validatePositiveNumber(number);
         updateStatus(status);
     }
 
@@ -235,12 +235,12 @@ public abstract class ErlidePreferencePage extends PreferencePage {
         IStatus status = status0;
         if (!status.matches(IStatus.ERROR)) {
             for (final Text text : fNumberFields) {
-                final IStatus s = validatePositiveNumber(text.getText());
+                final IStatus s = ErlidePreferencePage.validatePositiveNumber(text.getText());
                 status = s.getSeverity() > status.getSeverity() ? s : status;
             }
         }
         setValid(!status.matches(IStatus.ERROR));
-        applyToStatusLine(this, status);
+        ErlidePreferencePage.applyToStatusLine(this, status);
     }
 
     public ModifyListener getNumberFieldListener() {
@@ -258,7 +258,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
 
     protected List<String> getPreferences(final String[] indentKeys,
             final String[] indentDefaults) {
-        return getPreferences(getDialogPreferenceKey(), indentKeys, indentDefaults);
+        return ErlidePreferencePage.getPreferences(getDialogPreferenceKey(), indentKeys, indentDefaults);
     }
 
 }

@@ -32,11 +32,11 @@ public class ErlLogger {
 
     private Logger logger;
     private String logFile;
-    private ConsoleHandler consoleHandler = null;
-    private FileHandler fileHandler = null;
+    private ConsoleHandler consoleHandler;
+    private FileHandler fileHandler;
 
     public static ErlLogger getInstance() {
-        return INSTANCE;
+        return ErlLogger.INSTANCE;
     }
 
     public void dispose() {
@@ -47,7 +47,7 @@ public class ErlLogger {
         logger.removeHandler(fileHandler);
         final IPath wroot = ResourcesPlugin.getWorkspace().getRoot().getLocation();
         logFile = file == null ? wroot.append("erlide.log").toPortableString() : file;
-        addFileHandler(logFile, SIMPLE_FORMATTER);
+        addFileHandler(logFile, ErlLogger.SIMPLE_FORMATTER);
     }
 
     public String getLogFile() {
@@ -77,7 +77,7 @@ public class ErlLogger {
     }
 
     private String getCallerMsg(final String str) {
-        final StackTraceElement el = getCaller();
+        final StackTraceElement el = ErlLogger.getCaller();
         final String msg = "(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
                 + str;
         return msg;
@@ -97,46 +97,46 @@ public class ErlLogger {
     }
 
     public static void trace(final String tag, final String fmt, final Object... o) {
-        info("USAGE: " + tag + ": " + fmt, o);
+        ErlLogger.info("USAGE: " + tag + ": " + fmt, o);
     }
 
     public static void debug(final String fmt, final Object... o) {
-        getInstance().log(Level.FINEST, fmt, o);
+        ErlLogger.getInstance().log(Level.FINEST, fmt, o);
     }
 
     public static void info(final String fmt, final Object... o) {
-        getInstance().log(Level.INFO, fmt, o);
+        ErlLogger.getInstance().log(Level.INFO, fmt, o);
     }
 
     public static void warn(final String fmt, final Object... o) {
-        getInstance().log(Level.WARNING, fmt, o);
+        ErlLogger.getInstance().log(Level.WARNING, fmt, o);
     }
 
     public static void error(final String fmt, final Object... o) {
-        getInstance().log(Level.SEVERE, fmt, o);
+        ErlLogger.getInstance().log(Level.SEVERE, fmt, o);
     }
 
     public static void debug(final Throwable e) {
-        getInstance().log(Level.FINEST, e);
+        ErlLogger.getInstance().log(Level.FINEST, e);
     }
 
     public static void info(final Throwable e) {
-        getInstance().log(Level.INFO, e);
+        ErlLogger.getInstance().log(Level.INFO, e);
     }
 
     public static void warn(final Throwable e) {
-        getInstance().log(Level.WARNING, e);
+        ErlLogger.getInstance().log(Level.WARNING, e);
     }
 
     public static void error(final Throwable exception) {
-        getInstance().log(Level.SEVERE, exception);
+        ErlLogger.getInstance().log(Level.SEVERE, exception);
     }
 
     private ErlLogger() {
         logger = Logger.getLogger("org.erlide");
         logger.setUseParentHandlers(false);
         logger.setLevel(java.util.logging.Level.FINEST);
-        addConsoleHandler(SIMPLE_FORMATTER);
+        addConsoleHandler(ErlLogger.SIMPLE_FORMATTER);
     }
 
     private void addConsoleHandler(final ErlSimpleFormatter formatter) {
@@ -190,7 +190,7 @@ public class ErlLogger {
             args[0] = dat;
             final StringBuffer text = new StringBuffer();
             if (formatter == null) {
-                formatter = new MessageFormat(FORMAT_STRING);
+                formatter = new MessageFormat(ErlSimpleFormatter.FORMAT_STRING);
             }
             formatter.format(args, text, null);
             sb.append(text);

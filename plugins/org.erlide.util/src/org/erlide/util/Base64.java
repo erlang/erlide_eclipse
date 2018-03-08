@@ -42,7 +42,7 @@ public final class Base64 {
             return data;
         }
         int lastRealDataIndex = data.length - 1;
-        while (data[lastRealDataIndex] == EQUAL_SIGN) {
+        while (data[lastRealDataIndex] == Base64.EQUAL_SIGN) {
             lastRealDataIndex--;
         }
         // original data digit is 8 bits long, but base64 digit is 6 bits long
@@ -59,7 +59,7 @@ public final class Base64 {
             allBits = 0;
             // Loop 4 times gathering input bits (4 * 6 = 24)
             for (int j = 0; j < 4; j++) {
-                allBits = allBits << 6 | decodeDigit(data[dataIndex++]);
+                allBits = allBits << 6 | Base64.decodeDigit(data[dataIndex++]);
             }
             // Loop 3 times generating output bits (3 * 8 = 24)
             for (int j = resultIndex + 2; j >= resultIndex; j--) {
@@ -77,7 +77,7 @@ public final class Base64 {
             allBits = 0;
             // Loop 3 times gathering input bits
             for (int j = 0; j < 3; j++) {
-                allBits = allBits << 6 | decodeDigit(data[dataIndex++]);
+                allBits = allBits << 6 | Base64.decodeDigit(data[dataIndex++]);
             }
             // NOTE - The code below ends up being equivalent to allBits =
             // allBits>>>2
@@ -99,7 +99,7 @@ public final class Base64 {
             allBits = 0;
             // Loop 2 times gathering input bits
             for (int j = 0; j < 2; j++) {
-                allBits = allBits << 6 | decodeDigit(data[dataIndex++]);
+                allBits = allBits << 6 | Base64.decodeDigit(data[dataIndex++]);
             }
             // NOTE - The code below ends up being equivalent to allBits =
             // allBits>>>4
@@ -170,7 +170,7 @@ public final class Base64 {
             }
             // Loop 4 times generating output bits (4 * 6 = 24)
             for (int j = resultIndex + 3; j >= resultIndex; j--) {
-                result[j] = (byte) digits[allBits & 0x3f]; // Bottom
+                result[j] = (byte) Base64.digits[allBits & 0x3f]; // Bottom
                 // 6
                 // bits
                 allBits = allBits >>> 6;
@@ -185,7 +185,7 @@ public final class Base64 {
             allBits = allBits << 8; // 8 bits of zeroes
             // Loop 4 times generating output bits (4 * 6 = 24)
             for (int j = resultIndex + 3; j >= resultIndex; j--) {
-                result[j] = (byte) digits[allBits & 0x3f]; // Bottom
+                result[j] = (byte) Base64.digits[allBits & 0x3f]; // Bottom
                 // 6
                 // bits
                 allBits = allBits >>> 6;
@@ -200,7 +200,7 @@ public final class Base64 {
             allBits = allBits << 8; // 8 bits of zeroes
             // Loop 4 times generating output bits (4 * 6 = 24)
             for (int j = resultIndex + 3; j >= resultIndex; j--) {
-                result[j] = (byte) digits[allBits & 0x3f]; // Bottom
+                result[j] = (byte) Base64.digits[allBits & 0x3f]; // Bottom
                 // 6
                 // bits
                 allBits = allBits >>> 6;

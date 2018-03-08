@@ -54,22 +54,22 @@ import java.util.*;
  * </p>
  */
 public class OtpNode extends OtpLocalNode {
-    private boolean initDone = false;
+    private boolean initDone;
 
     // thread to manage incoming connections
-    private Acceptor acceptor = null;
+    private Acceptor acceptor;
 
     // keep track of all connections
-    Map<String, OtpCookedConnection> connections = null;
+    Map<String, OtpCookedConnection> connections;
 
     // keep track of all mailboxes
-    Mailboxes mboxes = null;
+    Mailboxes mboxes;
 
     // handle status changes
     OtpNodeStatus handler;
 
     // flags
-    private int connFlags = 0;
+    private int connFlags;
 
     /**
      * <p>
@@ -623,9 +623,9 @@ public class OtpNode extends OtpLocalNode {
      */
     public class Mailboxes {
         // mbox pids here
-        private Map<OtpErlangPid, WeakReference<OtpMbox>> byPid = null;
+        private Map<OtpErlangPid, WeakReference<OtpMbox>> byPid;
         // mbox names here
-        private Hashtable<String, WeakReference<OtpMbox>> byName = null;
+        private Hashtable<String, WeakReference<OtpMbox>> byName;
 
         public Mailboxes() {
             byPid = new Hashtable<>(17, (float) 0.95);
@@ -743,7 +743,7 @@ public class OtpNode extends OtpLocalNode {
     public class Acceptor extends Thread {
         private final OtpServerTransport sock;
         private final int acceptorPort;
-        private volatile boolean done = false;
+        private volatile boolean done;
 
         Acceptor(final int port) throws IOException {
             sock = createServerTransport(port);

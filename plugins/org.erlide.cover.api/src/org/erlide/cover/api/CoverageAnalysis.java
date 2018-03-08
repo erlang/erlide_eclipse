@@ -24,7 +24,7 @@ public class CoverageAnalysis {
      */
     public static boolean isAvailable() {
         try {
-            return getCoveragePerformer() != null;
+            return CoverageAnalysis.getCoveragePerformer() != null;
         } catch (final CoreException e) {
             ErlLogger.error(e);
             return false;
@@ -41,7 +41,7 @@ public class CoverageAnalysis {
      */
     public static void prepareAnalysis(final IConfiguration configuration)
             throws CoverException {
-        prepareAnalysis(new ArrayList<>(), configuration);
+        CoverageAnalysis.prepareAnalysis(new ArrayList<>(), configuration);
     }
 
     /**
@@ -59,7 +59,7 @@ public class CoverageAnalysis {
     public static void prepareAnalysis(final List<String> additionalNodes,
             final IConfiguration configuration) throws CoverException {
         try {
-            final ICoveragePerformer performer = getCoveragePerformerOrThrow();
+            final ICoveragePerformer performer = CoverageAnalysis.getCoveragePerformerOrThrow();
             performer.startCover(additionalNodes);
             performer.setCoverageConfiguration(configuration);
         } catch (final CoreException e) {
@@ -78,7 +78,7 @@ public class CoverageAnalysis {
      */
     public static void performAnalysis() throws CoverException {
         try {
-            getCoveragePerformerOrThrow().analyse();
+            CoverageAnalysis.getCoveragePerformerOrThrow().analyse();
         } catch (final CoreException e) {
             throw new CoverException(e);
         }
@@ -112,7 +112,7 @@ public class CoverageAnalysis {
     }
 
     private static ICoveragePerformer getCoveragePerformerOrThrow() throws CoreException {
-        final ICoveragePerformer result = getCoveragePerformer();
+        final ICoveragePerformer result = CoverageAnalysis.getCoveragePerformer();
         if (result == null) {
             throw new UnsupportedOperationException();
         }

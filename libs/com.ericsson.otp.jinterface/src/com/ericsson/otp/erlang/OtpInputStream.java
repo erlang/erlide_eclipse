@@ -463,7 +463,7 @@ public class OtpInputStream extends ByteArrayInputStream {
         len = read4BE();
         bin = new byte[len];
         final int tail_bits = read1();
-        if (tail_bits < 0 || 7 < tail_bits) {
+        if (tail_bits < 0 || tail_bits > 7) {
             throw new OtpErlangDecodeException(
                     "Wrong tail bit count in bitstr: " + tail_bits);
         }
@@ -1210,7 +1210,7 @@ public class OtpInputStream extends ByteArrayInputStream {
 
         case OtpExternal.listTag:
         case OtpExternal.nilTag:
-            if ((flags & DECODE_INT_LISTS_AS_STRINGS) != 0) {
+            if ((flags & OtpInputStream.DECODE_INT_LISTS_AS_STRINGS) != 0) {
                 final int savePos = getPos();
                 try {
                     return new OtpErlangString(this);

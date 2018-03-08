@@ -118,7 +118,7 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
             if ("".equals(ps)) {
                 ps = ".";
             }
-            if (result.indexOf(ps) < 0) {
+            if (!result.contains(ps)) {
                 result.add(ps);
             }
         }

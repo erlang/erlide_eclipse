@@ -117,7 +117,7 @@ public class CompilerOptions {
     }
 
     public CompilerOptions() {
-        helper = PreferencesHelper.getHelper(QUALIFIER);
+        helper = PreferencesHelper.getHelper(CompilerOptions.QUALIFIER);
         options = Maps.newHashMap();
         for (final CompilerOption option : ALL_OPTIONS) {
             if (option instanceof BooleanOption) {
@@ -131,7 +131,7 @@ public class CompilerOptions {
 
     public CompilerOptions(final IProject project) {
         this();
-        helper = PreferencesHelper.getHelper(QUALIFIER, project);
+        helper = PreferencesHelper.getHelper(CompilerOptions.QUALIFIER, project);
     }
 
     public boolean hasOptionsAtLowestScope() {

@@ -134,7 +134,7 @@ class ErlangCompareUtilities {
                 if (encoding == null) {
                     encoding = ResourcesPlugin.getEncoding();
                 }
-                return readString(is, encoding);
+                return ErlangCompareUtilities.readString(is, encoding);
             }
         } catch (final IOException e1) {
             return null;

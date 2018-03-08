@@ -23,7 +23,7 @@ import org.eclipse.ui.IViewPart;
  */
 public class PushActionDelegate implements IViewActionDelegate {
     /** pointer to image view */
-    public GraphImageView view = null;
+    public GraphImageView view;
 
     /*
      * (non-Javadoc)

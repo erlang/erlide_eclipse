@@ -15,7 +15,7 @@ public class DocumentationFormatter {
 			stringBuilder.append("<pre class='edoc'>");
 			for (final IErlComment member : comments) {
 				try {
-					String source = "\n" + convertToHTML(member.getSource());
+					String source = "\n" + DocumentationFormatter.convertToHTML(member.getSource());
 					source = source.replaceAll("\n%%%", "\n").replaceAll("\n%%", "\n").replaceAll("\n%", "\n").substring(1);
 					source = source.replaceAll("\n( *([-=] *)+\n)+", "\n<hr/>\n").replaceAll("^ *([-=] *)+\n", "\n").replaceAll("\n *([-=] *)+$", "\n");
 					stringBuilder.append(source);
@@ -31,7 +31,7 @@ public class DocumentationFormatter {
 		}
 		if (typespec != null) {
 			try {
-				stringBuilder.append("<hr/><pre class='typespec'>").append(convertToHTML(typespec.getSource())).append("</pre>");
+				stringBuilder.append("<hr/><pre class='typespec'>").append(DocumentationFormatter.convertToHTML(typespec.getSource())).append("</pre>");
 			} catch (final ErlModelException e) {
 				ErlLogger.warn(e);
 			}

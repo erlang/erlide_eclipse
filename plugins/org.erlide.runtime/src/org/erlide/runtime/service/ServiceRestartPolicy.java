@@ -9,6 +9,6 @@ public abstract class ServiceRestartPolicy {
     public void notifyRestart() {
     }
 
-    abstract public boolean shouldRestart();
+    public abstract boolean shouldRestart();
 
 }

@@ -39,7 +39,7 @@ public class CoverEventHandler extends ErlangEventHandler {
     private final CoverBackend coverBackend; // cover backend
 
     public CoverEventHandler(final CoverBackend coverBackend) {
-        super(EVENT_NAME);
+        super(CoverEventHandler.EVENT_NAME);
         this.coverBackend = coverBackend;
         log = Activator.getDefault();
     }
@@ -65,7 +65,7 @@ public class CoverEventHandler extends ErlangEventHandler {
                 obs.eventOccured(new CoverEvent(CoverStatus.ERROR,
                         String.format("Error at %s while %s: %s\n", place, type, info)));
             }
-        } else if (data.toString().equals(COVER_FIN)
+        } else if (data.toString().equals(CoverEventHandler.COVER_FIN)
                 && coverBackend.getAnnotationMaker() != null) {
             coverBackend.getAnnotationMaker().addAnnotations();
         }
@@ -83,7 +83,7 @@ public class CoverEventHandler extends ErlangEventHandler {
             final OtpErlangTuple resTuple = (OtpErlangTuple) msg;
             if (resTuple.elementAt(0) instanceof OtpErlangAtom
                     && ((OtpErlangAtom) resTuple.elementAt(0)).atomValue()
-                            .equals(COVER_RES)) {
+                            .equals(CoverEventHandler.COVER_RES)) {
 
                 final String moduleName = resTuple.elementAt(1).toString();
 
@@ -210,7 +210,7 @@ public class CoverEventHandler extends ErlangEventHandler {
             final OtpErlangTuple tuple = (OtpErlangTuple) message;
             if (tuple.elementAt(0) instanceof OtpErlangAtom
                     && ((OtpErlangAtom) tuple.elementAt(0)).atomValue()
-                            .equals(COVER_ERROR)) {
+                            .equals(CoverEventHandler.COVER_ERROR)) {
 
                 return tuple;
             }

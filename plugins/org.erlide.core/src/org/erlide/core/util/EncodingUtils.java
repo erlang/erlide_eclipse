@@ -16,7 +16,7 @@ public class EncodingUtils {
     public static String getEncoding() {
         // Verify that workspace is not shutting down (see bug
         // https://bugs.eclipse.org/bugs/show_bug.cgi?id=60687)
-        final IWorkspace workspace = getWorkspace();
+        final IWorkspace workspace = EncodingUtils.getWorkspace();
         if (workspace != null) {
             try {
                 return workspace.getRoot().getDefaultCharset();

@@ -99,7 +99,7 @@ public class ErlangElementImageProvider {
 
     private ImageDescriptor computeDescriptor(final Object element, final int flags) {
         if (element instanceof IErlElement) {
-            return getErlImageDescriptor((IErlElement) element, flags);
+            return ErlangElementImageProvider.getErlImageDescriptor((IErlElement) element, flags);
         } else if (element instanceof IFile) {
             final IFile file = (IFile) element;
             if ("erl".equals(file.getFileExtension())) { //$NON-NLS-1$
@@ -111,7 +111,7 @@ public class ErlangElementImageProvider {
             final IErlElementLocator model = ErlangEngine.getInstance().getModel();
             final IErlFolder ef = (IErlFolder) model.findElement((IResource) element);
             if (ef != null && (ef.isOnSourcePath() || ef.isOnIncludePath())) {
-                return getErlImageDescriptor(ef, flags);
+                return ErlangElementImageProvider.getErlImageDescriptor(ef, flags);
             }
         } else if (element instanceof IAdaptable) {
             return getWorkbenchImageDescriptor((IAdaptable) element, flags);
@@ -121,16 +121,16 @@ public class ErlangElementImageProvider {
 
     @SuppressWarnings("unused")
     private static boolean showOverlayIcons(final int flags) {
-        return (flags & OVERLAY_ICONS) != 0;
+        return (flags & ErlangElementImageProvider.OVERLAY_ICONS) != 0;
     }
 
     private static boolean useSmallSize(final int flags) {
-        return (flags & SMALL_ICONS) != 0;
+        return (flags & ErlangElementImageProvider.SMALL_ICONS) != 0;
     }
 
     @SuppressWarnings("unused")
     private static boolean useLightIcons(final int flags) {
-        return (flags & LIGHT_TYPE_ICONS) != 0;
+        return (flags & ErlangElementImageProvider.LIGHT_TYPE_ICONS) != 0;
     }
 
     /**
@@ -139,7 +139,7 @@ public class ErlangElementImageProvider {
      */
     public ImageDescriptor getErlResourceImageDescriptor(final IFile file,
             final int flags) {
-        final Point size = useSmallSize(flags) ? SMALL_SIZE : BIG_SIZE;
+        final Point size = ErlangElementImageProvider.useSmallSize(flags) ? ErlangElementImageProvider.SMALL_SIZE : ErlangElementImageProvider.BIG_SIZE;
         return new ErlangElementImageDescriptor(
                 ErlideImage.MODULE_RESOURCE.getDescriptor(), 0, size);
     }
@@ -148,12 +148,12 @@ public class ErlangElementImageProvider {
      * Returns an image descriptor for an erlang element. The descriptor
      * includes overlays, if specified.
      */
-    static public ImageDescriptor getErlImageDescriptor(final IErlElement element,
+    public static ImageDescriptor getErlImageDescriptor(final IErlElement element,
             final int flags) {
         final int adornmentFlags = 0; // computeAdornmentFlags(element,
         // flags);
-        final Point size = useSmallSize(flags) ? SMALL_SIZE : BIG_SIZE;
-        return new ErlangElementImageDescriptor(getBaseImageDescriptor(element, flags),
+        final Point size = ErlangElementImageProvider.useSmallSize(flags) ? ErlangElementImageProvider.SMALL_SIZE : ErlangElementImageProvider.BIG_SIZE;
+        return new ErlangElementImageDescriptor(ErlangElementImageProvider.getBaseImageDescriptor(element, flags),
                 adornmentFlags, size);
     }
 
@@ -174,7 +174,7 @@ public class ErlangElementImageProvider {
             return null;
         }
 
-        final Point size = useSmallSize(flags) ? SMALL_SIZE : BIG_SIZE;
+        final Point size = ErlangElementImageProvider.useSmallSize(flags) ? ErlangElementImageProvider.SMALL_SIZE : ErlangElementImageProvider.BIG_SIZE;
         return new ErlangElementImageDescriptor(descriptor, 0, size);
     }
 
@@ -185,7 +185,7 @@ public class ErlangElementImageProvider {
      * Returns an image descriptor for an Erlang element. This is the base
      * image, no overlays.
      */
-    static public ImageDescriptor getBaseImageDescriptor(final IErlElement element,
+    public static ImageDescriptor getBaseImageDescriptor(final IErlElement element,
             final int renderFlags) {
         if (element instanceof IErlFunction) {
             final IErlFunction fun = (IErlFunction) element;
@@ -193,7 +193,7 @@ public class ErlangElementImageProvider {
                 return ErlideImage.FUNCTION_EXPORTED.getDescriptor();
             }
         }
-        return getImageDescriptionFromKind(element.getKind());
+        return ErlangElementImageProvider.getImageDescriptionFromKind(element.getKind());
     }
 
     public static ImageDescriptor getImageDescriptionFromKind(final ErlElementKind kind) {

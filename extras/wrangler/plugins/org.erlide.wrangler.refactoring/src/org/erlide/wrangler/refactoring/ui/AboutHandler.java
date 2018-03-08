@@ -17,7 +17,8 @@ public class AboutHandler extends AbstractHandler {
 
     protected static class MyMessageDialog extends Dialog {
 
-        String title, message;
+        String title;
+        String message;
 
         protected MyMessageDialog(final IShellProvider parentShell) {
             super(parentShell);

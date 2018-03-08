@@ -5,7 +5,7 @@ public final class SystemConfiguration {
     private static SystemConfiguration instance = new SystemConfiguration();
 
     public static SystemConfiguration getInstance() {
-        return instance;
+        return SystemConfiguration.instance;
     }
 
     private final boolean mustDefineTclLib;
@@ -20,10 +20,10 @@ public final class SystemConfiguration {
     private static final int MIN_KILL_LIMIT = 10;
 
     private SystemConfiguration() {
-        mustDefineTclLib = hasFeatureEnabled("erlide.ericsson.user");
-        developer = hasFeatureEnabled("erlide.devel");
-        test = hasFeatureEnabled("erlide.test");
-        clearCacheAvailable = hasFeatureEnabled("erlide.clearCacheAvailable");
+        mustDefineTclLib = SystemConfiguration.hasFeatureEnabled("erlide.ericsson.user");
+        developer = SystemConfiguration.hasFeatureEnabled("erlide.devel");
+        test = SystemConfiguration.hasFeatureEnabled("erlide.test");
+        clearCacheAvailable = SystemConfiguration.hasFeatureEnabled("erlide.clearCacheAvailable");
         onWindows = System.getProperty("os.name").toLowerCase().contains("windows");
         setWarnProcessSizeLimit(
                 System.getProperty("erlide.process.heap.warn.limit", "10"));
@@ -87,7 +87,7 @@ public final class SystemConfiguration {
         } catch (final Exception e) {
             warnProcessSizeLimitMB = 10;
         }
-        warnProcessSizeLimitMB = Math.max(warnProcessSizeLimitMB, MIN_WARN_LIMIT);
+        warnProcessSizeLimitMB = Math.max(warnProcessSizeLimitMB, SystemConfiguration.MIN_WARN_LIMIT);
         if (warnProcessSizeLimitMB >= killProcessSizeLimitMB) {
             killProcessSizeLimitMB = warnProcessSizeLimitMB + 1;
         }
@@ -99,7 +99,7 @@ public final class SystemConfiguration {
         } catch (final Exception e) {
             killProcessSizeLimitMB = 30;
         }
-        killProcessSizeLimitMB = Math.max(killProcessSizeLimitMB, MIN_KILL_LIMIT);
+        killProcessSizeLimitMB = Math.max(killProcessSizeLimitMB, SystemConfiguration.MIN_KILL_LIMIT);
         if (warnProcessSizeLimitMB >= killProcessSizeLimitMB) {
             warnProcessSizeLimitMB = killProcessSizeLimitMB - 1;
         }

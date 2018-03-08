@@ -51,7 +51,7 @@ public class OtpErlangString extends OtpErlangObject {
         final int n = s.length();
         for (int i = 0; i < n; i = s.offsetByCodePoints(i, 1)) {
             final int cp = s.codePointAt(i);
-            if (!isValidCodePoint(cp)) {
+            if (!OtpErlangString.isValidCodePoint(cp)) {
                 throw new OtpErlangRangeException("Invalid CodePoint: " + cp);
             }
         }

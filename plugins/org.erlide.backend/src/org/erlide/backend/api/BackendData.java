@@ -82,7 +82,7 @@ public final class BackendData extends RuntimeData {
             final List<String> defList = Lists.newArrayList();
             final List<String> intMods = config
                     .getAttribute(ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, defList);
-            initialInterpretedModules = addBreakpointProjectsAndModules(getProjects(),
+            initialInterpretedModules = BackendData.addBreakpointProjectsAndModules(getProjects(),
                     intMods);
         } catch (final CoreException e1) {
             ErlLogger.warn(e1);
@@ -101,7 +101,7 @@ public final class BackendData extends RuntimeData {
     }
 
     public BackendData(final RuntimeInfo info) {
-        super(info, "run", getDefaultWorkingDir());
+        super(info, "run", BackendData.getDefaultWorkingDir());
         projects = Lists.newArrayList();
     }
 
@@ -195,8 +195,8 @@ public final class BackendData extends RuntimeData {
             throws CoreException {
         String prjs;
         prjs = config.getAttribute(ErlRuntimeAttributes.PROJECTS, "");
-        final String[] projectNames = prjs.length() == 0 ? new String[] {}
-                : prjs.split(PROJECT_NAME_SEPARATOR);
+        final String[] projectNames = prjs.isEmpty() ? new String[] {}
+                : prjs.split(BackendData.PROJECT_NAME_SEPARATOR);
         return gatherProjects(projectNames);
     }
 

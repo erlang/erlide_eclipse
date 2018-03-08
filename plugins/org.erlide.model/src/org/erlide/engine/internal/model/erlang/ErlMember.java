@@ -14,7 +14,8 @@ import org.erlide.engine.model.root.IErlModule;
  */
 public abstract class ErlMember extends SourceRefElement implements IErlMember {
 
-    int fNameRangeOffset, fNameRangeLength;
+    int fNameRangeOffset;
+    int fNameRangeLength;
 
     protected ErlMember(final IParent parent, final String name) {
         super(parent, name);
@@ -49,7 +50,7 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
     }
 
     protected static String uptoEndOfToken(final String s) {
-        if (s == null || s.length() == 0) {
+        if (s == null || s.isEmpty()) {
             return s;
         }
         int i = 0;

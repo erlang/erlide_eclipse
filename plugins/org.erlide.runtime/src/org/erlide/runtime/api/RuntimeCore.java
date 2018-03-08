@@ -14,24 +14,24 @@ public class RuntimeCore {
 
     public static final synchronized IRuntimeInfoCatalog getRuntimeInfoCatalog(
             final IRuntimeInfoSerializer serializer) {
-        if (runtimeInfoCatalog == null) {
+        if (RuntimeCore.runtimeInfoCatalog == null) {
             final RuntimeInfoCatalogData data = serializer.load();
 
-            runtimeInfoCatalog = new RuntimeInfoCatalog();
-            runtimeInfoCatalog.setRuntimes(data.runtimes, data.defaultRuntimeName,
+            RuntimeCore.runtimeInfoCatalog = new RuntimeInfoCatalog();
+            RuntimeCore.runtimeInfoCatalog.setRuntimes(data.runtimes, data.defaultRuntimeName,
                     data.erlideRuntimeName);
-            final RuntimeInfo runtime = runtimeInfoCatalog.getErlideRuntime();
+            final RuntimeInfo runtime = RuntimeCore.runtimeInfoCatalog.getErlideRuntime();
             if (!HostnameChecker.getInstance().detectHostNames(runtime.getOtpHome())) {
                 // XXX show troubleshooting page and re-detect
                 ErlLogger.error("no matching hostnames found!! Edit ~/.erlide.hosts");
             }
         }
-        return runtimeInfoCatalog;
+        return RuntimeCore.runtimeInfoCatalog;
     }
 
     public static IRuntimeInfoCatalog getRuntimeInfoCatalog() {
-        if (runtimeInfoCatalog != null) {
-            return runtimeInfoCatalog;
+        if (RuntimeCore.runtimeInfoCatalog != null) {
+            return RuntimeCore.runtimeInfoCatalog;
         }
         return null;
     }

@@ -48,7 +48,7 @@ public class ExceptionHandler {
      */
     public static void handle(final CoreException e, final String title,
             final String message) {
-        handle(e, ErlideUIPlugin.getActiveWorkbenchShell(), title, message);
+        ExceptionHandler.handle(e, ErlideUIPlugin.getActiveWorkbenchShell(), title, message);
     }
 
     /**
@@ -65,7 +65,7 @@ public class ExceptionHandler {
      */
     public static void handle(final CoreException e, final Shell parent,
             final String title, final String message) {
-        fgInstance.perform(e, parent, title, message);
+        ExceptionHandler.fgInstance.perform(e, parent, title, message);
     }
 
     /**
@@ -81,7 +81,7 @@ public class ExceptionHandler {
      */
     public static void handle(final InvocationTargetException e, final String title,
             final String message) {
-        handle(e, ErlideUIPlugin.getActiveWorkbenchShell(), title, message);
+        ExceptionHandler.handle(e, ErlideUIPlugin.getActiveWorkbenchShell(), title, message);
     }
 
     /**
@@ -98,7 +98,7 @@ public class ExceptionHandler {
      */
     public static void handle(final InvocationTargetException e, final Shell parent,
             final String title, final String message) {
-        fgInstance.perform(e, parent, title, message);
+        ExceptionHandler.fgInstance.perform(e, parent, title, message);
     }
 
     // ---- Hooks for subclasses to control exception handling
@@ -122,7 +122,7 @@ public class ExceptionHandler {
             perform((CoreException) target, shell, title, message);
         } else {
             ErlideUIPlugin.log(e);
-            if (e.getMessage() != null && e.getMessage().length() > 0) {
+            if (e.getMessage() != null && !e.getMessage().isEmpty()) {
                 displayMessageDialog(e.getMessage(), shell, title, message);
             } else {
                 displayMessageDialog(target.getMessage(), shell, title, message);
@@ -149,7 +149,7 @@ public class ExceptionHandler {
             msg.write(message);
             msg.write("\n\n"); //$NON-NLS-1$
         }
-        if (exceptionMessage == null || exceptionMessage.length() == 0) {
+        if (exceptionMessage == null || exceptionMessage.isEmpty()) {
             msg.write(ErlideUIMessages.ExceptionHandler_seeErrorLogMessage);
         } else {
             msg.write(exceptionMessage);
@@ -159,12 +159,12 @@ public class ExceptionHandler {
 
     public static void handle(final BackendException e, final Shell shell,
             final String title, final String message) {
-        fgInstance.perform(e, shell, title, message);
+        ExceptionHandler.fgInstance.perform(e, shell, title, message);
     }
 
     public static void handle(final RpcException e, final Shell shell, final String title,
             final String message) {
-        fgInstance.perform(e, shell, title, message);
+        ExceptionHandler.fgInstance.perform(e, shell, title, message);
     }
 
 }

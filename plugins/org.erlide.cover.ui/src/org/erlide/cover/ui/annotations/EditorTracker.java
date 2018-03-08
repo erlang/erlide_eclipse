@@ -59,10 +59,10 @@ public class EditorTracker implements ICoverAnnotationMarker {
     }
 
     public static synchronized EditorTracker getInstance() {
-        if (editorTracker == null) {
-            editorTracker = new EditorTracker(PlatformUI.getWorkbench());
+        if (EditorTracker.editorTracker == null) {
+            EditorTracker.editorTracker = new EditorTracker(PlatformUI.getWorkbench());
         }
-        return editorTracker;
+        return EditorTracker.editorTracker;
     }
 
     public void dispose() {

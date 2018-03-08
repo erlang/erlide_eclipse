@@ -31,7 +31,7 @@ public class LRUWorkingSetsList {
         public int compare(final IWorkingSet[] o1, final IWorkingSet[] o2) {
             final String s1 = o1.length > 0 ? o1[0].getLabel() : null;
             final String s2 = o2.length > 0 ? o2[0].getLabel() : null;
-            return collator.compare(s1, s2);
+            return WorkingSetsComparator.collator.compare(s1, s2);
         }
 
     }

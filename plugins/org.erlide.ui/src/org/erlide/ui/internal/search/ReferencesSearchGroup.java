@@ -129,7 +129,7 @@ public class ReferencesSearchGroup extends ActionGroup {
      * @return the menu label
      */
     protected String getName() {
-        return MENU_TEXT;
+        return ReferencesSearchGroup.MENU_TEXT;
     }
 
     @Override

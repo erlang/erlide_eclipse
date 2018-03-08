@@ -7,32 +7,32 @@ public class ErlTemplateCompletionPreferences {
     private static final boolean DEFAULT_INDENT_CODE = true;
     private static final String INDENT_CODE_PREFS_KEY = "templateIndentCode";
 
-    private static boolean hasPrefs = false;
-    private static boolean sIndentCode = DEFAULT_INDENT_CODE;
+    private static boolean hasPrefs;
+    private static boolean sIndentCode = ErlTemplateCompletionPreferences.DEFAULT_INDENT_CODE;
 
     public static boolean getIndentCode() {
-        if (!hasPrefs) {
-            getPrefs();
+        if (!ErlTemplateCompletionPreferences.hasPrefs) {
+            ErlTemplateCompletionPreferences.getPrefs();
         }
-        return sIndentCode;
+        return ErlTemplateCompletionPreferences.sIndentCode;
     }
 
     public static void setIndentCode(final boolean selection) {
-        sIndentCode = selection;
+        ErlTemplateCompletionPreferences.sIndentCode = selection;
     }
 
     public static void getDefaults() {
-        sIndentCode = DEFAULT_INDENT_CODE;
+        ErlTemplateCompletionPreferences.sIndentCode = ErlTemplateCompletionPreferences.DEFAULT_INDENT_CODE;
     }
 
     public static void putPrefs() {
-        ErlideUIPlugin.getPrefsNode().putBoolean(INDENT_CODE_PREFS_KEY, sIndentCode);
+        ErlideUIPlugin.getPrefsNode().putBoolean(ErlTemplateCompletionPreferences.INDENT_CODE_PREFS_KEY, ErlTemplateCompletionPreferences.sIndentCode);
     }
 
     public static void getPrefs() {
-        sIndentCode = ErlideUIPlugin.getPrefsNode().getBoolean(INDENT_CODE_PREFS_KEY,
-                DEFAULT_INDENT_CODE);
-        hasPrefs = true;
+        ErlTemplateCompletionPreferences.sIndentCode = ErlideUIPlugin.getPrefsNode().getBoolean(ErlTemplateCompletionPreferences.INDENT_CODE_PREFS_KEY,
+                ErlTemplateCompletionPreferences.DEFAULT_INDENT_CODE);
+        ErlTemplateCompletionPreferences.hasPrefs = true;
     }
 
 }

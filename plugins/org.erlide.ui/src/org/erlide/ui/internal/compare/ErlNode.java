@@ -40,7 +40,8 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
 
     public static ErlNode createErlNode(final ErlNode parent, final IErlElement element,
             final IDocument doc) {
-        int start = 0, length = 0;
+        int start = 0;
+        int length = 0;
         String name = element.toString();
         if (element instanceof IErlModule) {
             final IErlModule m = (IErlModule) element;
@@ -79,8 +80,10 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
     }
 
     private Position rangeUnion(final Position a, final Position b) {
-        final int offsetA = a.getOffset(), offsetB = b.getOffset();
-        final int endA = offsetA + a.getLength(), endB = offsetB + b.getLength();
+        final int offsetA = a.getOffset();
+        final int offsetB = b.getOffset();
+        final int endA = offsetA + a.getLength();
+        final int endB = offsetB + b.getLength();
         final int end = Math.max(endA, endB);
         final int offset = Math.min(offsetA, offsetB);
         return new Position(offset, end - offset);

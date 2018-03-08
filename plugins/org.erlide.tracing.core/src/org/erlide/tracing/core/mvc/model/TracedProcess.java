@@ -37,10 +37,10 @@ public class TracedProcess {
      *            tuple describing process
      */
     public TracedProcess(final OtpErlangTuple tuple) {
-        name = tuple.elementAt(NAME).toString();
-        pid = (OtpErlangPid) tuple.elementAt(PID);
-        initialCall = tuple.elementAt(INITIAL_CALL).toString();
-        node = tuple.elementAt(NODE_NAME).toString();
+        name = tuple.elementAt(TracedProcess.NAME).toString();
+        pid = (OtpErlangPid) tuple.elementAt(TracedProcess.PID);
+        initialCall = tuple.elementAt(TracedProcess.INITIAL_CALL).toString();
+        node = tuple.elementAt(TracedProcess.NODE_NAME).toString();
     }
 
     public boolean isSelected() {

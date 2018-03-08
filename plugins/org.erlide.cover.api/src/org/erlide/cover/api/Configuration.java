@@ -34,7 +34,7 @@ public class Configuration implements IConfiguration {
      *            name of an Erlang project
      */
     public void setProject(final String name) {
-        if (name == null || name.length() == 0) {
+        if (name == null || name.isEmpty()) {
             project = null;
         } else {
             project = ErlangEngine.getInstance().getModel().getErlangProject(

@@ -24,7 +24,7 @@ package com.ericsson.otp.erlang;
  * {@link OtpNode OtpNode} and {@link OtpSelf OtpSelf}.
  */
 public class OtpLocalNode extends AbstractNode {
-    private int serial = 0;
+    private int serial;
     private int pidCount = 1;
     private int portCount = 1;
     private int refId[];

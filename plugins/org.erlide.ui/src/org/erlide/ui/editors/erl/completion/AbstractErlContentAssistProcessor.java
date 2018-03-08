@@ -40,7 +40,7 @@ import com.google.common.collect.Lists;
 public abstract class AbstractErlContentAssistProcessor
         implements IContentAssistProcessor {
 
-    public boolean restarted = false;
+    public boolean restarted;
 
     private final class CompletionListener
             implements ICompletionListener, ICompletionListenerExtension {

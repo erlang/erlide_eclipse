@@ -158,7 +158,7 @@ public class ErlangConsolePartitioner implements IConsoleDocumentPartitioner {
 
     @Override
     public String[] getLegalContentTypes() {
-        return LEGAL_CONTENT_TYPES;
+        return ErlangConsolePartitioner.LEGAL_CONTENT_TYPES;
     }
 
     @Override

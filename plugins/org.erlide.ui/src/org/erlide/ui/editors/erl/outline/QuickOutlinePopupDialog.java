@@ -508,7 +508,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
      *            <code>true</code> if the viewer should be updated
      */
     void setMatcherString(final String pattern, final boolean update) {
-        if (pattern.length() == 0) {
+        if (pattern.isEmpty()) {
             fStringMatcher = null;
         } else {
             fStringMatcher = new StringMatcher(pattern, true, false);

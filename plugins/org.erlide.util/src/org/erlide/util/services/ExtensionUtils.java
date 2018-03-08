@@ -78,11 +78,11 @@ public final class ExtensionUtils {
         if (type instanceof Class) {
             return (Class) type;
         } else if (type instanceof ParameterizedType) {
-            return getClass(((ParameterizedType) type).getRawType());
+            return ExtensionUtils.getClass(((ParameterizedType) type).getRawType());
         } else if (type instanceof GenericArrayType) {
             final Type componentType = ((GenericArrayType) type)
                     .getGenericComponentType();
-            final Class<?> componentClass = getClass(componentType);
+            final Class<?> componentClass = ExtensionUtils.getClass(componentType);
             if (componentClass != null) {
                 return Array.newInstance(componentClass, 0).getClass();
             }
@@ -137,7 +137,7 @@ public final class ExtensionUtils {
     @SuppressWarnings("unchecked")
     public static Object getParticipant(final String type) {
         // only one participant may be used for this
-        final List<Object> participants = (List<Object>) getParticipants(type);
+        final List<Object> participants = (List<Object>) ExtensionUtils.getParticipants(type);
         if (participants.size() == 1) {
             return participants.get(0);
         }
@@ -157,12 +157,12 @@ public final class ExtensionUtils {
      * @return a list of classes created from those extensions
      */
     public static List<?> getParticipants(final String type) {
-        if (testingParticipants != null) {
-            return testingParticipants.get(type);
+        if (ExtensionUtils.testingParticipants != null) {
+            return ExtensionUtils.testingParticipants.get(type);
         }
 
         final List<Object> list = Lists.newArrayList();
-        final IExtension[] extensions = getExtensions(type);
+        final IExtension[] extensions = ExtensionUtils.getExtensions(type);
         // For each extension ...
         for (final IExtension extension : extensions) {
             final IConfigurationElement[] elements = extension.getConfigurationElements();

@@ -96,7 +96,7 @@ public class RpcMonitor {
         }
     }
 
-    private static int callCount = 0;
+    private static int callCount;
     private static final Map<OtpErlangRef, RpcData> ongoing = Maps.newHashMap();
     private static Comparator<RpcInfo> timeComparator = new Comparator<RpcInfo>() {
         @Override
@@ -115,14 +115,14 @@ public class RpcMonitor {
 
     public static synchronized void recordResponse(final OtpErlangRef ref,
             final OtpErlangObject result) {
-        if (DISABLED) {
+        if (RpcMonitor.DISABLED) {
             return;
         }
-        final RpcData data = ongoing.remove(ref);
+        final RpcData data = RpcMonitor.ongoing.remove(ref);
         final long now = System.currentTimeMillis();
         final RpcInfo info = new RpcInfo(data, result, now);
-        add(largest, sizeComparator, info);
-        add(slowest, timeComparator, info);
+        RpcMonitor.add(RpcMonitor.largest, RpcMonitor.sizeComparator, info);
+        RpcMonitor.add(RpcMonitor.slowest, RpcMonitor.timeComparator, info);
     }
 
     private static void add(final List<RpcInfo> list,
@@ -134,7 +134,7 @@ public class RpcMonitor {
         } else {
             list.add(index, info);
         }
-        if (list.size() > COUNT) {
+        if (list.size() > RpcMonitor.COUNT) {
             list.remove(list.size() - 1);
         }
     }
@@ -142,40 +142,40 @@ public class RpcMonitor {
     public static OtpErlangRef recordRequest(final OtpNode node, final String peer,
             final String module, final String fun, final OtpErlangObject[] args,
             final long callSize) {
-        callCount++;
-        if (DISABLED) {
+        RpcMonitor.callCount++;
+        if (RpcMonitor.DISABLED) {
             return null;
         }
         final RpcData data = new RpcData(System.currentTimeMillis(), peer, module, fun,
                 args, callSize);
         final OtpErlangRef ref = node.createRef();
-        ongoing.put(ref, data);
+        RpcMonitor.ongoing.put(ref, data);
         return ref;
     }
 
     public static void dump() {
-        dump(System.out, COUNT, FULL);
+        RpcMonitor.dump(System.out, RpcMonitor.COUNT, RpcMonitor.FULL);
     }
 
     public static void dump(final String file) {
-        dump(file, COUNT, FULL);
+        RpcMonitor.dump(file, RpcMonitor.COUNT, RpcMonitor.FULL);
     }
 
     public static void dump(final String file, final int n) {
-        dump(file, n, FULL);
+        RpcMonitor.dump(file, n, RpcMonitor.FULL);
     }
 
     public static void dump(final String file, final boolean full) {
-        dump(file, COUNT, full);
+        RpcMonitor.dump(file, RpcMonitor.COUNT, full);
     }
 
     public static void dump(final String fileName, final int n, final boolean full) {
-        if (DISABLED) {
+        if (RpcMonitor.DISABLED) {
             return;
         }
         try (final PrintStream os = new PrintStream(
                 new FileOutputStream(fileName, true))) {
-            dump(os, n, full);
+            RpcMonitor.dump(os, n, full);
         } catch (final FileNotFoundException e) {
             ErlLogger.error(e);
         }
@@ -186,19 +186,19 @@ public class RpcMonitor {
         final String delim = "--------------------------------------------------------------";
 
         out.println("\n" + delim);
-        out.format("*** RpcMonitor statistics%n - %d calls%n", callCount);
+        out.format("*** RpcMonitor statistics%n - %d calls%n", RpcMonitor.callCount);
         out.println(delim);
         out.println();
-        out.format("Slowest %d calls%n", slowest.size());
+        out.format("Slowest %d calls%n", RpcMonitor.slowest.size());
         out.println(delim);
-        for (final RpcInfo info : slowest) {
+        for (final RpcInfo info : RpcMonitor.slowest) {
             info.dump(out, full);
         }
         out.println(delim);
         out.println();
-        out.format("Largest %d calls%n", largest.size());
+        out.format("Largest %d calls%n", RpcMonitor.largest.size());
         out.println(delim);
-        for (final RpcInfo info : largest) {
+        for (final RpcInfo info : RpcMonitor.largest) {
             if (info != null) {
                 info.dump(out, full);
             }

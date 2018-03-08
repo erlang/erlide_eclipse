@@ -41,7 +41,7 @@ public class RuntimeData {
     protected EnumSet<ErlDebugFlags> debugFlags;
     protected Set<String> initialInterpretedModules;
 
-    protected boolean reportErrors = false;
+    protected boolean reportErrors;
 
     public RuntimeData() {
         cookie = "";
@@ -142,7 +142,7 @@ public class RuntimeData {
     }
 
     public void setNodeName(final String nodeName) {
-        if (!validateNodeName(nodeName)) {
+        if (!RuntimeData.validateNodeName(nodeName)) {
             throw new IllegalStateException("Erlang node can't be called " + nodeName);
         }
         this.nodeName = nodeName;

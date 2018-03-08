@@ -139,7 +139,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         };
         startStopAction.setImageDescriptor(
                 DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
-        startStopAction.setToolTipText(START_LABEL);
+        startStopAction.setToolTipText(ControlPanelView.START_LABEL);
         getViewSite().getActionBars().getToolBarManager().add(startStopAction);
     }
 
@@ -186,7 +186,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             new ProgressMonitorDialog(shell).run(true, false, task);
             startStopAction.setImageDescriptor(
                     DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
-            startStopAction.setToolTipText(START_LABEL);
+            startStopAction.setToolTipText(ControlPanelView.START_LABEL);
             startStopAction.setEnabled(true);
             TracingStatusHandler.handleStatus(status);
         } catch (final Exception e) {
@@ -824,7 +824,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                 startStopAction
                         .setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                                 .getImageDescriptor(ISharedImages.IMG_ELCL_STOP));
-                startStopAction.setToolTipText(STOP_LABEL);
+                startStopAction.setToolTipText(ControlPanelView.STOP_LABEL);
             }
         });
     }

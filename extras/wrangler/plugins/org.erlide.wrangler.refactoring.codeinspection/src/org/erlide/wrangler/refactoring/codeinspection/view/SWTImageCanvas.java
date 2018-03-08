@@ -195,8 +195,10 @@ public class SWTImageCanvas extends Canvas {
         }
 
         AffineTransform af = transform;
-        final double sx = af.getScaleX(), sy = af.getScaleY();
-        double tx = af.getTranslateX(), ty = af.getTranslateY();
+        final double sx = af.getScaleX();
+        final double sy = af.getScaleY();
+        double tx = af.getTranslateX();
+        double ty = af.getTranslateY();
         if (tx > 0) {
             tx = 0;
         }
@@ -208,7 +210,8 @@ public class SWTImageCanvas extends Canvas {
         horizontal.setIncrement(getClientArea().width / 100);
         horizontal.setPageIncrement(getClientArea().width);
         final Rectangle imageBound = sourceImage.getBounds();
-        final int cw = getClientArea().width, ch = getClientArea().height;
+        final int cw = getClientArea().width;
+        final int ch = getClientArea().height;
         if (imageBound.width * sx > cw) { /* image is wider than client area */
             horizontal.setMaximum((int) (imageBound.width * sx));
             horizontal.setEnabled(true);
@@ -401,7 +404,8 @@ public class SWTImageCanvas extends Canvas {
             return;
         }
         final Rectangle rect = getClientArea();
-        final int w = rect.width, h = rect.height;
+        final int w = rect.width;
+        final int h = rect.height;
         final double dx = (double) w / 2;
         final double dy = (double) h / 2;
         centerZoom(dx, dy, ZOOMIN_RATE, transform);
@@ -415,7 +419,8 @@ public class SWTImageCanvas extends Canvas {
             return;
         }
         final Rectangle rect = getClientArea();
-        final int w = rect.width, h = rect.height;
+        final int w = rect.width;
+        final int h = rect.height;
         final double dx = (double) w / 2;
         final double dy = (double) h / 2;
         centerZoom(dx, dy, ZOOMOUT_RATE, transform);

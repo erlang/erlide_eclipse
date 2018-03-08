@@ -31,7 +31,7 @@ public class IOServer implements Runnable {
     private final IOCallback callback;
     private final OtpMbox mbox;
     private final Thread thread;
-    private volatile boolean stopped = false;
+    private volatile boolean stopped;
 
     public IOServer(final OtpMbox box, final IOCallback callback) {
         this.callback = callback;

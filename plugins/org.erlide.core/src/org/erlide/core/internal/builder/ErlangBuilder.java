@@ -32,15 +32,15 @@ public abstract class ErlangBuilder {
         public static BuildKind get(final int kind) {
             switch (kind) {
             case IncrementalProjectBuilder.AUTO_BUILD:
-                return AUTO;
+                return BuildKind.AUTO;
             case IncrementalProjectBuilder.CLEAN_BUILD:
-                return CLEAN;
+                return BuildKind.CLEAN;
             case IncrementalProjectBuilder.FULL_BUILD:
-                return FULL;
+                return BuildKind.FULL;
             case IncrementalProjectBuilder.INCREMENTAL_BUILD:
-                return INCREMENTAL;
+                return BuildKind.INCREMENTAL;
             default:
-                return NONE;
+                return BuildKind.NONE;
             }
         }
     }

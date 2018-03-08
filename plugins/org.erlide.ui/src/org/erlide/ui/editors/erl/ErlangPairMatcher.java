@@ -191,7 +191,8 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
     private static class DocumentPartitionAccessor {
 
         private final IDocument fDocument;
-        private final String fPartitioning, fPartition;
+        private final String fPartitioning;
+        private final String fPartition;
         private ITypedRegion fCachedPartition;
 
         /**
@@ -300,7 +301,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
          * @return positioning information about the region containing the position
          */
         private ITypedRegion getPartition(final int pos) {
-            if (fCachedPartition == null || !contains(fCachedPartition, pos)) {
+            if (fCachedPartition == null || !DocumentPartitionAccessor.contains(fCachedPartition, pos)) {
                 try {
                     fCachedPartition = TextUtilities.getPartition(fDocument,
                             fPartitioning, pos, false);
@@ -341,7 +342,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
             return getAllCharacters().contains(s);
         }
 
-        private Set<String> fStringsCache = null;
+        private Set<String> fStringsCache;
 
         /**
          * @return A set containing all characters occurring in character pairs.

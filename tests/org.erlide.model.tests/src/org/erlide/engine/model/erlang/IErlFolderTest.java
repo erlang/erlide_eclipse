@@ -41,8 +41,8 @@ public class IErlFolderTest extends ErlModelTestBase {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         ErlModelTestBase.setUpBeforeClass();
-        project2 = projects[1];
-        final IProject workspaceProject = project2.getWorkspaceProject();
+        IErlFolderTest.project2 = ErlModelTestBase.projects[1];
+        final IProject workspaceProject = IErlFolderTest.project2.getWorkspaceProject();
         final String src = "src";
         final IFolder folder = workspaceProject.getFolder(src);
         final String below = "below";
@@ -50,7 +50,7 @@ public class IErlFolderTest extends ErlModelTestBase {
         ErlideTestUtils.createFolderHelper(folder2);
         final IPath belowPath = new Path(src).append(below);
         final Collection<IPath> sourceDirs = Lists.newArrayList(belowPath);
-        ((ErlProject) project2).setSourceDirs(sourceDirs);
+        ((ErlProject) IErlFolderTest.project2).setSourceDirs(sourceDirs);
     }
 
     // Collection<IErlModule> getModules() throws ErlModelException;
@@ -81,9 +81,9 @@ public class IErlFolderTest extends ErlModelTestBase {
     // boolean isSourcePathParent();
     @Test
     public void isSourcePathParent() throws Exception {
-        final IErlFolder srcFolder2 = (IErlFolder) project2.getChildNamed("src");
-        final IErlFolder includeFolder2 = (IErlFolder) project2.getChildNamed("include");
-        final IErlFolder ebinFolder2 = (IErlFolder) project2.getChildNamed("ebin");
+        final IErlFolder srcFolder2 = (IErlFolder) IErlFolderTest.project2.getChildNamed("src");
+        final IErlFolder includeFolder2 = (IErlFolder) IErlFolderTest.project2.getChildNamed("include");
+        final IErlFolder ebinFolder2 = (IErlFolder) IErlFolderTest.project2.getChildNamed("ebin");
         assertTrue(srcFolder2.isSourcePathParent());
         assertFalse(includeFolder2.isSourcePathParent());
         assertFalse(ebinFolder2.isSourcePathParent());

@@ -153,7 +153,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 
     protected String decorateText(final String text0, final Object element) {
         String text = text0;
-        if (fLabelDecorators != null && text.length() > 0) {
+        if (fLabelDecorators != null && !text.isEmpty()) {
             for (final ILabelDecorator decorator : fLabelDecorators) {
                 text = decorator.decorateText(text, element);
             }
@@ -163,7 +163,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 
     @Override
     public String getText(final Object element) {
-        final String label = getLabelString(element);
+        final String label = ErlangLabelProvider.getLabelString(element);
         return decorateText(label, element);
     }
 
@@ -177,10 +177,10 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         } else {
             label = element.toString();
         }
-        if (label.length() > LABEL_LENGTH_LIMIT) {
-            int i = label.indexOf(',', LABEL_LENGTH_LIMIT);
+        if (label.length() > ErlangLabelProvider.LABEL_LENGTH_LIMIT) {
+            int i = label.indexOf(',', ErlangLabelProvider.LABEL_LENGTH_LIMIT);
             if (i == -1) {
-                i = LABEL_LENGTH_LIMIT;
+                i = ErlangLabelProvider.LABEL_LENGTH_LIMIT;
             }
             label = label.substring(0, i) + "...";
         }

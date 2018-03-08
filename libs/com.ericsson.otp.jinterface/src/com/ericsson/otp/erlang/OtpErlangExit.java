@@ -35,8 +35,8 @@ package com.ericsson.otp.erlang;
 public class OtpErlangExit extends OtpErlangException {
     private static final long serialVersionUID = 1L;
 
-    OtpErlangObject reason = null;
-    OtpErlangPid pid = null;
+    OtpErlangObject reason;
+    OtpErlangPid pid;
 
     /**
      * Create an OtpErlangExit exception with the given reason.

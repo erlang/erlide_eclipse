@@ -61,7 +61,7 @@ public class Backend implements IStreamListener, IBackend {
     private final BackendData data;
     private ErlangDebugTarget debugTarget;
     protected final IBackendManager backendManager;
-    private boolean disposed = false;
+    private boolean disposed;
 
     public Backend(final BackendData data, @NonNull final IOtpNodeProxy runtime,
             final IBackendManager backendManager) {
@@ -125,11 +125,11 @@ public class Backend implements IStreamListener, IBackend {
         return runtime.isRunning();
     }
 
-    public void removePath(final @NonNull String path) {
+    public void removePath(@NonNull final String path) {
         codeManager.removePath(path);
     }
 
-    public void addPath(final boolean usePathZ, final @NonNull String path) {
+    public void addPath(final boolean usePathZ, @NonNull final String path) {
         codeManager.addPath(usePathZ, path);
     }
 
@@ -218,7 +218,7 @@ public class Backend implements IStreamListener, IBackend {
         final IProject project = eproject.getWorkspaceProject();
         final String outDir = project.getLocation()
                 .append(eproject.getProperties().getOutputDir()).toOSString();
-        if (outDir.length() > 0) {
+        if (!outDir.isEmpty()) {
             final boolean accessible = BackendUtils.isAccessibleDir(getOtpRpc(), outDir);
             if (accessible) {
                 addPath(false/* prefs.getUsePathZ() */, outDir);
@@ -238,7 +238,7 @@ public class Backend implements IStreamListener, IBackend {
             final IProject project = eproject.getWorkspaceProject();
             final String outDir = project.getLocation()
                     .append(eproject.getProperties().getOutputDir()).toOSString();
-            if (outDir.length() > 0) {
+            if (!outDir.isEmpty()) {
                 removePath(outDir);
                 // TODO unloadBeamsFromDir(outDir); ?
             }
@@ -300,9 +300,9 @@ public class Backend implements IStreamListener, IBackend {
 
     void runInitial(final String module, final String function, final String args) {
         try {
-            if (module.length() > 0 && function.length() > 0) {
+            if (!module.isEmpty() && !function.isEmpty()) {
                 ErlLogger.debug("calling startup function %s:%s", module, function);
-                if (args.length() > 0) {
+                if (!args.isEmpty()) {
                     getOtpRpc().cast(module, function, "s", args);
                 } else {
                     getOtpRpc().cast(module, function, "");

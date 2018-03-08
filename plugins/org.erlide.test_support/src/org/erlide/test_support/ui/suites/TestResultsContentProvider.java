@@ -33,7 +33,7 @@ class TestResultsContentProvider implements ITreeContentProvider {
     @Override
     public Object[] getElements(final Object inputElement) {
         if (myEvents.isEmpty()) {
-            return NO_RESULTS_MSG;
+            return TestResultsContentProvider.NO_RESULTS_MSG;
         }
         return myEvents.toArray();
     }
@@ -59,7 +59,7 @@ class TestResultsContentProvider implements ITreeContentProvider {
             final FailReason stack = (FailReason) parentElement;
             return stack.getStackItems().toArray();
         }
-        return NO_CHILDREN;
+        return TestResultsContentProvider.NO_CHILDREN;
     }
 
     @Override

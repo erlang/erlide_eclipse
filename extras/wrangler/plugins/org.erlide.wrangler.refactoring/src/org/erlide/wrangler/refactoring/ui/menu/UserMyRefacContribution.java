@@ -24,7 +24,7 @@ public class UserMyRefacContribution extends CompoundContributionItem {
     protected IContributionItem[] getContributionItems() {
         final List<UserRefactoringInfo> refacs = UserRefactoringsManager.getInstance()
                 .getMyElementary();
-        if (refacs.size() == 0) {
+        if (refacs.isEmpty()) {
             final CommandContributionItemParameter param = new CommandContributionItemParameter(
                     PlatformUI.getWorkbench(), null,
                     "org.erlide.wrangler.refactoring.empty",

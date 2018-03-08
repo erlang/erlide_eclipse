@@ -4,6 +4,6 @@ import org.eclipse.lsp4j.InitializeParams;
 
 public abstract class ErlangInitializeParams extends InitializeParams {
 
-    abstract public String getStateDir();
+    public abstract String getStateDir();
 
 }

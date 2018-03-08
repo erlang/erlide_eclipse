@@ -18,12 +18,12 @@ import org.eclipse.osgi.util.NLS;
 /**
  * Helper class to get NLSed messages.
  */
-final public class ErlangEditorMessages extends NLS {
+public final class ErlangEditorMessages extends NLS {
 
     private static final String BUNDLE_FOR_CONSTRUCTED_KEYS = "org.erlide.ui.editors.erl.ConstructedErlangEditorMessages";//$NON-NLS-1$
 
     private static final ResourceBundle fgBundleForConstructedKeys = ResourceBundle
-            .getBundle(BUNDLE_FOR_CONSTRUCTED_KEYS);
+            .getBundle(ErlangEditorMessages.BUNDLE_FOR_CONSTRUCTED_KEYS);
 
     /**
      * Returns the message bundle which contains constructed keys.
@@ -32,7 +32,7 @@ final public class ErlangEditorMessages extends NLS {
      * @return the message bundle
      */
     public static ResourceBundle getBundleForConstructedKeys() {
-        return fgBundleForConstructedKeys;
+        return ErlangEditorMessages.fgBundleForConstructedKeys;
     }
 
     private static final String BUNDLE_NAME = ErlangEditorMessages.class.getName();
@@ -140,6 +140,6 @@ final public class ErlangEditorMessages extends NLS {
     public static String ContentAssistProposal_description;
 
     static {
-        NLS.initializeMessages(BUNDLE_NAME, ErlangEditorMessages.class);
+        NLS.initializeMessages(ErlangEditorMessages.BUNDLE_NAME, ErlangEditorMessages.class);
     }
 }

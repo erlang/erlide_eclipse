@@ -55,9 +55,9 @@ public class ComboDialogField extends DialogField {
         assertEnoughColumns(nColumns);
 
         final Label label = getLabelControl(parent);
-        label.setLayoutData(gridDataForLabel(1));
+        label.setLayoutData(DialogField.gridDataForLabel(1));
         final Combo combo = getComboControl(parent);
-        combo.setLayoutData(gridDataForCombo(nColumns - 1));
+        combo.setLayoutData(ComboDialogField.gridDataForCombo(nColumns - 1));
 
         return new Control[] { label, combo };
     }

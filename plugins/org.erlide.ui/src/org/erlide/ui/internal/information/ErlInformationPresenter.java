@@ -77,7 +77,7 @@ public class ErlInformationPresenter
             }
             buf.append(s);
             if (found) {
-                buf.append(LINE_DELIM);
+                buf.append(ErlInformationPresenter.LINE_DELIM);
             }
         }
         return buf.toString();
@@ -212,9 +212,9 @@ public class ErlInformationPresenter
 
                 if (firstLineProcessed) {
                     if (!lastLineFormatted) {
-                        append(buffer, LINE_DELIM, null);
+                        append(buffer, ErlInformationPresenter.LINE_DELIM, null);
                     } else {
-                        append(buffer, LINE_DELIM, presentation);
+                        append(buffer, ErlInformationPresenter.LINE_DELIM, presentation);
                         if (lastLineIndent != null) {
                             append(buffer, lastLineIndent, presentation);
                         }
@@ -238,7 +238,7 @@ public class ErlInformationPresenter
             }
 
             if (line != null) {
-                append(buffer, LINE_DELIM, lineFormatted ? presentation : null);
+                append(buffer, ErlInformationPresenter.LINE_DELIM, lineFormatted ? presentation : null);
             }
             return trim(buffer, presentation);
 

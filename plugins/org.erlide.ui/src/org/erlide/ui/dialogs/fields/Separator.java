@@ -51,7 +51,7 @@ public class Separator extends DialogField {
         assertEnoughColumns(nColumns);
 
         final Control separator = getSeparator(parent);
-        separator.setLayoutData(gridDataForSeperator(nColumns, height));
+        separator.setLayoutData(Separator.gridDataForSeperator(nColumns, height));
 
         return new Control[] { separator };
     }

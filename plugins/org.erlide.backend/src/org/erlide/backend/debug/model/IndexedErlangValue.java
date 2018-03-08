@@ -58,7 +58,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
             final String s = os.stringValue();
             // TODO real encoding?
             final byte[] b = s.getBytes(Charsets.ISO_8859_1);
-            if (!looksLikeAscii(b)) {
+            if (!IndexedErlangValue.looksLikeAscii(b)) {
                 return new OtpErlangList(s);
             }
         }
@@ -168,7 +168,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
             throws DebugException {
         if (o instanceof OtpErlangBinary) {
             final OtpErlangBinary b = (OtpErlangBinary) o;
-            return getBinaryValueString(b);
+            return IndexedErlangValue.getBinaryValueString(b);
         } else if (o instanceof OtpErlangTuple) {
             if (recordCheck) {
                 final IErlRecordDef r = checkRecord(o);
@@ -192,7 +192,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         try {
             children = r.getChildren();
         } catch (final ErlModelException e) {
-            children = EMPTY_LIST;
+            children = IndexedErlangValue.EMPTY_LIST;
         }
         final OtpErlangTuple t = (OtpErlangTuple) o;
         b.append(t.elementAt(0)).append("#{");
@@ -238,7 +238,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         if (b.size() > 0) {
             final byte[] bytes = b.binaryValue();
             CharBuffer cb = null;
-            if (looksLikeAscii(bytes)) {
+            if (IndexedErlangValue.looksLikeAscii(bytes)) {
                 final Charset[] css = { Charsets.UTF_8, Charsets.ISO_8859_1 };
                 final Charset[] tryCharsets = css;
                 for (final Charset cset : tryCharsets) {

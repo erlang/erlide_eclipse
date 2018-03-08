@@ -48,7 +48,7 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
         dupsInFun,
         logCmd,
         noOfClauses,
-        dupsInClause;
+        dupsInClause
         //@formatter:on
     }
 
@@ -116,7 +116,7 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
         }
     }
 
-    protected HashMap<GenFunReturnParameterName, OtpErlangObject> parameters = null;
+    protected HashMap<GenFunReturnParameterName, OtpErlangObject> parameters;
 
     /**
      * Get parameters in a map

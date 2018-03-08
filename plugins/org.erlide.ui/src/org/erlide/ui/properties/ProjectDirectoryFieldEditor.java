@@ -33,7 +33,7 @@ public class ProjectDirectoryFieldEditor extends DirectoryFieldEditor {
     protected boolean doCheckState() {
         String fileName = getTextControl().getText();
         fileName = fileName.trim();
-        if (fileName.length() == 0 && isEmptyStringAllowed()) {
+        if (fileName.isEmpty() && isEmptyStringAllowed()) {
             return true;
         }
         if (project != null) {

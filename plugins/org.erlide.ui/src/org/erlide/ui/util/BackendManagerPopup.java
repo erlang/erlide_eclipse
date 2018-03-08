@@ -27,7 +27,7 @@ public final class BackendManagerPopup implements IBackendListener {
     }
 
     public static void init() {
-        BackendCore.getBackendManager().addBackendListener(fInstance);
+        BackendCore.getBackendManager().addBackendListener(BackendManagerPopup.fInstance);
     }
 
     @Override

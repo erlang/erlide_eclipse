@@ -40,10 +40,10 @@ public class CoveragePerformer implements ICoveragePerformer {
     }
 
     public static synchronized CoveragePerformer getPerformer() {
-        if (performer == null) {
-            performer = new CoveragePerformer();
+        if (CoveragePerformer.performer == null) {
+            CoveragePerformer.performer = new CoveragePerformer();
         }
-        return performer;
+        return CoveragePerformer.performer;
     }
 
     /**

@@ -12,7 +12,7 @@ public enum ErlDebugFlags {
     // @formatter:on
 
     public static final EnumSet<ErlDebugFlags> DEFAULT_DEBUG_FLAGS = EnumSet
-            .of(ATTACH_ON_BREAKPOINT);
+            .of(ErlDebugFlags.ATTACH_ON_BREAKPOINT);
 
     private final int flag;
 

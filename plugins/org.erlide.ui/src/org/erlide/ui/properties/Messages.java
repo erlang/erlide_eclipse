@@ -33,6 +33,6 @@ public final class Messages extends NLS {
     // //////////////////////////////////////////////////////////////////////////
     static {
         // load message values from bundle file
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+        NLS.initializeMessages(Messages.BUNDLE_NAME, Messages.class);
     }
 }

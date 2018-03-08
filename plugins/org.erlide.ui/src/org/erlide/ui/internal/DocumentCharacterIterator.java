@@ -108,7 +108,7 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
                 // ignore
             }
         }
-        return DONE;
+        return CharacterIterator.DONE;
     }
 
     /*
@@ -127,7 +127,7 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
         if (fIndex > getBeginIndex()) {
             return setIndex(fIndex - 1);
         }
-        return DONE;
+        return CharacterIterator.DONE;
     }
 
     /*
@@ -208,7 +208,7 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
                 return fDocument.getChar(getBeginIndex() + index);
             } catch (final BadLocationException e) {
                 // ignore and return DONE
-                return DONE;
+                return CharacterIterator.DONE;
             }
         }
         throw new IndexOutOfBoundsException();

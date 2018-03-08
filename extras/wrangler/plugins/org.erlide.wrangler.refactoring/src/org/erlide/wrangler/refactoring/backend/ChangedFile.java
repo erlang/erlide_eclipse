@@ -88,7 +88,7 @@ public class ChangedFile {
         final File tf = new File(oldPath);
         final List<TextEdit> edits = ChangesetMaker.createEdits(tf, newFileContent);
         final MultiTextEdit multiEdit = new MultiTextEdit();
-        if (edits.size() != 0) {
+        if (!edits.isEmpty()) {
             for (final TextEdit edit : edits) {
                 multiEdit.addChild(edit);
             }

@@ -24,7 +24,7 @@ public class JvmCheck implements IStartup, JvmCheckConstants_Actual {
 	}
 	
 	public static int getJavaVersion() {
-	    String versionProperty = getJavaVersionProperty();
+	    String versionProperty = JvmCheck.getJavaVersionProperty();
 	    String[] versionSegments = versionProperty.split("\\.");
 	    
 	    if(versionSegments.length < 2) {
@@ -47,9 +47,9 @@ public class JvmCheck implements IStartup, JvmCheckConstants_Actual {
 
     @Override
 	public void earlyStartup() {
-		final int javaVersion = getJavaVersion();
+		final int javaVersion = JvmCheck.getJavaVersion();
 		
-		if(javaVersion >= REQUIRED_JAVA_VERSION)
+		if(javaVersion >= JvmCheckConstants_Actual.REQUIRED_JAVA_VERSION)
 			return;
 		
 		// Show error message to the user, because the platform just silently fails. 
@@ -58,10 +58,10 @@ public class JvmCheck implements IStartup, JvmCheckConstants_Actual {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				Shell activeShell = getActiveWorkbenchShell();
+				Shell activeShell = JvmCheck.getActiveWorkbenchShell();
 				
-				String message = "Could not start " + FEATURE_NAME + " because Java version is: " + javaVersion 
-						+ "\nVersion " + REQUIRED_JAVA_VERSION + " is required";
+				String message = "Could not start " + JvmCheckConstants_Actual.FEATURE_NAME + " because Java version is: " + javaVersion
+						+ "\nVersion " + JvmCheckConstants_Actual.REQUIRED_JAVA_VERSION + " is required";
 				
 				System.err.println(message);
 				
@@ -81,7 +81,7 @@ public class JvmCheck implements IStartup, JvmCheckConstants_Actual {
 	
 	/** Gets the active workbench shell. */
 	public static Shell getActiveWorkbenchShell() {
-		IWorkbenchWindow window = getActiveWorkbenchWindow();
+		IWorkbenchWindow window = JvmCheck.getActiveWorkbenchWindow();
 		if(window != null) {
 			return window.getShell();
 		}

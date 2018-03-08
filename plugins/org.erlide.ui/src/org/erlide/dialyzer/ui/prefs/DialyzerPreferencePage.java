@@ -448,11 +448,11 @@ public class DialyzerPreferencePage extends PropertyPage
         fEditButton.setEnabled(selectionCount == 1);
         fRemoveButton.setEnabled(selectionCount > 0);
         fUpdatePLTButton.setEnabled(selectionCount > 0);
-        fAddButton.setEnabled(shownPLTFiles.size() < MAX_PLT_FILES);
+        fAddButton.setEnabled(shownPLTFiles.size() < DialyzerPreferencePage.MAX_PLT_FILES);
     }
 
     private void openProjectProperties(final IProject project) {
-        final String id = getPropertyPageID();
+        final String id = DialyzerPreferencePage.getPropertyPageID();
         if (id != null) {
             PreferencesUtil.createPropertyDialogOn(getShell(), project, id,
                     new String[] { id }, null).open();
@@ -460,7 +460,7 @@ public class DialyzerPreferencePage extends PropertyPage
     }
 
     protected final void openWorkspacePreferences(final Object data) {
-        final String id = getPreferencePageID();
+        final String id = DialyzerPreferencePage.getPreferencePageID();
         PreferencesUtil
                 .createPreferenceDialogOn(getShell(), id, new String[] { id }, data)
                 .open();
@@ -633,7 +633,8 @@ public class DialyzerPreferencePage extends PropertyPage
 
     private final class UpdateDialyzerPLTFileOperation extends Job {
 
-        private final List<String> selectedPLTPaths, checkedPltPaths;
+        private final List<String> selectedPLTPaths;
+        private final List<String> checkedPltPaths;
 
         public UpdateDialyzerPLTFileOperation(final String name,
                 final List<String> selectedPLTPaths, final List<String> checkedPltPaths) {

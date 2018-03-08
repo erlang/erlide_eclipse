@@ -19,7 +19,7 @@ import org.erlide.util.ErlLogger;
 
 public abstract class ExternalBuilder extends ErlangBuilder {
 
-	public static boolean DEBUG = false;
+	public static boolean DEBUG;
 
 	protected final ToolExecutor ex;
 	protected final BuilderHelper helper = new BuilderHelper();
@@ -56,7 +56,7 @@ public abstract class ExternalBuilder extends ErlangBuilder {
 
 				@Override
 				public void stdout(final String line) {
-					if (DEBUG) {
+					if (ExternalBuilder.DEBUG) {
 						System.out.println("out: " + line);
 					}
 					final IMessageParser parser = getMessageParser(erlProject);
@@ -65,7 +65,7 @@ public abstract class ExternalBuilder extends ErlangBuilder {
 
 				@Override
 				public void stderr(final String line) {
-					if (DEBUG) {
+					if (ExternalBuilder.DEBUG) {
 						System.out.println("err: " + line);
 					}
 				}

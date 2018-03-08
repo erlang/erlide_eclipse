@@ -55,7 +55,7 @@ public class DialyzerMarkerUtils {
                     msg = msg.substring(j + 1);
                 }
                 final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-                addDialyzerWarningMarker(model, filename, line, msg);
+                DialyzerMarkerUtils.addDialyzerWarningMarker(model, filename, line, msg);
             }
         }
     }
@@ -81,8 +81,8 @@ public class DialyzerMarkerUtils {
             resource = ResourceUtil.getFileFromLocation(path);
         }
         if (resource != null) {
-            addMarker(resource, path, message, line, IMarker.SEVERITY_WARNING,
-                    DIALYZE_WARNING_MARKER);
+            DialyzerMarkerUtils.addMarker(resource, path, message, line, IMarker.SEVERITY_WARNING,
+                    DialyzerMarkerUtils.DIALYZE_WARNING_MARKER);
         }
     }
 
@@ -94,20 +94,20 @@ public class DialyzerMarkerUtils {
             marker.setAttribute(IMarker.MESSAGE, message);
             marker.setAttribute(IMarker.SEVERITY, severity);
             marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
-            marker.setAttribute(PATH_ATTRIBUTE, path);
+            marker.setAttribute(DialyzerMarkerUtils.PATH_ATTRIBUTE, path);
         } catch (final CoreException e) {
             ErlLogger.debug(e);
         }
     }
 
     public static void removeDialyzerMarkersFor(final IResource resource) {
-        removeMarkersFor(resource, DIALYZE_WARNING_MARKER);
+        DialyzerMarkerUtils.removeMarkersFor(resource, DialyzerMarkerUtils.DIALYZE_WARNING_MARKER);
     }
 
     public static boolean haveDialyzerMarkers(final IResource resource) {
         try {
             if (resource.isAccessible()) {
-                final IMarker[] markers = resource.findMarkers(DIALYZE_WARNING_MARKER,
+                final IMarker[] markers = resource.findMarkers(DialyzerMarkerUtils.DIALYZE_WARNING_MARKER,
                         true, IResource.DEPTH_INFINITE);
                 return markers != null && markers.length > 0;
             }
@@ -130,14 +130,14 @@ public class DialyzerMarkerUtils {
     public static void addMarker(final IResource file, final String path,
             final IResource compiledFile, final String errorDesc, final int lineNumber,
             final int severity, final String errorVar) {
-        addProblemMarker(file, path, compiledFile, errorDesc, lineNumber, severity);
+        DialyzerMarkerUtils.addProblemMarker(file, path, compiledFile, errorDesc, lineNumber, severity);
     }
 
     public static void addProblemMarker(final IResource resource, final String path,
             final IResource compiledFile, final String message, final int lineNumber,
             final int severity) {
         try {
-            final IMarker marker = resource.createMarker(PROBLEM_MARKER);
+            final IMarker marker = resource.createMarker(DialyzerMarkerUtils.PROBLEM_MARKER);
             marker.setAttribute(IMarker.MESSAGE, message);
             marker.setAttribute(IMarker.SEVERITY, severity);
             if (path != null && !new Path(path).equals(resource.getLocation())) {

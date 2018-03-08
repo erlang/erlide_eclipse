@@ -25,7 +25,7 @@ public class ClearAllCachesAction extends TextEditorAction {
 
     @Override
     public void run() {
-        clearAllCaches();
+        ClearAllCachesAction.clearAllCaches();
     }
 
     public static void clearAllCaches() {

@@ -23,7 +23,7 @@ public class ElementAdapterFactory implements IAdapterFactory {
 
     @Override
     public Class<?>[] getAdapterList() {
-        return ADAPTER_LIST;
+        return ElementAdapterFactory.ADAPTER_LIST;
     }
 
 }

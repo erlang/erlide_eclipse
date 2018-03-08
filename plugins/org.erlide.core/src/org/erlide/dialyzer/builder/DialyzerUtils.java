@@ -47,7 +47,7 @@ public class DialyzerUtils {
     private static BuilderHelper helper;
 
     public static void setHelper(final BuilderHelper h) {
-        helper = h;
+        DialyzerUtils.helper = h;
     }
 
     public static class DialyzerErrorException extends Exception {
@@ -81,13 +81,13 @@ public class DialyzerUtils {
             final List<String> files = Lists.newArrayList();
             final List<IPath> includeDirs = Lists.newArrayList();
             final List<String> names = Lists.newArrayList();
-            collectFilesAndIncludeDirs(modules, projects, files, names, includeDirs,
+            DialyzerUtils.collectFilesAndIncludeDirs(modules, projects, files, names, includeDirs,
                     fromSource);
 
-            if(names.size() == 0) {
+            if(names.isEmpty()) {
             	return;
             }
-            final String fileNames = names.size() + " modules [" + getFileNames(names) + "]";
+            final String fileNames = names.size() + " modules [" + DialyzerUtils.getFileNames(names) + "]";
             monitor.subTask(fileNames);
             ErlLogger.trace("dialyzer", "run %s", fileNames);
 
@@ -113,7 +113,7 @@ public class DialyzerUtils {
                 } catch (final RpcTimeoutException e) {
                 }
                 if (r != null) {
-                    processResult(b, r);
+                    DialyzerUtils.processResult(b, r);
                 }
             }
         } catch (final RpcException e) {
@@ -135,12 +135,12 @@ public class DialyzerUtils {
                 DialyzerMarkerUtils.addDialyzerWarningMarkersFromResultList(backend,
                         (OtpErlangList) result);
             } else if ("dialyzer_error".equals(what) || "badrpc".equals(what)) {
-                final String s = Util.ioListToString(result, MAX_MSG_LEN);
+                final String s = Util.ioListToString(result, DialyzerUtils.MAX_MSG_LEN);
                 throw new DialyzerErrorException(s);
             }
         } else {
             throw new DialyzerErrorException(
-                    "Unknown Dialyzer message: " + Util.ioListToString(o, MAX_MSG_LEN));
+                    "Unknown Dialyzer message: " + Util.ioListToString(o, DialyzerUtils.MAX_MSG_LEN));
         }
     }
 
@@ -186,9 +186,9 @@ public class DialyzerUtils {
                 }
             }
         }
-        helper = new BuilderHelper();
+        DialyzerUtils.helper = new BuilderHelper();
         for (final IErlProject p : projects) {
-            helper.getIncludeDirs(p.getWorkspaceProject(), includeDirs);
+            DialyzerUtils.helper.getIncludeDirs(p.getWorkspaceProject(), includeDirs);
         }
     }
 
@@ -213,9 +213,9 @@ public class DialyzerUtils {
                     }
                 }
             }
-            final String s = Util.ioListToString(t.elementAt(1), MAX_MSG_LEN + 10);
+            final String s = Util.ioListToString(t.elementAt(1), DialyzerUtils.MAX_MSG_LEN + 10);
             final String r = s.replaceAll("\\\\n", "\n");
-            if (s.length() > MAX_MSG_LEN) {
+            if (s.length() > DialyzerUtils.MAX_MSG_LEN) {
                 ErlLogger.error("%s", s);
             }
             throw new DialyzerErrorException(r);

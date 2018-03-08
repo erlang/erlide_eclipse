@@ -167,7 +167,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         addButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                final List<IErlModule> result = getModulesFromAddModulesDialog(
+                final List<IErlModule> result = DebugTab.getModulesFromAddModulesDialog(
                         getShell());
                 contentProvider.addModules(result);
                 listViewer.refresh();

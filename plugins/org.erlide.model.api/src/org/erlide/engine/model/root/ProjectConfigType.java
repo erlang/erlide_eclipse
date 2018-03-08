@@ -40,10 +40,10 @@ public enum ProjectConfigType {
         @Override
         public Map<ProjectConfigType, Set<BuilderTool>> apply() {
             final Map<ProjectConfigType, Set<BuilderTool>> result = Maps.newHashMap();
-            result.put(INTERNAL, Sets.newHashSet(BuilderTool.INTERNAL, BuilderTool.MAKE));
-            result.put(EMAKE, Sets.newHashSet(BuilderTool.EMAKE, BuilderTool.MAKE,
+            result.put(ProjectConfigType.INTERNAL, Sets.newHashSet(BuilderTool.INTERNAL, BuilderTool.MAKE));
+            result.put(ProjectConfigType.EMAKE, Sets.newHashSet(BuilderTool.EMAKE, BuilderTool.MAKE,
                     BuilderTool.INTERNAL));
-            result.put(REBAR, Sets.newHashSet(BuilderTool.REBAR, BuilderTool.MAKE,
+            result.put(ProjectConfigType.REBAR, Sets.newHashSet(BuilderTool.REBAR, BuilderTool.MAKE,
                     BuilderTool.INTERNAL));
             return Maps.newEnumMap(result);
         }
@@ -53,11 +53,11 @@ public enum ProjectConfigType {
      * @return the list of BuilderTools that can be used with this configurator
      */
     public Collection<BuilderTool> getMatchingTools() {
-        return Collections.unmodifiableCollection(configToolsMap.get(this));
+        return Collections.unmodifiableCollection(ProjectConfigType.configToolsMap.get(this));
     }
 
     public boolean matchesTool(final BuilderTool tool) {
-        return configToolsMap.get(this).contains(tool);
+        return ProjectConfigType.configToolsMap.get(this).contains(tool);
     }
 
 }

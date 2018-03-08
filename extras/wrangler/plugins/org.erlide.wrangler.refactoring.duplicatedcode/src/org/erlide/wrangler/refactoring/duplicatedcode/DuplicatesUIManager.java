@@ -43,7 +43,7 @@ public class DuplicatesUIManager {
      */
     public static void setDuplicatedCodeResultDisplayer(
             final IDuplicatedCodeResultDisplayer displayer) {
-        dupDisplayer = displayer;
+        DuplicatesUIManager.dupDisplayer = displayer;
     }
 
     /**
@@ -53,7 +53,7 @@ public class DuplicatesUIManager {
      *            list of the duplicates
      */
     public static void setRefactoringResults(final List<DuplicatedCodeElement> root) {
-        dupDisplayer.showResult(root);
+        DuplicatesUIManager.dupDisplayer.showResult(root);
     }
 
     /**
@@ -66,7 +66,7 @@ public class DuplicatesUIManager {
         try {
 
             @SuppressWarnings("unused")
-            final IViewPart view = window.getActivePage().showView(duplicatedView);
+            final IViewPart view = window.getActivePage().showView(DuplicatesUIManager.duplicatedView);
 
         } catch (final PartInitException e) {
             ErlLogger.error(e);
@@ -82,7 +82,7 @@ public class DuplicatesUIManager {
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         IViewPart view;
         try {
-            view = window.getActivePage().showView(duplicatedView);
+            view = window.getActivePage().showView(DuplicatesUIManager.duplicatedView);
             window.getActivePage().hideView(view);
         } catch (final PartInitException e) {
             ErlLogger.error(e);

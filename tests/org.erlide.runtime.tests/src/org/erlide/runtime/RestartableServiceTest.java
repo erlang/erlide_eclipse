@@ -23,8 +23,8 @@ public class RestartableServiceTest {
 
     static class DummyService extends AbstractExecutionThreadService {
 
-        private boolean running = false;
-        private boolean crashed = false;
+        private boolean running;
+        private boolean crashed;
 
         @Override
         protected void run() throws Exception {

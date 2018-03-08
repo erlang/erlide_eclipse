@@ -35,7 +35,7 @@ public class IndentHandler extends ErlangAbstractHandler {
     protected void doAction(final ISelection sel, final ITextEditor textEditor) {
         final IDocument document = textEditor.getDocumentProvider()
                 .getDocument(textEditor.getEditorInput());
-        final ITextSelection selection = extendSelectionToWholeLines(document,
+        final ITextSelection selection = ErlangAbstractHandler.extendSelectionToWholeLines(document,
                 (ITextSelection) sel);
         final ITextSelection getSelection = getTextSelection(document, selection,
                 textEditor);
@@ -90,7 +90,7 @@ public class IndentHandler extends ErlangAbstractHandler {
 
     private OtpErlangObject callErlang(final int offset, final int length,
             final String text) throws RpcException {
-        final OtpErlangObject r1 = doIndentLines(offset, length, text, false, "");
+        final OtpErlangObject r1 = IndentHandler.doIndentLines(offset, length, text, false, "");
         return r1;
     }
 
@@ -120,7 +120,7 @@ public class IndentHandler extends ErlangAbstractHandler {
     public static String indentLines(final int offset, final int length,
             final String text, final boolean template, final String prefix)
             throws RpcException {
-        return Util.stringValue(doIndentLines(offset, length, text, template, prefix));
+        return Util.stringValue(IndentHandler.doIndentLines(offset, length, text, template, prefix));
     }
 
 }

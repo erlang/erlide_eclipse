@@ -30,7 +30,7 @@ public class IoRequest {
             .compile("Eshell V[0-9]+\\.[0-9]+\\.[0-9]+");
 
     public enum IoRequestKind {
-        HEADER, PROMPT, INPUT, OUTPUT, STDOUT, STDERR;
+        HEADER, PROMPT, INPUT, OUTPUT, STDOUT, STDERR
     }
 
     private OtpErlangPid leader;
@@ -80,9 +80,9 @@ public class IoRequest {
             ErlLogger.warn(e);
             message = "";
         }
-        if (RE_PROMPT.matcher(message).matches()) {
+        if (IoRequest.RE_PROMPT.matcher(message).matches()) {
             kind = IoRequestKind.PROMPT;
-        } else if (RE_HEADER.matcher(message).matches()) {
+        } else if (IoRequest.RE_HEADER.matcher(message).matches()) {
             kind = IoRequestKind.HEADER;
         } else {
             kind = IoRequestKind.OUTPUT;

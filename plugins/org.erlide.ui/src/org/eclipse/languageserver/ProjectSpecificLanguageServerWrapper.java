@@ -90,7 +90,7 @@ public class ProjectSpecificLanguageServerWrapper {
 
     protected static final String LS_DIAGNOSTIC_MARKER_TYPE = "org.eclipse.languageserver.diagnostic"; //$NON-NLS-1$
 
-    final private StreamConnectionProvider lspStreamProvider;
+    private final StreamConnectionProvider lspStreamProvider;
     private ErlangLanguageServer server;
     private final IProject project;
     private final IContentType contentType;

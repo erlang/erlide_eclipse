@@ -14,7 +14,7 @@ public class PerformanceTuning {
     private static final int DEFAULT_FOLDING_LIMIT = 2000;
     private static final String FOLDING_DISABLE_LIMIT_KEY = "perf.limit.folding";
 
-    private int foldingLimit = DEFAULT_FOLDING_LIMIT;
+    private int foldingLimit = PerformanceTuning.DEFAULT_FOLDING_LIMIT;
 
     public static PerformanceTuning get() {
         final PerformanceTuning prefs = new PerformanceTuning();
@@ -24,20 +24,20 @@ public class PerformanceTuning {
 
     public static PerformanceTuning getDefault() {
         final PerformanceTuning result = new PerformanceTuning();
-        result.setFoldingLimit(DEFAULT_FOLDING_LIMIT);
+        result.setFoldingLimit(PerformanceTuning.DEFAULT_FOLDING_LIMIT);
         return result;
     }
 
     public PerformanceTuning() {
-        helper = PreferencesHelper.getHelper(QUALIFIER);
+        helper = PreferencesHelper.getHelper(PerformanceTuning.QUALIFIER);
     }
 
     public void load() {
-        foldingLimit = helper.getInt(FOLDING_DISABLE_LIMIT_KEY, DEFAULT_FOLDING_LIMIT);
+        foldingLimit = helper.getInt(PerformanceTuning.FOLDING_DISABLE_LIMIT_KEY, PerformanceTuning.DEFAULT_FOLDING_LIMIT);
     }
 
     public void store() {
-        helper.putInt(FOLDING_DISABLE_LIMIT_KEY, foldingLimit);
+        helper.putInt(PerformanceTuning.FOLDING_DISABLE_LIMIT_KEY, foldingLimit);
     }
 
     public int getFoldingLimit() {

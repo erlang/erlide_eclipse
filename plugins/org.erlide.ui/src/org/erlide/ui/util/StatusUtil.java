@@ -70,7 +70,7 @@ public class StatusUtil {
             page.setErrorMessage(null);
             break;
         default:
-            if (message.length() == 0) {
+            if (message.isEmpty()) {
                 message = null;
             }
             page.setMessage(null);
@@ -83,7 +83,7 @@ public class StatusUtil {
             final Throwable exception) {
 
         String statusMessage = message;
-        if (message == null || message.trim().length() == 0) {
+        if (message == null || message.trim().isEmpty()) {
             if (exception == null) {
                 throw new IllegalArgumentException();
             } else if (exception.getMessage() == null) {

@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  */
 public abstract class AbstractResultTreeParent extends AbstractResultTreeObject {
-    protected ArrayList<AbstractResultTreeObject> children = null;
+    protected ArrayList<AbstractResultTreeObject> children;
 
     /*
      * public ResultTreeParent(String name) { super(name); children = new
@@ -64,7 +64,7 @@ public abstract class AbstractResultTreeParent extends AbstractResultTreeObject 
      * @return true, if has any child element
      */
     public boolean hasChildren() {
-        return children != null && children.size() > 0;
+        return children != null && !children.isEmpty();
     }
 
 }

@@ -24,7 +24,10 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  * @version %I%, %G%
  */
 public class Range implements IRange {
-    protected int startLine, startCol, endLine, endCol;
+    protected int startLine;
+    protected int startCol;
+    protected int endLine;
+    protected int endCol;
 
     /**
      * Constructor with range starting and ending positions

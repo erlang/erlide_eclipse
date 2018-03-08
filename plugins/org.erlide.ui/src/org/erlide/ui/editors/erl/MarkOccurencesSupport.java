@@ -282,7 +282,7 @@ public class MarkOccurencesSupport implements IDisposable {
         private final IDocument fDocument;
         private final ITextSelection selection;
         private final ISelectionValidator fPostSelectionValidator;
-        private boolean fCanceled = false;
+        private boolean fCanceled;
         private List<ErlangRef> fRefs;
         private final boolean fHasChanged;
         private final IErlModule module;
@@ -518,10 +518,10 @@ public class MarkOccurencesSupport implements IDisposable {
     }
 
     private static class ErlangRef {
-        final private ErlangSearchElement element;
-        final private int offset;
-        final private int length;
-        final private boolean def;
+        private final ErlangSearchElement element;
+        private final int offset;
+        private final int length;
+        private final boolean def;
 
         public ErlangRef(final ErlangSearchElement element, final int offset,
                 final int length, final boolean def) {

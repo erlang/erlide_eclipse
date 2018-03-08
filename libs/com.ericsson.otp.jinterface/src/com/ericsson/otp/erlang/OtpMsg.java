@@ -70,7 +70,7 @@ public class OtpMsg {
 
     // send has receiver pid but no sender information
     OtpMsg(final OtpErlangPid to, final OtpInputStream paybuf) {
-        tag = sendTag;
+        tag = OtpMsg.sendTag;
         from = null;
         this.to = to;
         toName = null;
@@ -80,7 +80,7 @@ public class OtpMsg {
 
     // send has receiver pid but no sender information
     OtpMsg(final OtpErlangPid to, final OtpErlangObject payload) {
-        tag = sendTag;
+        tag = OtpMsg.sendTag;
         from = null;
         this.to = to;
         toName = null;
@@ -90,7 +90,7 @@ public class OtpMsg {
 
     // send_reg has sender pid and receiver name
     OtpMsg(final OtpErlangPid from, final String toName, final OtpInputStream paybuf) {
-        tag = regSendTag;
+        tag = OtpMsg.regSendTag;
         this.from = from;
         this.toName = toName;
         to = null;
@@ -100,7 +100,7 @@ public class OtpMsg {
 
     // send_reg has sender pid and receiver name
     OtpMsg(final OtpErlangPid from, final String toName, final OtpErlangObject payload) {
-        tag = regSendTag;
+        tag = OtpMsg.regSendTag;
         this.from = from;
         this.toName = toName;
         to = null;

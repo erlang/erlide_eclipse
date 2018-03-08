@@ -19,7 +19,7 @@ public final class NodeHostClassifier {
 
     public NodeHostClassifier(final String name, final String shortThis,
             final String longThis) {
-        if (name.length() == 0) {
+        if (name.isEmpty()) {
             host = HostnameType.NONE;
             mode = NodeType.LOCAL_STANDALONE;
         } else {

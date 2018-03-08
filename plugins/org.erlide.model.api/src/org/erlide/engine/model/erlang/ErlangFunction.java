@@ -26,7 +26,7 @@ public class ErlangFunction {
     public ErlangFunction(final String name) {
         super();
         this.name = name;
-        arity = ANY_ARITY;
+        arity = ErlangFunction.ANY_ARITY;
     }
 
     public ErlangFunction(final OtpErlangTuple tuple) {

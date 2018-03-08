@@ -106,7 +106,7 @@ public class SearchResultLabelProvider extends LabelProvider implements
             return ese.getName();
         case CLAUSE:
         case FUNCTION:
-            return searchElementFunctionToString(ese);
+            return SearchResultLabelProvider.searchElementFunctionToString(ese);
         case RECORD_DEF:
             return "record_definition: " + ese.getName();
         case MACRO_DEF:
@@ -187,13 +187,13 @@ public class SearchResultLabelProvider extends LabelProvider implements
     @Override
     public StyledString getStyledText(final Object element) {
         final StyledString result = new StyledString();
-        if (fOrder == SHOW_LABEL_PATH || element instanceof String && isInTree()) {
+        if (fOrder == SearchResultLabelProvider.SHOW_LABEL_PATH || element instanceof String && isInTree()) {
             result.append(getElementText(element));
             result.append(' ');
             result.append(getMatchCountText(element));
             result.append(" - ", StyledString.QUALIFIER_STYLER);
             result.append(getPathText(element));
-        } else if (fOrder == SHOW_LABEL) {
+        } else if (fOrder == SearchResultLabelProvider.SHOW_LABEL) {
             result.append(getElementText(element));
             result.append(' ');
             result.append(getMatchCountText(element));

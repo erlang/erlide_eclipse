@@ -21,25 +21,25 @@ public final class PathSerializer {
     public static String packList(final Iterable<IPath> list) {
         final StringBuilder result = new StringBuilder();
         for (final IPath s : list) {
-            result.append(s.toPortableString()).append(SEP);
+            result.append(s.toPortableString()).append(PathSerializer.SEP);
         }
         return result.toString();
     }
 
     public static Collection<IPath> unpackList(final String string) {
-        return unpackList(string, SEP);
+        return PathSerializer.unpackList(string, PathSerializer.SEP);
     }
 
     public static String packArray(final IPath[] strs) {
         final StringBuilder result = new StringBuilder();
         for (final IPath s : strs) {
-            result.append(s.toPortableString()).append(SEP);
+            result.append(s.toPortableString()).append(PathSerializer.SEP);
         }
         return result.toString();
     }
 
     public static IPath[] unpackArray(final String str) {
-        return unpackList(str).toArray(new IPath[0]);
+        return PathSerializer.unpackList(str).toArray(new IPath[0]);
     }
 
     public static List<String> readFile(final String file) {
@@ -58,8 +58,8 @@ public final class PathSerializer {
     }
 
     public static List<IPath> unpackList(final String string, final String sep) {
-        if (string.length() == 0) {
-            return EMPTY_LIST;
+        if (string.isEmpty()) {
+            return PathSerializer.EMPTY_LIST;
         }
         final String[] v = string.split(sep);
         final List<String> sresult = new ArrayList<>(Arrays.asList(v));

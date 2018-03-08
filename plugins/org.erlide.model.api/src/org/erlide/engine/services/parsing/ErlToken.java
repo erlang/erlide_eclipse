@@ -42,7 +42,7 @@ public final class ErlToken {
     private int line;
     // private String text;
 
-    public static final ErlToken EOF = new ErlToken(KIND_OTHER);
+    public static final ErlToken EOF = new ErlToken(ErlToken.KIND_OTHER);
 
     // special for lightscanstring
     // <<(kind_small(Kind)), L:24, O:24, G:24>>
@@ -60,7 +60,7 @@ public final class ErlToken {
 
     public ErlToken(final OtpErlangTuple e) {
         // fTuple = e;
-        if (TRACE) {
+        if (ErlToken.TRACE) {
             ErlLogger.debug("    =" + e.toString());
         }
 
@@ -68,40 +68,40 @@ public final class ErlToken {
         if ("token".equals(((OtpErlangAtom) parts[0]).atomValue()) && parts.length == 9) {
 
             // -record(token, {kind, line, offset, length, value, text}).
-            kind = KIND_OTHER;
+            kind = ErlToken.KIND_OTHER;
             if (parts[1] instanceof OtpErlangAtom) {
                 final String s = ((OtpErlangAtom) parts[1]).atomValue();
                 if ("eof".equals(s)) {
                     return;
                 } else if ("ws".equals(s)) {
-                    kind = KIND_WHITESPACE;
+                    kind = ErlToken.KIND_WHITESPACE;
                 } else if ("string".equals(s)) {
-                    kind = KIND_STRING;
+                    kind = ErlToken.KIND_STRING;
                 } else if ("atom".equals(s)) {
-                    kind = KIND_ATOM;
+                    kind = ErlToken.KIND_ATOM;
                 } else if ("var".equals(s)) {
-                    kind = KIND_VAR;
+                    kind = ErlToken.KIND_VAR;
                 } else if ("char".equals(s)) {
-                    kind = KIND_CHAR;
+                    kind = ErlToken.KIND_CHAR;
                 } else if ("macro".equals(s)) {
-                    kind = KIND_MACRO;
+                    kind = ErlToken.KIND_MACRO;
                 } else if ("->".equals(s)) {
-                    kind = KIND_ARROW;
+                    kind = ErlToken.KIND_ARROW;
                 } else if ("integer".equals(s)) {
-                    kind = KIND_INTEGER;
+                    kind = ErlToken.KIND_INTEGER;
                 } else if ("float".equals(s)) {
-                    kind = KIND_FLOAT;
+                    kind = ErlToken.KIND_FLOAT;
                 } else if ("comment".equals(s)) {
-                    kind = KIND_COMMENT;
+                    kind = ErlToken.KIND_COMMENT;
                 } else {
-                    kind = KIND_OTHER;
+                    kind = ErlToken.KIND_OTHER;
                 }
             } else {
                 try {
                     final OtpErlangLong l = (OtpErlangLong) parts[1];
                     kind = l.intValue();
                 } catch (final OtpErlangRangeException e1) {
-                    kind = KIND_OTHER;
+                    kind = ErlToken.KIND_OTHER;
                 }
             }
 
@@ -121,7 +121,7 @@ public final class ErlToken {
               // }
               // }
               //
-            if (TRACE) {
+            if (ErlToken.TRACE) {
                 ErlLogger.debug(
                         "mkTok " + kind + " - " + line + "/" + offset + ":" + length);
                 // ErlLogger.debug("mkTok " + kind + " - " + text + " " + line +

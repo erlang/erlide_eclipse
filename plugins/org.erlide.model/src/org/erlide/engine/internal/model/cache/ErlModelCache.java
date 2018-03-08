@@ -41,10 +41,10 @@ public class ErlModelCache implements IDisposable {
     private final Cache<IErlProject, List<IErlModule>> projectIncludeCache;
 
     public static ErlModelCache getDefault() {
-        if (fgInstance == null) {
-            fgInstance = disabled ? new DisabledErlModelCache() : new ErlModelCache();
+        if (ErlModelCache.fgInstance == null) {
+            ErlModelCache.fgInstance = ErlModelCache.disabled ? new DisabledErlModelCache() : new ErlModelCache();
         }
-        return fgInstance;
+        return ErlModelCache.fgInstance;
     }
 
     class ModelChangeListener implements IErlModelChangeListener {
@@ -61,20 +61,20 @@ public class ErlModelCache implements IDisposable {
     }
 
     private static <K, V> Cache<K, V> newCache() {
-        final Cache<K, V> cache = CacheBuilder.newBuilder().maximumSize(CACHE_SIZE)
-                .expireAfterAccess(CACHE_TIME_MINUTES, TimeUnit.MINUTES)
+        final Cache<K, V> cache = CacheBuilder.newBuilder().maximumSize(ErlModelCache.CACHE_SIZE)
+                .expireAfterAccess(ErlModelCache.CACHE_TIME_MINUTES, TimeUnit.MINUTES)
                 .initialCapacity(16).build();
         return cache;
     }
 
     ErlModelCache() {
-        pathToModuleCache = newCache();
+        pathToModuleCache = ErlModelCache.newCache();
         editedModulesMap = Maps.newHashMap();
         // nameToModuleCache = newCache();
-        moduleIncludeCache = newCache();
-        externalTreeCache = newCache();
-        projectModuleCache = newCache();
-        projectIncludeCache = newCache();
+        moduleIncludeCache = ErlModelCache.newCache();
+        externalTreeCache = ErlModelCache.newCache();
+        projectModuleCache = ErlModelCache.newCache();
+        projectIncludeCache = ErlModelCache.newCache();
 
         modelChangeListener = new ModelChangeListener();
         ErlangEngine.getInstance().getModel().addModelChangeListener(modelChangeListener);

@@ -23,7 +23,7 @@ public class ProjectAdapterFactory implements IAdapterFactory {
 
     @Override
     public Class<?>[] getAdapterList() {
-        return ADAPTER_LIST;
+        return ProjectAdapterFactory.ADAPTER_LIST;
     }
 
 }

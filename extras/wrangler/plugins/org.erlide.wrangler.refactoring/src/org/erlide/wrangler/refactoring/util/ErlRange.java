@@ -21,7 +21,8 @@ import org.erlide.util.ErlLogger;
  * @version %I%, %G%
  */
 public class ErlRange extends Range implements IErlRange {
-    protected int offset, length;
+    protected int offset;
+    protected int length;
 
     /**
      * Constructor

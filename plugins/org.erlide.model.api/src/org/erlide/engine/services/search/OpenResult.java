@@ -12,19 +12,19 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class OpenResult {
 
-    private boolean externalCall = false;
+    private boolean externalCall;
     private String name;
     private String fun;
     private int arity;
     private String path;
     // TODO rewrite this to use SearchFor
-    private boolean record = false;
-    private boolean macro = false;
-    private boolean localCall = false;
-    private boolean include = false;
-    private boolean variable = false;
-    private boolean define = false;
-    private boolean field = false;
+    private boolean record;
+    private boolean macro;
+    private boolean localCall;
+    private boolean include;
+    private boolean variable;
+    private boolean define;
+    private boolean field;
 
     public OpenResult(final OtpErlangObject res) {
         if (!(res instanceof OtpErlangTuple)) {
@@ -70,7 +70,7 @@ public class OpenResult {
                 final OtpErlangAtom element = (OtpErlangAtom) openTuple.elementAt(1);
                 name = element.toString();
                 if (macro) {
-                    name = removeQuestionMark(name);
+                    name = OpenResult.removeQuestionMark(name);
                 }
             } else if ("variable".equals(kind)) {
                 variable = true;
@@ -180,7 +180,7 @@ public class OpenResult {
         } else if (field) {
             b.append("record_field ").append(name).append('.').append(fun);
         }
-        if (path != null && path.length() > 0) {
+        if (path != null && !path.isEmpty()) {
             b.append(" \"").append(path).append('"');
         }
         b.append('}');

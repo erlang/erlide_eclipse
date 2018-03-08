@@ -18,27 +18,27 @@ public class DebuggerEventFactory {
         try {
             OtpBindings b = OtpErlang.match("{started, Pid:p}", message);
             if (b != null) {
-                return buildStartedEvent(b);
+                return DebuggerEventFactory.buildStartedEvent(b);
             }
             b = OtpErlang.match("{terminated, Pid:p}", message);
             if (b != null) {
-                return buildTerminatedEvent(b);
+                return DebuggerEventFactory.buildTerminatedEvent(b);
             }
             b = OtpErlang.match("{int, Cmd}", message);
             if (b != null) {
-                return buildIntEvent(b);
+                return DebuggerEventFactory.buildIntEvent(b);
             }
             b = OtpErlang.match("{attached, Pid:p}", message);
             if (b != null) {
-                return buildAttachedEvent(b);
+                return DebuggerEventFactory.buildAttachedEvent(b);
             }
             b = OtpErlang.match("{Other:a, Cmd}", message);
             if (b != null) {
-                return buildUnknownEvent(message);
+                return DebuggerEventFactory.buildUnknownEvent(message);
             }
             b = OtpErlang.match("{Meta:p, Event}", message);
             if (b != null) {
-                return buildMetaEvent(b);
+                return DebuggerEventFactory.buildMetaEvent(b);
             }
         } catch (final OtpParserException e) {
             ErlLogger.error(e);
@@ -50,7 +50,7 @@ public class DebuggerEventFactory {
 
     private static DebuggerEvent buildMetaEvent(final OtpBindings b)
             throws OtpErlangException {
-        return parseMeta(b.getPid("Meta"), b.get("Event"));
+        return DebuggerEventFactory.parseMeta(b.getPid("Meta"), b.get("Event"));
     }
 
     private static MetaEvent parseMeta(final OtpErlangPid pid,

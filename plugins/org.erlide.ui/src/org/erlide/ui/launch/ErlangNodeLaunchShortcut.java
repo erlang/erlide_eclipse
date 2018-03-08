@@ -137,7 +137,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
     private void bringConsoleViewToFront() throws PartInitException {
         final IWorkbenchPage activePage = PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage();
-        activePage.showView(CONSOLE_VIEW_ID);
+        activePage.showView(ErlangNodeLaunchShortcut.CONSOLE_VIEW_ID);
     }
 
     private ILaunchConfiguration getLaunchConfiguration(
@@ -168,7 +168,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         ILaunchConfigurationWorkingCopy wc = null;
         wc = launchConfigurationType.newInstance(null, name);
         wc.setAttribute(ErlRuntimeAttributes.PROJECTS,
-                ListsUtils.packList(projectNames, PROJECT_NAME_SEPARATOR));
+                ListsUtils.packList(projectNames, ErlangNodeLaunchShortcut.PROJECT_NAME_SEPARATOR));
         wc.setAttribute(ErlRuntimeAttributes.RUNTIME_NAME,
                 projects.iterator().next().getRuntimeInfo().getName());
         wc.setAttribute(ErlRuntimeAttributes.NODE_NAME, name);

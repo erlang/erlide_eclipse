@@ -16,11 +16,11 @@ public class ListsUtils {
     }
 
     public static String[] unpackArray(final String str, final String sep) {
-        return unpackList(str, sep).toArray(new String[0]);
+        return ListsUtils.unpackList(str, sep).toArray(new String[0]);
     }
 
     public static List<String> unpackList(final String string, final String sep) {
-        if (string.length() == 0) {
+        if (string.isEmpty()) {
             return Lists.newArrayList();
         }
         return Lists.newArrayList(Splitter.on(sep).split(string));

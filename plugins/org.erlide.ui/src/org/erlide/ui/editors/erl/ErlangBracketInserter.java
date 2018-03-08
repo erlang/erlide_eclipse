@@ -125,11 +125,11 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
         }
     }
 
-    private boolean fCloseBraces = false;
-    private boolean fCloseBrackets = false;
-    private boolean fCloseStrings = false;
-    private boolean fCloseParens = false;
-    private boolean fCloseAtoms = false;
+    private boolean fCloseBraces;
+    private boolean fCloseBrackets;
+    private boolean fCloseStrings;
+    private boolean fCloseParens;
+    private boolean fCloseAtoms;
     private boolean fEmbraceSelection = true;
 
     private final String CATEGORY = toString();
@@ -232,7 +232,7 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
             }
 
             final char character = event.character;
-            final char closingCharacter = getPeerCharacter(character);
+            final char closingCharacter = ErlangBracketInserter.getPeerCharacter(character);
             updateDocument(document, offset, length, selStr, character, closingCharacter);
 
             event.doit = false;
@@ -275,7 +275,7 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
         level.fUI = new EditorLinkedModeUI(model, sourceViewer);
         level.fUI.setSimpleMode(true);
         level.fUI.setExitPolicy(new ExitPolicy(closingCharacter,
-                getEscapeCharacter(closingCharacter), fBracketLevelStack));
+                ErlangBracketInserter.getEscapeCharacter(closingCharacter), fBracketLevelStack));
         level.fUI.setExitPosition(sourceViewer, offset + 2 + selLength, 0,
                 Integer.MAX_VALUE);
         level.fUI.setCyclingMode(LinkedModeUI.CYCLE_NEVER);
@@ -304,8 +304,8 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
         final IRegion endLine = document.getLineInformationOfOffset(offset + length);
 
         List<ErlToken> tokens = null;
-        final int getOffset = offset + length,
-                getLength = endLine.getOffset() + endLine.getLength() - getOffset;
+        final int getOffset = offset + length;
+        final int getLength = endLine.getOffset() + endLine.getLength() - getOffset;
         final String str = document.get(getOffset, getLength);
         try {
             tokens = ErlangEngine.getInstance().getSimpleScannerService()
@@ -316,7 +316,7 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
         int kind = ErlToken.KIND_OTHER;
         if (tokens != null && !tokens.isEmpty()) {
             kind = tokens.get(0).getKind();
-        } else if (str.length() > 0) {
+        } else if (!str.isEmpty()) {
             kind = str.charAt(0);
         }
         return kind;
@@ -357,7 +357,7 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
                                 }
                             }
 
-                            if (fBracketLevelStack.size() == 0) {
+                            if (fBracketLevelStack.isEmpty()) {
                                 document.removePositionUpdater(fUpdater);
                                 try {
                                     document.removePositionCategory(CATEGORY);
