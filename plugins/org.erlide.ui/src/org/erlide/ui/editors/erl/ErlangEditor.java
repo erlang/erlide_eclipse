@@ -222,7 +222,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 		public void preferenceChange(final PreferenceChangeEvent event) {
 			final String key = event.getKey();
 			if ("markingOccurences".equals(key)) {
-				final boolean newBooleanValue = event.getNewValue().equals("true");
+				final boolean newBooleanValue = "true".equals(event.getNewValue());
 				markOccurencesHandler.setEnabled(newBooleanValue);
 			}
 		}
@@ -933,8 +933,8 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 			if (filterIt) {
 				break;
 			}
-			if (!element.getClassName().equals("org.eclipse.swt.SWT")) {
-				filterIt = element.getClassName().equals("org.eclipse.swt.custom.StyledText") && element.getMethodName().equals("setStyleRanges");
+			if (!"org.eclipse.swt.SWT".equals(element.getClassName())) {
+				filterIt = "org.eclipse.swt.custom.StyledText".equals(element.getClassName()) && "setStyleRanges".equals(element.getMethodName());
 			}
 		}
 		if (filterIt) {

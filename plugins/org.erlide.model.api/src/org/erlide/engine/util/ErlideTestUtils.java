@@ -135,7 +135,7 @@ public class ErlideTestUtils {
         final IPath projectPath = project.getFullPath();
         for (final IPath pp : list) {
             // only create in-project paths
-            if (!pp.isAbsolute() && !pp.toString().equals(".") && !pp.isEmpty()) {
+            if (!pp.isAbsolute() && !".".equals(pp.toString()) && !pp.isEmpty()) {
                 final IPath path = projectPath.append(pp);
                 final IFolder folder = root.getFolder(path);
                 createFolderHelper(folder);

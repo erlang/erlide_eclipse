@@ -126,7 +126,7 @@ public class OtpErlang {
             if (!TypeConverter.doesMatchSignature(term, var.getSignature())) {
                 return null;
             }
-            if (var.getName().equals("_")) {
+            if ("_".equals(var.getName())) {
                 return bindings;
             }
             final OtpBindings result = new OtpBindings(bindings);

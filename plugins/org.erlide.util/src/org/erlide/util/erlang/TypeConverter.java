@@ -462,11 +462,11 @@ public final class TypeConverter {
     }
 
     private static boolean isRelevantMethod(final StackTraceElement ste) {
-        return (ste.getMethodName().equals("send")
-                || ste.getMethodName().equals("sendRpc")
-                || ste.getMethodName().equals("rpc") || ste.getMethodName().equals("rpct")
-                || ste.getMethodName().equals("rpcx")
-                || ste.getMethodName().equals("rpcxt"))
+        return ("send".equals(ste.getMethodName())
+                || "sendRpc".equals(ste.getMethodName())
+                || "rpc".equals(ste.getMethodName()) || "rpct".equals(ste.getMethodName())
+                || "rpcx".equals(ste.getMethodName())
+                || "rpcxt".equals(ste.getMethodName()))
                 && ste.getClassName().endsWith("Backend");
     }
 

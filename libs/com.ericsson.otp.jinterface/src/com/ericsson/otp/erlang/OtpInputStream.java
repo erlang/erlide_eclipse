@@ -529,7 +529,7 @@ public class OtpInputStream extends ByteArrayInputStream {
             // remove the sign from the exponent, if positive
             String estr = str.substring(epos + 1).trim();
 
-            if (estr.substring(0, 1).equals("+")) {
+            if ("+".equals(estr.substring(0, 1))) {
                 estr = estr.substring(1);
             }
 

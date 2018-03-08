@@ -40,7 +40,7 @@ public final class DebugStream extends PrintStream {
 
     private void showLocation() {
         StackTraceElement element = new Throwable().getStackTrace()[2];
-        if (element.getFileName().equals("InputOutput.java")) {
+        if ("InputOutput.java".equals(element.getFileName())) {
             element = new Throwable().getStackTrace()[3];
         }
         super.print(MessageFormat.format("({0}:{1, number,#}) : ", element.getFileName(),

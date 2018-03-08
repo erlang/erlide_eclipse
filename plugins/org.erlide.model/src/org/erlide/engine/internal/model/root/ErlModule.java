@@ -580,7 +580,7 @@ public class ErlModule extends Openable implements IErlModule {
             for (final IErlElement e : getChildrenOfKind(ErlElementKind.ATTRIBUTE)) {
                 if (e instanceof IErlAttribute) {
                     final IErlAttribute attr = (IErlAttribute) e;
-                    if (attr.getName().equals("compile")) {
+                    if ("compile".equals(attr.getName())) {
                         final OtpErlangObject value = attr.getValue();
                         if (value != null && value.equals(EXPORT_ALL)) {
                             return true;

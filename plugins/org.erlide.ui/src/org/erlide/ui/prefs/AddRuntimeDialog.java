@@ -412,7 +412,7 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
         if (newPath != null) {
             fOtpHome.setText(newPath);
             final File f = new File(newPath);
-            if (fName.getText().equals("")) {
+            if ("".equals(fName.getText())) {
                 fName.setText(f.getName());
             }
         }

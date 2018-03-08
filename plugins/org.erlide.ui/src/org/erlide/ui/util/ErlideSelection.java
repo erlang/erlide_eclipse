@@ -650,7 +650,7 @@ public class ErlideSelection {
             throw new AssertionError("Expecting ) to eat callable. Received: " + c);
         }
 
-        while (documentOffset > 0 && !theDoc.get(documentOffset, 1).equals("(")) {
+        while (documentOffset > 0 && !"(".equals(theDoc.get(documentOffset, 1))) {
             documentOffset -= 1;
         }
 

@@ -326,7 +326,7 @@ public class InternalBuilder extends ErlangBuilder {
 		boolean result = false;
 		result |= m.getSourceKind() != SourceKind.ERL;
 		result |= !isModuleOnDirectSourcePath(erlangProject, m);
-		result |= m.getResource().getProjectRelativePath().segment(0).equals("deps");
+		result |= "deps".equals(m.getResource().getProjectRelativePath().segment(0));
 		if (result) {
 			ErlLogger.debug(".app: ignore " + m.getResource().getProjectRelativePath());
 		}

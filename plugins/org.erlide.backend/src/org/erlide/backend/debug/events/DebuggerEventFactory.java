@@ -97,15 +97,15 @@ public class DebuggerEventFactory {
         try {
             final OtpErlangObject[] cmds = b.getTuple("Cmd");
             final String cmd = ((OtpErlangAtom) cmds[0]).atomValue();
-            if (cmd.equals("new_break")) {
+            if ("new_break".equals(cmd)) {
                 return new NewBreakEvent(cmds);
-            } else if (cmd.equals("new_status")) {
+            } else if ("new_status".equals(cmd)) {
                 return new NewStatusEvent(cmds);
-            } else if (cmd.equals("new_process")) {
+            } else if ("new_process".equals(cmd)) {
                 return new NewProcessEvent(cmds);
-            } else if (cmd.equals("interpret")) {
+            } else if ("interpret".equals(cmd)) {
                 return new InterpretEvent(cmds);
-            } else if (cmd.equals("no_interpret")) {
+            } else if ("no_interpret".equals(cmd)) {
                 return new NoInterpretEvent(cmds);
             } else {
                 return new IntEvent(cmds);

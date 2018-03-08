@@ -93,7 +93,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
         final String group = msg.elementAt(1).toString();
         final String description = msg.elementAt(2).toString();
 
-        if (group != null && !group.equals("[]") && !group.equals("undefined")) {
+        if (group != null && !"[]".equals(group) && !"undefined".equals(group)) {
 
             TestTreeObject node = model.findNode(description);
             TestTreeObject parent = model.findNode(group);
@@ -122,8 +122,8 @@ public class EUnitEventHandler extends ErlangEventHandler {
         final String description = msg.elementAt(1).toString();
         final String reason = msg.elementAt(2).toString();
 
-        if (description != null && !description.equals("[]")
-                && !description.equals("undefined")) {
+        if (description != null && !"[]".equals(description)
+                && !"undefined".equals(description)) {
             final TestTreeObject node = model.findNode(description);
             node.setDescription(
                     String.format("%s ... canceled: %s", node.getDescription(), reason));
@@ -279,7 +279,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
     private String makeTestFullDescription(final String module, final String function,
             final int arity, final String description, final int line,
             final String status) {
-        if (description != null && !description.equals("undefined")) {
+        if (description != null && !"undefined".equals(description)) {
             return String.format("%s:%s/%d (%s) at line %d - %s", module, function, arity,
                     description, line, status);
         }

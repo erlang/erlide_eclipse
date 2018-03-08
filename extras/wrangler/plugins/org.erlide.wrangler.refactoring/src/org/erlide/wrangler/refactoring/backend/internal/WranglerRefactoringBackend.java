@@ -159,7 +159,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
         try {
             if (res.isOk()) {
                 final OtpErlangAtom b = (OtpErlangAtom) res.getValue();
-                return b.atomValue().equals("true") || b.atomValue().equals("ok");
+                return "true".equals(b.atomValue()) || "ok".equals(b.atomValue());
             }
         } catch (final Exception e) {
             ErlLogger.error(e);

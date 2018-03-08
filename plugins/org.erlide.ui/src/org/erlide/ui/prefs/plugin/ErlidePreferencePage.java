@@ -170,7 +170,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
     protected void setToDefaults(final String[] keys, final String[] defaults,
             final List<Button> buttons) {
         for (int i = 0; i < keys.length; ++i) {
-            buttons.get(i).setSelection(!defaults[i].equals("0")); //$NON-NLS-1$
+            buttons.get(i).setSelection(!"0".equals(defaults[i])); //$NON-NLS-1$
         }
     }
 

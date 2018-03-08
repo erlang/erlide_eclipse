@@ -114,7 +114,7 @@ public class ErlFolder extends Openable implements IErlFolder {
             final Collection<IPath> paths) {
         final IPath containerPath = container.getFullPath();
         for (final IPath path : paths) {
-            if (path.toString().equals(".")) {
+            if (".".equals(path.toString())) {
                 if (project.getFullPath().equals(containerPath)) {
                     return true;
                 }

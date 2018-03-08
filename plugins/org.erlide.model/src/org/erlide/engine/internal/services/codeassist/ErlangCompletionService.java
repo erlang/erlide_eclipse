@@ -155,9 +155,9 @@ public class ErlangCompletionService implements CompletionService {
                     }
                     break;
                 case ATTRIBUTE:
-                    if (element.getName().equals("include")) {
+                    if ("include".equals(element.getName())) {
                         flags = EnumSet.of(CompletionFlag.INCLUDES);
-                    } else if (element.getName().equals("include_lib")) {
+                    } else if ("include_lib".equals(element.getName())) {
                         flags = EnumSet.of(CompletionFlag.INCLUDE_LIBS);
                     }
                     break;
@@ -550,7 +550,7 @@ public class ErlangCompletionService implements CompletionService {
             final List<String> result) {
         final int n = Math.min(parameters.size(), result.size());
         for (int i = 0; i < n; ++i) {
-            if (result.get(i).equals("_")) {
+            if ("_".equals(result.get(i))) {
                 final String var = parameters.get(i).trim();
                 if (looksLikeParameter(var)) {
                     result.set(i, fixVarName(var));

@@ -39,7 +39,7 @@ public class RefactoringRpcMessage extends AbstractRefactoringRpcMessage {
         resultTuple = tuple;
 
         final OtpErlangObject wranglerResult = tuple.elementAt(1);
-        if (tuple.elementAt(0).toString().equals("ok")) {
+        if ("ok".equals(tuple.elementAt(0).toString())) {
 
             if (wranglerResult instanceof OtpErlangList) {
                 changedFiles = parseFileList((OtpErlangList) wranglerResult);
@@ -48,9 +48,9 @@ public class RefactoringRpcMessage extends AbstractRefactoringRpcMessage {
             }
         } else {
             final OtpErlangString msg = (OtpErlangString) wranglerResult;
-            if (tuple.elementAt(0).toString().equals("warning")) {
+            if ("warning".equals(tuple.elementAt(0).toString())) {
                 setWarning(msg.stringValue());
-            } else if (tuple.elementAt(0).toString().equals("question")) {
+            } else if ("question".equals(tuple.elementAt(0).toString())) {
                 setQuestion(msg.stringValue());
             } else {
                 setUnsuccessful(msg.stringValue());

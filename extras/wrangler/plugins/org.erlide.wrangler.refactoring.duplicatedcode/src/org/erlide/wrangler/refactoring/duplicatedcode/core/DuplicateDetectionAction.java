@@ -94,8 +94,7 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
         }
         Bundle fragment = null;
         for (int i = 0; i < bs.length; ++i) {
-            if (bs[i].getSymbolicName()
-                    .equals("org.erlide.wrangler.refactoring.duplicatedcode")) {
+            if ("org.erlide.wrangler.refactoring.duplicatedcode".equals(bs[i].getSymbolicName())) {
                 fragment = bs[i];
                 break;
             }

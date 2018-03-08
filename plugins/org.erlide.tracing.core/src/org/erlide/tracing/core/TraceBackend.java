@@ -212,7 +212,7 @@ public class TraceBackend {
 
     private TracingStatus processResult(final OtpErlangObject callResult) {
         final OtpErlangTuple tuple = (OtpErlangTuple) callResult;
-        if (((OtpErlangAtom) tuple.elementAt(0)).atomValue().equals("error")) {
+        if ("error".equals(((OtpErlangAtom) tuple.elementAt(0)).atomValue())) {
             errorObject = tuple.elementAt(1);
             return TracingStatus.ERROR;
         }

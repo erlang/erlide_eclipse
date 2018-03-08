@@ -273,7 +273,7 @@ public class ErlangFileWizardPage extends WizardPage {
         final int dotLoc = fileName.lastIndexOf('.');
         if (dotLoc != -1) {
             final String ext = fileName.substring(dotLoc + 1);
-            if (!ext.equalsIgnoreCase("erl")) {
+            if (!"erl".equalsIgnoreCase(ext)) {
                 updateStatus("File extension must be \"erl\"");
                 return;
             }

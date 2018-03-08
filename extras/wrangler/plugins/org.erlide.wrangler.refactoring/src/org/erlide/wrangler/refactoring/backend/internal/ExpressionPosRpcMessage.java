@@ -45,7 +45,7 @@ public class ExpressionPosRpcMessage extends AbstractRpcMessage {
             throws WranglerException {
         try {
             final OtpErlangObject wranglerResult = resultTuple.elementAt(1);
-            if (resultTuple.elementAt(0).toString().equals("ok")) {
+            if ("ok".equals(resultTuple.elementAt(0).toString())) {
                 OtpErlangList posDefList;
                 if (wranglerResult instanceof OtpErlangTuple) {
                     syntaxTree = ((OtpErlangTuple) wranglerResult).elementAt(0);

@@ -221,7 +221,7 @@ public class ProjectCreator {
         }
         for (final IPath path : pathList) {
             // only create in-project paths
-            if (!path.isAbsolute() && !path.toString().equals(".") && !path.isEmpty()) {
+            if (!path.isAbsolute() && !".".equals(path.toString()) && !path.isEmpty()) {
                 final IFolder folder = project.getFolder(path);
                 createFolderHelper(folder, monitor);
             }

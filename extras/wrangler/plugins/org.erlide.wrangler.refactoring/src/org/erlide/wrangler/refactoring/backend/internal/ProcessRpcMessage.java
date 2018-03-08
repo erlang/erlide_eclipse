@@ -31,14 +31,14 @@ public class ProcessRpcMessage extends AbstractRefactoringRpcMessage {
     protected void parseRefactoringMessage(final OtpErlangTuple resultTuple)
             throws WranglerException {
         final OtpErlangObject wranglerResult = resultTuple.elementAt(1);
-        if (resultTuple.elementAt(0).toString().equals("ok")) {
+        if ("ok".equals(resultTuple.elementAt(0).toString())) {
 
             if (wranglerResult instanceof OtpErlangList) {
                 changedFiles = parseFileList((OtpErlangList) wranglerResult);
                 setSuccessful();
                 return;
             }
-        } else if (resultTuple.elementAt(0).toString().equals("undecidables")) {
+        } else if ("undecidables".equals(resultTuple.elementAt(0).toString())) {
             hasUndecidables = true;
 
         }

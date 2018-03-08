@@ -91,33 +91,25 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
         final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                 .getShell();
 
-        if (actionId
-                .equals("org.erlide.wrangler.refactoring.codeinspection.largemodules")) {
+        if ("org.erlide.wrangler.refactoring.codeinspection.largemodules".equals(actionId)) {
             handleLargeModulesCall(wranglerSelection, shell);
 
-        } else if (actionId
-                .equals("org.erlide.wrangler.refactoring.codeinspection.dependencies")) {
+        } else if ("org.erlide.wrangler.refactoring.codeinspection.dependencies".equals(actionId)) {
             handleDepenenciesCall(wranglerSelection, shell);
-        } else if (actionId.equals(
-                "org.erlide.wrangler.refactoring.codeinspection.nontailrecursive")) {
+        } else if ("org.erlide.wrangler.refactoring.codeinspection.nontailrecursive".equals(actionId)) {
             handleNonTailRecursiveCall(wranglerSelection, shell);
-        } else if (actionId
-                .equals("org.erlide.wrangler.refactoring.codeinspection.notflush")) {
+        } else if ("org.erlide.wrangler.refactoring.codeinspection.notflush".equals(actionId)) {
             handleNotFlushUnknownMessages(wranglerSelection, shell);
-        } else if (actionId
-                .equals("org.erlide.wrangler.refactoring.codeinspection.nestedif")) {
+        } else if ("org.erlide.wrangler.refactoring.codeinspection.nestedif".equals(actionId)) {
             handleNested(wranglerSelection, shell, "if");
 
-        } else if (actionId
-                .equals("org.erlide.wrangler.refactoring.codeinspection.nestedcase")) {
+        } else if ("org.erlide.wrangler.refactoring.codeinspection.nestedcase".equals(actionId)) {
             handleNested(wranglerSelection, shell, "case");
 
-        } else if (actionId
-                .equals("org.erlide.wrangler.refactoring.codeinspection.nestedreceive")) {
+        } else if ("org.erlide.wrangler.refactoring.codeinspection.nestedreceive".equals(actionId)) {
             handleNested(wranglerSelection, shell, "receive");
 
-        } else if (actionId
-                .equals("org.erlide.wrangler.refactoring.codeinspection.longfunctions")) {
+        } else if ("org.erlide.wrangler.refactoring.codeinspection.longfunctions".equals(actionId)) {
             handleLongFunctions(wranglerSelection, shell);
         }
 
@@ -264,7 +256,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
         final OtpErlangObject obj = result.getValue();
         final OtpErlangTuple restuple = (OtpErlangTuple) obj;
         final OtpErlangAtom resindicator = (OtpErlangAtom) restuple.elementAt(0);
-        if (resindicator.atomValue().equals("ok")) {
+        if ("ok".equals(resindicator.atomValue())) {
             final OtpErlangList erlangFunctionList = (OtpErlangList) restuple
                     .elementAt(1);
             for (int i = 0; i < erlangFunctionList.arity(); ++i) {
@@ -359,7 +351,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             final OtpErlangObject obj = res.getValue();
             final OtpErlangTuple restuple = (OtpErlangTuple) obj;
             final OtpErlangAtom resindicator = (OtpErlangAtom) restuple.elementAt(0);
-            if (resindicator.atomValue().equals("ok")) {
+            if ("ok".equals(resindicator.atomValue())) {
                 final OtpErlangTuple listtuple = (OtpErlangTuple) restuple.elementAt(1);
                 final OtpErlangList modList1 = (OtpErlangList) listtuple.elementAt(0);
                 final OtpErlangList modList2 = (OtpErlangList) listtuple.elementAt(1);
@@ -441,7 +433,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             final OtpErlangObject obj = res.getValue();
             final OtpErlangTuple restuple = (OtpErlangTuple) obj;
             final OtpErlangAtom resindicator = (OtpErlangAtom) restuple.elementAt(0);
-            if (resindicator.atomValue().equals("ok")) {
+            if ("ok".equals(resindicator.atomValue())) {
 
                 final OtpErlangList modList = (OtpErlangList) restuple.elementAt(1);
                 modules = createErlModuleList(modList);

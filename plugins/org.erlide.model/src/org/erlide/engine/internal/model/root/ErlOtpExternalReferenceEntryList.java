@@ -118,7 +118,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable
 
     private final boolean includePath(final String path) {
         final IPath p = new Path(path);
-        return p.lastSegment().equals("include");
+        return "include".equals(p.lastSegment());
     }
 
     private String getLibName(final String libDir) {

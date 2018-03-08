@@ -114,8 +114,8 @@ public class AddRefacHandler extends AbstractHandler {
             for (final IErlElement el : module
                     .getChildrenOfKind(ErlElementKind.ATTRIBUTE)) {
                 final IErlAttribute attr = (IErlAttribute) el;
-                if (attr.getName().equals("behaviour")
-                        || attr.getName().equals("behavior")) {
+                if ("behaviour".equals(attr.getName())
+                        || "behavior".equals(attr.getName())) {
                     if (attr.getValue().toString().contains("gen_refac")) {
                         return RefacType.ELEMENTARY;
                     } else if (attr.getValue().toString()

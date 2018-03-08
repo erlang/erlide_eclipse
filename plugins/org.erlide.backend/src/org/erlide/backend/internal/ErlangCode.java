@@ -82,7 +82,7 @@ public final class ErlangCode {
             final OtpErlangObject r = backend.call(CODE, "ensure_loaded", "a",
                     "funny_module_name_that_nobody_would_use");
             final OtpBindings b = OtpErlang.match("{error, What}", r);
-            if (b.getAtom("What").equals("embedded")) {
+            if ("embedded".equals(b.getAtom("What"))) {
                 return true;
             }
         } catch (final Exception e) {

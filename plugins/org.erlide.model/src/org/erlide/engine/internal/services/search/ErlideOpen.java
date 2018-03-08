@@ -123,7 +123,7 @@ public class ErlideOpen implements OpenService {
                     final String path = Util.stringValue(t.elementAt(1));
                     final OtpErlangAtom isModuleA = (OtpErlangAtom) t.elementAt(2);
                     result.add(new ExternalTreeEntry(new Path(parentPath), new Path(path),
-                            isModuleA.atomValue().equals("module")));
+                            "module".equals(isModuleA.atomValue())));
                 }
                 final String msg = "open:external_module_tree <- " + stopwatch;
                 if (stopwatch.elapsed(TimeUnit.SECONDS) > 5) {

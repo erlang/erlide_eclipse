@@ -10,13 +10,13 @@ public enum SourceKind {
         if (ext == null) {
             return BAD;
         }
-        if (ext.equalsIgnoreCase("hrl")) {
+        if ("hrl".equalsIgnoreCase(ext)) {
             return HRL;
         }
-        if (ext.equalsIgnoreCase("erl")) {
+        if ("erl".equalsIgnoreCase(ext)) {
             return ERL;
         }
-        if (ext.equalsIgnoreCase("yrl")) {
+        if ("yrl".equalsIgnoreCase(ext)) {
             return YRL;
         }
         return BAD;

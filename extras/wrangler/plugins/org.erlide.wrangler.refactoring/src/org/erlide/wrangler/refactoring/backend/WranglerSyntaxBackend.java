@@ -55,7 +55,7 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
 
     protected OtpErlangTuple parseParserResult(final OtpErlangObject value) {
         final OtpErlangTuple backendResult = (OtpErlangTuple) value;
-        if (!((OtpErlangAtom) backendResult.elementAt(0)).atomValue().equals("ok")) {
+        if (!"ok".equals(((OtpErlangAtom) backendResult.elementAt(0)).atomValue())) {
             return null;
         }
         final OtpErlangTuple wranglerResult = (OtpErlangTuple) backendResult.elementAt(1);
@@ -77,7 +77,7 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
     private SyntaxInfo parseVarInfo(final OtpErlangObject value) {
         try {
             final OtpErlangTuple result = (OtpErlangTuple) value;
-            if (!((OtpErlangAtom) result.elementAt(0)).atomValue().equals("ok")) {
+            if (!"ok".equals(((OtpErlangAtom) result.elementAt(0)).atomValue())) {
                 return new SyntaxInfo(Type.NONE, -1, -1);
             }
             SyntaxInfo ret;

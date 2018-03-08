@@ -240,7 +240,7 @@ public class RuntimeData {
             result.add("-noshell");
         }
 
-        if (!getNodeName().equals("")) {
+        if (!"".equals(getNodeName())) {
             final String nameTag = hasLongName() ? "-name" : "-sname";
             String nameOption = getNodeName();
             if (!nameOption.contains("@")) {

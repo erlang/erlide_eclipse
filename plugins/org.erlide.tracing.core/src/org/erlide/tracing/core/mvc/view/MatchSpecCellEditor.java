@@ -78,7 +78,7 @@ public class MatchSpecCellEditor extends DialogCellEditor {
                 final OtpErlangTuple tuple = (OtpErlangTuple) backend.call(
                         Constants.ERLANG_HELPER_MODULE, Constants.FUN_STR2MS, "s",
                         new OtpErlangString(newText));
-                if (((OtpErlangAtom) tuple.elementAt(0)).atomValue().equals("ok")) {
+                if ("ok".equals(((OtpErlangAtom) tuple.elementAt(0)).atomValue())) {
                     // correct match spec - update
                     ((MatchSpec) getValue()).setFunctionString(newText);
                     ((MatchSpec) getValue()).setMsObject(tuple.elementAt(1));
@@ -86,7 +86,7 @@ public class MatchSpecCellEditor extends DialogCellEditor {
                 }
                 // incorrect match spec
                 final OtpErlangAtom errorType = (OtpErlangAtom) tuple.elementAt(1);
-                if (errorType.atomValue().equals("standard_info")) {
+                if ("standard_info".equals(errorType.atomValue())) {
                     final OtpErlangTuple errorTuple = (OtpErlangTuple) tuple.elementAt(2);
                     final StringBuilder builder = new StringBuilder("Line ");
                     builder.append(errorTuple.elementAt(0)).append(": ");
@@ -99,9 +99,9 @@ public class MatchSpecCellEditor extends DialogCellEditor {
                                 ((OtpErlangString) errorList.elementAt(1)).stringValue());
                     }
                     return builder.toString();
-                } else if (errorType.atomValue().equals("not_fun")) {
+                } else if ("not_fun".equals(errorType.atomValue())) {
                     return "Given expression is not a function";
-                } else if (errorType.atomValue().equals("unbound_var")) {
+                } else if ("unbound_var".equals(errorType.atomValue())) {
                     final StringBuilder builder = new StringBuilder("Unbound variable: ");
                     builder.append(tuple.elementAt(2));
                     return builder.toString();

@@ -93,7 +93,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
      */
 	protected BackendData configureBackend(final BackendData data, final String mode, final ILaunch launch) {
         data.setLaunch(launch);
-        if (mode.equals("debug")) {
+        if ("debug".equals(mode)) {
             data.setContext(CodeContext.DEBUGGER);
         }
         return data;

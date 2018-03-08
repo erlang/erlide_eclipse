@@ -24,7 +24,7 @@ public final class CommonUtils {
         final IContentType[] contentTypes = contentTypeManager
                 .findContentTypesFor(fileName);
         for (final IContentType contentType : contentTypes) {
-            if (contentType.getId().equals("org.erlide.core.content.erlang")) {
+            if ("org.erlide.core.content.erlang".equals(contentType.getId())) {
                 return true;
             }
         }

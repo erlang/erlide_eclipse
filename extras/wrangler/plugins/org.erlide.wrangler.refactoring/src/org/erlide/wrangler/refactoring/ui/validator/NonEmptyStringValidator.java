@@ -20,7 +20,7 @@ public class NonEmptyStringValidator implements IValidator {
 
     @Override
     public boolean isValid(final String text) {
-        return !text.equals("");
+        return !"".equals(text);
     }
 
 }

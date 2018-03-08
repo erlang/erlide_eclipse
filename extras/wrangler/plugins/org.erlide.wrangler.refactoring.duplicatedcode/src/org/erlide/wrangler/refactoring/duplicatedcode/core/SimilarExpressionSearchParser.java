@@ -60,7 +60,7 @@ public class SimilarExpressionSearchParser extends AbstractDuplicatesParser {
     public void parse(final OtpErlangObject object) {
         try {
             final OtpErlangTuple res = (OtpErlangTuple) object;
-            if (!res.elementAt(0).toString().equals("ok")) {
+            if (!"ok".equals(res.elementAt(0).toString())) {
                 setUnSuccessful(((OtpErlangString) res.elementAt(1)).stringValue());
                 return;
             }

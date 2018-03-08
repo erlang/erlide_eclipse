@@ -92,7 +92,7 @@ public final class BackendData extends RuntimeData {
             runtimeInfo = new RuntimeInfo.Builder(info).withArgs(extraArgs).build();
         }
         try {
-            if (config.getAttribute(ErlRuntimeAttributes.EXTRA_ARGS, "").equals("")) {
+            if ("".equals(config.getAttribute(ErlRuntimeAttributes.EXTRA_ARGS, ""))) {
                 setExtraArgs(info.getArgs());
             }
         } catch (final CoreException e) {

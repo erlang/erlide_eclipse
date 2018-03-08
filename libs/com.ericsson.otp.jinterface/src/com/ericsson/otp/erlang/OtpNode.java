@@ -515,7 +515,7 @@ public class OtpNode extends OtpLocalNode {
             if (t == OtpMsg.regSendTag) {
                 final String name = m.getRecipientName();
                 /* special case for netKernel requests */
-                if (name.equals("net_kernel")) {
+                if ("net_kernel".equals(name)) {
                     return netKernel(m);
                 }
                 mbox = mboxes.get(name);

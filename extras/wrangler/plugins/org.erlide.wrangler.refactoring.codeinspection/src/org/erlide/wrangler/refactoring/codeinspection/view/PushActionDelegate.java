@@ -46,23 +46,23 @@ public class PushActionDelegate implements IViewActionDelegate {
     public void run(final IAction action) {
         final String myId = action.getId();
         final SWTImageCanvas imageCanvas = view.imageCanvas;
-        if (myId.equals("toolbar.open")) {
+        if ("toolbar.open".equals(myId)) {
             imageCanvas.onFileOpen();
             return;
         }
         if (imageCanvas.getSourceImage() == null) {
             return;
         }
-        if (myId.equals("toolbar.zoomin")) {
+        if ("toolbar.zoomin".equals(myId)) {
             imageCanvas.zoomIn();
             return;
-        } else if (myId.equals("toolbar.zoomout")) {
+        } else if ("toolbar.zoomout".equals(myId)) {
             imageCanvas.zoomOut();
             return;
-        } else if (myId.equals("toolbar.fit")) {
+        } else if ("toolbar.fit".equals(myId)) {
             imageCanvas.fitCanvas();
             return;
-        } else if (myId.equals("toolbar.rotate")) {
+        } else if ("toolbar.rotate".equals(myId)) {
             /* rotate image anti-clockwise */
             final ImageData src = imageCanvas.getImageData();
             if (src == null) {
@@ -88,7 +88,7 @@ public class PushActionDelegate implements IViewActionDelegate {
             }
             imageCanvas.setImageData(dest);
             return;
-        } else if (myId.equals("toolbar.original")) {
+        } else if ("toolbar.original".equals(myId)) {
             imageCanvas.showOriginal();
             return;
         }

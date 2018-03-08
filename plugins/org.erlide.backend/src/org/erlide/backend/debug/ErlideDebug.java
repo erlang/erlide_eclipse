@@ -132,7 +132,7 @@ public class ErlideDebug {
                 final OtpErlangObject o = t.elementAt(0);
                 if (o instanceof OtpErlangAtom) {
                     final OtpErlangAtom moduleAtom = (OtpErlangAtom) o;
-                    return moduleAtom.atomValue().equals("module");
+                    return "module".equals(moduleAtom.atomValue());
                 }
             }
             return Util.isOk(res);

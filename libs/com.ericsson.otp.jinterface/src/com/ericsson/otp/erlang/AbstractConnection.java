@@ -565,7 +565,7 @@ public abstract class AbstractConnection extends Thread {
                                 cookieError(localNode, cookie);
                             }
                         } else {
-                            if (!cookie.atomValue().equals("")) {
+                            if (!"".equals(cookie.atomValue())) {
                                 cookieError(localNode, cookie);
                             }
                         }
@@ -607,7 +607,7 @@ public abstract class AbstractConnection extends Thread {
                                 cookieError(localNode, cookie);
                             }
                         } else {
-                            if (!cookie.atomValue().equals("")) {
+                            if (!"".equals(cookie.atomValue())) {
                                 cookieError(localNode, cookie);
                             }
                         }
