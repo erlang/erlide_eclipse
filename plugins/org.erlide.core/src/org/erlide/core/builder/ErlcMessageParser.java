@@ -1,4 +1,4 @@
-package org.erlide.core.internal.builder;
+package org.erlide.core.builder;
 
 import java.util.Iterator;
 

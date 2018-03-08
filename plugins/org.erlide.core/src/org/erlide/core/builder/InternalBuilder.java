@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.internal.builder;
+package org.erlide.core.builder;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -36,12 +36,7 @@ import org.eclipse.osgi.util.NLS;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
-import org.erlide.core.builder.BuildNotifier;
-import org.erlide.core.builder.BuildResource;
-import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.BuilderHelper.SearchVisitor;
-import org.erlide.core.builder.BuilderMessages;
-import org.erlide.core.builder.CompilerOptions;
 import org.erlide.dialyzer.internal.builder.DialyzerBuilder;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.MarkerUtils;
@@ -79,7 +74,7 @@ public class InternalBuilder extends ErlangBuilder {
 		if (project == null || !project.isAccessible()) {
 			return null;
 		}
-		DialyzerBuilder dialyzerBuilder = new DialyzerBuilder(project);
+		final DialyzerBuilder dialyzerBuilder = new DialyzerBuilder(project);
 
 		if (BuilderHelper.isDebugging()) {
 			ErlLogger.trace("build", "Start " + project.getName() + ": " + kind);
@@ -142,7 +137,7 @@ public class InternalBuilder extends ErlangBuilder {
 		if (currentProject == null || !currentProject.isAccessible()) {
 			return;
 		}
-		DialyzerBuilder dialyzerBuilder = new DialyzerBuilder(currentProject);
+		final DialyzerBuilder dialyzerBuilder = new DialyzerBuilder(currentProject);
 
 		if (BuilderHelper.isDebugging()) {
 			ErlLogger.trace("build", "Cleaning " + currentProject.getName() //$NON-NLS-1$
@@ -196,7 +191,7 @@ public class InternalBuilder extends ErlangBuilder {
 	}
 
 	private void handleErlangFiles(final IErlProject erlProject, @NonNull final IProject project, final BuildKind kind,
-                                   final IResourceDelta resourceDelta, final BuildNotifier notifier) throws CoreException, BackendException {
+			final IResourceDelta resourceDelta, final BuildNotifier notifier) throws CoreException, BackendException {
 		final OtpErlangList compilerOptions = CompilerOptions.get(project);
 
 		final Set<BuildResource> resourcesToBuild = getResourcesToBuild(kind, project, resourceDelta, notifier);

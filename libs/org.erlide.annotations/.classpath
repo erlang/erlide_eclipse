@@ -5,24 +5,12 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins">      <attributes>        <attribute name="annotationpath" value="../../erlide_eclipse/.eea"/>      </attributes>    </classpathentry>
-	<classpathentry including="**/*.java" kind="src" output="target/classes" path="src">
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins">
 		<attributes>
-			<attribute name="ignore_optional_problems" value="true"/>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="annotationpath" value="../../erlide_eclipse/.eea"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" output="target/classes" path="xtend-gen">
-		<attributes>
-			<attribute name="ignore_optional_problems" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="src" path="src/"/>
+	<classpathentry kind="src" path="xtend-gen/"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

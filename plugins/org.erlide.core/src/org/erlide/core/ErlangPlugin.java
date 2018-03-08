@@ -80,7 +80,7 @@ public class ErlangPlugin extends Plugin {
         final IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
         final ErlangDebugOptionsManager erlangDebugOptionsManager = new ErlangDebugOptionsManager();
 
-        ErlideEventBus.register(new ConsoleMessageReporter());
+        ErlideEventBus.register(new ConsoleMessageReporter(this));
 
         core = new ErlangCore(this, workspace, extensionRegistry,
                 erlangDebugOptionsManager);

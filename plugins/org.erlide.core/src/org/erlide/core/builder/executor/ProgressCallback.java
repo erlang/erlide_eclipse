@@ -1,4 +1,4 @@
-package org.erlide.core.executor;
+package org.erlide.core.builder.executor;
 
 public interface ProgressCallback {
 

@@ -1,4 +1,4 @@
-package org.erlide.core.internal.builder;
+package org.erlide.core.builder;
 
 public interface IMessageParser {
 

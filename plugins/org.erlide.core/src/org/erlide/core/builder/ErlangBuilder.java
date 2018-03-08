@@ -8,12 +8,11 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.internal.builder;
+package org.erlide.core.builder;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.core.builder.BuildNotifier;
 import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.root.IErlProject;
 

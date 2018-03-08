@@ -8,10 +8,9 @@ Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.erlide.core,
  org.erlide.core.builder,
- org.erlide.core.executor,
+ org.erlide.core.builder.executor,
+ org.erlide.core.builder.external;x-internal:=true,
  org.erlide.core.internal;x-internal:=true,
- org.erlide.core.internal.builder;x-friends:="org.erlide.ui.tests,org.erlide.ui,org.erlide.testing.libs",
- org.erlide.core.internal.builder.external;x-internal:=true,
  org.erlide.core.internal.dev;x-internal:=true,
  org.erlide.core.services.search,
  org.erlide.dialyzer.builder,
