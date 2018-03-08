@@ -29,6 +29,9 @@ public class WarningViewManager {
 
     private static IWarningHandler view;
 
+    private WarningViewManager() {
+    }
+
     /**
      * Sets the warning view
      *

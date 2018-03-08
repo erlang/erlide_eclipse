@@ -44,6 +44,9 @@ import com.google.common.collect.Lists;
 
 public class ErlideTestUtils {
 
+    private ErlideTestUtils() {
+    }
+
     // TODO replace ResourceDeltaStub with a mock object
     public static class ResourceDeltaStub implements IResourceDelta {
         @Override

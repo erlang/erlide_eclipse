@@ -10,6 +10,9 @@ public class OtpRpcFactory {
 
     private static IOtpRpcProvider provider;
 
+    private OtpRpcFactory() {
+    }
+
     public static IOtpRpc getOtpRpc(final RuntimeVersion version) {
         if (OtpRpcFactory.provider == null) {
             OtpRpcFactory.provider = OtpRpcFactory.getOtpRpcProvider();

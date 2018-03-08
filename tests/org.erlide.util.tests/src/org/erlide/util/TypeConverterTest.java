@@ -233,6 +233,9 @@ public class TypeConverterTest {
     }
 
     static class Cvt {
+        private Cvt() {
+        }
+
         public static String fromErlangObject(final OtpErlangObject obj) {
             return "hej";
         }

@@ -9,4 +9,6 @@ public class ModelPlugin {
     public static final String NATURE_ID = ModelPlugin.CORE_PLUGIN_ID + ".erlnature";
     public static final String BUILDER_ID = ModelPlugin.CORE_PLUGIN_ID + ".erlbuilder";
 
+    private ModelPlugin() {
+    }
 }

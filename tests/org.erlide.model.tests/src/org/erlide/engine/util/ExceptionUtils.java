@@ -19,6 +19,9 @@ public class ExceptionUtils {
     private static List<String> _suppressedPackages = newArrayList("$Proxy", "org.junit",
             "java.lang.reflect.Method", "sun.", "org.eclipse", "org.junit");
 
+    private ExceptionUtils() {
+    }
+
     public static String getFilteredStackTrace(final Throwable t) {
         return ExceptionUtils.getFilteredStackTrace(t, true);
     }

@@ -35,6 +35,9 @@ public class DuplicatesUIManager {
     // private static List<DuplicatedCode> result;
     private static IDuplicatedCodeResultDisplayer dupDisplayer;
 
+    private DuplicatesUIManager() {
+    }
+
     /**
      * Stores the view object
      *

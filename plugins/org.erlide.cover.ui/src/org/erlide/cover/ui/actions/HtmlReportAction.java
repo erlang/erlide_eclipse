@@ -105,12 +105,12 @@ public class HtmlReportAction extends Action {
         if (obj.getType().equals(ObjectType.MODULE)) {
             return;
         }
-        final String reportPath = new StringBuilder(path).append(File.separator)
-                .append(obj.getLabel()).append(".html").toString();
+        final String reportPath = path + File.separator +
+                obj.getLabel() + ".html";
         log.info(reportPath);
 
-        final String dirPath = new StringBuilder(path).append(File.separator)
-                .append(obj.getLabel()).toString();
+        final String dirPath = path + File.separator +
+                obj.getLabel();
         final File dir = new File(dirPath);
         dir.mkdir();
 

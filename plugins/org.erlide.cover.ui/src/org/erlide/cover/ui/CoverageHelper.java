@@ -11,6 +11,9 @@ import org.eclipse.ui.statushandlers.StatusManager;
  */
 public class CoverageHelper {
 
+    private CoverageHelper() {
+    }
+
     /**
      * Report when error occured
      *

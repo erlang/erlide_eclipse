@@ -11,6 +11,9 @@ package org.erlide.engine;
 public class ErlangEngine {
     private static volatile IErlangEngine engine;
 
+    private ErlangEngine() {
+    }
+
     public static synchronized IErlangEngine getInstance() {
         if (ErlangEngine.engine == null) {
             // TODO inject backend in factory

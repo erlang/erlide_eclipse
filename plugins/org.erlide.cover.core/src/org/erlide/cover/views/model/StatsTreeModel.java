@@ -54,20 +54,19 @@ public class StatsTreeModel implements Serializable {
         root.setLiniesCount(0);
         root.setCoverCount(0);
 
-        final StringBuilder timeTmp = new StringBuilder();
-        timeTmp.append(Calendar.getInstance().get(Calendar.YEAR))
-                .append(String.format("%02d",
-                        Calendar.getInstance().get(Calendar.MONTH) + 1))
-                .append(String.format("%02d",
-                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH)))
-                .append(String.format("%02d",
-                        Calendar.getInstance().get(Calendar.HOUR_OF_DAY)))
-                .append(String.format("%02d",
-                        Calendar.getInstance().get(Calendar.MINUTE)))
-                .append(String.format("%02d",
-                        Calendar.getInstance().get(Calendar.SECOND)));
+        String timeTmp = String.valueOf(Calendar.getInstance().get(Calendar.YEAR)) +
+                String.format("%02d",
+                        Calendar.getInstance().get(Calendar.MONTH) + 1) +
+                String.format("%02d",
+                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) +
+                String.format("%02d",
+                        Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) +
+                String.format("%02d",
+                        Calendar.getInstance().get(Calendar.MINUTE)) +
+                String.format("%02d",
+                        Calendar.getInstance().get(Calendar.SECOND));
 
-        timestamp = timeTmp.toString();
+        timestamp = timeTmp;
 
         ModuleSet.clear();
         root.setHtmlPath(null);

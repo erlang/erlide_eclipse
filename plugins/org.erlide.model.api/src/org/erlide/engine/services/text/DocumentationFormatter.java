@@ -9,6 +9,9 @@ import org.erlide.util.ErlLogger;
 
 public class DocumentationFormatter {
 
+	private DocumentationFormatter() {
+	}
+
 	public static String getDocumentationString(final Collection<IErlComment> comments, final IErlTypespec typespec) {
 		final StringBuilder stringBuilder = new StringBuilder();
 		if (!comments.isEmpty()) {

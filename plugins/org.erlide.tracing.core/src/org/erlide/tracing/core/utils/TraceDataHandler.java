@@ -236,8 +236,8 @@ public class TraceDataHandler {
     }
 
     private String pid2Str(final OtpErlangPid pid) {
-        return new StringBuilder().append(pid.id()).append(".").append(pid.serial())
-                .append(".").append(pid.creation()).toString();
+        return String.valueOf(pid.id()) + "." + pid.serial() +
+                "." + pid.creation();
     }
 
     // functions creating nodes
@@ -272,11 +272,10 @@ public class TraceDataHandler {
             node.setSize(size);
 
             // node label
-            final StringBuilder builder = new StringBuilder();
-            builder.append(infoDateFormatter.format(from)).append(" - ")
-                    .append(infoDateFormatter.format(to)).append(" (").append(size)
-                    .append(" traces): ").append(path);
-            node.setLabel(builder.toString());
+            String builder = infoDateFormatter.format(from) + " - " +
+                    infoDateFormatter.format(to) + " (" + size +
+                    " traces): " + path;
+            node.setLabel(builder);
 
         } catch (final OtpErlangRangeException e) {
             ErlLogger.error(e);

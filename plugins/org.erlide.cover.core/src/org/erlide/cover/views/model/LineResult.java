@@ -49,11 +49,8 @@ public class LineResult implements Comparable<LineResult>, Serializable {
 
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
 
-        buf.append(lineNum).append(" ").append(lineCalls);
-
-        return buf.toString();
+        return String.valueOf(lineNum) + " " + lineCalls;
     }
 
     @Override

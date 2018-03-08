@@ -19,6 +19,9 @@ import org.erlide.util.ErlLogger;
  */
 public class CoverageAnalysis {
 
+    private CoverageAnalysis() {
+    }
+
     /**
      * @return true if the Cover plug-in is installed.
      */

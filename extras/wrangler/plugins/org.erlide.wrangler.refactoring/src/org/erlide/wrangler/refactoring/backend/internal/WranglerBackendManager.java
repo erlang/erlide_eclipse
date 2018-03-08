@@ -23,6 +23,9 @@ public class WranglerBackendManager {
     static WranglerRefactoringBackend refactoringBackend;
     static WranglerSyntaxBackend syntaxBackend;
 
+    private WranglerBackendManager() {
+    }
+
     /**
      * Returns an Erlide backend which is used to run Wrangler refactorings
      *

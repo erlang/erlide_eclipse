@@ -220,7 +220,7 @@ public class OtpNode extends OtpLocalNode {
 
     private synchronized void init(final int aport) throws IOException {
         if (!initDone) {
-            connections = new Hashtable<>(17, (float) 0.95);
+            connections = new Hashtable<>(17, 0.95f);
             mboxes = new Mailboxes();
             acceptor = new Acceptor(aport);
             initDone = true;
@@ -628,8 +628,8 @@ public class OtpNode extends OtpLocalNode {
         private Hashtable<String, WeakReference<OtpMbox>> byName;
 
         public Mailboxes() {
-            byPid = new Hashtable<>(17, (float) 0.95);
-            byName = new Hashtable<>(17, (float) 0.95);
+            byPid = new Hashtable<>(17, 0.95f);
+            byName = new Hashtable<>(17, 0.95f);
         }
 
         public OtpMbox create(final String name) {

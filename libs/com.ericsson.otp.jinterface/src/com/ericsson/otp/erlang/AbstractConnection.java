@@ -695,7 +695,7 @@ public abstract class AbstractConnection extends Thread {
                     // garbage?
                     break receive_loop;
                 }
-            } // end receive_loop
+            }
 
             // this section reachable only with break
             // we have received garbage from peer

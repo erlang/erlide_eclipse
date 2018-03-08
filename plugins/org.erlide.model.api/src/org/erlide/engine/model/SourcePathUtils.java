@@ -14,6 +14,9 @@ import com.google.common.collect.Lists;
 
 public class SourcePathUtils {
 
+    private SourcePathUtils() {
+    }
+
     public static Collection<IPath> getExtraSourcePathsForBuild(final IProject project) {
         return SourcePathUtils.getExtraSourcePathsGeneric(project, new SPPMethod() {
             @Override

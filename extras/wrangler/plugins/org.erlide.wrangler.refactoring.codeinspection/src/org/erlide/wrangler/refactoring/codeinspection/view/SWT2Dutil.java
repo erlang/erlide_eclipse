@@ -22,6 +22,9 @@ import org.erlide.util.ErlLogger;
  */
 public class SWT2Dutil {
 
+    private SWT2Dutil() {
+    }
+
     /**
      * Given an arbitrary rectangle, get the rectangle with the given transform.
      * The result rectangle is positive width and positive height.

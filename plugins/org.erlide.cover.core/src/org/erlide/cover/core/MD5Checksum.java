@@ -12,6 +12,9 @@ import java.security.MessageDigest;
  */
 public class MD5Checksum {
 
+    private MD5Checksum() {
+    }
+
     public static String getMD5(final File file) throws Exception {
 
         try (final FileInputStream f = new FileInputStream(file)) {

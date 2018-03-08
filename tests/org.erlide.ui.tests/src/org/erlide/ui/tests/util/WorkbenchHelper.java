@@ -4,6 +4,9 @@ import org.eclipse.ui.PlatformUI;
 
 public class WorkbenchHelper {
 
+    private WorkbenchHelper() {
+    }
+
     public static void waitForWorkbench() {
         int i = 0;
         while (!PlatformUI.isWorkbenchRunning() && i < 50) {

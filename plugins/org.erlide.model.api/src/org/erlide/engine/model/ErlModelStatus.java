@@ -422,10 +422,9 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
         if (this == ErlModelStatus.VERIFIED_OK) {
             return "ErlModelStatus[OK]"; //$NON-NLS-1$
         }
-        final StringBuilder buffer = new StringBuilder();
-        buffer.append("Erlang Model Status ["); //$NON-NLS-1$
-        buffer.append(getMessage());
-        buffer.append(']');
-        return buffer.toString();
+        String buffer = "Erlang Model Status [" + //$NON-NLS-1$
+                getMessage() +
+                ']';
+        return buffer;
     }
 }

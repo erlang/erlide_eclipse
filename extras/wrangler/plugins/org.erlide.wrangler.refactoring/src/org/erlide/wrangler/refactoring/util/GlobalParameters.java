@@ -52,6 +52,9 @@ public class GlobalParameters {
     static boolean hasQuickCheck;
     static boolean isQCchecked;
 
+    private GlobalParameters() {
+    }
+
     /**
      * Checks if QuickCheck is installed in the current machine.
      *

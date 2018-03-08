@@ -102,9 +102,7 @@ public class MatchSpecCellEditor extends DialogCellEditor {
                 } else if ("not_fun".equals(errorType.atomValue())) {
                     return "Given expression is not a function";
                 } else if ("unbound_var".equals(errorType.atomValue())) {
-                    final StringBuilder builder = new StringBuilder("Unbound variable: ");
-                    builder.append(tuple.elementAt(2));
-                    return builder.toString();
+                    return "Unbound variable: " + tuple.elementAt(2);
                 } else {
                     return tuple.elementAt(2).toString();
                 }

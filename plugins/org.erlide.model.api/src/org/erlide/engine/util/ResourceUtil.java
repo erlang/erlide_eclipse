@@ -34,6 +34,9 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class ResourceUtil {
 
+    private ResourceUtil() {
+    }
+
     /**
      * <p>
      * reads an input stream and returns the contents as String.

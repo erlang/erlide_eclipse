@@ -132,7 +132,7 @@ public class PreferencesHelperTest {
         final double val = 3.1415926d;
         helper.putDouble(PreferencesHelperTest.KEY, val);
         final double res = helper.getDouble(PreferencesHelperTest.KEY, Double.NaN);
-        Assert.assertEquals(val, res, 1e-5);
+        Assert.assertEquals(val, res, 1.0e-5);
     }
 
     @Test
@@ -141,7 +141,7 @@ public class PreferencesHelperTest {
         final float val = 3.1415926f;
         helper.putFloat(PreferencesHelperTest.KEY, val);
         final float res = helper.getFloat(PreferencesHelperTest.KEY, Float.NaN);
-        Assert.assertEquals(val, res, 1e-5);
+        Assert.assertEquals(val, res, 1.0e-5);
     }
 
     @Test

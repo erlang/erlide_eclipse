@@ -9,6 +9,9 @@ import java.util.Set;
 
 public class MapUtils {
 
+    private MapUtils() {
+    }
+
     public static <K, V> Map<V, List<K>> inverseList(final Map<K, List<V>> map) {
         final Map<V, List<K>> result = new LinkedHashMap<>();
         for (final Map.Entry<K, List<V>> entry : map.entrySet()) {

@@ -15,4 +15,6 @@ public class TestConstants {
     public static final String FUN_TEST = "run_tests";
     public static final String FUN_OUTPUT_DIR = "set_output_dir";
 
+    private TestConstants() {
+    }
 }

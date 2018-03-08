@@ -41,9 +41,7 @@ public abstract class CostumWorkflowRefactoringWithPositionsSelection
      */
     public List<IErlRange> getPositions() {
         final List<IErlRange> ret = new ArrayList<>();
-        for (final IErlRange r : positions.keySet()) {
-            ret.add(r);
-        }
+        ret.addAll(positions.keySet());
 
         return ret;
     }

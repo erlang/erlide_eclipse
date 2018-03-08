@@ -17,4 +17,6 @@ public class Images {
     public static final String HOME = Images.PATH_PREFIX + "home.png";
     public static final String FUNCTION = Images.PATH_PREFIX + "methpri_obj.gif";
 
+    private Images() {
+    }
 }

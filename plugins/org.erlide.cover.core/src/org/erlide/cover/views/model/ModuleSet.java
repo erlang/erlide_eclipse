@@ -19,6 +19,9 @@ public class ModuleSet {
         ModuleSet.map = new HashMap<>();
     }
 
+    private ModuleSet() {
+    }
+
     public static void add(final ModuleStats module) {
         ModuleSet.map.put(module.getLabel(), module);
     }

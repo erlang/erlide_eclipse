@@ -39,9 +39,6 @@ public class SaveAction extends Action {
     @Override
     public void run() {
 
-        final StringBuilder statName = new StringBuilder();
-        statName.append("cov_").append(StatsTreeModel.getInstance().getTimestamp());
-
         final IPath location = Activator.getDefault().getStateLocation().append(SaveAction.DIR_NAME);
         final File dir = location.toFile();
 
@@ -53,7 +50,7 @@ public class SaveAction extends Action {
         // open input dialog
 
         final InputDialog nameDialog = new InputDialog(shell, "Saving coverage results",
-                "Enter the name for saving coverage results", statName.toString(),
+                "Enter the name for saving coverage results", "cov_" + StatsTreeModel.getInstance().getTimestamp(),
                 new IInputValidator() {
 
                     @Override

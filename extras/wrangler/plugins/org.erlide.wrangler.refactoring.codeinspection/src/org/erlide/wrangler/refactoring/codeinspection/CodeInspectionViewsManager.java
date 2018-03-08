@@ -36,6 +36,9 @@ public class CodeInspectionViewsManager {
     public static final String GRAPH_VIEW = org.erlide.wrangler.refactoring.codeinspection.view.GraphImageView.VIEW_ID;
     public static final String CODE_INSPECTION_VIEW = org.erlide.wrangler.refactoring.codeinspection.view.CodeInspectionResultsView.VIEW_ID;
 
+    private CodeInspectionViewsManager() {
+    }
+
     /**
      * Shows the image in the graph view with the given title.
      *

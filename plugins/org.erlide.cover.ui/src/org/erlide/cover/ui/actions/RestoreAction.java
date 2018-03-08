@@ -89,8 +89,7 @@ public class RestoreAction extends Action {
             viewer.setInput(StatsTreeModel.getInstance());
 
             final ICoverageObject root = StatsTreeModel.getInstance().getRoot();
-            final ModuleSet mSet = new ModuleSet();
-            createModuleSet(mSet, root);
+            createModuleSet(root);
 
             final Collection<ICoverageObject> col = root.getModules();
             for (final ICoverageObject module : col) {
@@ -115,13 +114,13 @@ public class RestoreAction extends Action {
     }
 
     // creates module set used to prepare annotations map
-    private void createModuleSet(final ModuleSet mSet, final ICoverageObject object) {
+    private void createModuleSet(final ICoverageObject object) {
         if (object.getType().equals(ObjectType.MODULE)) {
             ModuleSet.add((ModuleStats) object);
         }
         final ICoverageObject[] children = object.getChildren();
         for (final ICoverageObject child : children) {
-            createModuleSet(mSet, child);
+            createModuleSet(child);
         }
     }
 
@@ -163,9 +162,7 @@ public class RestoreAction extends Action {
 
             log.info(df.format(d));
 
-            final StringBuilder buf = new StringBuilder();
-            buf.append(f.getName()).append(" (").append(df.format(d)).append(")");
-            return buf.toString();
+            return f.getName() + " (" + df.format(d) + ")";
         }
 
     };
