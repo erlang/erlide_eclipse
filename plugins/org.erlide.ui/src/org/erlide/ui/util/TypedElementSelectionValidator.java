@@ -66,8 +66,8 @@ public class TypedElementSelectionValidator implements ISelectionStatusValidator
     }
 
     private boolean isOfAcceptedType(final Object o) {
-        for (int i = 0; i < fAcceptedTypes.length; i++) {
-            if (fAcceptedTypes[i].isInstance(o)) {
+        for (Class<?> fAcceptedType : fAcceptedTypes) {
+            if (fAcceptedType.isInstance(o)) {
                 return true;
             }
         }
@@ -96,8 +96,7 @@ public class TypedElementSelectionValidator implements ISelectionStatusValidator
             return false;
         }
 
-        for (int i = 0; i < selection.length; i++) {
-            final Object o = selection[i];
+        for (final Object o : selection) {
             if (!isOfAcceptedType(o) || isRejectedElement(o) || !isSelectedValid(o)) {
                 return false;
             }

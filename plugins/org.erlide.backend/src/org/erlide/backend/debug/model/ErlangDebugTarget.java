@@ -227,8 +227,8 @@ public class ErlangDebugTarget extends ErlangDebugElement
     public void installDeferredBreakpoints() {
         final IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager()
                 .getBreakpoints(getModelIdentifier());
-        for (int i = 0; i < breakpoints.length; i++) {
-            breakpointAdded(breakpoints[i]);
+        for (IBreakpoint breakpoint : breakpoints) {
+            breakpointAdded(breakpoint);
         }
     }
 
@@ -388,8 +388,7 @@ public class ErlangDebugTarget extends ErlangDebugElement
     }
 
     public ErlangProcess getErlangProcess(final OtpErlangPid pid) {
-        for (int i = 0; i < allProcesses.size(); ++i) {
-            final ErlangProcess p = allProcesses.get(i);
+        for (final ErlangProcess p : allProcesses) {
             if (p.getPid().equals(pid)) {
                 return p;
             }

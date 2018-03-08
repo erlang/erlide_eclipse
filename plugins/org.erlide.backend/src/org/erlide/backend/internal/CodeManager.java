@@ -156,9 +156,7 @@ public class CodeManager {
     }
 
     private PathItem findItem(final List<PathItem> l, final String p) {
-        final Iterator<PathItem> i = l.iterator();
-        while (i.hasNext()) {
-            final PathItem it = i.next();
+        for (PathItem it : l) {
             if (it.path.equals(p)) {
                 return it;
             }

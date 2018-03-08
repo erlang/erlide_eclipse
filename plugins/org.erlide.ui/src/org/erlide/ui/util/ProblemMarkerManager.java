@@ -81,16 +81,16 @@ public class ProblemMarkerManager implements IResourceChangeListener,
         private boolean isErrorDelta(final IResourceDelta delta) {
             if ((delta.getFlags() & IResourceDelta.MARKERS) != 0) {
                 final IMarkerDelta[] markerDeltas = delta.getMarkerDeltas();
-                for (int i = 0; i < markerDeltas.length; i++) {
-                    if (markerDeltas[i].isSubtypeOf(IMarker.PROBLEM)) {
-                        final int kind = markerDeltas[i].getKind();
+                for (IMarkerDelta markerDelta : markerDeltas) {
+                    if (markerDelta.isSubtypeOf(IMarker.PROBLEM)) {
+                        final int kind = markerDelta.getKind();
                         if (kind == IResourceDelta.ADDED
                                 || kind == IResourceDelta.REMOVED) {
                             return true;
                         }
-                        final int severity = markerDeltas[i]
+                        final int severity = markerDelta
                                 .getAttribute(IMarker.SEVERITY, -1);
-                        final int newSeverity = markerDeltas[i].getMarker()
+                        final int newSeverity = markerDelta.getMarker()
                                 .getAttribute(IMarker.SEVERITY, -1);
                         if (newSeverity != severity) {
                             return true;
@@ -180,8 +180,8 @@ public class ProblemMarkerManager implements IResourceChangeListener,
             @SuppressWarnings("synthetic-access")
             public void run() {
                 final Object[] listeners = fListeners.getListeners();
-                for (int i = 0; i < listeners.length; i++) {
-                    final IProblemChangedListener curr = (IProblemChangedListener) listeners[i];
+                for (Object listener : listeners) {
+                    final IProblemChangedListener curr = (IProblemChangedListener) listener;
                     curr.problemsChanged(changes, isMarkerChange);
                 }
             }

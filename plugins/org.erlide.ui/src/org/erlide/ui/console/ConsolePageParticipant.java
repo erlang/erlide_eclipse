@@ -203,8 +203,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
 
     @Override
     public void handleDebugEvents(final DebugEvent[] events) {
-        for (int i = 0; i < events.length; i++) {
-            final DebugEvent event = events[i];
+        for (final DebugEvent event : events) {
             if (event.getSource().equals(getProcess())) {
                 final Runnable r = new Runnable() {
                     @Override

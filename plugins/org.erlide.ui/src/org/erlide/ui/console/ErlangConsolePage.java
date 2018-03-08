@@ -534,9 +534,8 @@ public class ErlangConsolePage extends Page
     }
 
     protected void updateSelectionDependentActions() {
-        final Iterator<String> iterator = fSelectionActions.iterator();
-        while (iterator.hasNext()) {
-            updateAction(iterator.next());
+        for (String fSelectionAction : fSelectionActions) {
+            updateAction(fSelectionAction);
         }
     }
 

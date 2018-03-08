@@ -33,9 +33,9 @@ public class DirectorySelectUtil {
         final IProject[] allProjects = root.getProjects();
         final List<IProject> rejectedElements = new ArrayList<>(
                 allProjects.length);
-        for (int i = 0; i < allProjects.length; i++) {
-            if (!allProjects[i].equals(project2)) {
-                rejectedElements.add(allProjects[i]);
+        for (IProject allProject : allProjects) {
+            if (!allProject.equals(project2)) {
+                rejectedElements.add(allProject);
             }
         }
         final ViewerFilter filter = new TypedViewerFilter(acceptedClasses,

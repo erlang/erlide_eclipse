@@ -557,8 +557,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
         final ILabelProvider labelProvider = (ILabelProvider) fTreeViewer
                 .getLabelProvider();
         // Process each item in the tree
-        for (int i = 0; i < items.length; i++) {
-            Object element = items[i].getData();
+        for (TreeItem item : items) {
+            Object element = item.getData();
             // Return the first element if no pattern is set
             if (fStringMatcher == null) {
                 return element;
@@ -571,7 +571,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
                 }
             }
             // Recursively check the elements children for a match
-            element = findFirstMatchToPattern(items[i].getItems());
+            element = findFirstMatchToPattern(item.getItems());
             // Return the child element match if found
             if (element != null) {
                 return element;

@@ -236,8 +236,8 @@ public class MarkOccurencesSupport implements IDisposable {
                 ((IAnnotationModelExtension) annotationModel)
                         .replaceAnnotations(fOccurrenceAnnotations, null);
             } else {
-                for (int i = 0, length = fOccurrenceAnnotations.length; i < length; i++) {
-                    annotationModel.removeAnnotation(fOccurrenceAnnotations[i]);
+                for (Annotation fOccurrenceAnnotation : fOccurrenceAnnotations) {
+                    annotationModel.removeAnnotation(fOccurrenceAnnotation);
                 }
             }
             fOccurrenceAnnotations = null;

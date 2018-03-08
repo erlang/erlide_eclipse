@@ -93,8 +93,8 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
 
         final OtpErlangObject[] elements = duplicateCodeList.elements();
 
-        for (int i = 0; i < elements.length; ++i) {
-            OtpErlangTuple elementPair = (OtpErlangTuple) elements[i];
+        for (OtpErlangObject element : elements) {
+            OtpErlangTuple elementPair = (OtpErlangTuple) element;
 
             String replicationFunction = "";
             final OtpErlangTuple checkable = (OtpErlangTuple) elementPair.elementAt(0);

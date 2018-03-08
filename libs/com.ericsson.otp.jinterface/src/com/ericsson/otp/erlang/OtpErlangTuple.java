@@ -193,8 +193,8 @@ public class OtpErlangTuple extends OtpErlangObject {
 
         buf.write_tuple_head(arity);
 
-        for (int i = 0; i < arity; i++) {
-            buf.write_any(elems[i]);
+        for (OtpErlangObject elem : elems) {
+            buf.write_any(elem);
         }
     }
 

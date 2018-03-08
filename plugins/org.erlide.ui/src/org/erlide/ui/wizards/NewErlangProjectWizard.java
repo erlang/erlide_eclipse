@@ -246,24 +246,21 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         // get all the view and editor parts
         final List<IWorkbenchPart> parts = Lists.newArrayList();
         IWorkbenchPartReference refs[] = page.getViewReferences();
-        for (int i = 0; i < refs.length; i++) {
-            final IWorkbenchPart part = refs[i].getPart(false);
+        for (IWorkbenchPartReference ref1 : refs) {
+            final IWorkbenchPart part = ref1.getPart(false);
             if (part != null) {
                 parts.add(part);
             }
         }
         refs = page.getEditorReferences();
-        for (int i = 0; i < refs.length; i++) {
-            if (refs[i].getPart(false) != null) {
-                parts.add(refs[i].getPart(false));
+        for (IWorkbenchPartReference ref : refs) {
+            if (ref.getPart(false) != null) {
+                parts.add(ref.getPart(false));
             }
         }
 
         final ISelection selection = new StructuredSelection(resource);
-        final Iterator<IWorkbenchPart> itr = parts.iterator();
-        while (itr.hasNext()) {
-            final IWorkbenchPart part = itr.next();
-
+        for (IWorkbenchPart part : parts) {
             // get the part's ISetSelectionTarget implementation
             ISetSelectionTarget target = null;
             if (part instanceof ISetSelectionTarget) {

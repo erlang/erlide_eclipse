@@ -112,8 +112,7 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
     private List<String> dirs(final List<String> list, final IPath ref) {
         final int n = ref.segmentCount();
         final List<String> result = Lists.newArrayList();
-        for (final Iterator<String> iter = list.iterator(); iter.hasNext();) {
-            final String element = iter.next();
+        for (final String element : list) {
             IPath p = new Path(element);
             p = p.removeLastSegments(1).removeFirstSegments(n).setDevice(null);
             String ps = p.toString();

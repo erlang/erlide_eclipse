@@ -63,9 +63,8 @@ public class ExpressionSearchParser extends AbstractDuplicatesParser {
 
             final ArrayList<DuplicatedCodeInstanceElement> instances = new ArrayList<>();
 
-            final Iterator<OtpErlangObject> it = posList.iterator();
-            while (it.hasNext()) {
-                actPos = (OtpErlangTuple) it.next();
+            for (OtpErlangObject aPosList : posList) {
+                actPos = (OtpErlangTuple) aPosList;
                 startLine = (OtpErlangLong) ((OtpErlangTuple) actPos.elementAt(0))
                         .elementAt(0);
                 startColumn = (OtpErlangLong) ((OtpErlangTuple) actPos.elementAt(0))

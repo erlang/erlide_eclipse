@@ -70,8 +70,8 @@ public class BeamUtil {
         if (activator != null) {
             final Bundle[] fragments = activator.getFragments(b);
             if (fragments != null) {
-                for (int i = 0; i < fragments.length; i++) {
-                    entry = fragments[i].getEntry(entryName);
+                for (Bundle fragment : fragments) {
+                    entry = fragment.getEntry(entryName);
                     if (entry != null) {
                         final String aPath = getPathFromUrl(entry);
                         result.add(aPath);

@@ -223,8 +223,8 @@ public class ProblemsLabelDecorator
             final LabelProviderChangedEvent event = new ProblemsLabelChangedEvent(this,
                     changedResources, isMarkerChange);
             final Object[] listeners = fListeners.getListeners();
-            for (int i = 0; i < listeners.length; i++) {
-                ((ILabelProviderListener) listeners[i]).labelProviderChanged(event);
+            for (Object listener : listeners) {
+                ((ILabelProviderListener) listener).labelProviderChanged(event);
             }
         }
     }

@@ -227,9 +227,9 @@ public class OtpCookedConnection extends AbstractConnection {
             if (l != null) {
                 final int len = l.length;
 
-                for (int i = 0; i < len; i++) {
+                for (Link aL : l) {
                     // send exit "from" remote pids to local ones
-                    self.deliver(new OtpMsg(OtpMsg.exitTag, l[i].remote(), l[i].local(),
+                    self.deliver(new OtpMsg(OtpMsg.exitTag, aL.remote(), aL.local(),
                             new OtpErlangAtom("noconnection")));
                 }
             }

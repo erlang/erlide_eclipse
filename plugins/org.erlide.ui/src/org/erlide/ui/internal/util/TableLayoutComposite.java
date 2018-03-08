@@ -77,8 +77,7 @@ public class TableLayoutComposite extends Composite {
 
         int width = 0;
         final int size = columns.size();
-        for (int i = 0; i < size; ++i) {
-            final ColumnLayoutData layoutData = columns.get(i);
+        for (final ColumnLayoutData layoutData : columns) {
             if (layoutData instanceof ColumnPixelData) {
                 final ColumnPixelData col = (ColumnPixelData) layoutData;
                 width += col.width;

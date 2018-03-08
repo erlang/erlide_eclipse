@@ -98,8 +98,8 @@ public class SimilarExpressionSearchParser extends AbstractDuplicatesParser {
 
         final OtpErlangObject[] elements = duplicateCodeList.elements();
 
-        for (int i = 0; i < elements.length; ++i) {
-            final OtpErlangTuple elementPair = (OtpErlangTuple) elements[i];
+        for (OtpErlangObject element : elements) {
+            final OtpErlangTuple elementPair = (OtpErlangTuple) element;
             final OtpErlangTuple firstElement = (OtpErlangTuple) elementPair.elementAt(0);
             final OtpErlangTuple secondElement = (OtpErlangTuple) elementPair
                     .elementAt(1);

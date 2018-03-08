@@ -63,9 +63,7 @@ public class ColorManager implements IColorManager {
     public void dispose(final Display display) {
         final Map<RGB, Color> colorTable = fDisplayTable.get(display);
         if (colorTable != null) {
-            final Iterator<Color> e = colorTable.values().iterator();
-            while (e.hasNext()) {
-                final Color color = e.next();
+            for (Color color : colorTable.values()) {
                 if (color != null && !color.isDisposed()) {
                     color.dispose();
                 }

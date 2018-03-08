@@ -164,13 +164,10 @@ public final class ExtensionUtils {
         final List<Object> list = Lists.newArrayList();
         final IExtension[] extensions = getExtensions(type);
         // For each extension ...
-        for (int i = 0; i < extensions.length; i++) {
-            final IExtension extension = extensions[i];
+        for (final IExtension extension : extensions) {
             final IConfigurationElement[] elements = extension.getConfigurationElements();
             // For each member of the extension ...
-            for (int j = 0; j < elements.length; j++) {
-                final IConfigurationElement element = elements[j];
-
+            for (final IConfigurationElement element : elements) {
                 try {
                     list.add(element.createExecutableExtension("class"));
                 } catch (final Exception e) {

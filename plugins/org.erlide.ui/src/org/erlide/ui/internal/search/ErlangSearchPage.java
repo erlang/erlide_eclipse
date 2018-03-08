@@ -489,8 +489,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     }
 
     private SearchFor getSearchFor() {
-        for (int i = 0; i < fSearchFor.length; i++) {
-            final Button button = fSearchFor[i];
+        for (final Button button : fSearchFor) {
             if (button.getSelection()) {
                 return (SearchFor) button.getData();
             }
@@ -512,8 +511,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     }
 
     private void setIncludeMask(final int includeMask) {
-        for (int i = 0; i < fIncludeMasks.length; i++) {
-            final Button button = fIncludeMasks[i];
+        for (final Button button : fIncludeMasks) {
             button.setSelection((includeMask & getIntData(button)) != 0);
         }
     }
@@ -644,8 +642,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     }
 
     private LimitTo getLimitTo() {
-        for (int i = 0; i < fLimitTo.length; i++) {
-            final Button button = fLimitTo[i];
+        for (final Button button : fLimitTo) {
             if (button.getSelection()) {
                 return (LimitTo) button.getData();
             }
@@ -656,8 +653,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
     private int getIncludeMask() {
         int mask = 0;
-        for (int i = 0; i < fIncludeMasks.length; i++) {
-            final Button button = fIncludeMasks[i];
+        for (final Button button : fIncludeMasks) {
             if (button.getSelection()) {
                 mask |= getIntData(button);
             }

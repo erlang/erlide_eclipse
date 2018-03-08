@@ -48,8 +48,8 @@ public class SimpleSelectionProvider implements ISelectionProvider {
         fSelection = selection;
 
         final Object[] listeners = fSelectionChangedListeners.getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            ((ISelectionChangedListener) listeners[i])
+        for (Object listener : listeners) {
+            ((ISelectionChangedListener) listener)
                     .selectionChanged(new SelectionChangedEvent(this, selection));
         }
     }

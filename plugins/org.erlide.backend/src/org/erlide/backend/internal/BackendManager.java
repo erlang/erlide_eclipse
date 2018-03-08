@@ -193,8 +193,7 @@ public final class BackendManager implements IBackendManager {
     public void loadCodepathExtensions() {
         final IExtensionPoint exPnt = BackendUtils.getCodepathExtension();
         final IExtension[] extensions = exPnt.getExtensions();
-        for (int e = 0; e < extensions.length; e++) {
-            final IExtension extension = extensions[e];
+        for (final IExtension extension : extensions) {
             if (!extension.isValid()) {
                 continue;
             }

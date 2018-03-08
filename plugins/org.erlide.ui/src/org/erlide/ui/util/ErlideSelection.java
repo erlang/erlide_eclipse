@@ -662,8 +662,8 @@ public class ErlideSelection {
      */
     public static boolean endsWithSomeChar(final char[] cs,
             final String activationToken) {
-        for (int i = 0; i < cs.length; i++) {
-            if (activationToken.endsWith(cs[i] + "")) {
+        for (char c : cs) {
+            if (activationToken.endsWith(c + "")) {
                 return true;
             }
         }

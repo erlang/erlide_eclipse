@@ -653,8 +653,7 @@ public class ListDialogField<Element> extends DialogField {
             // filter duplicated
             final ArrayList<Element> elementsToAdd = new ArrayList<>(nElements);
 
-            for (int i = 0; i < nElements; i++) {
-                final Element elem = elements.get(i);
+            for (final Element elem : elements) {
                 if (!fElements.contains(elem)) {
                     elementsToAdd.add(elem);
                 }
@@ -773,8 +772,7 @@ public class ListDialogField<Element> extends DialogField {
         final List<Element> res = new ArrayList<>(nElements);
         @Nullable
         Element floating = null;
-        for (int i = 0; i < nElements; i++) {
-            final Element curr = elements.get(i);
+        for (final Element curr : elements) {
             if (move.contains(curr)) {
                 res.add(curr);
             } else {

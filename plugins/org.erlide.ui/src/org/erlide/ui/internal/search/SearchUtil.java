@@ -437,9 +437,9 @@ public class SearchUtil {
                     .getArray(STORE_LRU_WORKING_SET_NAMES + i);
             if (lruWorkingSetNames != null) {
                 final Set<IWorkingSet> workingSets = new HashSet<>(2);
-                for (int j = 0; j < lruWorkingSetNames.length; j++) {
+                for (String lruWorkingSetName : lruWorkingSetNames) {
                     final IWorkingSet workingSet = PlatformUI.getWorkbench()
-                            .getWorkingSetManager().getWorkingSet(lruWorkingSetNames[j]);
+                            .getWorkingSetManager().getWorkingSet(lruWorkingSetName);
                     if (workingSet != null) {
                         workingSets.add(workingSet);
                     }

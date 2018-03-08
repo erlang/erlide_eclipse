@@ -372,8 +372,7 @@ public final class Util {
             throws IOException {
         final int strlen = str.length;
         int utflen = 0;
-        for (int i = 0; i < strlen; i++) {
-            final int c = str[i];
+        for (final char c : str) {
             if (c >= 0x0001 && c <= 0x007F) {
                 utflen++;
             } else if (c > 0x07FF) {
@@ -388,12 +387,11 @@ public final class Util {
         out.write(utflen >>> 8 & 0xFF);
         out.write(utflen >>> 0 & 0xFF);
         if (strlen == utflen) {
-            for (int i = 0; i < strlen; i++) {
-                out.write(str[i]);
+            for (char aStr : str) {
+                out.write(aStr);
             }
         } else {
-            for (int i = 0; i < strlen; i++) {
-                final int c = str[i];
+            for (final char c : str) {
                 if (c >= 0x0001 && c <= 0x007F) {
                     out.write(c);
                 } else if (c > 0x07FF) {

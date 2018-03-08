@@ -357,14 +357,13 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
     }
 
     @Override
-    public void saveState(final IMemento aMemento) {
+    public void saveState(IMemento aMemento) {
         if (exprs.isEmpty()) {
             return;
         }
         final IMemento aMemento2 = aMemento.createChild("LiveExpressions");
-        final Iterator<LiveExpr> iter = exprs.iterator();
-        while (iter.hasNext()) {
-            aMemento2.createChild("expression").putTextData(iter.next().toString());
+        for (LiveExpr expr : exprs) {
+            aMemento2.createChild("expression").putTextData(expr.toString());
         }
     }
 

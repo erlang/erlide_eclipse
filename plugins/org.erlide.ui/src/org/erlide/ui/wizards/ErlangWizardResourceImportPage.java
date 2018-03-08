@@ -377,8 +377,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
         final Object[] newSelectedTypes = dialog.getResult();
         if (newSelectedTypes != null) { // ie.- did not press Cancel
             selectedTypes = new ArrayList<>(newSelectedTypes.length);
-            for (int i = 0; i < newSelectedTypes.length; i++) {
-                selectedTypes.add(newSelectedTypes[i]);
+            for (Object newSelectedType : newSelectedTypes) {
+                selectedTypes.add(newSelectedType);
             }
             setupSelectionsBasedOnSelectedTypes();
         }
