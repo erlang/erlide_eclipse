@@ -11,7 +11,6 @@
 package org.erlide.ui.util;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.swt.graphics.Color;

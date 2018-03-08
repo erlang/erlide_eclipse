@@ -1,7 +1,6 @@
 package org.erlide.cover.core;
 
 import java.io.File;
-import java.util.Iterator;
 
 import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.views.model.FunctionStats;

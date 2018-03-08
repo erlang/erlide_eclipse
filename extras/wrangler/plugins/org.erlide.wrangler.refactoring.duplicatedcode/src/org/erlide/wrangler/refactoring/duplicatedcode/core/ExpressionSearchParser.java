@@ -11,7 +11,6 @@
 package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeElement;
