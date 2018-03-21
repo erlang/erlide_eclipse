@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: erlide.runtime Tests Fragment
 Bundle-SymbolicName: org.erlide.runtime.tests;singleton:=true
-Bundle-Version: 0.50.1.qualifier
+Bundle-Version: 0.54.0.qualifier
 Bundle-Vendor: erlide.org
 Fragment-Host: org.erlide.runtime;bundle-version="0.20.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.erlide.testing.libs;bundle-version="1.2.2",
+Require-Bundle: org.erlide.testing.libs;bundle-version="0.54.0",
  org.junit;bundle-version="4.10.0",
  com.google.truth;bundle-version="0.28.0"
 Eclipse-ExtensibleAPI: true 

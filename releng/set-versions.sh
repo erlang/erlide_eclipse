@@ -9,7 +9,7 @@ if [ -z "$VER" ]; then
     exit 1
 fi
 
-PROJECTS=`find $ROOT/features $ROOT/plugins -name "pom.xml" | xargs dirname | xargs basename -a | paste -s -d,`
+PROJECTS=`find $ROOT/features $ROOT/plugins $ROOT/tests -name "pom.xml" | xargs dirname | xargs basename -a | grep org.erlide | paste -s -d,`
 
 pushd $BASE/.. > /dev/null
 

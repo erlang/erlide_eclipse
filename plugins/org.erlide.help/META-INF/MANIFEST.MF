@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.help; singleton:=true
-Bundle-Version: 0.53.0.qualifier
+Bundle-Version: 0.54.0.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.help;bundle-version="[3.6.0,4.0.0)",
@@ -11,3 +11,4 @@ Require-Bundle: org.eclipse.help;bundle-version="[3.6.0,4.0.0)",
  org.eclipse.ui.cheatsheets;bundle-version="[3.4.200,4.0.0)",
  org.eclipse.ui.intro;bundle-version="[3.4.200,4.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: org.erlide.help
