@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import com.ericsson.otp.erlang.OtpNode;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 
 public class ErlangHostnameRetriever {
 
@@ -27,7 +28,8 @@ public class ErlangHostnameRetriever {
         final String nodeName = "foo" + System.currentTimeMillis();
         final ProcessBuilder builder = new ProcessBuilder(
                 Lists.newArrayList(otpHome + "/bin/erl", longHost ? "-name" : "-sname",
-                        nodeName, "-setcookie", "erlide"));
+                        nodeName, "-setcookie", "erlide"))
+                                .directory(Files.createTempDir());
         String hostName = null;
         try {
             final Process process = builder.start();
