@@ -107,7 +107,10 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
         if (getErlElement() instanceof IErlMember) {
             IErlRange range = null;
             final IErlMember member = (IErlMember) getErlElement();
-            int sL, sC, eL, eC;
+            int sL;
+            int sC;
+            int eL;
+            int eC;
             sL = member.getLineStart() + 1;
             eL = member.getLineEnd() + 1;
 

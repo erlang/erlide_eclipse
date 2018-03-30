@@ -11,6 +11,7 @@
 package org.erlide.wrangler.refactoring.codeinspection.view;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -44,7 +45,7 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
 public class CodeInspectionResultsView extends ViewPart {
     public static final String VIEW_ID = "org.erlide.wrangler.refactoring.codeinspection.codeinspectionresultview";
 
-    ArrayList<IErlElement> results = new ArrayList<>();
+    List<IErlElement> results = new ArrayList<>();
 
     private TableViewer viewer;
 

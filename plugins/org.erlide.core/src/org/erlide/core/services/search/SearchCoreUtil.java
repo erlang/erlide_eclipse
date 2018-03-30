@@ -32,8 +32,8 @@ import com.google.common.collect.Sets;
 
 public class SearchCoreUtil {
 
-    static public ErlSearchScope getProjectsScope(final Collection<IProject> projects,
-            final boolean addExternals, final boolean addOtp) throws CoreException {
+    public static ErlSearchScope getProjectsScope(final Collection<IProject> projects,
+                                                  final boolean addExternals, final boolean addOtp) throws CoreException {
         final ErlSearchScope result = new ErlSearchScope();
         final Set<String> externalModulePaths = new HashSet<>();
         final IErlModel model = ErlangEngine.getInstance().getModel();
@@ -41,7 +41,7 @@ public class SearchCoreUtil {
             SearchCoreUtil.addProjectToScope(project, result);
             if (NatureUtil.hasErlangNature(project)) {
                 final IErlProject erlProject = model.getErlangProject(project);
-                addExternalModules(erlProject, result, externalModulePaths, addExternals,
+                SearchCoreUtil.addExternalModules(erlProject, result, externalModulePaths, addExternals,
                         addOtp);
             }
         }
@@ -126,13 +126,13 @@ public class SearchCoreUtil {
             throws CoreException {
         if (r instanceof IProject) {
             final IProject project = (IProject) r;
-            addProjectToScope(project, result);
+            SearchCoreUtil.addProjectToScope(project, result);
         } else if (r instanceof IFile) {
             final IFile file = (IFile) r;
-            addFileToScope(file, result);
+            SearchCoreUtil.addFileToScope(file, result);
         } else if (r instanceof IFolder) {
             final IFolder folder = (IFolder) r;
-            addFolderToScope(folder, result);
+            SearchCoreUtil.addFolderToScope(folder, result);
         }
     }
 
@@ -150,7 +150,7 @@ public class SearchCoreUtil {
         }
         final Set<String> externalModulePaths = new HashSet<>();
         for (final IErlProject project : erlangProjects) {
-            addExternalModules(project, result, externalModulePaths, addExternals,
+            SearchCoreUtil.addExternalModules(project, result, externalModulePaths, addExternals,
                     addOtp);
         }
         return result;

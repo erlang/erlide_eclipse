@@ -28,7 +28,7 @@ public class ConsoleMessages extends NLS {
 
     static {
         // load message values from bundle file
-        NLS.initializeMessages(BUNDLE_NAME, ConsoleMessages.class);
+        NLS.initializeMessages(ConsoleMessages.BUNDLE_NAME, ConsoleMessages.class);
     }
 
     public static String ConsoleRemoveTerminatedAction_0;

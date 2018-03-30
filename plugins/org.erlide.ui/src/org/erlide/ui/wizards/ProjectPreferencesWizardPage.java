@@ -198,14 +198,14 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
     // }
 
     protected boolean testPageComplete() {
-        if (null != output
+        if (output != null
                 && (output.getText() == null || output.getText().trim().length() == 0)) {
             setErrorMessage(
                     ErlideUIPlugin.getResourceString("wizards.errors.outputrequired"));
             return false;
         }
 
-        if (null != source
+        if (source != null
                 && (source.getText() == null || source.getText().trim().length() == 0)) {
             setErrorMessage(
                     ErlideUIPlugin.getResourceString("wizards.errors.sourcerequired"));

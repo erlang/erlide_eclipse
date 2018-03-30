@@ -32,7 +32,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class IndentationPreferencePage extends ErlidePreferencePage
         implements IWorkbenchPreferencePage {
 
-    private static final String[] INDENT_FIELDS = new String[] {
+    private static final String[] INDENT_FIELDS = {
             ErlEditorMessages.Prefs_Before_binary_op,
             ErlEditorMessages.Prefs_After_binary_op, ErlEditorMessages.Prefs_Before_arrow,
             ErlEditorMessages.Prefs_After_arrow, ErlEditorMessages.Prefs_After_unary_op,
@@ -42,13 +42,13 @@ public class IndentationPreferencePage extends ErlidePreferencePage
             ErlEditorMessages.Prefs_Fun_body, ErlEditorMessages.Prefs_Paren,
             ErlEditorMessages.Prefs_Binary_begin, ErlEditorMessages.Prefs_End_paren };
 
-    private static final String[] INDENT_KEYS = new String[] { "before_binary_op", //$NON-NLS-1$
+    private static final String[] INDENT_KEYS = { "before_binary_op", //$NON-NLS-1$
             "after_binary_op", "before_arrow",  //$NON-NLS-1$ //$NON-NLS-2$
             "after_arrow", "after_unary_op", "clause", "case", "try", "catch", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
             "function_parameters", "fun", "fun_body", "paren", "<<", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
             "end_paren" }; //$NON-NLS-1$
 
-    private static final String[] INDENT_DEFAULTS = new String[] { "4", "4", //$NON-NLS-1$ //$NON-NLS-2$
+    private static final String[] INDENT_DEFAULTS = { "4", "4", //$NON-NLS-1$ //$NON-NLS-2$
             "2", "4", "4", "4", "4", "4", "4", "2", "3", "5", "1", "2", "0" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
     };
 
@@ -85,8 +85,8 @@ public class IndentationPreferencePage extends ErlidePreferencePage
     }
 
     private void createMyControls(final Composite parent) {
-        for (int i = 0; i < INDENT_DEFAULTS.length; ++i) {
-            final String desc = INDENT_FIELDS[i];
+        for (int i = 0; i < IndentationPreferencePage.INDENT_DEFAULTS.length; ++i) {
+            final String desc = IndentationPreferencePage.INDENT_FIELDS[i];
             final Composite c = parent;
             final Label label = new Label(c, SWT.NONE);
             label.setText(desc);
@@ -106,7 +106,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage
     static final String INDENT_KEY = "indentation"; //$NON-NLS-1$
 
     private void setToPreferences() {
-        final List<String> l = getPreferences(INDENT_KEYS, INDENT_DEFAULTS);
+        final List<String> l = getPreferences(IndentationPreferencePage.INDENT_KEYS, IndentationPreferencePage.INDENT_DEFAULTS);
         for (int i = 0; i < l.size(); ++i) {
             final String s = l.get(i);
             textFields.get(i).setText(s);
@@ -115,7 +115,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage
 
     @Override
     protected void putPreferences() {
-        putIntPreferences(INDENT_KEYS, textFields);
+        putIntPreferences(IndentationPreferencePage.INDENT_KEYS, textFields);
     }
 
     /*
@@ -123,19 +123,19 @@ public class IndentationPreferencePage extends ErlidePreferencePage
      */
     @Override
     protected void performDefaults() {
-        for (int i = 0; i < INDENT_KEYS.length; ++i) {
-            final String s = INDENT_DEFAULTS[i];
+        for (int i = 0; i < IndentationPreferencePage.INDENT_KEYS.length; ++i) {
+            final String s = IndentationPreferencePage.INDENT_DEFAULTS[i];
             textFields.get(i).setText(s);
         }
         super.performDefaults();
     }
 
     public static void addKeysAndPrefs(final Map<String, String> map) {
-        addKeysAndPrefs(INDENT_KEY, INDENT_KEYS, INDENT_DEFAULTS, map);
+        ErlidePreferencePage.addKeysAndPrefs(IndentationPreferencePage.INDENT_KEY, IndentationPreferencePage.INDENT_KEYS, IndentationPreferencePage.INDENT_DEFAULTS, map);
     }
 
     @Override
     protected String getDialogPreferenceKey() {
-        return INDENT_KEY;
+        return IndentationPreferencePage.INDENT_KEY;
     }
 }

@@ -67,7 +67,7 @@ public class TestSourcePathProvider
             @Override
             public boolean visit(final IResource resource) throws CoreException {
                 final IProject project = resource.getProject();
-                if (project != null && isTestDir(resource)) {
+                if (project != null && TestSourcePathProvider.isTestDir(resource)) {
                     final Set<IPath> ps = getProjectPaths(project);
                     ps.add(resource.getProjectRelativePath());
                     pathsMap.put(project, ps);
@@ -106,7 +106,7 @@ public class TestSourcePathProvider
                     final IPath location = container.getLocation();
                     final Set<IPath> paths = getProjectPaths(resource.getProject());
                     if (theDelta.getKind() == IResourceDelta.ADDED
-                            && !paths.contains(location) && isTestDir(container)) {
+                            && !paths.contains(location) && TestSourcePathProvider.isTestDir(container)) {
                         paths.add(location);
                     }
                     if (theDelta.getKind() == IResourceDelta.REMOVED

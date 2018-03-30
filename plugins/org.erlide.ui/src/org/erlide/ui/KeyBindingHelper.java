@@ -24,7 +24,7 @@ public class KeyBindingHelper {
      *         otherwise).
      */
     public static boolean matchesContentAssistKeybinding(final KeyEvent event) {
-        return matchesKeybinding(event,
+        return KeyBindingHelper.matchesKeybinding(event,
                 ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
     }
 
@@ -32,7 +32,7 @@ public class KeyBindingHelper {
      * @return the key sequence that is the best match for a content assist request.
      */
     public static KeySequence getContentAssistProposalBinding() {
-        return getCommandKeyBinding(
+        return KeyBindingHelper.getCommandKeyBinding(
                 ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
     }
 
@@ -41,14 +41,14 @@ public class KeyBindingHelper {
      *         otherwise).
      */
     public static boolean matchesQuickAssistKeybinding(final KeyEvent event) {
-        return matchesKeybinding(event, ITextEditorActionDefinitionIds.QUICK_ASSIST);
+        return KeyBindingHelper.matchesKeybinding(event, ITextEditorActionDefinitionIds.QUICK_ASSIST);
     }
 
     /**
      * @return the key sequence that is the best match for a quick assist request.
      */
     public static KeySequence getQuickAssistProposalBinding() {
-        return getCommandKeyBinding(ITextEditorActionDefinitionIds.QUICK_ASSIST);
+        return KeyBindingHelper.getCommandKeyBinding(ITextEditorActionDefinitionIds.QUICK_ASSIST);
     }
 
     // END pre-defined helpers

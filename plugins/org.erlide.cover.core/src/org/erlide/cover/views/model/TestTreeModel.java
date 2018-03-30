@@ -25,10 +25,10 @@ public class TestTreeModel {
     }
 
     public static synchronized TestTreeModel getInstance() {
-        if (model == null) {
-            model = new TestTreeModel();
+        if (TestTreeModel.model == null) {
+            TestTreeModel.model = new TestTreeModel();
         }
-        return model;
+        return TestTreeModel.model;
     }
 
     /**

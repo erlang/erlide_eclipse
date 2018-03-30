@@ -23,7 +23,7 @@ public class ErlideUIMessages extends NLS {
 
     static {
         // load message values from bundle file
-        NLS.initializeMessages(BUNDLE_NAME, ErlideUIMessages.class);
+        NLS.initializeMessages(ErlideUIMessages.BUNDLE_NAME, ErlideUIMessages.class);
     }
 
 }

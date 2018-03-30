@@ -24,27 +24,27 @@ import org.erlide.util.ErlLogger;
 
 public final class ErlConsoleDocument extends Document implements BackendShellListener {
 
-    private static String[] LEGAL_CONTENT_TYPES = null;
+    private static String[] LEGAL_CONTENT_TYPES;
 
     private final IBackendShell shell;
 
     public ErlConsoleDocument(final IBackendShell shell) {
         super();
 
-        if (LEGAL_CONTENT_TYPES == null) {
+        if (ErlConsoleDocument.LEGAL_CONTENT_TYPES == null) {
             final IoRequestKind[] values = IoRequestKind.values();
             final String[] ss = new String[values.length];
             for (int i = 0; i < values.length; i++) {
                 ss[i] = values[i].name();
             }
-            LEGAL_CONTENT_TYPES = ss;
+            ErlConsoleDocument.LEGAL_CONTENT_TYPES = ss;
         }
 
         this.shell = shell;
         shell.addListener(this);
         changed(new BackendShellEvent(0, 0, get()));
         final IDocumentPartitioner partitioner = new FastPartitioner(createScanner(),
-                LEGAL_CONTENT_TYPES);
+                ErlConsoleDocument.LEGAL_CONTENT_TYPES);
         partitioner.connect(this);
         setDocumentPartitioner(partitioner);
     }

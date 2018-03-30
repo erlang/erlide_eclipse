@@ -20,8 +20,11 @@ import org.erlide.wrangler.refactoring.backend.WranglerSyntaxBackend;
  * @version %I%, %G%
  */
 public class WranglerBackendManager {
-    static WranglerRefactoringBackend refactoringBackend = null;
-    static WranglerSyntaxBackend syntaxBackend = null;
+    static WranglerRefactoringBackend refactoringBackend;
+    static WranglerSyntaxBackend syntaxBackend;
+
+    private WranglerBackendManager() {
+    }
 
     /**
      * Returns an Erlide backend which is used to run Wrangler refactorings
@@ -29,11 +32,11 @@ public class WranglerBackendManager {
      * @return Erlide backend
      */
     public static WranglerRefactoringBackend getRefactoringBackend() {
-        if (refactoringBackend == null) {
-            refactoringBackend = new WranglerRefactoringBackend(
+        if (WranglerBackendManager.refactoringBackend == null) {
+            WranglerBackendManager.refactoringBackend = new WranglerRefactoringBackend(
                     Activator.getDefault().getBackend());
         }
-        return refactoringBackend;
+        return WranglerBackendManager.refactoringBackend;
     }
 
     /**
@@ -42,10 +45,10 @@ public class WranglerBackendManager {
      * @return Erlide backend
      */
     public static WranglerSyntaxBackend getSyntaxBackend() {
-        if (syntaxBackend == null) {
-            syntaxBackend = new WranglerSyntaxBackend(
+        if (WranglerBackendManager.syntaxBackend == null) {
+            WranglerBackendManager.syntaxBackend = new WranglerSyntaxBackend(
                     Activator.getDefault().getBackend());
         }
-        return syntaxBackend;
+        return WranglerBackendManager.syntaxBackend;
     }
 }

@@ -9,13 +9,14 @@ import java.util.regex.Pattern;
 import com.ericsson.otp.erlang.OtpNode;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 
 public class ErlangHostnameRetriever {
 
     final String otpHome;
     AtomicInteger id = new AtomicInteger();
 
-    private final static boolean verbose = !SystemConfiguration
+    private static final boolean verbose = !SystemConfiguration
             .hasFeatureEnabled("erlide.ericsson.user")
             && !SystemConfiguration.hasFeatureEnabled("erlide.quiet");
 
@@ -27,7 +28,8 @@ public class ErlangHostnameRetriever {
         final String nodeName = "foo" + System.currentTimeMillis();
         final ProcessBuilder builder = new ProcessBuilder(
                 Lists.newArrayList(otpHome + "/bin/erl", longHost ? "-name" : "-sname",
-                        nodeName, "-setcookie", "erlide"));
+                        nodeName, "-setcookie", "erlide"))
+                                .directory(Files.createTempDir());
         String hostName = null;
         try {
             final Process process = builder.start();
@@ -38,7 +40,7 @@ public class ErlangHostnameRetriever {
                     try {
                         listener.join();
                         hostName = listener.getResult();
-                        if (verbose) {
+                        if (ErlangHostnameRetriever.verbose) {
                             ErlLogger.debug("Erlang %s hostname: %s",
                                     longHost ? "long" : "short", hostName);
                         }
@@ -113,7 +115,7 @@ public class ErlangHostnameRetriever {
                     } else {
                         line.append((char) chr);
                     }
-                    final Matcher matcher = pattern.matcher(line);
+                    final Matcher matcher = StreamListener.pattern.matcher(line);
                     if (matcher.matches()) {
                         result = matcher.group(1);
                         return;

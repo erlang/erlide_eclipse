@@ -86,7 +86,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
 
     private final class ListenerImplementation implements Listener {
         private final Table t;
-        SourceViewerInformationControl info = null;
+        SourceViewerInformationControl info;
 
         private ListenerImplementation(final Table t) {
             this.t = t;
@@ -109,7 +109,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
                 final TableItem item = t.getItem(new Point(event.x, event.y));
                 if (item != null) {
                     String str = item.getText(1);
-                    if (str.length() > 0) {
+                    if (!str.isEmpty()) {
                         // ErlLogger.debug(str);
                         final BackendEvalResult r = EvalHelper.eval(backend,
                                 "lists:flatten(io_lib:format(\"~p\", [" + item.getText(1)
@@ -148,7 +148,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
     private static class LiveExpr {
         String fExpr;
         private String cachedValue = "";
-        boolean doEval = false;
+        boolean doEval;
         private final IOtpRpc b;
 
         public LiveExpr(final IOtpRpc b, final String s) {
@@ -357,14 +357,13 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
     }
 
     @Override
-    public void saveState(final IMemento aMemento) {
+    public void saveState(IMemento aMemento) {
         if (exprs.isEmpty()) {
             return;
         }
         final IMemento aMemento2 = aMemento.createChild("LiveExpressions");
-        final Iterator<LiveExpr> iter = exprs.iterator();
-        while (iter.hasNext()) {
-            aMemento2.createChild("expression").putTextData(iter.next().toString());
+        for (LiveExpr expr : exprs) {
+            aMemento2.createChild("expression").putTextData(expr.toString());
         }
     }
 

@@ -41,12 +41,12 @@ public enum BuilderTool {
         @Override
         public Map<BuilderTool, Set<ProjectConfigType>> apply() {
             final Map<BuilderTool, Set<ProjectConfigType>> result = Maps.newHashMap();
-            result.put(INTERNAL, Sets.newHashSet(ProjectConfigType.INTERNAL,
+            result.put(BuilderTool.INTERNAL, Sets.newHashSet(ProjectConfigType.INTERNAL,
                     ProjectConfigType.EMAKE, ProjectConfigType.REBAR));
-            result.put(MAKE, Sets.newHashSet(ProjectConfigType.INTERNAL,
+            result.put(BuilderTool.MAKE, Sets.newHashSet(ProjectConfigType.INTERNAL,
                     ProjectConfigType.EMAKE, ProjectConfigType.REBAR));
-            result.put(EMAKE, Sets.newHashSet(ProjectConfigType.EMAKE));
-            result.put(REBAR, Sets.newHashSet(ProjectConfigType.REBAR));
+            result.put(BuilderTool.EMAKE, Sets.newHashSet(ProjectConfigType.EMAKE));
+            result.put(BuilderTool.REBAR, Sets.newHashSet(ProjectConfigType.REBAR));
             return Maps.newEnumMap(result);
         }
     }.apply();
@@ -55,11 +55,11 @@ public enum BuilderTool {
      * @return the list of BuilderConfigs that can be used with this tool
      */
     public Collection<ProjectConfigType> getMatchingConfigs() {
-        return Collections.unmodifiableCollection(toolConfigsMap.get(this));
+        return Collections.unmodifiableCollection(BuilderTool.toolConfigsMap.get(this));
     }
 
     public boolean matchesConfig(final ProjectConfigType config) {
-        return toolConfigsMap.get(this).contains(config);
+        return BuilderTool.toolConfigsMap.get(this).contains(config);
     }
 
     public String getOsCommand() {

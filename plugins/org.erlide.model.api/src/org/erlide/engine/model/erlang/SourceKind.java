@@ -8,18 +8,18 @@ public enum SourceKind {
 
     public static SourceKind extensionToModuleKind(final String ext) {
         if (ext == null) {
-            return BAD;
+            return SourceKind.BAD;
         }
-        if (ext.equalsIgnoreCase("hrl")) {
-            return HRL;
+        if ("hrl".equalsIgnoreCase(ext)) {
+            return SourceKind.HRL;
         }
-        if (ext.equalsIgnoreCase("erl")) {
-            return ERL;
+        if ("erl".equalsIgnoreCase(ext)) {
+            return SourceKind.ERL;
         }
-        if (ext.equalsIgnoreCase("yrl")) {
-            return YRL;
+        if ("yrl".equalsIgnoreCase(ext)) {
+            return SourceKind.YRL;
         }
-        return BAD;
+        return SourceKind.BAD;
     }
 
     public static SourceKind nameToModuleKind(final String name) {
@@ -28,14 +28,14 @@ public enum SourceKind {
     }
 
     public static boolean hasModuleExtension(final String name) {
-        return nameToModuleKind(name) != BAD;
+        return SourceKind.nameToModuleKind(name) != SourceKind.BAD;
     }
 
     public static boolean hasErlExtension(final String name) {
-        return nameToModuleKind(name) == ERL;
+        return SourceKind.nameToModuleKind(name) == SourceKind.ERL;
     }
 
     public static boolean hasHrlExtension(final String name) {
-        return nameToModuleKind(name) == HRL;
+        return SourceKind.nameToModuleKind(name) == SourceKind.HRL;
     }
 }

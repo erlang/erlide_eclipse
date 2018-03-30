@@ -9,7 +9,6 @@
 package org.erlide.ui.launch;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +81,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         }
         projects.addAll(getDependentProjects(projects));
         final List<IErlProject> projectList = Lists.newArrayList(projects);
-        Collections.sort(projectList, new Comparator<IErlProject>() {
+        projectList.sort(new Comparator<IErlProject>() {
             @Override
             public int compare(final IErlProject o1, final IErlProject o2) {
                 return o1.getName().compareTo(o2.getName());
@@ -138,7 +137,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
     private void bringConsoleViewToFront() throws PartInitException {
         final IWorkbenchPage activePage = PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage();
-        activePage.showView(CONSOLE_VIEW_ID);
+        activePage.showView(ErlangNodeLaunchShortcut.CONSOLE_VIEW_ID);
     }
 
     private ILaunchConfiguration getLaunchConfiguration(
@@ -169,7 +168,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         ILaunchConfigurationWorkingCopy wc = null;
         wc = launchConfigurationType.newInstance(null, name);
         wc.setAttribute(ErlRuntimeAttributes.PROJECTS,
-                ListsUtils.packList(projectNames, PROJECT_NAME_SEPARATOR));
+                ListsUtils.packList(projectNames, ErlangNodeLaunchShortcut.PROJECT_NAME_SEPARATOR));
         wc.setAttribute(ErlRuntimeAttributes.RUNTIME_NAME,
                 projects.iterator().next().getRuntimeInfo().getName());
         wc.setAttribute(ErlRuntimeAttributes.NODE_NAME, name);

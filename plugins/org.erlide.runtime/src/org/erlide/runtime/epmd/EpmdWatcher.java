@@ -42,14 +42,14 @@ public final class EpmdWatcher {
     private final Map<String, List<String>> nodeMap = new HashMap<>();
     private final List<IEpmdListener> listeners = new ArrayList<>();
     private final Map<String, List<IErlNodeMonitor>> monitors = new HashMap<>();
-    private boolean epmdStarted = false;
+    private boolean epmdStarted;
 
     public synchronized void addHost(final String host) {
         if (hosts.contains(host)) {
             return;
         }
         hosts.add(host);
-        nodeMap.put(host, new ArrayList<String>());
+        nodeMap.put(host, new ArrayList<>());
     }
 
     public synchronized void removeHost(final String host) {
@@ -64,12 +64,12 @@ public final class EpmdWatcher {
                 final List<String> nodes = entry.getValue();
 
                 final String[] names = OtpEpmd.lookupNames(InetAddress.getByName(host));
-                final List<String> labels = clean(Arrays.asList(names));
+                final List<String> labels = EpmdWatcher.clean(Arrays.asList(names));
 
                 final List<String> started = getDiff(labels, nodes);
                 final List<String> stopped = getDiff(nodes, labels);
 
-                if (started.size() > 0 || stopped.size() > 0) {
+                if (!started.isEmpty() || !stopped.isEmpty()) {
                     for (final IEpmdListener listener : listeners) {
                         listener.updateNodeStatus(host, started, stopped);
                     }
@@ -137,7 +137,7 @@ public final class EpmdWatcher {
             final String[] parts = label.split(" ");
             if (parts.length == 5) {
                 String alabel = parts[1];
-                if (alabel.length() == 0) {
+                if (alabel.isEmpty()) {
                     alabel = "??" + label;
                 }
                 result.add(alabel);

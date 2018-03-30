@@ -54,14 +54,14 @@ public class TypedViewerFilter extends ViewerFilter {
     public boolean select(final Viewer viewer, final Object parentElement,
             final Object element) {
         if (fRejectedElements != null) {
-            for (int i = 0; i < fRejectedElements.length; i++) {
-                if (element.equals(fRejectedElements[i])) {
+            for (Object fRejectedElement : fRejectedElements) {
+                if (element.equals(fRejectedElement)) {
                     return false;
                 }
             }
         }
-        for (int i = 0; i < fAcceptedTypes.length; i++) {
-            if (fAcceptedTypes[i].isInstance(element)) {
+        for (Class<?> fAcceptedType : fAcceptedTypes) {
+            if (fAcceptedType.isInstance(element)) {
                 return true;
             }
         }

@@ -63,12 +63,12 @@ import java.net.UnknownHostException;
  * </p>
  */
 public class AbstractNode implements OtpTransportFactory {
-    static String localHost = null;
+    static String localHost;
     String node;
     String host;
     String alive;
     String cookie;
-    static String defaultCookie = null;
+    static String defaultCookie;
     final OtpTransportFactory transportFactory;
 
     // Node types
@@ -94,31 +94,31 @@ public class AbstractNode implements OtpTransportFactory {
     static final int dFlagMapTag = 0x20000;
     static final int dFlagBigCreation = 0x40000;
 
-    int ntype = NTYPE_R6;
-    int proto = 0; // tcp/ip
+    int ntype = AbstractNode.NTYPE_R6;
+    int proto; // tcp/ip
     int distHigh = 5; // Cannot talk to nodes before R6
     int distLow = 5; // Cannot talk to nodes before R6
-    int creation = 0;
-    int flags = dFlagExtendedReferences | dFlagExtendedPidsPorts | dFlagBitBinaries
-            | dFlagNewFloats | dFlagFunTags | dflagNewFunTags | dFlagUtf8Atoms
-            | dFlagMapTag | dFlagBigCreation;
+    int creation;
+    int flags = AbstractNode.dFlagExtendedReferences | AbstractNode.dFlagExtendedPidsPorts | AbstractNode.dFlagBitBinaries
+            | AbstractNode.dFlagNewFloats | AbstractNode.dFlagFunTags | AbstractNode.dflagNewFunTags | AbstractNode.dFlagUtf8Atoms
+            | AbstractNode.dFlagMapTag | AbstractNode.dFlagBigCreation;
 
     /* initialize hostname and default cookie */
     static {
         try {
-            localHost = InetAddress.getLocalHost().getHostName();
+            AbstractNode.localHost = InetAddress.getLocalHost().getHostName();
             /*
              * Make sure it's a short name, i.e. strip of everything after first '.'
              */
-            final int dot = localHost.indexOf(".");
+            final int dot = AbstractNode.localHost.indexOf(".");
             if (dot != -1) {
-                localHost = localHost.substring(0, dot);
+                AbstractNode.localHost = AbstractNode.localHost.substring(0, dot);
             }
         } catch (final UnknownHostException e) {
-            localHost = "localhost";
+            AbstractNode.localHost = "localhost";
         }
 
-        final String homeDir = getHomeDir();
+        final String homeDir = AbstractNode.getHomeDir();
         final String dotCookieFilename = homeDir + File.separator + ".erlang.cookie";
         @SuppressWarnings("resource")
         BufferedReader br = null;
@@ -129,12 +129,12 @@ public class AbstractNode implements OtpTransportFactory {
             br = new BufferedReader(new FileReader(dotCookieFile));
             final String line = br.readLine();
             if (line == null) {
-                defaultCookie = "";
+                AbstractNode.defaultCookie = "";
             } else {
-                defaultCookie = line.trim();
+                AbstractNode.defaultCookie = line.trim();
             }
         } catch (final IOException e) {
-            defaultCookie = "";
+            AbstractNode.defaultCookie = "";
         } finally {
             try {
                 if (br != null) {
@@ -153,7 +153,7 @@ public class AbstractNode implements OtpTransportFactory {
      * Create a node with the given name and default cookie and transport factory.
      */
     protected AbstractNode(final String node) {
-        this(node, defaultCookie, new OtpSocketTransportFactory());
+        this(node, AbstractNode.defaultCookie, new OtpSocketTransportFactory());
     }
 
     /**
@@ -161,7 +161,7 @@ public class AbstractNode implements OtpTransportFactory {
      */
     protected AbstractNode(final String node,
             final OtpTransportFactory transportFactory) {
-        this(node, defaultCookie, transportFactory);
+        this(node, AbstractNode.defaultCookie, transportFactory);
     }
 
     /**
@@ -182,7 +182,7 @@ public class AbstractNode implements OtpTransportFactory {
         final int i = name.indexOf('@', 0);
         if (i < 0) {
             alive = name;
-            host = localHost;
+            host = AbstractNode.localHost;
         } else {
             alive = name.substring(0, i);
             host = name.substring(i + 1, name.length());

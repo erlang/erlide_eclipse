@@ -26,6 +26,6 @@ public enum TraceType {
     SEND_TO_NON_EXISTING_PROCESS,
     SPAWN,
     UNLINK,
-    UNREGISTER;
+    UNREGISTER
     //@formatter:on
 }

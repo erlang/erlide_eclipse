@@ -21,13 +21,13 @@ public class InterpretHandler extends AbstractHandler {
         final InterpretedModulesView view = (InterpretedModulesView) HandlerUtil
                 .getActivePart(event);
         final String commandId = event.getCommand().getId();
-        if (commandId.equals(INTERPRET_COMMAND_ID)) {
+        if (commandId.equals(InterpretHandler.INTERPRET_COMMAND_ID)) {
             final List<IErlModule> modules = DebugTab
                     .getModulesFromAddModulesDialog(view.getSite().getShell());
             for (final IErlModule module : modules) {
                 view.interpretOrDeinterpret(module, true);
             }
-        } else if (commandId.equals(DEINTERPRET_COMMAND_ID)) {
+        } else if (commandId.equals(InterpretHandler.DEINTERPRET_COMMAND_ID)) {
             final ISelection selection = HandlerUtil.getCurrentSelection(event);
             if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
                 final IStructuredSelection structuredSelection = (IStructuredSelection) selection;

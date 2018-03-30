@@ -38,7 +38,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
 
     private final IConfigurationElement fElement;
 
-    private ViewerFilter fCachedInstance = null;
+    private ViewerFilter fCachedInstance;
 
     /**
      * Returns all contributed Erlang element filters.
@@ -46,15 +46,15 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
      * @return all contributed Erlang element filters
      */
     public static Collection<FilterDescriptor> getFilterDescriptors() {
-        if (fgFilterDescriptors == null) {
+        if (FilterDescriptor.fgFilterDescriptors == null) {
             final IExtensionRegistry registry = Platform.getExtensionRegistry();
             final IConfigurationElement[] elements = registry.getConfigurationElementsFor(
-                    ErlideUIPlugin.PLUGIN_ID, EXTENSION_POINT_NAME);
+                    ErlideUIPlugin.PLUGIN_ID, FilterDescriptor.EXTENSION_POINT_NAME);
             final String extensionPointID = ErlideUIPlugin.PLUGIN_ID + "."
-                    + EXTENSION_POINT_NAME;
-            fgFilterDescriptors = createFilterDescriptors(elements, extensionPointID);
+                    + FilterDescriptor.EXTENSION_POINT_NAME;
+            FilterDescriptor.fgFilterDescriptors = FilterDescriptor.createFilterDescriptors(elements, extensionPointID);
         }
-        return fgFilterDescriptors;
+        return FilterDescriptor.fgFilterDescriptors;
     }
 
     /**
@@ -122,7 +122,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
                 @Override
                 public void run() throws Exception {
                     result[0] = (ViewerFilter) fElement
-                            .createExecutableExtension(CLASS_ATTRIBUTE);
+                            .createExecutableExtension(FilterDescriptor.CLASS_ATTRIBUTE);
                 }
 
             };
@@ -145,7 +145,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
      * @return the filter id
      */
     public String getId() {
-        return fElement.getAttribute(ID_ATTRIBUTE);
+        return fElement.getAttribute(FilterDescriptor.ID_ATTRIBUTE);
     }
 
     /**
@@ -158,7 +158,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
      * @return the filter's name
      */
     public String getName() {
-        String name = fElement.getAttribute(NAME_ATTRIBUTE);
+        String name = fElement.getAttribute(FilterDescriptor.NAME_ATTRIBUTE);
         if (name == null && isPatternFilter()) {
             name = getPattern();
         }
@@ -172,7 +172,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
      *         filter
      */
     public String getPattern() {
-        return fElement.getAttribute(PATTERN_ATTRIBUTE);
+        return fElement.getAttribute(FilterDescriptor.PATTERN_ATTRIBUTE);
     }
 
     /**
@@ -182,7 +182,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
      * @since 3.0
      */
     public String getTargetId() {
-        final String tid = fElement.getAttribute(TARGET_ID_ATTRIBUTE);
+        final String tid = fElement.getAttribute(FilterDescriptor.TARGET_ID_ATTRIBUTE);
         if (tid != null) {
             return tid;
         }
@@ -196,7 +196,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
      *         provided
      */
     public String getDescription() {
-        String description = fElement.getAttribute(DESCRIPTION_ATTRIBUTE);
+        String description = fElement.getAttribute(FilterDescriptor.DESCRIPTION_ATTRIBUTE);
         if (description == null) {
             description = ""; //$NON-NLS-1$
         }
@@ -214,7 +214,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
      * @return <code>true</code> if this filter is a class filter.
      */
     public boolean isClassFilter() {
-        return fElement.getAttribute(CLASS_ATTRIBUTE) != null;
+        return fElement.getAttribute(FilterDescriptor.CLASS_ATTRIBUTE) != null;
     }
 
     /**
@@ -225,8 +225,8 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
      * @return returns <code>true</code> if the filter is initially enabled
      */
     public boolean isEnabled() {
-        final String strVal = fElement.getAttribute(ENABLED_ATTRIBUTE);
-        return strVal == null || Boolean.valueOf(strVal).booleanValue();
+        final String strVal = fElement.getAttribute(FilterDescriptor.ENABLED_ATTRIBUTE);
+        return strVal == null || Boolean.valueOf(strVal);
     }
 
     /*
@@ -266,7 +266,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
         final List<FilterDescriptor> result = Lists.newArrayList();
         final Set<String> descIds = Sets.newHashSet();
         for (final IConfigurationElement element : elements) {
-            if (FILTER_TAG.equals(element.getName())) {
+            if (FilterDescriptor.FILTER_TAG.equals(element.getName())) {
 
                 final FilterDescriptor[] desc = new FilterDescriptor[1];
                 SafeRunner.run(
@@ -289,7 +289,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
 
     @Override
     public String getLocalId() {
-        return fElement.getAttribute(ID_ATTRIBUTE);
+        return fElement.getAttribute(FilterDescriptor.ID_ATTRIBUTE);
     }
 
     @Override
@@ -298,7 +298,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
     }
 
     public static FilterDescriptor getFilterDescriptor(final String id) {
-        for (final FilterDescriptor desc : getFilterDescriptors()) {
+        for (final FilterDescriptor desc : FilterDescriptor.getFilterDescriptors()) {
             if (desc.getId().equals(id)) {
                 return desc;
             }

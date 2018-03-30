@@ -25,15 +25,15 @@ public final class RuntimeInfoLoader {
     public static void store(final RuntimeInfo info, final Preferences root) {
         final Preferences node = root.node(info.getName());
         final String code = PreferencesUtils.packList(info.getCodePath());
-        node.put(CODE_PATH, code);
-        node.put(HOME_DIR, info.getOtpHome());
-        node.put(ARGS, info.getArgs());
+        node.put(RuntimeInfoLoader.CODE_PATH, code);
+        node.put(RuntimeInfoLoader.HOME_DIR, info.getOtpHome());
+        node.put(RuntimeInfoLoader.ARGS, info.getArgs());
     }
 
     public static RuntimeInfo load(final Preferences node) {
-        final String path = node.get(CODE_PATH, "");
-        final RuntimeInfo info = new RuntimeInfo(node.name(), node.get(HOME_DIR, ""),
-                node.get(ARGS, ""), PreferencesUtils.unpackList(path));
+        final String path = node.get(RuntimeInfoLoader.CODE_PATH, "");
+        final RuntimeInfo info = new RuntimeInfo(node.name(), node.get(RuntimeInfoLoader.HOME_DIR, ""),
+                node.get(RuntimeInfoLoader.ARGS, ""), PreferencesUtils.unpackList(path));
         return info;
     }
 

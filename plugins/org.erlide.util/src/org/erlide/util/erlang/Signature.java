@@ -20,7 +20,7 @@ public class Signature {
     private static boolean useCache = true;
 
     public char kind = 'x';
-    public Signature[] content = null;
+    public Signature[] content;
 
     public Signature(final char str) {
         kind = str;
@@ -56,22 +56,22 @@ public class Signature {
             return null;
         }
         Signature[] result;
-        if (useCache) {
-            result = CACHE.get(signature);
+        if (Signature.useCache) {
+            result = Signature.CACHE.get(signature);
             if (result != null) {
                 return result;
             }
         }
         String sign = signature;
         final List<Signature> type = new ArrayList<>();
-        while (sign.length() > 0) {
-            final ParseState e = parseOne(sign);
+        while (!sign.isEmpty()) {
+            final ParseState e = Signature.parseOne(sign);
             type.add(e.sign);
             sign = e.rest;
         }
         result = type.toArray(new Signature[type.size()]);
-        if (useCache) {
-            CACHE.put(signature, result);
+        if (Signature.useCache) {
+            Signature.CACHE.put(signature, result);
         }
         return result;
     }
@@ -91,14 +91,14 @@ public class Signature {
         if ("xidabrjfpsom".indexOf(crt) >= 0) {
             return new ParseState(new Signature(crt), signature.substring(1));
         } else if (crt == 'l') {
-            final ParseState sub = parseOne(signature.substring(1));
+            final ParseState sub = Signature.parseOne(signature.substring(1));
             return new ParseState(new Signature(crt, sub.sign), sub.rest);
         } else if ("0123456789".indexOf(crt) >= 0) {
             final int numTupleElements = Integer.parseInt(signature.substring(0, 1));
             final Signature[] sub = new Signature[numTupleElements];
             String s = signature.substring(1);
             for (int i = 0; i < numTupleElements; i++) {
-                final ParseState state = parseOne(s);
+                final ParseState state = Signature.parseOne(s);
                 sub[i] = state.sign;
                 s = state.rest;
             }
@@ -110,7 +110,7 @@ public class Signature {
 
     /** To be used only by the unit tests. */
     public static void setUseCache(final boolean use) {
-        useCache = use;
+        Signature.useCache = use;
     }
 
 }

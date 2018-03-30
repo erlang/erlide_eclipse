@@ -34,7 +34,7 @@ public class OtpErlangRef extends OtpErlangObject {
     // old style refs have one 18-bit id
     // r6 "new" refs have array of ids, first one is only 18 bits however
     // 19 "newer" refs have full 32-bits for creation and for ids[0]
-    private int ids[] = null;
+    private int ids[];
 
     /**
      * Create a unique Erlang ref belonging to the local node.
@@ -218,8 +218,8 @@ public class OtpErlangRef extends OtpErlangObject {
     public String toString() {
         String s = "#Ref<" + node;
 
-        for (int i = 0; i < ids.length; i++) {
-            s += "." + ids[i];
+        for (int id : ids) {
+            s += "." + id;
         }
 
         s += ">";

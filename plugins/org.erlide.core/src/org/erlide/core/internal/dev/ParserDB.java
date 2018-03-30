@@ -30,33 +30,33 @@ public class ParserDB {
 
     private static ParserDB db;
     private static PrintStream out;
-    private static volatile boolean running = false;
+    private static volatile boolean running;
 
     public static void create() {
         final Runnable x = new Runnable() {
             @Override
             public void run() {
-                running = true;
+                ParserDB.running = true;
                 try {
-                    db = new ParserDB();
+                    ParserDB.db = new ParserDB();
                     // out = new PrintStream(
                     // new File("/home/qvladum/parserDB.txt"));
-                    out = System.out;
+                    ParserDB.out = System.out;
 
                     final IErlModel model = ErlangEngine.getInstance().getModel();
                     final Collection<SourcePathProvider> sourcePathProviders = SourcePathUtils
                             .getSourcePathProviders();
                     final long time = System.currentTimeMillis();
-                    db.run(model, sourcePathProviders, false);
+                    ParserDB.db.run(model, sourcePathProviders, false);
                     System.out.println(
                             " took " + (System.currentTimeMillis() - time) / 1000);
                 } catch (final Exception e) {
                     ErlLogger.error(e);
                 }
-                running = false;
+                ParserDB.running = false;
             }
         };
-        if (!running) {
+        if (!ParserDB.running) {
             new Thread(x).start();
         }
     }
@@ -104,7 +104,7 @@ public class ParserDB {
                 // }
             }
         }
-        out.println("--- " + normal + " " + test);
+        ParserDB.out.println("--- " + normal + " " + test);
         System.out.println("--- " + normal + " " + test);
     }
 
@@ -112,30 +112,30 @@ public class ParserDB {
         module.open(null);
         final int numForms = module.getChildCount();
         final String path = module.getResource().getLocation().toPortableString();
-        out.println(path + " " + numForms + " " + isTest(path));
+        ParserDB.out.println(path + " " + numForms + " " + isTest(path));
         System.out.println(path + " " + numForms + " " + isTest(path));
         for (final IErlElement form : module.getChildren()) {
-            out.print(" " + form.getKind() + " ");
+            ParserDB.out.print(" " + form.getKind() + " ");
             if (form instanceof IErlImportExport) {
                 final IErlImportExport export = (IErlImportExport) form;
-                out.println(export.getFunctions().size());
+                ParserDB.out.println(export.getFunctions().size());
             } else if (form instanceof IErlPreprocessorDef) {
                 final IErlPreprocessorDef def = (IErlPreprocessorDef) form;
-                out.println(fix(def.getDefinedName()));
+                ParserDB.out.println(fix(def.getDefinedName()));
             } else if (form instanceof IErlTypespec) {
                 final IErlTypespec attribute = (IErlTypespec) form;
-                out.println("TYPESPEC " + fix(attribute.getName()));
+                ParserDB.out.println("TYPESPEC " + fix(attribute.getName()));
             } else if (form instanceof IErlAttribute) {
                 final IErlAttribute attribute = (IErlAttribute) form;
-                out.println(fix(attribute.getName()));
+                ParserDB.out.println(fix(attribute.getName()));
             } else if (form instanceof IErlFunction) {
                 final IErlFunction function = (IErlFunction) form;
                 int numClauses = function.getChildCount();
                 numClauses = numClauses == 0 ? 1 : numClauses;
-                out.println(fix(function.getName()) + " " + function.getArity() + " "
+                ParserDB.out.println(fix(function.getName()) + " " + function.getArity() + " "
                         + numClauses);
             } else {
-                out.println("?? " + form.getClass().getName());
+                ParserDB.out.println("?? " + form.getClass().getName());
             }
         }
         module.close();

@@ -40,8 +40,8 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
             final IErlModule module = fErlangEditor.getModule();
             if (module != null) {
                 final IResource resource = module.getResource();
-                for (int i = 0; i < changedResources.length; i++) {
-                    if (changedResources[i].equals(resource)) {
+                for (IResource changedResource : changedResources) {
+                    if (changedResource.equals(resource)) {
                         updateEditorImage(module);
                     }
                 }

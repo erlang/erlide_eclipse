@@ -35,7 +35,7 @@ public class OpenBrowserUtil {
         display.syncExec(new Runnable() {
             @Override
             public void run() {
-                internalOpen(url, false);
+                OpenBrowserUtil.internalOpen(url, false);
             }
         });
     }
@@ -53,7 +53,7 @@ public class OpenBrowserUtil {
         display.syncExec(new Runnable() {
             @Override
             public void run() {
-                internalOpen(url, true);
+                OpenBrowserUtil.internalOpen(url, true);
             }
         });
     }

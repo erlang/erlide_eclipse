@@ -25,13 +25,13 @@ import org.eclipse.core.runtime.content.IContentType;
  */
 public class LSPStreamConnectionProviderRegistry {
 
-	private static LSPStreamConnectionProviderRegistry INSTANCE = null;
+	private static LSPStreamConnectionProviderRegistry INSTANCE;
 
 	public static LSPStreamConnectionProviderRegistry getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new LSPStreamConnectionProviderRegistry();
+		if (LSPStreamConnectionProviderRegistry.INSTANCE == null) {
+			LSPStreamConnectionProviderRegistry.INSTANCE = new LSPStreamConnectionProviderRegistry();
 		}
-		return INSTANCE;
+		return LSPStreamConnectionProviderRegistry.INSTANCE;
 	}
 
 	Map<IContentType, StreamConnectionProvider> connections = new HashMap<>();

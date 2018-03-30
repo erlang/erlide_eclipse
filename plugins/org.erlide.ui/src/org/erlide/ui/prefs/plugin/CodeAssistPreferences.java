@@ -20,7 +20,7 @@ public class CodeAssistPreferences {
 
     public static IEclipsePreferences getNode() {
         final IScopeContext context = InstanceScope.INSTANCE;
-        final IEclipsePreferences eclipsePreferences = context.getNode(QUALIFIER);
+        final IEclipsePreferences eclipsePreferences = context.getNode(CodeAssistPreferences.QUALIFIER);
         return eclipsePreferences;
     }
 
@@ -31,7 +31,7 @@ public class CodeAssistPreferences {
     }
 
     public CodeAssistPreferences() {
-        helper = PreferencesHelper.getHelper(QUALIFIER);
+        helper = PreferencesHelper.getHelper(CodeAssistPreferences.QUALIFIER);
     }
 
     public boolean hasOptionsAtLowestScope() {

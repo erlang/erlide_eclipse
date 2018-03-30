@@ -99,7 +99,8 @@ public class OtpErlangMap extends OtpErlangObject {
                     "Map keys and values must have same arity");
         }
         map = new OtpMap();
-        OtpErlangObject key, val;
+        OtpErlangObject key;
+        OtpErlangObject val;
         for (int i = 0; i < vcount; i++) {
             if ((key = keys[kstart + i]) == null) {
                 throw new java.lang.IllegalArgumentException(
@@ -129,7 +130,8 @@ public class OtpErlangMap extends OtpErlangObject {
         if (arity > 0) {
             map = new OtpMap();
             for (int i = 0; i < arity; i++) {
-                OtpErlangObject key, val;
+                OtpErlangObject key;
+                OtpErlangObject val;
                 key = buf.read_any();
                 val = buf.read_any();
                 put(key, val);
@@ -219,7 +221,7 @@ public class OtpErlangMap extends OtpErlangObject {
      */
     @Override
     public String toString() {
-        final StringBuffer s = new StringBuffer();
+        final StringBuilder s = new StringBuilder();
 
         s.append("#{");
 
@@ -283,7 +285,8 @@ public class OtpErlangMap extends OtpErlangObject {
             return true;
         }
 
-        OtpErlangObject key, val;
+        OtpErlangObject key;
+        OtpErlangObject val;
         for (final Map.Entry<OtpErlangObject, OtpErlangObject> e : entrySet()) {
             key = e.getKey();
             val = e.getValue();
@@ -312,7 +315,8 @@ public class OtpErlangMap extends OtpErlangObject {
             return true;
         }
 
-        OtpErlangObject key, val;
+        OtpErlangObject key;
+        OtpErlangObject val;
         for (final Map.Entry<OtpErlangObject, OtpErlangObject> e : entrySet()) {
             key = e.getKey();
             val = e.getValue();
@@ -329,7 +333,8 @@ public class OtpErlangMap extends OtpErlangObject {
     public <T> OtpErlangObject bind(final T binds) throws OtpErlangException {
         final OtpErlangMap ret = new OtpErlangMap();
 
-        OtpErlangObject key, val;
+        OtpErlangObject key;
+        OtpErlangObject val;
         for (final Map.Entry<OtpErlangObject, OtpErlangObject> e : entrySet()) {
             key = e.getKey();
             val = e.getValue();

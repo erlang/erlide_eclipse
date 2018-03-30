@@ -399,7 +399,7 @@ public class ColoringPreferencePage extends PreferencePage
         gd.horizontalSpan = 2;
         fUnderlineCheckBox.setLayoutData(gd);
 
-        final String content = loadPreviewContentFromFile(getClass(),
+        final String content = ColoringPreferencePage.loadPreviewContentFromFile(getClass(),
                 "ColorSettingPreviewCode.txt"); //$NON-NLS-1$
         fPreviewViewer = ErlangSourceViewer.createErlangPreviewer(colorComposite,
                 fColorManager, fOverlayStore, fColors, content);

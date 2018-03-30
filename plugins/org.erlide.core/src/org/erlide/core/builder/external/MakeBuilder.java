@@ -1,6 +1,6 @@
-package org.erlide.core.internal.builder.external;
+package org.erlide.core.builder.external;
 
-import org.erlide.core.internal.builder.ExternalBuilder;
+import org.erlide.core.builder.ExternalBuilder;
 import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.BuilderTool;
 

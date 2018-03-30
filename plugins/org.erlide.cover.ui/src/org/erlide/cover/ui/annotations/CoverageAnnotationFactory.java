@@ -10,6 +10,9 @@ import org.eclipse.jface.text.source.Annotation;
  */
 public class CoverageAnnotationFactory {
 
+    private CoverageAnnotationFactory() {
+    }
+
     /**
      * Create new coverage annotation
      *

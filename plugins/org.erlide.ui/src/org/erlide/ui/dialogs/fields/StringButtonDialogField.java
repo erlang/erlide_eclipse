@@ -66,11 +66,11 @@ public class StringButtonDialogField extends StringDialogField {
         assertEnoughColumns(nColumns);
 
         final Label label = getLabelControl(parent);
-        label.setLayoutData(gridDataForLabel(1));
+        label.setLayoutData(DialogField.gridDataForLabel(1));
         final Text text = getTextControl(parent);
-        text.setLayoutData(gridDataForText(nColumns - 2));
+        text.setLayoutData(StringDialogField.gridDataForText(nColumns - 2));
         final Button button = getChangeControl(parent);
-        button.setLayoutData(gridDataForButton(button, 1));
+        button.setLayoutData(StringButtonDialogField.gridDataForButton(button, 1));
 
         return new Control[] { label, text, button };
     }

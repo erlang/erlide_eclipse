@@ -34,8 +34,8 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
             final String initialText) {
         final String stateDir = ErlangEngine.getInstance().getStateDir();
         try {
-            backend.call(ERLIDE_SCANNER, "initial_scan", "assso", module, path,
-                    initialText == null ? "" : initialText, stateDir, USE_CACHE);
+            backend.call(ErlideScanner.ERLIDE_SCANNER, "initial_scan", "assso", module, path,
+                    initialText == null ? "" : initialText, stateDir, ErlideScanner.USE_CACHE);
         } catch (final RpcTimeoutException e) {
             ErlLogger.debug(e);
         } catch (final Exception e) {
@@ -46,7 +46,7 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
     @Override
     public void create(final String module) {
         try {
-            backend.call(ERLIDE_SCANNER, "create", "a", module);
+            backend.call(ErlideScanner.ERLIDE_SCANNER, "create", "a", module);
         } catch (final RpcTimeoutException e) {
             ErlLogger.debug(e);
         } catch (final Exception e) {
@@ -56,7 +56,7 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
 
     public void addref(final String module) {
         try {
-            backend.call(ERLIDE_SCANNER, "addref", "a", module);
+            backend.call(ErlideScanner.ERLIDE_SCANNER, "addref", "a", module);
         } catch (final RpcTimeoutException e) {
             ErlLogger.debug(e);
         } catch (final Exception e) {
@@ -66,7 +66,7 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
 
     public void dispose(final String module) {
         try {
-            backend.call(ERLIDE_SCANNER, "dispose", "a", module);
+            backend.call(ErlideScanner.ERLIDE_SCANNER, "dispose", "a", module);
         } catch (final RpcTimeoutException e) {
             ErlLogger.debug(e);
         } catch (final Exception e) {
@@ -78,7 +78,7 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
     public ErlToken getTokenAt(final String module, final int offset) {
         OtpErlangObject r1 = null;
         try {
-            r1 = backend.call(ERLIDE_SCANNER, "get_token_at", "ai", module, offset);
+            r1 = backend.call(ErlideScanner.ERLIDE_SCANNER, "get_token_at", "ai", module, offset);
         } catch (final Exception e) {
             return null;
         }
@@ -100,7 +100,7 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
     public void replaceText(final String module, final int offset, final int removeLength,
             final String newText) {
         try {
-            final OtpErlangObject r = backend.call(ERLIDE_SCANNER, "replace_text", "aiis",
+            final OtpErlangObject r = backend.call(ErlideScanner.ERLIDE_SCANNER, "replace_text", "aiis",
                     module, offset, removeLength, newText);
             if (r instanceof OtpErlangTuple) {
                 ErlLogger.error("replace_text %s @ %d GOT:: %s", module, offset,
@@ -119,7 +119,7 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
         OtpErlangObject r1 = null;
         try {
             r1 = backend.call("erlide_scanner", "light_scan_string", "ba", string,
-                    ENCODING);
+                    ErlideScanner.ENCODING);
         } catch (final Exception e) {
             throw new ScannerException(
                     "Could not parse string \"" + string + "\": " + e.getMessage());
@@ -159,7 +159,7 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
             return null;
         }
         try {
-            final OtpErlangObject o = backend.call(ERLIDE_SCANNER, "check_all", "aso",
+            final OtpErlangObject o = backend.call(ErlideScanner.ERLIDE_SCANNER, "check_all", "aso",
                     module, text, getTokens);
             return o;
         } catch (final RpcException e) {

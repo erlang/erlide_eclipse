@@ -37,7 +37,7 @@ public class CoverLaunchConfigurationDelegate extends ErlangLaunchDelegate {
         } catch (final CoreException e) {
             ErlLogger.error(e);
         } catch (final CoverException e) {
-            if (CoverBackend.getInstance().getListeners().size() == 0) {
+            if (CoverBackend.getInstance().getListeners().isEmpty()) {
                 throw new RuntimeException(e.getMessage());
             }
             CoverBackend.getInstance().handleError(e.getMessage());

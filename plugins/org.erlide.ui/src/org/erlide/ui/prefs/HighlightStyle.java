@@ -58,7 +58,7 @@ public class HighlightStyle {
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         return Objects.equal(this, obj);
     }
 

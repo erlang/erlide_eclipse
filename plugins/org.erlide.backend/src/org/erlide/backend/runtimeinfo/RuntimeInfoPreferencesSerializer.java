@@ -24,20 +24,20 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
 
     @Deprecated
     public static IEclipsePreferences getInstanceOldRootNode() {
-        return InstanceScope.INSTANCE.getNode(rootKeyOld);
+        return InstanceScope.INSTANCE.getNode(RuntimeInfoPreferencesSerializer.rootKeyOld);
     }
 
     @Deprecated
     public static IEclipsePreferences getDefaultOldRootNode() {
-        return DefaultScope.INSTANCE.getNode(rootKeyOld);
+        return DefaultScope.INSTANCE.getNode(RuntimeInfoPreferencesSerializer.rootKeyOld);
     }
 
     public static IEclipsePreferences getInstanceRootNode() {
-        return InstanceScope.INSTANCE.getNode(rootKey);
+        return InstanceScope.INSTANCE.getNode(RuntimeInfoPreferencesSerializer.rootKey);
     }
 
     public static IEclipsePreferences getDefaultRootNode() {
-        return DefaultScope.INSTANCE.getNode(rootKey);
+        return DefaultScope.INSTANCE.getNode(RuntimeInfoPreferencesSerializer.rootKey);
     }
 
     private final IEclipsePreferences defaultRootNode;
@@ -50,7 +50,7 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
     }
 
     public RuntimeInfoPreferencesSerializer() {
-        this(getInstanceRootNode(), getDefaultRootNode());
+        this(RuntimeInfoPreferencesSerializer.getInstanceRootNode(), RuntimeInfoPreferencesSerializer.getDefaultRootNode());
     }
 
     @Override
@@ -65,10 +65,10 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
                 RuntimeInfoLoader.store(rt, instanceRootNode);
             }
             if (data.defaultRuntimeName != null) {
-                instanceRootNode.put(DEFAULT_KEY, data.defaultRuntimeName);
+                instanceRootNode.put(RuntimeInfoPreferencesSerializer.DEFAULT_KEY, data.defaultRuntimeName);
             }
             if (data.erlideRuntimeName != null) {
-                instanceRootNode.put(ERLIDE_KEY, data.erlideRuntimeName);
+                instanceRootNode.put(RuntimeInfoPreferencesSerializer.ERLIDE_KEY, data.erlideRuntimeName);
             }
             instanceRootNode.flush();
         } catch (final Exception e) {
@@ -79,14 +79,14 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
     @Override
     public synchronized RuntimeInfoCatalogData load() {
         RuntimeInfoCatalogData data = new RuntimeInfoCatalogData();
-        data = loadPrefs(data, getDefaultOldRootNode());
+        data = loadPrefs(data, RuntimeInfoPreferencesSerializer.getDefaultOldRootNode());
         data = loadPrefs(data, defaultRootNode);
-        data = loadPrefs(data, getInstanceOldRootNode());
+        data = loadPrefs(data, RuntimeInfoPreferencesSerializer.getInstanceOldRootNode());
         data = loadPrefs(data, instanceRootNode);
 
         String dflt = null;
         String ide = null;
-        if (data.runtimes.size() > 0) {
+        if (!data.runtimes.isEmpty()) {
             dflt = data.defaultRuntimeName != null ? data.defaultRuntimeName
                     : data.runtimes.iterator().next().getName();
             ide = data.erlideRuntimeName != null ? data.erlideRuntimeName : dflt;
@@ -109,8 +109,8 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
             ErlLogger.warn(e);
         }
 
-        final String defaultRuntimeName = root.get(DEFAULT_KEY, data.defaultRuntimeName);
-        final String ideRuntimeName = root.get(ERLIDE_KEY, data.erlideRuntimeName);
+        final String defaultRuntimeName = root.get(RuntimeInfoPreferencesSerializer.DEFAULT_KEY, data.defaultRuntimeName);
+        final String ideRuntimeName = root.get(RuntimeInfoPreferencesSerializer.ERLIDE_KEY, data.erlideRuntimeName);
         return new RuntimeInfoCatalogData(runtimes, defaultRuntimeName, ideRuntimeName);
     }
 }

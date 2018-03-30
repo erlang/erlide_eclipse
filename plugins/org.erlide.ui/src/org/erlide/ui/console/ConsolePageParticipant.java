@@ -70,7 +70,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
     private IConsoleView fView;
 
     private EOFHandler fEOFHandler;
-    private final static String fContextId = "org.eclipse.debug.ui.console"; //$NON-NLS-1$ ;
+    private static final String fContextId = "org.eclipse.debug.ui.console"; //$NON-NLS-1$ ;
     private IContextActivation fActivatedContext;
     private IHandlerActivation fActivatedHandler;
 
@@ -203,8 +203,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
 
     @Override
     public void handleDebugEvents(final DebugEvent[] events) {
-        for (int i = 0; i < events.length; i++) {
-            final DebugEvent event = events[i];
+        for (final DebugEvent event : events) {
             if (event.getSource().equals(getProcess())) {
                 final Runnable r = new Runnable() {
                     @Override
@@ -233,7 +232,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
         if (handlerService == null || contextService == null) {
             return;
         }
-        fActivatedContext = contextService.activateContext(fContextId);
+        fActivatedContext = contextService.activateContext(ConsolePageParticipant.fContextId);
         fActivatedHandler = handlerService
                 .activateHandler("org.eclipse.debug.ui.commands.eof", fEOFHandler); //$NON-NLS-1$
     }

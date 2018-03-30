@@ -1,7 +1,6 @@
 package org.erlide.cover.core;
 
 import java.io.File;
-import java.util.Iterator;
 
 import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.views.model.FunctionStats;
@@ -40,7 +39,7 @@ public class CoverEventHandler extends ErlangEventHandler {
     private final CoverBackend coverBackend; // cover backend
 
     public CoverEventHandler(final CoverBackend coverBackend) {
-        super(EVENT_NAME);
+        super(CoverEventHandler.EVENT_NAME);
         this.coverBackend = coverBackend;
         log = Activator.getDefault();
     }
@@ -66,7 +65,7 @@ public class CoverEventHandler extends ErlangEventHandler {
                 obs.eventOccured(new CoverEvent(CoverStatus.ERROR,
                         String.format("Error at %s while %s: %s\n", place, type, info)));
             }
-        } else if (data.toString().equals(COVER_FIN)
+        } else if (data.toString().equals(CoverEventHandler.COVER_FIN)
                 && coverBackend.getAnnotationMaker() != null) {
             coverBackend.getAnnotationMaker().addAnnotations();
         }
@@ -84,7 +83,7 @@ public class CoverEventHandler extends ErlangEventHandler {
             final OtpErlangTuple resTuple = (OtpErlangTuple) msg;
             if (resTuple.elementAt(0) instanceof OtpErlangAtom
                     && ((OtpErlangAtom) resTuple.elementAt(0)).atomValue()
-                            .equals(COVER_RES)) {
+                            .equals(CoverEventHandler.COVER_RES)) {
 
                 final String moduleName = resTuple.elementAt(1).toString();
 
@@ -172,10 +171,8 @@ public class CoverEventHandler extends ErlangEventHandler {
 
     private void prepFuncResults(final OtpErlangList funcList, final ModuleStats stats) {
 
-        final Iterator<OtpErlangObject> it = funcList.iterator();
-
-        while (it.hasNext()) {
-            final OtpErlangTuple res = (OtpErlangTuple) it.next();
+        for (OtpErlangObject aFuncList : funcList) {
+            final OtpErlangTuple res = (OtpErlangTuple) aFuncList;
 
             final FunctionStats func = new FunctionStats();
 
@@ -196,10 +193,8 @@ public class CoverEventHandler extends ErlangEventHandler {
 
     private void prepLineResults(final OtpErlangList lineList, final ModuleStats stats) {
 
-        final Iterator<OtpErlangObject> it = lineList.iterator();
-
-        while (it.hasNext()) {
-            final OtpErlangTuple res = (OtpErlangTuple) it.next();
+        for (OtpErlangObject aLineList : lineList) {
+            final OtpErlangTuple res = (OtpErlangTuple) aLineList;
             final int num = Integer.parseInt(res.elementAt(1).toString());
             final int calls = Integer.parseInt(res.elementAt(2).toString());
             final LineResult lineRes = new LineResult(num, calls);
@@ -215,7 +210,7 @@ public class CoverEventHandler extends ErlangEventHandler {
             final OtpErlangTuple tuple = (OtpErlangTuple) message;
             if (tuple.elementAt(0) instanceof OtpErlangAtom
                     && ((OtpErlangAtom) tuple.elementAt(0)).atomValue()
-                            .equals(COVER_ERROR)) {
+                            .equals(CoverEventHandler.COVER_ERROR)) {
 
                 return tuple;
             }

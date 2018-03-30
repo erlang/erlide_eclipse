@@ -157,7 +157,7 @@ public class CodeAssistPreferencePage extends PreferencePage
         try {
             prefs.setAutoActivate(autoActivateButton.getSelection());
             final Integer i = new Integer(delayText.getText());
-            prefs.setDelayInMS(i.intValue());
+            prefs.setDelayInMS(i);
             prefs.setErlangTriggers(erlangTriggersText.getText());
             prefs.seteDocTriggers(eDocTriggersText.getText());
             prefs.store();

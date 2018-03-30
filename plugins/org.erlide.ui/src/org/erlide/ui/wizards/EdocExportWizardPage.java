@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.wizards;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
@@ -141,7 +138,7 @@ public class EdocExportWizardPage extends WizardPage {
     }
 
     public Collection<IProject> getSelectedResources() {
-        final ArrayList<IProject> result = new ArrayList<>();
+        final List<IProject> result = new ArrayList<>();
         final Object[] sel = checkboxTableViewer.getCheckedElements();
         for (final Object o : sel) {
             result.add((IProject) o);
@@ -150,7 +147,7 @@ public class EdocExportWizardPage extends WizardPage {
     }
 
     public Map<String, OtpErlangObject> getOptions() {
-        final HashMap<String, OtpErlangObject> result = new HashMap<>();
+        final Map<String, OtpErlangObject> result = new HashMap<>();
         result.put("dir", new OtpErlangString(destination.getText()));
         // result.put("preprocess", new OtpErlangBoolean(false));
         return result;

@@ -17,11 +17,11 @@ public class BackendCore {
     private static EpmdWatchJob epmdWatcherJob;
 
     public static void init(final IBackendManager aBackendManager) {
-        backendManager = aBackendManager;
+        BackendCore.backendManager = aBackendManager;
     }
 
     public static final IBackendManager getBackendManager() {
-        return backendManager;
+        return BackendCore.backendManager;
     }
 
     public static IRuntimeInfoCatalog getRuntimeInfoCatalog() {
@@ -29,29 +29,29 @@ public class BackendCore {
     }
 
     public static IOtpRpc getBuildBackend(@NonNull final IErlProject project) {
-        final IBackendManager manager = getBackendManager();
+        final IBackendManager manager = BackendCore.getBackendManager();
         return manager.getBuildBackend(project).getOtpRpc();
     }
 
     public static EpmdWatcher getEpmdWatcher() {
-        if (epmdWatcher == null) {
+        if (BackendCore.epmdWatcher == null) {
             // tryStartEpmdProcess();
-            startEpmdWatcher();
+            BackendCore.startEpmdWatcher();
         }
 
-        return epmdWatcher;
+        return BackendCore.epmdWatcher;
     }
 
     private static void startEpmdWatcher() {
-        epmdWatcher = new EpmdWatcher();
-        epmdWatcher.addEpmdListener(getBackendManager());
-        epmdWatcherJob = new EpmdWatchJob(epmdWatcher);
-        epmdWatcherJob.schedule(1000);
+        BackendCore.epmdWatcher = new EpmdWatcher();
+        BackendCore.epmdWatcher.addEpmdListener(BackendCore.getBackendManager());
+        BackendCore.epmdWatcherJob = new EpmdWatchJob(BackendCore.epmdWatcher);
+        BackendCore.epmdWatcherJob.schedule(1000);
     }
 
     public static void stop() {
-        if (epmdWatcherJob != null) {
-            epmdWatcherJob.stop();
+        if (BackendCore.epmdWatcherJob != null) {
+            BackendCore.epmdWatcherJob.stop();
         }
     }
 

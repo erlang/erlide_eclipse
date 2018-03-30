@@ -21,7 +21,7 @@ public class ErlangSourceContextTypeLayout extends TemplateContextType {
      */
     public ErlangSourceContextTypeLayout() {
         addGlobalResolvers();
-        fInstance = this;
+        ErlangSourceContextTypeLayout.fInstance = this;
     }
 
     private void addGlobalResolvers() {
@@ -36,10 +36,10 @@ public class ErlangSourceContextTypeLayout extends TemplateContextType {
     }
 
     public static ErlangSourceContextTypeLayout getDefault() {
-        if (fInstance == null) {
-            fInstance = new ErlangSourceContextTypeLayout();
+        if (ErlangSourceContextTypeLayout.fInstance == null) {
+            ErlangSourceContextTypeLayout.fInstance = new ErlangSourceContextTypeLayout();
         }
-        return fInstance;
+        return ErlangSourceContextTypeLayout.fInstance;
     }
 
 }

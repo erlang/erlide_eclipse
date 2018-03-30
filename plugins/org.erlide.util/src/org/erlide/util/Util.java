@@ -54,7 +54,7 @@ public final class Util {
     private static ResourceBundle bundle;
 
     static {
-        relocalize();
+        Util.relocalize();
     }
 
     private Util() {
@@ -65,7 +65,7 @@ public final class Util {
      * Lookup the message with the given PLUGIN_ID in this catalog
      */
     public static String bind(final String id) {
-        return bind(id, (String[]) null);
+        return Util.bind(id, (String[]) null);
     }
 
     /**
@@ -73,7 +73,7 @@ public final class Util {
      * substitution locations with the given string.
      */
     public static String bind(final String id, final String binding) {
-        return bind(id, new String[] { binding });
+        return Util.bind(id, new String[] { binding });
     }
 
     /**
@@ -82,7 +82,7 @@ public final class Util {
      */
     public static String bind(final String id, final String binding1,
             final String binding2) {
-        return bind(id, new String[] { binding1, binding2 });
+        return Util.bind(id, new String[] { binding1, binding2 });
     }
 
     /**
@@ -95,17 +95,17 @@ public final class Util {
         }
         String message = null;
         try {
-            message = bundle.getString(id);
+            message = Util.bundle.getString(id);
         } catch (final MissingResourceException e) {
             // If we got an exception looking for the message, fail gracefully
             // by just returning
             // the id we were looking for. In most cases this is
             // semi-informative so is not too bad.
-            return "Missing message: " + id + " in: " + BUNDLE_NAME; //$NON-NLS-2$ //$NON-NLS-1$
+            return "Missing message: " + id + " in: " + Util.BUNDLE_NAME; //$NON-NLS-2$ //$NON-NLS-1$
         }
         // for compatibility with MessageFormat which eliminates double quotes
         // in original message
-        final String messageWithNoDoubleQuotes = message.replace(DOUBLE_QUOTES, SINGLE_QUOTE);
+        final String messageWithNoDoubleQuotes = message.replace(Util.DOUBLE_QUOTES, Util.SINGLE_QUOTE);
 
         if (bindings == null) {
             return new String(messageWithNoDoubleQuotes);
@@ -133,7 +133,7 @@ public final class Util {
                         if (!argId.equals(id)) {
                             String argMessage = null;
                             try {
-                                argMessage = bundle.getString(argId);
+                                argMessage = Util.bundle.getString(argId);
                                 output.append(argMessage);
                                 done = true;
                             } catch (final MissingResourceException e) {
@@ -211,11 +211,11 @@ public final class Util {
 
         for (int j = 0; j < arguments.length; j++) {
             if (j != 0) {
-                args.append(ARGUMENTS_DELIMITER);
+                args.append(Util.ARGUMENTS_DELIMITER);
             }
 
-            if (arguments[j].length() == 0) {
-                args.append(EMPTY_ARGUMENT);
+            if (arguments[j].isEmpty()) {
+                args.append(Util.EMPTY_ARGUMENT);
             } else {
                 args.append(arguments[j]);
             }
@@ -249,10 +249,10 @@ public final class Util {
         int count = 0;
 
         final StringTokenizer tokenizer = new StringTokenizer(argumentsString1,
-                ARGUMENTS_DELIMITER);
+                Util.ARGUMENTS_DELIMITER);
         while (tokenizer.hasMoreTokens()) {
             String argument = tokenizer.nextToken();
-            if (EMPTY_ARGUMENT.equals(argument)) {
+            if (Util.EMPTY_ARGUMENT.equals(argument)) {
                 argument = ""; //$NON-NLS-1$
             }
             args[count++] = argument;
@@ -285,7 +285,7 @@ public final class Util {
             return false;
         }
         final int pos = name.lastIndexOf('.');
-        return isValidModuleName(name.substring(0, pos));
+        return Util.isValidModuleName(name.substring(0, pos));
     }
 
     public static boolean isValidModuleName(final String name) {
@@ -321,9 +321,9 @@ public final class Util {
      */
     public static void relocalize() {
         try {
-            bundle = ResourceBundle.getBundle(BUNDLE_NAME, Locale.getDefault());
+            Util.bundle = ResourceBundle.getBundle(Util.BUNDLE_NAME, Locale.getDefault());
         } catch (final MissingResourceException e) {
-            ErlLogger.error("Missing resource : " + BUNDLE_NAME.replace('.', '/') //$NON-NLS-1$
+            ErlLogger.error("Missing resource : " + Util.BUNDLE_NAME.replace('.', '/') //$NON-NLS-1$
                     + ".properties for locale " + Locale.getDefault()); //$NON-NLS-1$
             throw e;
         }
@@ -336,7 +336,7 @@ public final class Util {
         final int len = a.length;
         final char[][] result = new char[len][];
         for (int i = 0; i < len; ++i) {
-            result[i] = toChars(a[i]);
+            result[i] = Util.toChars(a[i]);
         }
         return result;
     }
@@ -372,8 +372,7 @@ public final class Util {
             throws IOException {
         final int strlen = str.length;
         int utflen = 0;
-        for (int i = 0; i < strlen; i++) {
-            final int c = str[i];
+        for (final char c : str) {
             if (c >= 0x0001 && c <= 0x007F) {
                 utflen++;
             } else if (c > 0x07FF) {
@@ -386,23 +385,22 @@ public final class Util {
             throw new UTFDataFormatException();
         }
         out.write(utflen >>> 8 & 0xFF);
-        out.write(utflen >>> 0 & 0xFF);
+        out.write(utflen & 0xFF);
         if (strlen == utflen) {
-            for (int i = 0; i < strlen; i++) {
-                out.write(str[i]);
+            for (char aStr : str) {
+                out.write(aStr);
             }
         } else {
-            for (int i = 0; i < strlen; i++) {
-                final int c = str[i];
+            for (final char c : str) {
                 if (c >= 0x0001 && c <= 0x007F) {
                     out.write(c);
                 } else if (c > 0x07FF) {
                     out.write(0xE0 | c >> 12 & 0x0F);
                     out.write(0x80 | c >> 6 & 0x3F);
-                    out.write(0x80 | c >> 0 & 0x3F);
+                    out.write(0x80 | c & 0x3F);
                 } else {
                     out.write(0xC0 | c >> 6 & 0x1F);
-                    out.write(0x80 | c >> 0 & 0x3F);
+                    out.write(0x80 | c & 0x3F);
                 }
             }
         }
@@ -434,9 +432,9 @@ public final class Util {
         } else if (o instanceof OtpErlangBinary) {
             final OtpErlangBinary b = (OtpErlangBinary) o;
             String result;
-            result = decode(b.binaryValue(), Charsets.UTF_8);
+            result = Util.decode(b.binaryValue(), Charsets.UTF_8);
             if (result == null) {
-                result = decode(b.binaryValue(), Charsets.ISO_8859_1);
+                result = Util.decode(b.binaryValue(), Charsets.ISO_8859_1);
             }
             if (result == null) {
                 ErlLogger.error(
@@ -479,7 +477,7 @@ public final class Util {
      * @return true if ok
      */
     public static boolean isOk(final OtpErlangObject o) {
-        return isTag(o, "ok");
+        return Util.isTag(o, "ok");
     }
 
     /**
@@ -490,7 +488,7 @@ public final class Util {
      * @return true if error
      */
     public static boolean isError(final OtpErlangObject o) {
-        return isTag(o, "error");
+        return Util.isTag(o, "error");
     }
 
     public static boolean isTag(final OtpErlangObject o, final String string) {
@@ -507,12 +505,12 @@ public final class Util {
     }
 
     public static String ioListToString(final OtpErlangObject o) {
-        return ioListToString(o, Integer.MAX_VALUE - 1);
+        return Util.ioListToString(o, Integer.MAX_VALUE - 1);
     }
 
     public static String ioListToString(final OtpErlangObject o, final int maxLength) {
         StringBuilder sb = new StringBuilder();
-        sb = ioListToStringBuilder(o, sb, maxLength);
+        sb = Util.ioListToStringBuilder(o, sb, maxLength);
         return sb.toString();
     }
 
@@ -543,15 +541,15 @@ public final class Util {
             final OtpErlangList l = (OtpErlangList) o;
             for (final OtpErlangObject i : l) {
                 if (sb.length() < maxLength) {
-                    ioListToStringBuilder(i, sb, maxLength);
+                    Util.ioListToStringBuilder(i, sb, maxLength);
                 }
             }
             if (sb.length() < maxLength) {
-                ioListToStringBuilder(l.getLastTail(), sb, maxLength);
+                Util.ioListToStringBuilder(l.getLastTail(), sb, maxLength);
             }
         } else if (o instanceof OtpErlangBinary) {
             final OtpErlangBinary b = (OtpErlangBinary) o;
-            String s = decode(b.binaryValue(), Charsets.UTF_8);
+            String s = Util.decode(b.binaryValue(), Charsets.UTF_8);
             if (s == null) {
                 s = new String(b.binaryValue(), Charsets.ISO_8859_1);
             }

@@ -94,16 +94,16 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 
     // private final EditorOpener fEditorOpener = new EditorOpener();
 
-    private static final String[] SHOW_IN_TARGETS = new String[] {
+    private static final String[] SHOW_IN_TARGETS = {
             IPageLayout.ID_PROJECT_EXPLORER };
     private static final IShowInTargetList SHOW_IN_TARGET_LIST = new IShowInTargetList() {
         @Override
         @SuppressWarnings("synthetic-access")
         public String[] getShowInTargetIds() {
-            return SHOW_IN_TARGETS;
+            return ErlangSearchResultPage.SHOW_IN_TARGETS;
         }
     };
-    private SearchResultLabelProvider innerLabelProvider = null;
+    private SearchResultLabelProvider innerLabelProvider;
 
     public ErlangSearchResultPage() {
         // fSortByNameAction = new SortAction(
@@ -113,14 +113,14 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
         // SearchMessages.FileSearchPage_sort_path_label, this,
         // FileLabelProvider.SHOW_PATH_LABEL);
 
-        setElementLimit(Integer.valueOf(DEFAULT_ELEMENT_LIMIT));
+        setElementLimit(ErlangSearchResultPage.DEFAULT_ELEMENT_LIMIT);
     }
 
     @Override
     public void setElementLimit(final Integer elementLimit) {
         super.setElementLimit(elementLimit);
-        final int limit = elementLimit.intValue();
-        getSettings().put(KEY_LIMIT, limit);
+        final int limit = elementLimit;
+        getSettings().put(ErlangSearchResultPage.KEY_LIMIT, limit);
     }
 
     @Override
@@ -282,46 +282,46 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
     public void setSortOrder(final int sortOrder) {
         fCurrentSortOrder = sortOrder;
         getViewer().refresh();
-        getSettings().put(KEY_SORTING, fCurrentSortOrder);
+        getSettings().put(ErlangSearchResultPage.KEY_SORTING, fCurrentSortOrder);
     }
 
     @Override
     public void restoreState(final IMemento memento) {
         super.restoreState(memento);
         try {
-            fCurrentSortOrder = getSettings().getInt(KEY_SORTING);
+            fCurrentSortOrder = getSettings().getInt(ErlangSearchResultPage.KEY_SORTING);
         } catch (final NumberFormatException e) {
             fCurrentSortOrder = SearchResultLabelProvider.SHOW_LABEL_PATH;
         }
-        int elementLimit = DEFAULT_ELEMENT_LIMIT;
+        int elementLimit = ErlangSearchResultPage.DEFAULT_ELEMENT_LIMIT;
         try {
-            elementLimit = getSettings().getInt(KEY_LIMIT);
+            elementLimit = getSettings().getInt(ErlangSearchResultPage.KEY_LIMIT);
         } catch (final NumberFormatException e) {
         }
         if (memento != null) {
-            Integer value = memento.getInteger(KEY_SORTING);
+            Integer value = memento.getInteger(ErlangSearchResultPage.KEY_SORTING);
             if (value != null) {
-                fCurrentSortOrder = value.intValue();
+                fCurrentSortOrder = value;
             }
 
-            value = memento.getInteger(KEY_LIMIT);
+            value = memento.getInteger(ErlangSearchResultPage.KEY_LIMIT);
             if (value != null) {
-                elementLimit = value.intValue();
+                elementLimit = value;
             }
         }
-        setElementLimit(Integer.valueOf(elementLimit));
+        setElementLimit(elementLimit);
     }
 
     @Override
     public void saveState(final IMemento memento) {
         super.saveState(memento);
-        memento.putInteger(KEY_SORTING, fCurrentSortOrder);
-        memento.putInteger(KEY_LIMIT, getElementLimit().intValue());
+        memento.putInteger(ErlangSearchResultPage.KEY_SORTING, fCurrentSortOrder);
+        memento.putInteger(ErlangSearchResultPage.KEY_LIMIT, getElementLimit().intValue());
     }
 
     public Object getAdapter(final Class<?> adapter) {
         if (IShowInTargetList.class.equals(adapter)) {
-            return SHOW_IN_TARGET_LIST;
+            return ErlangSearchResultPage.SHOW_IN_TARGET_LIST;
         }
         return null;
     }
@@ -340,8 +340,8 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
                 final int fileCount = getInput().getElements().length;
                 if (itemCount < fileCount) {
                     final String format = "{0} (showing {1} of {2} files)";
-                    return MessageFormat.format(format, label, Integer.valueOf(itemCount),
-                            Integer.valueOf(fileCount));
+                    return MessageFormat.format(format, label, itemCount,
+                            fileCount);
                 }
             }
         }

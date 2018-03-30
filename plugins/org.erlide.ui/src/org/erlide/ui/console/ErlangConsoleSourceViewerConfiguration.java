@@ -29,7 +29,7 @@ import org.erlide.ui.editors.erl.scanner.ErlCodeScanner;
 import org.erlide.ui.editors.erl.scanner.ErlDamagerRepairer;
 import org.erlide.ui.util.IColorManager;
 
-final public class ErlangConsoleSourceViewerConfiguration extends EditorConfiguration {
+public final class ErlangConsoleSourceViewerConfiguration extends EditorConfiguration {
 
     private final IBackend backend;
 

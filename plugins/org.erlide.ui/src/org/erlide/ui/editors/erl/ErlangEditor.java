@@ -117,7 +117,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 	public static final String ERLANG_EDITOR_ID = "org.erlide.ui.editors.erl.ErlangEditor";
 	public static final String EDITOR_INDENTATION_WIDTH = "indentationWidth";
 
-	private IErlModule fModule = null;
+	private IErlModule fModule;
 	private ColorManager colorManager;
 	private ErlangOutlinePage myOutlinePage;
 	private IPropertySource myPropertySource;
@@ -193,7 +193,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 		colorManager = new ColorManager();
 		setDocumentProvider(new TextFileDocumentProvider());
 
-		final IPreferenceStore store = getErlangEditorPreferenceStore();
+		final IPreferenceStore store = ErlangEditor.getErlangEditorPreferenceStore();
 		setPreferenceStore(store);
 
 		final ErlangSourceViewerConfiguration cfg = new EditorConfiguration(getPreferenceStore(), this, colorManager);
@@ -222,7 +222,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 		public void preferenceChange(final PreferenceChangeEvent event) {
 			final String key = event.getKey();
 			if ("markingOccurences".equals(key)) {
-				final boolean newBooleanValue = event.getNewValue().equals("true");
+				final boolean newBooleanValue = "true".equals(event.getNewValue());
 				markOccurencesHandler.setEnabled(newBooleanValue);
 			}
 		}
@@ -933,8 +933,8 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 			if (filterIt) {
 				break;
 			}
-			if (!element.getClassName().equals("org.eclipse.swt.SWT")) {
-				filterIt = element.getClassName().equals("org.eclipse.swt.custom.StyledText") && element.getMethodName().equals("setStyleRanges");
+			if (!"org.eclipse.swt.SWT".equals(element.getClassName())) {
+				filterIt = "org.eclipse.swt.custom.StyledText".equals(element.getClassName()) && "setStyleRanges".equals(element.getMethodName());
 			}
 		}
 		if (filterIt) {

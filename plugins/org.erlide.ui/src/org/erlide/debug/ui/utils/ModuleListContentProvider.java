@@ -11,7 +11,7 @@ public abstract class ModuleListContentProvider implements IStructuredContentPro
 
     protected static final List<IErlModule> EMPTY = Lists.newArrayList();
 
-    protected List<IErlModule> modules = EMPTY;
+    protected List<IErlModule> modules = ModuleListContentProvider.EMPTY;
 
     @Override
     public void dispose() {

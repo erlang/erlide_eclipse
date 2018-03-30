@@ -57,10 +57,10 @@ public class EditorPreferencePage extends ErlidePreferencePage
 
     private void setToPreferences() {
         final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
-        final Integer i = node.getInt(indentWidthKey, DEFAULT_INDENT_WIDTH);
+        final Integer i = node.getInt(indentWidthKey, EditorPreferencePage.DEFAULT_INDENT_WIDTH);
         indentWidthText.setText(i.toString());
         enableHoverCheckBox
-                .setSelection(node.getBoolean(enableHoverKey, DEFAULT_ENABLE_HOVER));
+                .setSelection(node.getBoolean(enableHoverKey, EditorPreferencePage.DEFAULT_ENABLE_HOVER));
     }
 
     @Override
@@ -72,13 +72,13 @@ public class EditorPreferencePage extends ErlidePreferencePage
 
     public static boolean getEnableHover() {
         final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
-        return node.getBoolean(EDITOR_KEY + "/" + ErlideUIConstants.EDITOR_ENABLE_HOVER,
-                DEFAULT_ENABLE_HOVER);
+        return node.getBoolean(EditorPreferencePage.EDITOR_KEY + "/" + ErlideUIConstants.EDITOR_ENABLE_HOVER,
+                EditorPreferencePage.DEFAULT_ENABLE_HOVER);
     }
 
     @Override
     protected String getDialogPreferenceKey() {
-        return EDITOR_KEY;
+        return EditorPreferencePage.EDITOR_KEY;
     }
 
     private Text indentWidthText;
@@ -140,8 +140,8 @@ public class EditorPreferencePage extends ErlidePreferencePage
     @Override
     protected void performDefaults() {
 
-        enableHoverCheckBox.setSelection(DEFAULT_ENABLE_HOVER);
-        indentWidthText.setText(Integer.toString(DEFAULT_INDENT_WIDTH));
+        enableHoverCheckBox.setSelection(EditorPreferencePage.DEFAULT_ENABLE_HOVER);
+        indentWidthText.setText(Integer.toString(EditorPreferencePage.DEFAULT_INDENT_WIDTH));
 
         super.performDefaults();
     }

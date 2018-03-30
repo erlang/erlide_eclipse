@@ -67,7 +67,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ErlTextHover
 		implements ITextHover, IInformationProviderExtension2, ITextHoverExtension, ITextHoverExtension2 {
 
-	private static URL fgStyleSheet = null;
+	private static URL fgStyleSheet;
 	private IInformationControlCreator fHoverControlCreator;
 	private PresenterControlCreator fPresenterControlCreator;
 	private final AbstractErlangEditor fEditor;
@@ -79,7 +79,7 @@ public class ErlTextHover
 
 	@Override
 	public IRegion getHoverRegion(final ITextViewer textViewer, final int offset) {
-		return internalGetHoverRegion(offset, fEditor);
+		return ErlTextHover.internalGetHoverRegion(offset, fEditor);
 	}
 
 	private static IRegion internalGetHoverRegion(final int offset, final AbstractErlangEditor editor) {
@@ -96,14 +96,14 @@ public class ErlTextHover
 
 	private void initStyleSheet() {
 		final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
-		if (fgStyleSheet != null) {
+		if (ErlTextHover.fgStyleSheet != null) {
 			return;
 		}
-		fgStyleSheet = bundle.getEntry("/edoc.css"); //$NON-NLS-1$
-		if (fgStyleSheet != null) {
+        ErlTextHover.fgStyleSheet = bundle.getEntry("/edoc.css"); //$NON-NLS-1$
+		if (ErlTextHover.fgStyleSheet != null) {
 
 			try {
-				fgStyleSheet = FileLocator.toFileURL(fgStyleSheet);
+                ErlTextHover.fgStyleSheet = FileLocator.toFileURL(ErlTextHover.fgStyleSheet);
 			} catch (final Exception e) {
 			}
 		}
@@ -125,14 +125,14 @@ public class ErlTextHover
 						varName = textViewer.getDocument().get(offset, length);
 					} catch (final BadLocationException e) {
 					}
-					if (varName.length() > 0) {
+					if (!varName.isEmpty()) {
 						final String firstLetter = varName.substring(0, 1);
 						if (firstLetter.toUpperCase().equals(firstLetter)) {
 							final IVariable[] vars = frame.getVariables();
 							for (final IVariable variable : vars) {
 								if (variable.getName().equals(varName)) {
 									final String value = variable.getValue().getValueString();
-									return makeVariablePresentation(varName, value);
+									return ErlTextHover.makeVariablePresentation(varName, value);
 								}
 							}
 						}
@@ -210,9 +210,9 @@ public class ErlTextHover
 	public static ErlangBrowserInformationControlInput getHoverInfoForOffset(final int offset,
 			final ErlangEditor editor) {
 		final ITextViewer textViewer = editor.getViewer();
-		final IRegion region = internalGetHoverRegion(offset, editor);
+		final IRegion region = ErlTextHover.internalGetHoverRegion(offset, editor);
 		if (region != null) {
-			return internalGetHoverInfo(editor, textViewer, region);
+			return ErlTextHover.internalGetHoverInfo(editor, textViewer, region);
 		}
 		return null;
 	}
@@ -220,7 +220,7 @@ public class ErlTextHover
 	@Deprecated
 	@Override
 	public String getHoverInfo(final ITextViewer textViewer, final IRegion hoverRegion) {
-		if (isHoverDisabled()) {
+		if (ErlTextHover.isHoverDisabled()) {
 			return null;
 		}
 		final ErlangBrowserInformationControlInput input = (ErlangBrowserInformationControlInput) getHoverInfo2(
@@ -234,10 +234,10 @@ public class ErlTextHover
 
 	@Override
 	public Object getHoverInfo2(final ITextViewer textViewer, final IRegion hoverRegion) {
-		if (isHoverDisabled()) {
+		if (ErlTextHover.isHoverDisabled()) {
 			return null;
 		}
-		return internalGetHoverInfo(fEditor, textViewer, hoverRegion);
+		return ErlTextHover.internalGetHoverInfo(fEditor, textViewer, hoverRegion);
 	}
 
 	private static ErlangBrowserInformationControlInput internalGetHoverInfo(final AbstractErlangEditor editor,
@@ -254,8 +254,8 @@ public class ErlTextHover
 		final int offset = hoverRegion.getOffset();
 		final int length = hoverRegion.getLength();
 
-		final String debuggerVar = makeDebuggerVariableHover(textViewer, offset, length);
-		if (debuggerVar.length() > 0) {
+		final String debuggerVar = ErlTextHover.makeDebuggerVariableHover(textViewer, offset, length);
+		if (!debuggerVar.isEmpty()) {
 			result.append(debuggerVar);
 		}
 		final IErlProject erlProject = editor.getProject();
@@ -291,7 +291,7 @@ public class ErlTextHover
 					final IErlFunction function = (IErlFunction) found;
 					final String comment = DocumentationFormatter.getDocumentationString(function.getComments(),
 							function.getTypespec());
-					if (comment.length() == 0) {
+					if (comment.isEmpty()) {
 						return null;
 					}
 

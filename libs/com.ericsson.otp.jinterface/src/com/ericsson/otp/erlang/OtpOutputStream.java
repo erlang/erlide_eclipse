@@ -62,7 +62,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
      * Create a stream with the default initial size (2048 bytes).
      */
     public OtpOutputStream() {
-        this(defaultInitialSize);
+        this(OtpOutputStream.defaultInitialSize);
     }
 
     /**
@@ -138,8 +138,8 @@ public class OtpOutputStream extends ByteArrayOutputStream {
         final int oldCapacity = super.buf.length;
         if (minCapacity > oldCapacity) {
             int newCapacity = oldCapacity * 3 / 2 + 1;
-            if (newCapacity < oldCapacity + defaultIncrement) {
-                newCapacity = oldCapacity + defaultIncrement;
+            if (newCapacity < oldCapacity + OtpOutputStream.defaultIncrement) {
+                newCapacity = oldCapacity + OtpOutputStream.defaultIncrement;
             }
             if (newCapacity < minCapacity) {
                 newCapacity = minCapacity;

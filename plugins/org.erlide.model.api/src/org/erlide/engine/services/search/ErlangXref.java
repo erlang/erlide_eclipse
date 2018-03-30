@@ -26,7 +26,7 @@ public class ErlangXref {
 
     public void start() {
         try {
-            backend.call(ERLIDE_XREF, "start", "");
+            backend.call(ErlangXref.ERLIDE_XREF, "start", "");
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -35,7 +35,7 @@ public class ErlangXref {
 
     public void stop() {
         try {
-            backend.call(ERLIDE_XREF, "stop", "");
+            backend.call(ErlangXref.ERLIDE_XREF, "stop", "");
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -47,7 +47,7 @@ public class ErlangXref {
             final IPath outputLocation = project.getWorkspaceProject()
                     .getFolder(project.getProperties().getOutputDir()).getLocation();
             final String loc = outputLocation.toString();
-            return backend.async_call(ERLIDE_XREF, "add_project", "s", loc);
+            return backend.async_call(ErlangXref.ERLIDE_XREF, "add_project", "s", loc);
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -56,7 +56,7 @@ public class ErlangXref {
 
     public void update() {
         try {
-            backend.call(ERLIDE_XREF, "update", "");
+            backend.call(ErlangXref.ERLIDE_XREF, "update", "");
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -66,7 +66,7 @@ public class ErlangXref {
     public FunctionRef[] functionUse(final String mod, final String fun,
             final int arity) {
         try {
-            final OtpErlangObject r = backend.call(ERLIDE_XREF, "function_use", "aai",
+            final OtpErlangObject r = backend.call(ErlangXref.ERLIDE_XREF, "function_use", "aai",
                     mod.substring(0, mod.length() - 4), fun, arity);
             final OtpBindings bind = OtpErlang.match("{ok, L}", r);
             if (bind == null) {

@@ -200,13 +200,13 @@ public class ModelFindUtil implements ModelFindService {
                 return module.getModuleName();
             }
             final IErlPreprocessorDef def = module.findPreprocessorDef(
-                    withoutInterrogationMark(definedName), ErlElementKind.MACRO_DEF);
+                    ModelFindUtil.withoutInterrogationMark(definedName), ErlElementKind.MACRO_DEF);
             if (def != null) {
                 final String extra = def.getExtra();
                 final int p = extra.indexOf(',');
                 if (p != -1) {
                     final String s = extra.substring(p + 1).trim();
-                    if (s.length() > 0) {
+                    if (!s.isEmpty()) {
                         return s;
                     }
                 }
@@ -305,7 +305,7 @@ public class ModelFindUtil implements ModelFindService {
         for (final IErlModule include : includes) {
             if (include.getName().equals(includeFileName)) {
                 if (include.getParent() instanceof IErlExternal) {
-                    result.add(findExternalIncludeInOpenProjects(include));
+                    result.add(ModelFindUtil.findExternalIncludeInOpenProjects(include));
                 } else {
                     result.add(include);
                 }

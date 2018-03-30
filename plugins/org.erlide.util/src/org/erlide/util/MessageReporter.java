@@ -29,30 +29,30 @@ public abstract class MessageReporter {
      */
     public static final int ERROR = 0x04;
 
-    abstract public void displayMessage(int severity, String message, String details);
+    public abstract void displayMessage(int severity, String message, String details);
 
     public static void showError(final String message) {
-        show(ERROR, message, null);
+        MessageReporter.show(MessageReporter.ERROR, message, null);
     }
 
     public static void showWarning(final String message) {
-        show(WARNING, message, null);
+        MessageReporter.show(MessageReporter.WARNING, message, null);
     }
 
     public static void showInfo(final String message) {
-        show(INFO, message, null);
+        MessageReporter.show(MessageReporter.INFO, message, null);
     }
 
     public static void showError(final String message, final String details) {
-        show(ERROR, message, details);
+        MessageReporter.show(MessageReporter.ERROR, message, details);
     }
 
     public static void showWarning(final String message, final String details) {
-        show(WARNING, message, details);
+        MessageReporter.show(MessageReporter.WARNING, message, details);
     }
 
     public static void showInfo(final String message, final String details) {
-        show(INFO, message, details);
+        MessageReporter.show(MessageReporter.INFO, message, details);
     }
 
     public static void show(final int severity, final String message,

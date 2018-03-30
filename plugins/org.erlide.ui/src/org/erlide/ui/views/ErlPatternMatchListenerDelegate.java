@@ -56,7 +56,7 @@ public class ErlPatternMatchListenerDelegate implements IPatternMatchListenerDel
                     continue;
                 }
                 try {
-                    res = recursiveFindNamedResourceWithReferences(prj, v[0]);
+                    res = ErlPatternMatchListenerDelegate.recursiveFindNamedResourceWithReferences(prj, v[0]);
                     if (res != null) {
                         break;
                     }
@@ -78,13 +78,13 @@ public class ErlPatternMatchListenerDelegate implements IPatternMatchListenerDel
 
     private static IResource recursiveFindNamedResourceWithReferences(
             final IContainer container, final String name) throws CoreException {
-        final IResource r = recursiveFindNamedResource(container, name);
+        final IResource r = ErlPatternMatchListenerDelegate.recursiveFindNamedResource(container, name);
         if (r != null) {
             return r;
         }
         final IProject project = container.getProject();
         for (final IProject p : project.getReferencedProjects()) {
-            final IResource r1 = recursiveFindNamedResource(p, name);
+            final IResource r1 = ErlPatternMatchListenerDelegate.recursiveFindNamedResource(p, name);
             if (r1 != null) {
                 return r1;
             }
@@ -105,7 +105,7 @@ public class ErlPatternMatchListenerDelegate implements IPatternMatchListenerDel
         for (final IResource element : members) {
             r = element;
             if (r instanceof IContainer) {
-                r = recursiveFindNamedResource((IContainer) r, name);
+                r = ErlPatternMatchListenerDelegate.recursiveFindNamedResource((IContainer) r, name);
                 if (r != null) {
                     return r;
                 }

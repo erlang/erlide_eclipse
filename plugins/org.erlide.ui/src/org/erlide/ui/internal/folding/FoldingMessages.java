@@ -34,6 +34,6 @@ final class FoldingMessages extends NLS {
     public static String EmptyErlangFoldingPreferenceBlock_emptyCaption;
 
     static {
-        NLS.initializeMessages(BUNDLE_NAME, FoldingMessages.class);
+        NLS.initializeMessages(FoldingMessages.BUNDLE_NAME, FoldingMessages.class);
     }
 }

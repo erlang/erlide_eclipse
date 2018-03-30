@@ -19,7 +19,7 @@ public class TestTreeObject {
     private final String name;
     private String description = "";
     private final List<TestTreeObject> children = new LinkedList<>();
-    private TestTreeObject parent = null;
+    private TestTreeObject parent;
     private int type; // type of node
 
     public TestTreeObject(final String name, final int type) {
@@ -90,7 +90,7 @@ public class TestTreeObject {
 
     // updates type
     public void updateType() {
-        if (children.size() == 0) {
+        if (children.isEmpty()) {
             return;
         }
 

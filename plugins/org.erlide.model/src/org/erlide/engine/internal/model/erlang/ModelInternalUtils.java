@@ -69,7 +69,7 @@ public class ModelInternalUtils implements ModelUtilService {
             }
             element = (IErlElement) element.getParent();
         }
-        return Joiner.on(DELIMITER).join(Lists.reverse(result));
+        return Joiner.on(ModelInternalUtils.DELIMITER).join(Lists.reverse(result));
     }
 
     private IErlExternal getElementWithExternalName(final IParent parent,
@@ -92,7 +92,7 @@ public class ModelInternalUtils implements ModelUtilService {
             final String modulePath) throws ErlModelException {
         System.out.println(">> modulePath=" + modulePath);
         final List<String> path = Lists
-                .newArrayList(Splitter.on(DELIMITER).split(modulePath));
+                .newArrayList(Splitter.on(ModelInternalUtils.DELIMITER).split(modulePath));
         model.open(null);
         final IErlElement childNamed = model.getChildNamed(path.get(0));
         if (childNamed instanceof IParent) {
@@ -162,11 +162,11 @@ public class ModelInternalUtils implements ModelUtilService {
     @Override
     public List<OtpErlangObject> getImportsAsList(final IErlModule mod) {
         if (mod == null) {
-            return NO_IMPORTS;
+            return ModelInternalUtils.NO_IMPORTS;
         }
         final Collection<IErlImport> imports = mod.getImports();
         if (imports.isEmpty()) {
-            return NO_IMPORTS;
+            return ModelInternalUtils.NO_IMPORTS;
         }
         final List<OtpErlangObject> result = new ArrayList<>(imports.size());
         for (final IErlImport i : imports) {

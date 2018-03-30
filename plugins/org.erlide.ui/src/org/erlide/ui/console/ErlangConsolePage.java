@@ -10,7 +10,6 @@ package org.erlide.ui.console;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -259,7 +258,7 @@ public class ErlangConsolePage extends Page
         final ModifyListener modifyListener = new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
-                final String consoleText = trimInput(consoleInputText.getText());
+                final String consoleText = ErlangConsolePage.trimInput(consoleInputText.getText());
                 final boolean atEndOfInput = consoleText.endsWith(".")
                         && consoleInputText.getCaretOffset() >= consoleText.length();
 
@@ -284,7 +283,7 @@ public class ErlangConsolePage extends Page
             @Override
             public void keyPressed(final KeyEvent e) {
                 final boolean ctrlOrCommandPressed = (e.stateMask & SWT.MOD1) == SWT.MOD1;
-                final String conText = trimInput(consoleInputText.getText());
+                final String conText = ErlangConsolePage.trimInput(consoleInputText.getText());
                 final boolean atEndOfInput = consoleInputText.getCaretOffset() >= conText
                         .length() && conText.endsWith(".");
                 e.doit = true;
@@ -534,9 +533,8 @@ public class ErlangConsolePage extends Page
     }
 
     protected void updateSelectionDependentActions() {
-        final Iterator<String> iterator = fSelectionActions.iterator();
-        while (iterator.hasNext()) {
-            updateAction(iterator.next());
+        for (String fSelectionAction : fSelectionActions) {
+            updateAction(fSelectionAction);
         }
     }
 

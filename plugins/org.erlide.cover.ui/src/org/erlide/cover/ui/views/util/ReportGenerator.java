@@ -19,10 +19,10 @@ public class ReportGenerator {
     }
 
     public static synchronized ReportGenerator getInstance() {
-        if (instance == null) {
-            instance = new ReportGenerator();
+        if (ReportGenerator.instance == null) {
+            ReportGenerator.instance = new ReportGenerator();
         }
-        return instance;
+        return ReportGenerator.instance;
     }
 
     public String getHTMLreport(final ICoverageObject obj, final boolean relative) {

@@ -89,7 +89,7 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 
         if (fGroupBorderStyle == SWT.NONE) {
             final Label label = getLabelControl(parent);
-            label.setLayoutData(gridDataForLabel(1));
+            label.setLayoutData(DialogField.gridDataForLabel(1));
 
             final Composite buttonsgroup = getSelectionButtonsGroup(parent);
             final GridData gd = new GridData();
@@ -145,7 +145,7 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 
             if (fGroupBorderStyle != SWT.NONE) {
                 final Group group = new Group(parent, fGroupBorderStyle);
-                if (fLabelText != null && fLabelText.length() > 0) {
+                if (fLabelText != null && !fLabelText.isEmpty()) {
                     group.setText(fLabelText);
                 }
                 fButtonComposite = group;
@@ -177,7 +177,7 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
             final int nRows = nButtons / fGroupNumberOfColumns;
             final int nFillElements = nRows * fGroupNumberOfColumns - nButtons;
             for (int i = 0; i < nFillElements; i++) {
-                createEmptySpace(fButtonComposite);
+                DialogField.createEmptySpace(fButtonComposite);
             }
         }
         return fButtonComposite;

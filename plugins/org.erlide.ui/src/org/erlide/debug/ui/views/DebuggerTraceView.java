@@ -139,7 +139,7 @@ public class DebuggerTraceView extends AbstractDebugView
                 final List<DebugTraceEvent> events = eventMap.get(node);
                 return events.toArray();
             }
-            return NO_CHILDREN;
+            return DebuggerTraceView.NO_CHILDREN;
         }
 
         @Override
@@ -488,7 +488,8 @@ public class DebuggerTraceView extends AbstractDebugView
             part.setFocus();
             final ErlangEditor ee = (ErlangEditor) part;
             final IDocument d = ee.getDocument();
-            int lineStart, lineLength;
+            int lineStart;
+            int lineLength;
             try {
                 lineStart = d.getLineOffset(line - 1);
                 lineLength = d.getLineLength(line - 1);
@@ -639,22 +640,14 @@ public class DebuggerTraceView extends AbstractDebugView
                         viewer.add(viewer.getInput(), launch);
                         parentMap.put(launch, viewer.getInput());
                     }
-                    List<IDebugTarget> nodes = nodeMap.get(launch);
-                    if (nodes == null) {
-                        nodes = new ArrayList<>(1);
-                        nodeMap.put(launch, nodes);
-                    }
+                    List<IDebugTarget> nodes = nodeMap.computeIfAbsent(launch, k -> new ArrayList<>(1));
                     final IDebugTarget node = data.getNode();
                     if (!nodes.contains(node)) {
                         nodes.add(node);
                         viewer.add(launch, node);
                         parentMap.put(node, launch);
                     }
-                    List<DebugTraceEvent> events = eventMap.get(node);
-                    if (events == null) {
-                        events = new ArrayList<>(data.getEvents().length);
-                        eventMap.put(node, events);
-                    }
+                    List<DebugTraceEvent> events = eventMap.computeIfAbsent(node, k -> new ArrayList<>(data.getEvents().length));
                     final OtpErlangPid pid = data.getPid();
                     for (final OtpErlangTuple t : data.getEvents()) {
                         events.add(new DebugTraceEvent(pid, t));

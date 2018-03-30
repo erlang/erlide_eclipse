@@ -75,7 +75,7 @@ public class ErlangFileContentProvider
         } catch (final ErlModelException e) {
             ErlLogger.warn(e);
         }
-        return NO_CHILDREN;
+        return ErlangFileContentProvider.NO_CHILDREN;
     }
 
     /**

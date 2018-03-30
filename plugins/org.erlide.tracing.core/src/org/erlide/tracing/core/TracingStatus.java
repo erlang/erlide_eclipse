@@ -36,5 +36,5 @@ public enum TracingStatus {
     /**
      * action finished successfully
      */
-    OK;
+    OK
 }

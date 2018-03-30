@@ -106,7 +106,7 @@ public class ErlConsoleManager
             if (activeWorkbenchWindow != null) {
                 final IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
                 try {
-                    activePage.showView(CONSOLE_VIEW_ID);
+                    activePage.showView(ErlConsoleManager.CONSOLE_VIEW_ID);
                 } catch (final PartInitException e) {
                     // ignore
                 }

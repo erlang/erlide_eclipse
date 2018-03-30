@@ -8,12 +8,11 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.internal.builder;
+package org.erlide.core.builder;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.core.builder.BuildNotifier;
 import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.root.IErlProject;
 
@@ -32,15 +31,15 @@ public abstract class ErlangBuilder {
         public static BuildKind get(final int kind) {
             switch (kind) {
             case IncrementalProjectBuilder.AUTO_BUILD:
-                return AUTO;
+                return BuildKind.AUTO;
             case IncrementalProjectBuilder.CLEAN_BUILD:
-                return CLEAN;
+                return BuildKind.CLEAN;
             case IncrementalProjectBuilder.FULL_BUILD:
-                return FULL;
+                return BuildKind.FULL;
             case IncrementalProjectBuilder.INCREMENTAL_BUILD:
-                return INCREMENTAL;
+                return BuildKind.INCREMENTAL;
             default:
-                return NONE;
+                return BuildKind.NONE;
             }
         }
     }

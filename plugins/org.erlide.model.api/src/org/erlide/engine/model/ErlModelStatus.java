@@ -44,9 +44,9 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     /**
      * Empty children
      */
-    protected static final IStatus[] NO_CHILDREN = new IStatus[] {};
+    protected static final IStatus[] NO_CHILDREN = {};
 
-    protected IStatus[] children = NO_CHILDREN;
+    protected IStatus[] children = ErlModelStatus.NO_CHILDREN;
 
     /**
      * Singleton OK object
@@ -61,22 +61,22 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      */
     public ErlModelStatus() {
         // no code for an multi-status
-        super(ERROR, PLUGIN_ID, 0, "ErlModelStatus", null); //$NON-NLS-1$
+        super(ERROR, ErlModelStatus.PLUGIN_ID, 0, "ErlModelStatus", null); //$NON-NLS-1$
     }
 
     /**
      * Constructs an Erlang model status with no corresponding elements.
      */
     public ErlModelStatus(final int code) {
-        super(ERROR, PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
-        fElements = NO_ELEMENTS;
+        super(ERROR, ErlModelStatus.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
+        fElements = ErlModelStatus.NO_ELEMENTS;
     }
 
     /**
      * Constructs an Erlang model status with the given corresponding elements.
      */
     public ErlModelStatus(final int code, final IErlElement[] elements) {
-        super(ERROR, PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
+        super(ERROR, ErlModelStatus.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
         fElements = elements;
         fPath = null;
     }
@@ -92,8 +92,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * Constructs an Erlang model status with no corresponding elements.
      */
     public ErlModelStatus(final int severity, final int code, final String string) {
-        super(severity, PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
-        fElements = NO_ELEMENTS;
+        super(severity, ErlModelStatus.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
+        fElements = ErlModelStatus.NO_ELEMENTS;
         fPath = null;
         fString = string;
     }
@@ -102,16 +102,16 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * Constructs an Erlang model status with no corresponding elements.
      */
     public ErlModelStatus(final int code, final Throwable throwable) {
-        super(ERROR, PLUGIN_ID, code, "ErlModelStatus", throwable); //$NON-NLS-1$
-        fElements = NO_ELEMENTS;
+        super(ERROR, ErlModelStatus.PLUGIN_ID, code, "ErlModelStatus", throwable); //$NON-NLS-1$
+        fElements = ErlModelStatus.NO_ELEMENTS;
     }
 
     /**
      * Constructs an Erlang model status with no corresponding elements.
      */
     public ErlModelStatus(final int code, final IPath path) {
-        super(ERROR, PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
-        fElements = NO_ELEMENTS;
+        super(ERROR, ErlModelStatus.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
+        fElements = ErlModelStatus.NO_ELEMENTS;
         fPath = path;
     }
 
@@ -155,9 +155,9 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * Constructs an Erlang model status with no corresponding elements.
      */
     public ErlModelStatus(final CoreException coreException) {
-        super(ERROR, PLUGIN_ID, ErlModelStatusConstants.CORE_EXCEPTION,
+        super(ERROR, ErlModelStatus.PLUGIN_ID, ErlModelStatusConstants.CORE_EXCEPTION,
                 "ErlModelStatus", coreException); //$NON-NLS-1$
-        fElements = NO_ELEMENTS;
+        fElements = ErlModelStatus.NO_ELEMENTS;
     }
 
     protected int getBits() {
@@ -324,7 +324,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      */
     @Override
     public int getSeverity() {
-        if (children == NO_CHILDREN) {
+        if (children == ErlModelStatus.NO_CHILDREN) {
             return super.getSeverity();
         }
         int severity = -1;
@@ -350,7 +350,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      */
     @Override
     public boolean isMultiStatus() {
-        return children != NO_CHILDREN;
+        return children != ErlModelStatus.NO_CHILDREN;
     }
 
     /**
@@ -419,13 +419,12 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      */
     @Override
     public String toString() {
-        if (this == VERIFIED_OK) {
+        if (this == ErlModelStatus.VERIFIED_OK) {
             return "ErlModelStatus[OK]"; //$NON-NLS-1$
         }
-        final StringBuilder buffer = new StringBuilder();
-        buffer.append("Erlang Model Status ["); //$NON-NLS-1$
-        buffer.append(getMessage());
-        buffer.append(']');
-        return buffer.toString();
+        String buffer = "Erlang Model Status [" + //$NON-NLS-1$
+                getMessage() +
+                ']';
+        return buffer;
     }
 }

@@ -38,8 +38,7 @@ public class ConsoleRemoveAllTerminatedAction extends Action
     public void update() {
         final ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager()
                 .getLaunches();
-        for (int i = 0; i < launches.length; i++) {
-            final ILaunch launch = launches[i];
+        for (final ILaunch launch : launches) {
             if (launch.isTerminated()) {
                 setEnabled(true);
                 return;

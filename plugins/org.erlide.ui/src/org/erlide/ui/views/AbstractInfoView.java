@@ -39,7 +39,7 @@ import org.erlide.ui.internal.information.ErlangBrowserInformationControlInput;
  *
  * @since 3.0
  */
-abstract public class AbstractInfoView extends ViewPart
+public abstract class AbstractInfoView extends ViewPart
         implements ISelectionListener, IMenuListener {
 
     /*
@@ -114,7 +114,7 @@ abstract public class AbstractInfoView extends ViewPart
      *            the parent control
      * @see IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
      */
-    abstract protected void internalCreatePartControl(Composite parent);
+    protected abstract void internalCreatePartControl(Composite parent);
 
     /**
      * Set the view's foreground color.
@@ -122,7 +122,7 @@ abstract public class AbstractInfoView extends ViewPart
      * @param color
      *            the SWT color
      */
-    abstract protected void setForeground(Color color);
+    protected abstract void setForeground(Color color);
 
     /**
      * Set the view's background color.
@@ -130,7 +130,7 @@ abstract public class AbstractInfoView extends ViewPart
      * @param color
      *            the SWT color
      */
-    abstract protected void setBackground(Color color);
+    protected abstract void setBackground(Color color);
 
     /**
      * Returns the view's primary control.
@@ -139,8 +139,8 @@ abstract public class AbstractInfoView extends ViewPart
      */
     abstract Control getControl();
 
-    abstract protected Object getInfoForSelection(IWorkbenchPart part,
-            ISelection selection);
+    protected abstract Object getInfoForSelection(IWorkbenchPart part,
+                                                  ISelection selection);
 
     /**
      * Returns the context ID for the Help system
@@ -148,7 +148,7 @@ abstract public class AbstractInfoView extends ViewPart
      * @return the string used as ID for the Help context
      * @since 3.1
      */
-    abstract protected String getHelpContextId();
+    protected abstract String getHelpContextId();
 
     /*
      * @see IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
@@ -371,7 +371,7 @@ abstract public class AbstractInfoView extends ViewPart
      * @see IWorkbenchPart#dispose()
      */
     @Override
-    final public void dispose() {
+    public final void dispose() {
         // cancel possible running computation
         synchronized (this) {
             fComputeCount--;
@@ -422,8 +422,7 @@ abstract public class AbstractInfoView extends ViewPart
                 final Object info = getInfoForSelection(part, selection);
 
                 if (info == null || info instanceof ErlangBrowserInformationControlInput
-                        && ((ErlangBrowserInformationControlInput) info).getHtml()
-                                .length() == 0) {
+                        && ((ErlangBrowserInformationControlInput) info).getHtml().isEmpty()) {
                     return;
                 }
                 final Shell shell = getSite().getShell();

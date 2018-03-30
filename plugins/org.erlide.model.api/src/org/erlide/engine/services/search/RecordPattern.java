@@ -10,7 +10,7 @@ public class RecordPattern extends NamePattern {
 
     @Override
     public OtpErlangObject getSearchObject() {
-        return makeSPatternObject(RECORD_DEF_ATOM, RECORD_REF_ATOM, getName());
+        return makeSPatternObject(ErlangSearchPattern.RECORD_DEF_ATOM, ErlangSearchPattern.RECORD_REF_ATOM, getName());
     }
 
     @Override

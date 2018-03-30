@@ -84,7 +84,7 @@ public class ErlangScratchPad extends AbstractErlangEditor implements ISaveableP
         colorManager = new ColorManager();
         setDocumentProvider(new TextFileDocumentProvider());
 
-        final IPreferenceStore store = getErlangEditorPreferenceStore();
+        final IPreferenceStore store = ErlangScratchPad.getErlangEditorPreferenceStore();
         setPreferenceStore(store);
 
         final ErlangSourceViewerConfiguration cfg = new ErlangScratchPadConfiguration(

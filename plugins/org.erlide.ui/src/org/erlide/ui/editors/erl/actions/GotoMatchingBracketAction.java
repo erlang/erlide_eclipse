@@ -18,7 +18,7 @@ import org.erlide.ui.editors.erl.ErlangEditorMessages;
 
 public class GotoMatchingBracketAction extends Action {
 
-    public final static String GOTO_MATCHING_BRACKET = "GotoMatchingBracket"; //$NON-NLS-1$
+    public static final String GOTO_MATCHING_BRACKET = "GotoMatchingBracket"; //$NON-NLS-1$
 
     private final ErlangEditor fEditor;
 

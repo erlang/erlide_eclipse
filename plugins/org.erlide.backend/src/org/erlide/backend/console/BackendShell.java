@@ -84,7 +84,7 @@ public class BackendShell implements IBackendShell {
 
     private final List<IoRequest> requests;
     private final List<BackendShellListener> listeners;
-    private int length = 0;
+    private int length;
 
     @Override
     public void input(final String s0) {
@@ -146,8 +146,8 @@ public class BackendShell implements IBackendShell {
     private void deleteOldItems() {
         final int prevLength = length;
         synchronized (requests) {
-            if (requests.size() > MAX_REQUESTS) {
-                requests.subList(0, DELTA_REQUESTS).clear();
+            if (requests.size() > BackendShell.MAX_REQUESTS) {
+                requests.subList(0, BackendShell.DELTA_REQUESTS).clear();
                 final IoRequest first = requests.get(0);
                 final int start = first.getStart();
                 length = 0;
@@ -191,7 +191,7 @@ public class BackendShell implements IBackendShell {
     @Override
     public void add(final List<OtpErlangObject> msgs) {
         final int prevLength = length;
-        final StringBuffer text = new StringBuffer();
+        final StringBuilder text = new StringBuilder();
         synchronized (requests) {
             deleteOldItems();
             for (final OtpErlangObject element : msgs) {
@@ -256,7 +256,7 @@ public class BackendShell implements IBackendShell {
 
     @Override
     public String getText() {
-        final StringBuffer result = new StringBuffer();
+        final StringBuilder result = new StringBuilder();
         synchronized (requests) {
             for (final IoRequest request : requests) {
                 result.append(request.getMessage());

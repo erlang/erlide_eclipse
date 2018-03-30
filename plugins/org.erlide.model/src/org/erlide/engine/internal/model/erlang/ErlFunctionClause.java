@@ -32,7 +32,7 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
             final OtpErlangList parameters) {
         super(parent, name);
         this.head = head;
-        this.parameters = getParameters(parameters);
+        this.parameters = ErlFunctionClause.getParameters(parameters);
     }
 
     public static List<String> getParameters(final OtpErlangList parameters) {

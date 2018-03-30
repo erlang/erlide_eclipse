@@ -3,7 +3,6 @@ package org.erlide.ui.internal.folding;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -120,7 +119,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
         boolean match(ErlangProjectionAnnotation annotation);
     }
 
-    private static abstract class MatchCollapsedFilter implements Filter {
+    private abstract static class MatchCollapsedFilter implements Filter {
 
         private final boolean fMatchCollapsed;
 
@@ -409,17 +408,17 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
 
     private IElementChangedListener fElementListener;
 
-    private boolean fAllowCollapsing = false;
+    private boolean fAllowCollapsing;
 
     private boolean fFirstTimeInitialCollapse = true;
 
     private boolean fCollapseHeaderComments = true;
 
-    private boolean fCollapseComments = false;
+    private boolean fCollapseComments;
 
-    private boolean fCollapseClauses = false;
+    private boolean fCollapseClauses;
 
-    private boolean fCollapseTypespecs = false;
+    private boolean fCollapseTypespecs;
 
     private static class FunctionsFilter extends MatchCollapsedFilter {
 
@@ -953,11 +952,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
             if (annotation instanceof ErlangProjectionAnnotation) {
                 final ErlangProjectionAnnotation epa = (ErlangProjectionAnnotation) annotation;
                 final Position position = model.getPosition(epa);
-                List<Tuple> list = map.get(epa.getElement());
-                if (list == null) {
-                    list = new ArrayList<>(2);
-                    map.put(epa.getElement(), list);
-                }
+                List<Tuple> list = map.computeIfAbsent(epa.getElement(), k -> new ArrayList<>(2));
                 list.add(new Tuple(epa, position));
             }
         }
@@ -971,7 +966,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
         };
         for (final List<Tuple> name : map.values()) {
             final List<Tuple> list = name;
-            Collections.sort(list, comparator);
+            list.sort(comparator);
         }
         return map;
     }

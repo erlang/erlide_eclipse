@@ -335,7 +335,7 @@ public class OtpInputStream extends ByteArrayInputStream {
      *                if the next term in the stream is not an atom.
      */
     public boolean read_boolean() throws OtpErlangDecodeException {
-        return Boolean.valueOf(read_atom()).booleanValue();
+        return Boolean.valueOf(read_atom());
     }
 
     /**
@@ -463,7 +463,7 @@ public class OtpInputStream extends ByteArrayInputStream {
         len = read4BE();
         bin = new byte[len];
         final int tail_bits = read1();
-        if (tail_bits < 0 || 7 < tail_bits) {
+        if (tail_bits < 0 || tail_bits > 7) {
             throw new OtpErlangDecodeException(
                     "Wrong tail bit count in bitstr: " + tail_bits);
         }
@@ -529,12 +529,12 @@ public class OtpInputStream extends ByteArrayInputStream {
             // remove the sign from the exponent, if positive
             String estr = str.substring(epos + 1).trim();
 
-            if (estr.substring(0, 1).equals("+")) {
+            if ("+".equals(estr.substring(0, 1))) {
                 estr = estr.substring(1);
             }
 
             // now put the mantissa and exponent together
-            exp = Integer.valueOf(estr).intValue();
+            exp = Integer.valueOf(estr);
             val = new BigDecimal(str.substring(0, epos)).movePointRight(exp);
 
             return val.doubleValue();
@@ -1210,7 +1210,7 @@ public class OtpInputStream extends ByteArrayInputStream {
 
         case OtpExternal.listTag:
         case OtpExternal.nilTag:
-            if ((flags & DECODE_INT_LISTS_AS_STRINGS) != 0) {
+            if ((flags & OtpInputStream.DECODE_INT_LISTS_AS_STRINGS) != 0) {
                 final int savePos = getPos();
                 try {
                     return new OtpErlangString(this);

@@ -154,7 +154,7 @@ public class ReportPreferencePage extends PreferencePage
             public IStatus run(final IProgressMonitor monitor) {
                 final String location = LogUtil.getReportFile();
 
-                final ProblemData data = gatherProblemData(attach, title, contact, body);
+                final ProblemData data = ReportPreferencePage.gatherProblemData(attach, title, contact, body);
                 sendToDisk(location, data);
 
                 final Job inner = new UIJob("update report ui") {
@@ -211,7 +211,7 @@ public class ReportPreferencePage extends PreferencePage
 
     public static ProblemData gatherProblemData(final boolean attach, final String title,
             final String contact, final String body) {
-        fetchErlangSystemInfo();
+        ReportPreferencePage.fetchErlangSystemInfo();
 
         String plog = "N/A";
         String elog = "N/A";

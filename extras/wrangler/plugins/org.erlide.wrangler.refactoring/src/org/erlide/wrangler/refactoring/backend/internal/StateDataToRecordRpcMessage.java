@@ -34,11 +34,11 @@ public class StateDataToRecordRpcMessage extends AbstractRefactoringRpcMessage {
             throws WranglerException {
 
         final OtpErlangObject wranglerResult = resultTuple.elementAt(1);
-        if (!resultTuple.elementAt(0).toString().equals("ok")) {
+        if (!"ok".equals(resultTuple.elementAt(0).toString())) {
             final OtpErlangString msg = (OtpErlangString) wranglerResult;
             setUnsuccessful(msg.stringValue());
         } else {
-            if (wranglerResult.toString().equals("non_tuple")) {
+            if ("non_tuple".equals(wranglerResult.toString())) {
                 fieldCount = 1;
             } else {
                 try {

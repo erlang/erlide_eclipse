@@ -36,10 +36,10 @@ public class CoverBackend implements ICoverBackend {
     private final List<IEUnitObserver> testListeners = new LinkedList<>();
 
     public static synchronized CoverBackend getInstance() {
-        if (instance == null) {
-            instance = new CoverBackend();
+        if (CoverBackend.instance == null) {
+            CoverBackend.instance = new CoverBackend();
         }
-        return instance;
+        return CoverBackend.instance;
     }
 
     private CoverBackend() {

@@ -1,7 +1,6 @@
 package org.erlide.core.builder;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
+import java.util.Queue;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -12,7 +11,7 @@ import com.google.common.collect.Queues;
 
 public class BuildQueueProcessor extends Job {
     private static BuildQueueProcessor instance;
-    private final ConcurrentLinkedQueue<BuildWorkerInfo> queue = Queues
+    private final Queue<BuildWorkerInfo> queue = Queues
             .newConcurrentLinkedQueue();
 
     public BuildQueueProcessor(final String name) {
@@ -39,10 +38,10 @@ public class BuildQueueProcessor extends Job {
     }
 
     public static synchronized BuildQueueProcessor getInstance() {
-        if (instance == null) {
-            instance = new BuildQueueProcessor("tasks");
+        if (BuildQueueProcessor.instance == null) {
+            BuildQueueProcessor.instance = new BuildQueueProcessor("tasks");
         }
-        return instance;
+        return BuildQueueProcessor.instance;
     }
 
 }

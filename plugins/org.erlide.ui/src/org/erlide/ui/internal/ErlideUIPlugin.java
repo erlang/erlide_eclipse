@@ -99,14 +99,14 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     private ResourceBundle resourceBundle;
     private ImageDescriptorRegistry fImageDescriptorRegistry;
     private ErlangFoldingStructureProviderRegistry fFoldingStructureProviderRegistry;
-    private ProblemMarkerManager fProblemMarkerManager = null;
+    private ProblemMarkerManager fProblemMarkerManager;
     private ErlConsoleManager erlConsoleManager;
 
     private static final String CUSTOM_TEMPLATES_KEY = "org.erlide.ui.editor.customtemplates"; //$NON-NLS-1$
 
     public ErlideUIPlugin() {
         super();
-        plugin = this;
+        ErlideUIPlugin.plugin = this;
         try {
             resourceBundle = ResourceBundle
                     .getBundle("org.erlide.ui.ErlideUIPluginResources");
@@ -188,7 +188,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         BackendCore.getBackendManager().dispose();
         ErlideImage.dispose();
         SWTResourceManager.dispose();
-        plugin = null;
+        ErlideUIPlugin.plugin = null;
     }
 
     private void notifyBadHostname(final String workspace) {
@@ -206,7 +206,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                         + "Hostnames with dashes in them might not always work.\n\n"
                         + "Try to conect two Erlang nodes manually first. Add the working hostname to .hosts.";
                 ErrorDialog.openError(activeShell, "Erlide can't work properly", message,
-                        new Status(IStatus.ERROR, PLUGIN_ID, description));
+                        new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, description));
             }
         });
     }
@@ -222,7 +222,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                 final String description = "The log in " + workspace
                         + "/erlide.log may contain more information.";
                 ErrorDialog.openError(activeShell, "Erlide can't work properly", message,
-                        new Status(IStatus.ERROR, PLUGIN_ID, description));
+                        new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, description));
 
                 final PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(
                         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
@@ -275,10 +275,10 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     public static ErlideUIPlugin getDefault() {
-        if (plugin == null) {
-            plugin = new ErlideUIPlugin();
+        if (ErlideUIPlugin.plugin == null) {
+            ErlideUIPlugin.plugin = new ErlideUIPlugin();
         }
-        return plugin;
+        return ErlideUIPlugin.plugin;
     }
 
     /**
@@ -396,7 +396,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     public static IWorkbenchPage getActivePage() {
-        final IWorkbenchWindow w = getActiveWorkbenchWindow();
+        final IWorkbenchWindow w = ErlideUIPlugin.getActiveWorkbenchWindow();
         if (w != null) {
             return w.getActivePage();
         }
@@ -404,11 +404,11 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     public static IWorkbenchWindow getActiveWorkbenchWindow() {
-        return getDefault().getWorkbench().getActiveWorkbenchWindow();
+        return ErlideUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
     }
 
     public static Shell getActiveWorkbenchShell() {
-        final IWorkbenchWindow window = getActiveWorkbenchWindow();
+        final IWorkbenchWindow window = ErlideUIPlugin.getActiveWorkbenchWindow();
         if (window != null) {
             return window.getShell();
         }
@@ -416,37 +416,37 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     public static void log(final Exception e) {
-        log(new Status(IStatus.ERROR, PLUGIN_ID, ErlangStatus.INTERNAL_ERROR.getValue(),
+        log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, ErlangStatus.INTERNAL_ERROR.getValue(),
                 e.getMessage(), null));
     }
 
     public static void log(final IStatus status) {
-        getDefault().getLog().log(status);
+        ErlideUIPlugin.getDefault().getLog().log(status);
     }
 
     public static void logErrorMessage(final String message) {
-        log(new Status(IStatus.ERROR, PLUGIN_ID, ErlangStatus.INTERNAL_ERROR.getValue(),
+        log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, ErlangStatus.INTERNAL_ERROR.getValue(),
                 message, null));
     }
 
     public static void logErrorStatus(final String message, final IStatus status) {
         if (status == null) {
-            logErrorMessage(message);
+            ErlideUIPlugin.logErrorMessage(message);
             return;
         }
-        final MultiStatus multi = new MultiStatus(PLUGIN_ID,
+        final MultiStatus multi = new MultiStatus(ErlideUIPlugin.PLUGIN_ID,
                 ErlangStatus.INTERNAL_ERROR.getValue(), message, null);
         multi.add(status);
         log(multi);
     }
 
     public static void log(final Throwable e) {
-        log(new Status(IStatus.ERROR, PLUGIN_ID, ErlangStatus.INTERNAL_ERROR.getValue(),
+        log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, ErlangStatus.INTERNAL_ERROR.getValue(),
                 "Erlide internal error", e));
     }
 
     public static ImageDescriptorRegistry getImageDescriptorRegistry() {
-        return getDefault().internalGetImageDescriptorRegistry();
+        return ErlideUIPlugin.getDefault().internalGetImageDescriptorRegistry();
     }
 
     private synchronized ImageDescriptorRegistry internalGetImageDescriptorRegistry() {
@@ -516,11 +516,11 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         getContextTypeRegistry();
         if (fStore == null) {
             fStore = new ErlideContributionTemplateStore(getContextTypeRegistry(),
-                    getPreferenceStore(), CUSTOM_TEMPLATES_KEY);
+                    getPreferenceStore(), ErlideUIPlugin.CUSTOM_TEMPLATES_KEY);
             try {
                 fStore.load();
             } catch (final IOException e) {
-                getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, IStatus.OK, "", e)); //$NON-NLS-1$
+                getLog().log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, IStatus.OK, "", e)); //$NON-NLS-1$
             }
             ErlangSourceContextTypeModule.getDefault().addElementResolvers();
         }
@@ -554,9 +554,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                 message = null;
             }
         } else {
-            status = new Status(IStatus.ERROR, PLUGIN_ID,
+            status = new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
                     IDebugUIConstants.INTERNAL_ERROR, "Error within Debug UI: ", t); //$NON-NLS-1$
-            log(status);
+            ErlideUIPlugin.log(status);
         }
         ErrorDialog.openError(shell, title, message, status);
     }
@@ -584,7 +584,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     public static void flushInstanceScope() {
         try {
-            InstanceScope.INSTANCE.getNode(PLUGIN_ID).flush();
+            InstanceScope.INSTANCE.getNode(ErlideUIPlugin.PLUGIN_ID).flush();
         } catch (final BackingStoreException e) {
             ErlLogger.warn(e);
         }

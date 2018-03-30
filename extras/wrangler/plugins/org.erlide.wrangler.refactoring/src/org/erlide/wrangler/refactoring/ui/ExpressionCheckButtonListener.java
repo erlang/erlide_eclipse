@@ -11,6 +11,7 @@
 package org.erlide.wrangler.refactoring.ui;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
@@ -31,7 +32,7 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
 public class ExpressionCheckButtonListener implements MouseTrackListener {
 
     private final IErlMemberSelection selection;
-    private final HashMap<Button, IErlRange> checkButtons;
+    private final Map<Button, IErlRange> checkButtons;
 
     /**
      * Constructor

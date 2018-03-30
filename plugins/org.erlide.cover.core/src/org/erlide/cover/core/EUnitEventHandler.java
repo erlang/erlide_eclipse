@@ -38,7 +38,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
     private final TestTreeModel model;
 
     public EUnitEventHandler(final TestTreeModel model, final CoverBackend coverBackend) {
-        super(EVENT_NAME);
+        super(EUnitEventHandler.EVENT_NAME);
         this.coverBackend = coverBackend;
         this.model = model;
         log = Activator.getDefault();
@@ -60,25 +60,25 @@ public class EUnitEventHandler extends ErlangEventHandler {
         final OtpErlangAtom resType = (OtpErlangAtom) msg.elementAt(0);
         log.info(resType);
 
-        if (resType.atomValue().equals(GROUP_BEGIN)) {
+        if (resType.atomValue().equals(EUnitEventHandler.GROUP_BEGIN)) {
             handle_group_begin(msg);
-        } else if (resType.atomValue().equals(TEST_BEGIN)) {
-        } else if (resType.atomValue().equals(TEST_END)) {
+        } else if (resType.atomValue().equals(EUnitEventHandler.TEST_BEGIN)) {
+        } else if (resType.atomValue().equals(EUnitEventHandler.TEST_END)) {
             handle_test(msg);
-        } else if (resType.atomValue().equals(GROUP_END)) {
+        } else if (resType.atomValue().equals(EUnitEventHandler.GROUP_END)) {
             handle_group(msg);
-        } else if (resType.atomValue().equals(SUMMARY)) {
+        } else if (resType.atomValue().equals(EUnitEventHandler.SUMMARY)) {
             handle_summary(msg);
             for (final IEUnitObserver obs : coverBackend.getEUnitListeners()) {
                 obs.labelChanged();
             }
-        } else if (resType.atomValue().equals(ERROR)) {
+        } else if (resType.atomValue().equals(EUnitEventHandler.ERROR)) {
             handle_error(msg);
-        } else if (resType.atomValue().equals(SKIPPED)) {
+        } else if (resType.atomValue().equals(EUnitEventHandler.SKIPPED)) {
             handle_skipped(msg);
-        } else if (resType.atomValue().equals(TEST_CANCELED)) {
+        } else if (resType.atomValue().equals(EUnitEventHandler.TEST_CANCELED)) {
             handle_test_canceled(msg);
-        } else if (resType.atomValue().equals(GROUP_CANCELED)) {
+        } else if (resType.atomValue().equals(EUnitEventHandler.GROUP_CANCELED)) {
             handle_group_canceled(msg);
         }
 
@@ -93,7 +93,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
         final String group = msg.elementAt(1).toString();
         final String description = msg.elementAt(2).toString();
 
-        if (group != null && !group.equals("[]") && !group.equals("undefined")) {
+        if (group != null && !"[]".equals(group) && !"undefined".equals(group)) {
 
             TestTreeObject node = model.findNode(description);
             TestTreeObject parent = model.findNode(group);
@@ -122,8 +122,8 @@ public class EUnitEventHandler extends ErlangEventHandler {
         final String description = msg.elementAt(1).toString();
         final String reason = msg.elementAt(2).toString();
 
-        if (description != null && !description.equals("[]")
-                && !description.equals("undefined")) {
+        if (description != null && !"[]".equals(description)
+                && !"undefined".equals(description)) {
             final TestTreeObject node = model.findNode(description);
             node.setDescription(
                     String.format("%s ... canceled: %s", node.getDescription(), reason));
@@ -172,11 +172,11 @@ public class EUnitEventHandler extends ErlangEventHandler {
 
         String reason = "";
 
-        if (msg.elementAt(1).equals(MODULE_NOT_FOUND)) {
+        if (msg.elementAt(1).equals(EUnitEventHandler.MODULE_NOT_FOUND)) {
 
             reason = String.format("Module not found: %s", msg.elementAt(5));
 
-        } else if (msg.elementAt(1).equals(NO_SUCH_FUNCTION)) {
+        } else if (msg.elementAt(1).equals(EUnitEventHandler.NO_SUCH_FUNCTION)) {
 
             final OtpErlangTuple func = (OtpErlangTuple) msg.elementAt(5);
 
@@ -279,7 +279,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
     private String makeTestFullDescription(final String module, final String function,
             final int arity, final String description, final int line,
             final String status) {
-        if (description != null && !description.equals("undefined")) {
+        if (description != null && !"undefined".equals(description)) {
             return String.format("%s:%s/%d (%s) at line %d - %s", module, function, arity,
                     description, line, status);
         }

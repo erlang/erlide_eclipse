@@ -129,7 +129,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
             projectMBr.setText(projectName);
 
-            if (projectName != null && projectName.length() > 0) {
+            if (projectName != null && !projectName.isEmpty()) {
                 final IErlProject p = ErlangEngine.getInstance().getModel()
                         .getErlangProject(ResourcesPlugin.getWorkspace().getRoot()
                                 .getProject(projectName));
@@ -253,7 +253,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
             public void modifyText(final ModifyEvent e) {
                 updateLaunchConfigurationDialog();
                 final String projectName = projectMBr.getText();
-                if (projectName != null && projectName.length() > 0) {
+                if (projectName != null && !projectName.isEmpty()) {
                     final IErlProject p = ErlangEngine.getInstance().getModel()
                             .getErlangProject(ResourcesPlugin.getWorkspace().getRoot()
                                     .getProject(projectName));

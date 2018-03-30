@@ -9,23 +9,23 @@ public class ErlideEventBus {
     private static EventBus bus;
 
     private static EventBus bus() {
-        if (bus == null) {
-            bus = new EventBus("erlide");
-            bus.register(new ErlideEventBus());
+        if (ErlideEventBus.bus == null) {
+            ErlideEventBus.bus = new EventBus("erlide");
+            ErlideEventBus.bus.register(new ErlideEventBus());
         }
-        return bus;
+        return ErlideEventBus.bus;
     }
 
     public static void post(final Object event) {
-        bus().post(event);
+        ErlideEventBus.bus().post(event);
     }
 
     public static void register(final Object listener) {
-        bus().register(listener);
+        ErlideEventBus.bus().register(listener);
     }
 
     public static void unregister(final Object listener) {
-        bus().unregister(listener);
+        ErlideEventBus.bus().unregister(listener);
     }
 
     @Subscribe

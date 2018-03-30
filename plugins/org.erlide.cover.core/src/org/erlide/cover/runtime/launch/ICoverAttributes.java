@@ -12,13 +12,13 @@ public interface ICoverAttributes {
 
     public final String prefix = ErlangCore.PLUGIN_ID;
 
-    public final String TYPE = prefix + ".type";
-    public final String PROJECT = prefix + ".project";
-    public final String MODULE = prefix + ".module";
-    public final String FILE = prefix + ".file";
-    public final String APP_PROJECT = prefix + ".app_project";
-    public final String APPLICATION = prefix + ".application";
+    public final String TYPE = ICoverAttributes.prefix + ".type";
+    public final String PROJECT = ICoverAttributes.prefix + ".project";
+    public final String MODULE = ICoverAttributes.prefix + ".module";
+    public final String FILE = ICoverAttributes.prefix + ".file";
+    public final String APP_PROJECT = ICoverAttributes.prefix + ".app_project";
+    public final String APPLICATION = ICoverAttributes.prefix + ".application";
 
-    public final String COMBO = prefix + ".framework";
+    public final String COMBO = ICoverAttributes.prefix + ".framework";
 
 }

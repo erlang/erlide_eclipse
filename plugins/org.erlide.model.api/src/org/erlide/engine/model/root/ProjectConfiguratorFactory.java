@@ -10,10 +10,10 @@ public class ProjectConfiguratorFactory implements IProjectConfiguratorFactory {
     private static IProjectConfiguratorFactory instance;
 
     public static IProjectConfiguratorFactory getDefault() {
-        if (instance == null) {
-            instance = new ProjectConfiguratorFactory();
+        if (ProjectConfiguratorFactory.instance == null) {
+            ProjectConfiguratorFactory.instance = new ProjectConfiguratorFactory();
         }
-        return instance;
+        return ProjectConfiguratorFactory.instance;
     }
 
     private ProjectConfiguratorFactory() {

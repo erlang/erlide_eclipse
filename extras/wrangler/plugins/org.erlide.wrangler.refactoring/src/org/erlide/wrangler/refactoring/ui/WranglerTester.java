@@ -32,7 +32,7 @@ public class WranglerTester extends PropertyTester {
     @Override
     public boolean test(final Object receiver, final String property, final Object[] args,
             final Object expectedValue) {
-        if (property.equals("hasQuickCheck")) {
+        if ("hasQuickCheck".equals(property)) {
             return true;// GlobalParameters.hasQuickCheck();
         } else if ("hasGraphViz".equals(property)) {
 

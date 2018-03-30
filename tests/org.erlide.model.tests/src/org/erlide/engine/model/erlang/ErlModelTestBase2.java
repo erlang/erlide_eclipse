@@ -24,7 +24,7 @@ public class ErlModelTestBase2 extends ErlModelTestBase {
                 "-module(yy).\n-export([a/1, b/0]).\n"
                         + "a(L) when is_list(L)->\n    lists:reverse(L);\n"
                         + "a(A) when is_atom(A)->\n    atom_to_list(A).\n"
-                        + "b() ->\n    b.\n" + MAKE_A_TUPLE + "\n"
+                        + "b() ->\n    b.\n" + ErlModelTestBase2.MAKE_A_TUPLE + "\n"
                         + "c(A, B, C) ->\n    {c, A, B, C}.\n");
         module2.open(null);
         final List<IErlElement> functions = module2

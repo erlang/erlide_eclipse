@@ -33,7 +33,8 @@ public class ErlangOtpSourceContainer extends CompositeSourceContainer {
             return 0;
         }
         final String[] digits = parts[parts.length - 1].split("\\.");
-        int r = 0, f = 100000000;
+        int r = 0;
+        int f = 100000000;
         for (final String d : digits) {
             r += Integer.parseInt(d) * f;
             f /= 100;

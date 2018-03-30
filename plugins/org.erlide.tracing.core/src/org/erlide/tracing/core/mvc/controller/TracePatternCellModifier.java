@@ -37,13 +37,13 @@ public class TracePatternCellModifier implements ICellModifier {
         final TracePattern pattern = (TracePattern) element;
         switch (TracePatternColumn.valueOf(property)) {
         case ENABLED:
-            return new Boolean(pattern.isEnabled());
+            return pattern.isEnabled();
         case MODULE_NAME:
             return pattern.getModuleName();
         case FUNCTION_NAME:
             return pattern.getFunctionName();
         case LOCAL:
-            return new Boolean(pattern.isLocal());
+            return pattern.isLocal();
         case ARITY:
             if (pattern.getArity() < 0) {
                 return "";
@@ -79,7 +79,7 @@ public class TracePatternCellModifier implements ICellModifier {
                 try {
                     final Integer arity = Integer.valueOf((String) value);
                     if (arity >= 0) {
-                        pattern.setArity(arity.intValue());
+                        pattern.setArity(arity);
                     }
                 } catch (final NumberFormatException e) {
                 }

@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.Platform;
 public final class LogUtil {
 
     public static String getReportFile() {
-        final String s = getReportLocation();
+        final String s = LogUtil.getReportLocation();
         final String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         return s + "/" + System.getProperty("user.name") + "_" + tstamp + ".txt";
     }
@@ -33,7 +33,7 @@ public final class LogUtil {
     }
 
     public static String fetchErlideLog() {
-        final StringBuffer result = new StringBuffer();
+        final StringBuilder result = new StringBuilder();
         final File log = new File(ErlLogger.getInstance().getLogFile());
         try (final BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(log), "UTF-8"))) {
@@ -42,7 +42,7 @@ public final class LogUtil {
                 if (line == null) {
                     break;
                 }
-                if (line.length() == 0) {
+                if (line.isEmpty()) {
                     continue;
                 }
                 result.append(line).append('\n');
@@ -64,7 +64,7 @@ public final class LogUtil {
                     break;
                 }
                 line = line.trim();
-                if (line.length() == 0) {
+                if (line.isEmpty()) {
                     continue;
                 }
                 if (line.startsWith("!SESSION ")) {
@@ -75,7 +75,7 @@ public final class LogUtil {
         } catch (final Exception e) {
             ErlLogger.warn(e);
         }
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         for (final String s : result) {
             buf.append(s).append('\n');
         }
@@ -83,7 +83,7 @@ public final class LogUtil {
     }
 
     public static String fetchStraceLog(final String filename) {
-        final StringBuffer result = new StringBuffer();
+        final StringBuilder result = new StringBuilder();
         final File log = new File(filename);
         if (log.exists()) {
             try (final BufferedReader reader = new BufferedReader(
@@ -94,7 +94,7 @@ public final class LogUtil {
                         break;
                     }
                     line = line.trim();
-                    if (line.length() == 0) {
+                    if (line.isEmpty()) {
                         continue;
                     }
                     result.append(line).append('\n');

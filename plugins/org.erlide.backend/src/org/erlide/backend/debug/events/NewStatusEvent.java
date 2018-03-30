@@ -20,13 +20,13 @@ public class NewStatusEvent extends IntEvent {
         final ErlangProcess erlangProcess = debugTarget.getOrCreateErlangProcess(pid);
         final OtpErlangAtom sa = (OtpErlangAtom) cmds[2];
         final String status = sa.atomValue();
-        if (status.equals("break")) {
+        if ("break".equals(status)) {
             handleBreakStatus(erlangProcess, status);
-        } else if (status.equals("exit")) {
+        } else if ("exit".equals(status)) {
             handleExitStatus(erlangProcess, status);
-        } else if (status.equals("running")) {
+        } else if ("running".equals(status)) {
             handleRunningStatus(erlangProcess, status);
-        } else if (status.equals("idle")) {
+        } else if ("idle".equals(status)) {
             handleIdleStatus(erlangProcess, status);
         } else {
             erlangProcess.setStatus(status);

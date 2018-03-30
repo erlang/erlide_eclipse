@@ -21,7 +21,7 @@ public class ErlideDialyze {
     private static final int LONG_TIMEOUT = 60000;
     // private static final int FILE_TIMEOUT = 20000;
     // private static final int INCLUDE_TIMEOUT = 40000;
-    private static final int UPDATE_TIMEOUT = LONG_TIMEOUT * 10;
+    private static final int UPDATE_TIMEOUT = ErlideDialyze.LONG_TIMEOUT * 10;
 
     public static RpcFuture dialyze(final IOtpRpc backend, final Collection<String> files,
             final Collection<String> pltPaths, final Collection<IPath> includeDirs,
@@ -30,7 +30,7 @@ public class ErlideDialyze {
         for (final IPath p : includeDirs) {
             incs.add(p.toString());
         }
-        return backend.async_call(ERLIDE_DIALYZE, "dialyze", "lslslsoo", files, pltPaths,
+        return backend.async_call(ErlideDialyze.ERLIDE_DIALYZE, "dialyze", "lslslsoo", files, pltPaths,
                 incs, fromSource, noCheckPLT);
     }
 
@@ -38,7 +38,7 @@ public class ErlideDialyze {
             final OtpErlangList warnings) {
         final List<String> result = Lists.newArrayList();
         try {
-            final OtpErlangList l = (OtpErlangList) backend.call(ERLIDE_DIALYZE,
+            final OtpErlangList l = (OtpErlangList) backend.call(ErlideDialyze.ERLIDE_DIALYZE,
                     "format_warnings", "x", warnings);
             for (final OtpErlangObject o : l) {
                 result.add(Util.stringValue(o).trim());
@@ -52,16 +52,16 @@ public class ErlideDialyze {
     public static OtpErlangObject checkPlt(final IOtpRpc backend, final String plt,
             final List<String> ebinDirs) throws RpcException {
         if (ebinDirs == null) {
-            return backend.call(UPDATE_TIMEOUT, ERLIDE_DIALYZE, "check_plt", "s", plt);
+            return backend.call(ErlideDialyze.UPDATE_TIMEOUT, ErlideDialyze.ERLIDE_DIALYZE, "check_plt", "s", plt);
         }
-        return backend.call(UPDATE_TIMEOUT, ERLIDE_DIALYZE,
+        return backend.call(ErlideDialyze.UPDATE_TIMEOUT, ErlideDialyze.ERLIDE_DIALYZE,
                 "update_plt_with_additional_paths", "sls", plt, ebinDirs);
     }
 
     public static void startCheckPlt(final IOtpRpc backend, final String plt,
             final List<String> ebinDirs, final IRpcResultCallback callback)
             throws RpcException {
-        backend.async_call_result(callback, ERLIDE_DIALYZE,
+        backend.async_call_result(callback, ErlideDialyze.ERLIDE_DIALYZE,
                 "start_update_plt_with_additional_paths", "xsls", plt, ebinDirs);
     }
 }

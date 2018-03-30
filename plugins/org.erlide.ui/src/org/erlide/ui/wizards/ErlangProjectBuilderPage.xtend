@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Event
 import org.eclipse.swt.widgets.Label
 import org.eclipse.swt.widgets.Text
-import org.erlide.core.executor.ToolExecutor
+import org.erlide.core.builder.executor.ToolExecutor
 import org.erlide.engine.NewProjectData
 import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.engine.model.root.ProjectConfigType

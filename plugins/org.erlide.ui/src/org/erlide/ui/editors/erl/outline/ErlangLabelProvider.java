@@ -136,8 +136,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
     protected Image decorateImage(final Image image0, final Object element) {
         Image image = image0;
         if (fLabelDecorators != null && image != null) {
-            for (int i = 0; i < fLabelDecorators.size(); i++) {
-                final ILabelDecorator decorator = fLabelDecorators.get(i);
+            for (final ILabelDecorator decorator : fLabelDecorators) {
                 image = decorator.decorateImage(image, element);
             }
         }
@@ -154,9 +153,8 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 
     protected String decorateText(final String text0, final Object element) {
         String text = text0;
-        if (fLabelDecorators != null && text.length() > 0) {
-            for (int i = 0; i < fLabelDecorators.size(); i++) {
-                final ILabelDecorator decorator = fLabelDecorators.get(i);
+        if (fLabelDecorators != null && !text.isEmpty()) {
+            for (final ILabelDecorator decorator : fLabelDecorators) {
                 text = decorator.decorateText(text, element);
             }
         }
@@ -165,7 +163,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 
     @Override
     public String getText(final Object element) {
-        final String label = getLabelString(element);
+        final String label = ErlangLabelProvider.getLabelString(element);
         return decorateText(label, element);
     }
 
@@ -179,10 +177,10 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         } else {
             label = element.toString();
         }
-        if (label.length() > LABEL_LENGTH_LIMIT) {
-            int i = label.indexOf(',', LABEL_LENGTH_LIMIT);
+        if (label.length() > ErlangLabelProvider.LABEL_LENGTH_LIMIT) {
+            int i = label.indexOf(',', ErlangLabelProvider.LABEL_LENGTH_LIMIT);
             if (i == -1) {
-                i = LABEL_LENGTH_LIMIT;
+                i = ErlangLabelProvider.LABEL_LENGTH_LIMIT;
             }
             label = label.substring(0, i) + "...";
         }
@@ -192,8 +190,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
     @Override
     public void dispose() {
         if (fLabelDecorators != null) {
-            for (int i = 0; i < fLabelDecorators.size(); i++) {
-                final ILabelDecorator decorator = fLabelDecorators.get(i);
+            for (final ILabelDecorator decorator : fLabelDecorators) {
                 decorator.dispose();
             }
             fLabelDecorators = null;
@@ -204,8 +201,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
     @Override
     public void addListener(final ILabelProviderListener listener) {
         if (fLabelDecorators != null) {
-            for (int i = 0; i < fLabelDecorators.size(); i++) {
-                final ILabelDecorator decorator = fLabelDecorators.get(i);
+            for (final ILabelDecorator decorator : fLabelDecorators) {
                 decorator.addListener(listener);
             }
         }
@@ -220,8 +216,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
     @Override
     public void removeListener(final ILabelProviderListener listener) {
         if (fLabelDecorators != null) {
-            for (int i = 0; i < fLabelDecorators.size(); i++) {
-                final ILabelDecorator decorator = fLabelDecorators.get(i);
+            for (final ILabelDecorator decorator : fLabelDecorators) {
                 decorator.removeListener(listener);
             }
         }

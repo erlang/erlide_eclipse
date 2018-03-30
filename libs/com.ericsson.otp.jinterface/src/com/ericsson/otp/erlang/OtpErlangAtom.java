@@ -47,9 +47,9 @@ public class OtpErlangAtom extends OtpErlangObject {
             throw new java.lang.IllegalArgumentException("null string value");
         }
 
-        if (atom.codePointCount(0, atom.length()) > maxAtomLength) {
+        if (atom.codePointCount(0, atom.length()) > OtpErlangAtom.maxAtomLength) {
             throw new java.lang.IllegalArgumentException(
-                    "Atom may not exceed " + maxAtomLength + " characters: " + atom);
+                    "Atom may not exceed " + OtpErlangAtom.maxAtomLength + " characters: " + atom);
         }
         this.atom = atom;
     }
@@ -96,7 +96,7 @@ public class OtpErlangAtom extends OtpErlangObject {
      *
      */
     public boolean booleanValue() {
-        return Boolean.valueOf(atomValue()).booleanValue();
+        return Boolean.valueOf(atomValue());
     }
 
     /**
@@ -172,7 +172,7 @@ public class OtpErlangAtom extends OtpErlangObject {
     private boolean atomNeedsQuoting(final String s) {
         char c;
 
-        if (s.length() == 0) {
+        if (s.isEmpty()) {
             return true;
         }
         if (!isErlangLower(s.charAt(0))) {

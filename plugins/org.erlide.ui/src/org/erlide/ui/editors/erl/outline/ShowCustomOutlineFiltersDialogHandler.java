@@ -41,8 +41,8 @@ public class ShowCustomOutlineFiltersDialogHandler extends AbstractHandler {
             }
             shell = outline.getSite().getShell();
             targetId = "org.eclipse.ui.views.ContentOutline";
-            patternFilter = (erlangOutlinePage==null?null:erlangOutlinePage.getPatternFilter());
-            viewer = (erlangOutlinePage==null?null:erlangOutlinePage.getTreeViewer());
+            patternFilter = erlangOutlinePage.getPatternFilter();
+            viewer = erlangOutlinePage.getTreeViewer();
         } else if (activePart instanceof CommonNavigator) {
             final CommonNavigator commonNavigator = (CommonNavigator) activePart;
             targetId = "commonNavigator";

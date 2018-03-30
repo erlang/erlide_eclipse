@@ -39,7 +39,8 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
 public class SelectionInputPage extends InputPage {
     CostumWorkflowRefactoringWithPositionsSelection refactoring;
 
-    String labelText, description;
+    String labelText;
+    String description;
 
     HashMap<Button, IErlRange> checkButtons;
 

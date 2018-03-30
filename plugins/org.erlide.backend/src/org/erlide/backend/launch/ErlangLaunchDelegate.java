@@ -48,7 +48,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
             setCaptureOutput(launch);
         }
         IOtpNodeProxy runtime;
-        if (!isErlangInternalLaunch(launch)) {
+        if (!ErlangLaunchDelegate.isErlangInternalLaunch(launch)) {
             backend = BackendCore.getBackendManager().createExecutionBackend(data);
             runtime = backend.getRuntime();
         } else {
@@ -76,7 +76,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
         }
 		String defaultNodeName = getDefaultNodeNameFromProjects(config, Long.toHexString(System.currentTimeMillis() & 0xFFFFFF));
 		final String nodeName = config.getAttribute(ErlRuntimeAttributes.NODE_NAME, defaultNodeName);
-        final boolean managed = shouldManageNode(nodeName, BackendCore.getEpmdWatcher());
+        final boolean managed = ErlangLaunchDelegate.shouldManageNode(nodeName, BackendCore.getEpmdWatcher());
         BackendData data = new BackendData(runtimeInfo, config, mode, managed);
         data = configureBackend(data, mode, launch);
         return data;
@@ -93,7 +93,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
      */
 	protected BackendData configureBackend(final BackendData data, final String mode, final ILaunch launch) {
         data.setLaunch(launch);
-        if (mode.equals("debug")) {
+        if ("debug".equals(mode)) {
             data.setContext(CodeContext.DEBUGGER);
         }
         return data;

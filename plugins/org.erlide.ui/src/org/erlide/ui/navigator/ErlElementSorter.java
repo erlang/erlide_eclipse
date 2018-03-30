@@ -14,7 +14,7 @@ public class ErlElementSorter extends ViewerComparator {
     public static final int SORT_ON_NAME = 0;
     public static final int SORT_ON_EXPORT = 1;
 
-    private int how = SORT_ON_NAME;
+    private int how = ErlElementSorter.SORT_ON_NAME;
 
     @Override
     public int compare(final Viewer viewer, final Object o1, final Object o2) {
@@ -50,12 +50,12 @@ public class ErlElementSorter extends ViewerComparator {
         }
         final IErlElement e = (IErlElement) element;
         switch (how) {
-        case SORT_ON_NAME:
+        case ErlElementSorter.SORT_ON_NAME:
             if (e.getKind() == ErlElementKind.FUNCTION) {
                 return 1000;
             }
             return e.getKind().ordinal();
-        case SORT_ON_EXPORT:
+        case ErlElementSorter.SORT_ON_EXPORT:
             if (e.getKind() == ErlElementKind.FUNCTION) {
                 if (e instanceof IErlFunction) {
                     final IErlFunction f = (IErlFunction) e;

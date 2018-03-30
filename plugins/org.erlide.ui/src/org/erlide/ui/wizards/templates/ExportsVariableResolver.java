@@ -22,25 +22,25 @@ public class ExportsVariableResolver extends FunctionVariableResolver {
     private static final List<FunctionVariableResolver> fInstances = new ArrayList<>();
 
     public ExportsVariableResolver() {
-        fInstances.add(this);
+        ExportsVariableResolver.fInstances.add(this);
     }
 
     public static ExportsVariableResolver getDefault() {
-        if (fInstances.isEmpty()) {
-            fInstances.add(new ExportsVariableResolver());
+        if (ExportsVariableResolver.fInstances.isEmpty()) {
+            ExportsVariableResolver.fInstances.add(new ExportsVariableResolver());
         }
-        return (ExportsVariableResolver) fInstances.get(0);
+        return (ExportsVariableResolver) ExportsVariableResolver.fInstances.get(0);
     }
 
     public void addFunction(final String name, final int arity) {
-        for (final Object element0 : fInstances) {
+        for (final Object element0 : ExportsVariableResolver.fInstances) {
             final ExportsVariableResolver element = (ExportsVariableResolver) element0;
             element.doAddFunction(name, arity);
         }
     }
 
     public void clearFunctions() {
-        for (final Object element0 : fInstances) {
+        for (final Object element0 : ExportsVariableResolver.fInstances) {
             final ExportsVariableResolver element = (ExportsVariableResolver) element0;
             element.doClearFunctions();
         }

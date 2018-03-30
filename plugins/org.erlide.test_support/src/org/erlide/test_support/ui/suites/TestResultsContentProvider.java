@@ -12,9 +12,9 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
 
 class TestResultsContentProvider implements ITreeContentProvider {
-    private static final String[] NO_RESULTS_MSG = new String[] {
+    private static final String[] NO_RESULTS_MSG = {
             "No test results available." };
-    private static final Object[] NO_CHILDREN = new Object[] {};
+    private static final Object[] NO_CHILDREN = {};
 
     private List<OtpErlangObject> myEvents;
 
@@ -33,7 +33,7 @@ class TestResultsContentProvider implements ITreeContentProvider {
     @Override
     public Object[] getElements(final Object inputElement) {
         if (myEvents.isEmpty()) {
-            return NO_RESULTS_MSG;
+            return TestResultsContentProvider.NO_RESULTS_MSG;
         }
         return myEvents.toArray();
     }
@@ -59,7 +59,7 @@ class TestResultsContentProvider implements ITreeContentProvider {
             final FailReason stack = (FailReason) parentElement;
             return stack.getStackItems().toArray();
         }
-        return NO_CHILDREN;
+        return TestResultsContentProvider.NO_CHILDREN;
     }
 
     @Override

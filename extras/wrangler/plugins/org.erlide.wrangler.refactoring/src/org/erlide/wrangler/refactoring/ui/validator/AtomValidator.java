@@ -20,14 +20,14 @@ public class AtomValidator implements IValidator {
 
     @Override
     public boolean isValid(final String s) {
-        if (s.length() == 0) {
+        if (s.isEmpty()) {
             return false;
         }
         if (s.charAt(0) == '\'' && s.charAt(s.length() - 1) == '\'') {
             return true;
         }
-        if (s.substring(0, 1).replaceAll("[a-z]", "").length() == 0
-                && s.replaceAll("[A-Za-z_@0-9]", "").length() == 0) {
+        if (s.substring(0, 1).replaceAll("[a-z]", "").isEmpty()
+                && s.replaceAll("[A-Za-z_@0-9]", "").isEmpty()) {
             return true;
         }
         return false;

@@ -41,15 +41,15 @@ public class TroubleshootingPreferencePage extends PreferencePage
     private Label longLabel;
     private Label shortLabel;
 
-    final private String runtime = RuntimeCore.getRuntimeInfoCatalog().getErlideRuntime()
+    private final String runtime = RuntimeCore.getRuntimeInfoCatalog().getErlideRuntime()
             .getOtpHome();
-    final private ErlangHostnameRetriever retriever = new ErlangHostnameRetriever(
+    private final ErlangHostnameRetriever retriever = new ErlangHostnameRetriever(
             runtime);
-    final private ColorManager cm = new ColorManager();
-    final private RGB lightRed = new RGB(255, 220, 220);
-    final private RGB lightGreen = new RGB(220, 255, 220);
-    final private RGB darkRed = new RGB(145, 0, 0);
-    final private RGB darkGreen = new RGB(0, 145, 0);
+    private final ColorManager cm = new ColorManager();
+    private final RGB lightRed = new RGB(255, 220, 220);
+    private final RGB lightGreen = new RGB(220, 255, 220);
+    private final RGB darkRed = new RGB(145, 0, 0);
+    private final RGB darkGreen = new RGB(0, 145, 0);
 
     public TroubleshootingPreferencePage() {
         super();

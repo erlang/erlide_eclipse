@@ -252,11 +252,11 @@ public class EdocView extends AbstractInfoView {
 
     private void initStyleSheet() {
         final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
-        fgStyleSheet = bundle.getEntry("/edoc.css");
-        if (fgStyleSheet != null) {
+        EdocView.fgStyleSheet = bundle.getEntry("/edoc.css");
+        if (EdocView.fgStyleSheet != null) {
 
             try {
-                fgStyleSheet = FileLocator.toFileURL(fgStyleSheet);
+                EdocView.fgStyleSheet = FileLocator.toFileURL(EdocView.fgStyleSheet);
             } catch (final Exception e) {
             }
         }

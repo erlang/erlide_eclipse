@@ -10,12 +10,7 @@
  *******************************************************************************/
 package org.erlide.engine.internal.services.parsing;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.erlang.ErlAttribute;
@@ -134,7 +129,7 @@ public final class ErlParser {
                 cached = atom.atomValue();
             }
         }
-        if (TRACE) {
+        if (ErlParser.TRACE) {
             ErlLogger.debug("Parsed %d forms and %d comments (%s)",
                     forms != null ? forms.arity() : 0,
                     comments != null ? comments.arity() : 0, cached);
@@ -190,7 +185,7 @@ public final class ErlParser {
                     all.add((IErlMember) element);
                 }
             }
-            Collections.sort(all, new SourceOffsetComparator());
+            all.sort(new SourceOffsetComparator());
             for (int i = 1; i < all.size(); i++) {
                 checkForComment(all, i);
             }
@@ -214,13 +209,13 @@ public final class ErlParser {
     }
 
     private int considerPrevious(final int i, final List<IErlMember> all,
-            final LinkedList<IErlComment> comments, final IErlFunction function) {
+                                 final Deque<IErlComment> comments, final IErlFunction function) {
         final int j = i - 1;
         if (j > 0) {
             final IErlMember member = all.get(i);
             final IErlMember prevMember = all.get(j);
             if (prevMember instanceof IErlComment) {
-                if (prevMember.getLineEnd() + FUNCTION_COMMENT_THRESHOLD >= member
+                if (prevMember.getLineEnd() + ErlParser.FUNCTION_COMMENT_THRESHOLD >= member
                         .getLineStart()) {
                     comments.addFirst((IErlComment) prevMember);
                 }
@@ -229,7 +224,7 @@ public final class ErlParser {
 
                 if (spec.getName().equals(function.getName())
                         && spec.getArity() == function.getArity()
-                        && prevMember.getLineEnd() + FUNCTION_COMMENT_THRESHOLD >= member
+                        && prevMember.getLineEnd() + ErlParser.FUNCTION_COMMENT_THRESHOLD >= member
                                 .getLineStart()) {
                     function.setTypespec(spec);
                 }
@@ -243,14 +238,14 @@ public final class ErlParser {
     // -record(token, {kind, line, offset, length, value, text,
     // last_line, column}).
     // indexes of the token fields
-    final static int KIND = 1;
-    final static int LINE = 2;
-    final static int OFFSET = 3;
-    final static int LENGTH = 4;
-    final static int VALUE = 5;
-    final static int TEXT = 6;
-    final static int LAST_LINE = 7;
-    final static int COLUMN = 8;
+    static final int KIND = 1;
+    static final int LINE = 2;
+    static final int OFFSET = 3;
+    static final int LENGTH = 4;
+    static final int VALUE = 5;
+    static final int TEXT = 6;
+    static final int LAST_LINE = 7;
+    static final int COLUMN = 8;
 
     /**
      * create an IErlComment from a token record
@@ -262,8 +257,8 @@ public final class ErlParser {
      * @return IErlComment
      */
     private IErlComment createComment(final IErlModule module, final OtpErlangTuple c) {
-        final OtpErlangLong lineL = (OtpErlangLong) c.elementAt(LINE);
-        final OtpErlangObject s = c.elementAt(TEXT);
+        final OtpErlangLong lineL = (OtpErlangLong) c.elementAt(ErlParser.LINE);
+        final OtpErlangObject s = c.elementAt(ErlParser.TEXT);
 
         int line;
         int lastLine;
@@ -274,18 +269,18 @@ public final class ErlParser {
         }
         lastLine = line;
         try {
-            if (c.elementAt(LAST_LINE) instanceof OtpErlangLong) {
-                final OtpErlangLong lastLineL = (OtpErlangLong) c.elementAt(LAST_LINE);
+            if (c.elementAt(ErlParser.LAST_LINE) instanceof OtpErlangLong) {
+                final OtpErlangLong lastLineL = (OtpErlangLong) c.elementAt(ErlParser.LAST_LINE);
                 lastLine = lastLineL.intValue();
             }
         } catch (final OtpErlangRangeException e1) {
             lastLine = line;
         }
         final ErlComment comment = new ErlComment(module, Util.stringValue(s),
-                line <= MODULE_HEADER_COMMENT_THRESHOLD);
+                line <= ErlParser.MODULE_HEADER_COMMENT_THRESHOLD);
         try {
-            final int ofs = ((OtpErlangLong) c.elementAt(OFFSET)).intValue();
-            final int len = ((OtpErlangLong) c.elementAt(LENGTH)).intValue();
+            final int ofs = ((OtpErlangLong) c.elementAt(ErlParser.OFFSET)).intValue();
+            final int len = ((OtpErlangLong) c.elementAt(ErlParser.LENGTH)).intValue();
             setPos(comment, line, lastLine, ofs + 1, len);
         } catch (final OtpErlangRangeException e) {
             return null;
@@ -543,7 +538,7 @@ public final class ErlParser {
                     }
                     r.setChildren(children);
                 } else {
-                    r.setChildren(new ArrayList<IErlElement>());
+                    r.setChildren(new ArrayList<>());
                 }
                 return r;
             }

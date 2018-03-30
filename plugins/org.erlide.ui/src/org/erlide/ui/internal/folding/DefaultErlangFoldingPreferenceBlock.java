@@ -2,7 +2,6 @@ package org.erlide.ui.internal.folding;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -114,9 +113,7 @@ public class DefaultErlangFoldingPreferenceBlock implements IErlangFoldingPrefer
     }
 
     private void initializeFields() {
-        final Iterator<Button> it = fCheckBoxes.keySet().iterator();
-        while (it.hasNext()) {
-            final Button b = it.next();
+        for (Button b : fCheckBoxes.keySet()) {
             final String key = fCheckBoxes.get(b);
             b.setSelection(fOverlayStore.getBoolean(key));
         }

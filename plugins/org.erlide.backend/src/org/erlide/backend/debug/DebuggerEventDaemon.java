@@ -23,11 +23,11 @@ import com.google.common.collect.Lists;
 public class DebuggerEventDaemon implements IBackendListener {
 
     private IBackend backend;
-    volatile boolean stopped = false;
+    volatile boolean stopped;
     private final DebugEventHandler handler;
     private OtpMbox mbox;
 
-    final static boolean DEBUG = Boolean
+    static final boolean DEBUG = Boolean
             .parseBoolean(System.getProperty("erlide.event.daemon"));
 
     private final class HandlerJob implements Runnable {
@@ -42,8 +42,8 @@ public class DebuggerEventDaemon implements IBackendListener {
             do {
                 try {
                     final List<OtpErlangObject> messages = receiveSomeMessages(mbox);
-                    if (messages.size() != 0) {
-                        if (DEBUG) {
+                    if (!messages.isEmpty()) {
+                        if (DebuggerEventDaemon.DEBUG) {
                             for (final OtpErlangObject message : messages) {
                                 ErlLogger.debug("MSG: %s", message);
                             }

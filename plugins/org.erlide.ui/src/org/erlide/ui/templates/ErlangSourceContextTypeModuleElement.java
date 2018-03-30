@@ -21,10 +21,10 @@ public class ErlangSourceContextTypeModuleElement extends TemplateContextType {
     public static final String ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID = "org.erlide.ui.erlangsource.template.context.module.element"; //$NON-NLS-1$
 
     public static ErlangSourceContextTypeModuleElement getDefault() {
-        if (fInstance == null) {
-            fInstance = new ErlangSourceContextTypeModuleElement();
+        if (ErlangSourceContextTypeModuleElement.fInstance == null) {
+            ErlangSourceContextTypeModuleElement.fInstance = new ErlangSourceContextTypeModuleElement();
         }
-        return fInstance;
+        return ErlangSourceContextTypeModuleElement.fInstance;
     }
 
     /**
@@ -32,7 +32,7 @@ public class ErlangSourceContextTypeModuleElement extends TemplateContextType {
      */
     public ErlangSourceContextTypeModuleElement() {
         addGlobalResolvers();
-        fInstance = this;
+        ErlangSourceContextTypeModuleElement.fInstance = this;
     }
 
     private void addGlobalResolvers() {

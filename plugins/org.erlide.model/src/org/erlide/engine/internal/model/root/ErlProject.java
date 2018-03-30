@@ -93,7 +93,7 @@ public class ErlProject extends Openable
     private ErlangProjectProperties properties;
     private BuilderProperties builderProperties;
 
-    private volatile boolean configuring = false;
+    private volatile boolean configuring;
 
     public ErlProject(final IProject project, final IParent parent) {
         super(parent, project.getName());
@@ -175,7 +175,7 @@ public class ErlProject extends Openable
                 }
             }
         }
-        if (externalIncludes.length() != 0 || externalModules.length() != 0
+        if (!externalIncludes.isEmpty() || !externalModules.isEmpty()
                 || !projectIncludes.isEmpty()) {
             final IErlExternalRoot external = new ErlExternalReferenceEntryList(this,
                     "Externals", externalIncludes, projectIncludes, externalModules);
@@ -282,13 +282,12 @@ public class ErlProject extends Openable
         if (modulesForProject != null) {
             return modulesForProject;
         }
-        final List<IErlModule> result = new ArrayList<>();
         final List<IPath> sourceDirs = Lists
                 .newArrayList(getProperties().getSourceDirs());
         for (final IPath s : SourcePathUtils.getExtraSourcePathsForModel(fProject)) {
             sourceDirs.add(s);
         }
-        result.addAll(getModulesOrIncludes(fProject,
+        final List<IErlModule> result = new ArrayList<>(ErlProject.getModulesOrIncludes(fProject,
                 ErlangEngine.getInstance().getModel(), sourceDirs, true));
         ErlModelCache.getDefault().putModulesForProject(this, result);
         return result;
@@ -335,7 +334,7 @@ public class ErlProject extends Openable
             final List<IErlModule> cached = erlModelCache.getModulesForProject(this);
             final IErlElementLocator model = ErlangEngine.getInstance().getModel();
             if (cached == null) {
-                final List<IErlModule> modules = getModulesOrIncludes(fProject, model,
+                final List<IErlModule> modules = ErlProject.getModulesOrIncludes(fProject, model,
                         getProperties().getSourceDirs(), true);
                 result.addAll(modules);
             } else {
@@ -354,7 +353,7 @@ public class ErlProject extends Openable
         if (cached != null) {
             return cached;
         }
-        final List<IErlModule> includes = getModulesOrIncludes(fProject,
+        final List<IErlModule> includes = ErlProject.getModulesOrIncludes(fProject,
                 ErlangEngine.getInstance().getModel(), getProperties().getIncludeDirs(),
                 false);
         erlModelCache.putIncludesForProject(this, includes);
@@ -600,13 +599,13 @@ public class ErlProject extends Openable
 
     private void loadCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
-        final String name = node.get(CONFIG_TYPE_TAG, ProjectConfigType.INTERNAL.name());
+        final String name = node.get(ErlProject.CONFIG_TYPE_TAG, ProjectConfigType.INTERNAL.name());
         setConfigType(ProjectConfigType.valueOf(name));
     }
 
     private void storeCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
-        node.put(CONFIG_TYPE_TAG, getConfigType().name());
+        node.put(ErlProject.CONFIG_TYPE_TAG, getConfigType().name());
         try {
             node.flush();
         } catch (final Exception e) {

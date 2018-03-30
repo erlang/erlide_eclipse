@@ -34,7 +34,7 @@ public class OtpErlangLong extends OtpErlangObject {
     private static final long serialVersionUID = 1610466859236755096L;
 
     private long val;
-    private BigInteger bigVal = null;
+    private BigInteger bigVal;
 
     /**
      * Create an Erlang integer from the given value.

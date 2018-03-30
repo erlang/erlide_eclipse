@@ -20,10 +20,10 @@ public class BodyVariableResolver extends TemplateVariableResolver {
     private String fBody = "ok";
 
     public static BodyVariableResolver getDefault() {
-        if (fInstance == null) {
-            fInstance = new BodyVariableResolver();
+        if (BodyVariableResolver.fInstance == null) {
+            BodyVariableResolver.fInstance = new BodyVariableResolver();
         }
-        return fInstance;
+        return BodyVariableResolver.fInstance;
     }
 
     @Override

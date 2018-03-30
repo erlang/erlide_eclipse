@@ -37,7 +37,7 @@ public class OtpErlang {
                 result.add(new OtpErlangString(s.toString()));
             }
         }
-        return mkList(result);
+        return OtpErlang.mkList(result);
     }
 
     // for debugging purposes
@@ -53,10 +53,10 @@ public class OtpErlang {
         return new OtpParser();
     }
 
-    final private static OtpParser TERM_PARSER = OtpErlang.getTermParser();
+    private static final OtpParser TERM_PARSER = OtpErlang.getTermParser();
 
     public static OtpErlangObject parse(final String string) throws OtpParserException {
-        return TERM_PARSER.parse(string);
+        return OtpErlang.TERM_PARSER.parse(string);
     }
 
     /**
@@ -75,28 +75,28 @@ public class OtpErlang {
     public static OtpErlangObject format(final String fmt, final Object... args)
             throws OtpParserException, SignatureException {
         final List<Object> values = new ArrayList<>(Arrays.asList(args));
-        final OtpErlangObject result = fill(parse(fmt), values);
+        final OtpErlangObject result = OtpErlang.fill(OtpErlang.parse(fmt), values);
         return result;
     }
 
     public static OtpBindings match(final String pattern, final String term)
             throws OtpParserException {
-        return match(parse(pattern), parse(term), new OtpBindings());
+        return OtpErlang.match(OtpErlang.parse(pattern), OtpErlang.parse(term), new OtpBindings());
     }
 
     public static OtpBindings match(final String pattern, final OtpErlangObject term)
             throws OtpParserException {
-        return match(parse(pattern), term, new OtpBindings());
+        return OtpErlang.match(OtpErlang.parse(pattern), term, new OtpBindings());
     }
 
     public static OtpBindings match(final String pattern, final String term,
             final OtpBindings bindings) throws OtpParserException {
-        return match(parse(pattern), parse(term), bindings);
+        return OtpErlang.match(OtpErlang.parse(pattern), OtpErlang.parse(term), bindings);
     }
 
     public static OtpBindings match(final OtpErlangObject pattern,
             final OtpErlangObject term) {
-        return match(pattern, term, new OtpBindings());
+        return OtpErlang.match(pattern, term, new OtpBindings());
     }
 
     /**
@@ -126,7 +126,7 @@ public class OtpErlang {
             if (!TypeConverter.doesMatchSignature(term, var.getSignature())) {
                 return null;
             }
-            if (var.getName().equals("_")) {
+            if ("_".equals(var.getName())) {
                 return bindings;
             }
             final OtpBindings result = new OtpBindings(bindings);
@@ -143,9 +143,9 @@ public class OtpErlang {
         }
 
         if (pattern instanceof OtpErlangList) {
-            return matchList(pattern, term, bindings);
+            return OtpErlang.matchList(pattern, term, bindings);
         } else if (pattern instanceof OtpErlangTuple) {
-            return matchTuple(((OtpErlangTuple) pattern).elements(),
+            return OtpErlang.matchTuple(((OtpErlangTuple) pattern).elements(),
                     ((OtpErlangTuple) term).elements(), bindings);
         } else if (pattern.equals(term)) {
             return bindings;
@@ -170,19 +170,19 @@ public class OtpErlang {
         }
         OtpBindings rez = bindings;
         for (int i = 0; i < patternArity; i++) {
-            rez = match(lpattern.elementAt(i), lterm.elementAt(i), rez);
+            rez = OtpErlang.match(lpattern.elementAt(i), lterm.elementAt(i), rez);
             if (rez == null) {
                 return null;
             }
         }
         if (patternArity == termArity) {
-            rez = match(lpattern.getLastTail(), lterm.getLastTail(), rez);
+            rez = OtpErlang.match(lpattern.getLastTail(), lterm.getLastTail(), rez);
             return rez;
         }
         if (lpattern.getLastTail() instanceof OtpPatternVariable) {
-            return match(lpattern.getLastTail(), lterm.getNthTail(patternArity), rez);
+            return OtpErlang.match(lpattern.getLastTail(), lterm.getNthTail(patternArity), rez);
         }
-        return match(lpattern.getLastTail(), lterm.getLastTail(), rez);
+        return OtpErlang.match(lpattern.getLastTail(), lterm.getLastTail(), rez);
     }
 
     private static OtpErlangObject fill(final OtpErlangObject template,
@@ -194,14 +194,14 @@ public class OtpErlang {
             final OtpErlangObject[] elements = ((OtpErlangList) template).elements();
             final List<OtpErlangObject> result = new ArrayList<>(elements.length);
             for (final OtpErlangObject elem : elements) {
-                result.add(fill(elem, values));
+                result.add(OtpErlang.fill(elem, values));
             }
             return new OtpErlangList(result.toArray(elements));
         } else if (template instanceof OtpErlangTuple) {
             final OtpErlangObject[] elements = ((OtpErlangTuple) template).elements();
             final List<OtpErlangObject> result = new ArrayList<>(elements.length);
             for (final OtpErlangObject elem : elements) {
-                result.add(fill(elem, values));
+                result.add(OtpErlang.fill(elem, values));
             }
             return new OtpErlangTuple(result.toArray(elements));
         } else if (template instanceof OtpFormatPlaceholder) {
@@ -225,7 +225,7 @@ public class OtpErlang {
         }
         OtpBindings result = new OtpBindings(bindings);
         for (int i = 0; i < patterns.length; i++) {
-            result = match(patterns[i], terms[i], result);
+            result = OtpErlang.match(patterns[i], terms[i], result);
             if (result == null) {
                 return null;
             }

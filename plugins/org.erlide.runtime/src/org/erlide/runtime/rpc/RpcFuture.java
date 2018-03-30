@@ -25,7 +25,7 @@ import com.google.common.util.concurrent.CheckedFuture;
 public class RpcFuture implements CheckedFuture<OtpErlangObject, RpcException> {
 
     private final OtpMbox mbox;
-    private OtpErlangObject result = null;
+    private OtpErlangObject result;
     private final String env;
     private final boolean logCalls;
 

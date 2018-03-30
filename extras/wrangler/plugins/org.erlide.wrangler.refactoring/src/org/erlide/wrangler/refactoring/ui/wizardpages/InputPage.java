@@ -51,6 +51,6 @@ public abstract class InputPage extends WranglerPage {
     protected void controlWorkflow(final Shell s) {
     }
 
-    abstract protected boolean isInputValid();
+    protected abstract boolean isInputValid();
 
 }

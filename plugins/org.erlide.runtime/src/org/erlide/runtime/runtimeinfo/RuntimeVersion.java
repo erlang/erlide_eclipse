@@ -19,7 +19,7 @@ import com.google.common.base.Preconditions;
 public class RuntimeVersion implements Comparable<RuntimeVersion> {
 
     public static final int UNUSED = Integer.MIN_VALUE;
-    public static final RuntimeVersion NO_VERSION = new RuntimeVersion(UNUSED);
+    public static final RuntimeVersion NO_VERSION = new RuntimeVersion(RuntimeVersion.UNUSED);
 
     private final int major;
     private final int minor;
@@ -46,25 +46,25 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
     }
 
     public RuntimeVersion(final int major, final int minor) {
-        this(major, minor, UNUSED, null);
+        this(major, minor, RuntimeVersion.UNUSED, null);
     }
 
     public RuntimeVersion(final int major) {
-        this(major, UNUSED, UNUSED, null);
+        this(major, RuntimeVersion.UNUSED, RuntimeVersion.UNUSED, null);
     }
 
     public static class Serializer {
 
-        private static final char[] minorMap = new char[] { 'A', 'B', 'C' };
+        private static final char[] minorMap = { 'A', 'B', 'C' };
 
         public static RuntimeVersion parse(final String version) {
-            return parse(version, null);
+            return Serializer.parse(version, null);
         }
 
         public static RuntimeVersion parseOld(final String version, final String aMicro) {
             int major;
-            int minor = UNUSED;
-            int micro = UNUSED;
+            int minor = RuntimeVersion.UNUSED;
+            int micro = RuntimeVersion.UNUSED;
             String update_level = null;
 
             Preconditions.checkArgument(version.charAt(0) == 'R');
@@ -80,7 +80,7 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
             major = Integer.parseInt(substring);
             if (i < version.length()) {
                 c = version.charAt(i);
-                minor = Arrays.binarySearch(minorMap, c);
+                minor = Arrays.binarySearch(Serializer.minorMap, c);
                 i++;
                 if (i < version.length()) {
                     final int n1 = version.indexOf('-');
@@ -119,8 +119,8 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
             }
 
             major = Integer.parseInt(m.group(1));
-            minor = getValue(m, 2);
-            micro = getValue(m, 3);
+            minor = Serializer.getValue(m, 2);
+            micro = Serializer.getValue(m, 3);
             final String extra = m.group(4);
             if (extra != null) {
                 try {
@@ -141,21 +141,21 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
         }
 
         public static RuntimeVersion parse(final String version, final String aMicro) {
-            if (version == null || version.length() == 0) {
-                return NO_VERSION;
+            if (version == null || version.isEmpty()) {
+                return RuntimeVersion.NO_VERSION;
             }
 
             if (version.charAt(0) == 'R') {
-                return parseOld(version, aMicro);
+                return Serializer.parseOld(version, aMicro);
             }
-            return parseNew(version, aMicro);
+            return Serializer.parseNew(version, aMicro);
         }
 
         public static String toStringOld(final RuntimeVersion version) {
             String result = "R" + Integer.toString(version.major);
-            if (version.minor != UNUSED) {
-                result += minorMap[version.minor];
-                if (version.micro != UNUSED) {
+            if (version.minor != RuntimeVersion.UNUSED) {
+                result += Serializer.minorMap[version.minor];
+                if (version.micro != RuntimeVersion.UNUSED) {
                     String m = Integer.toString(version.micro);
                     if (version.micro != 0) {
                         if (m.length() == 1) {
@@ -173,10 +173,10 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
 
         public static String toStringNew(final RuntimeVersion version) {
             String result = Integer.toString(version.major);
-            if (version.minor != UNUSED) {
+            if (version.minor != RuntimeVersion.UNUSED) {
                 result += "." + Integer.toString(version.minor);
             }
-            if (version.micro != UNUSED) {
+            if (version.micro != RuntimeVersion.UNUSED) {
                 result += "." + Integer.toString(version.micro);
             }
             if (version.update_level != null) {
@@ -189,7 +189,7 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
 
     @Override
     public String toString() {
-        if (major == UNUSED) {
+        if (major == RuntimeVersion.UNUSED) {
             return "";
         }
         if (major < 17) {
@@ -232,7 +232,7 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
     }
 
     public boolean isDefined() {
-        return major != UNUSED;
+        return major != RuntimeVersion.UNUSED;
     }
 
     public boolean isCompatible(final RuntimeVersion other) {
@@ -240,7 +240,7 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
     }
 
     public boolean isReleaseCompatible(final RuntimeVersion other) {
-        return major == UNUSED || other.major == UNUSED || isCompatible(other);
+        return major == RuntimeVersion.UNUSED || other.major == RuntimeVersion.UNUSED || isCompatible(other);
     }
 
     public RuntimeVersion asMinor() {

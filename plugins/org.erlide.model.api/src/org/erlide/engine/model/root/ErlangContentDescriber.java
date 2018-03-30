@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.content.ITextContentDescriber;
 import com.google.common.io.Files;
 
 public class ErlangContentDescriber implements ITextContentDescriber {
-    private static final QualifiedName[] SUPPORTED_OPTIONS = new QualifiedName[] { IContentDescription.CHARSET };
+    private static final QualifiedName[] SUPPORTED_OPTIONS = { IContentDescription.CHARSET };
     private static final Pattern LATIN1 = Pattern.compile(
             "%+[ *-]+coding: *latin-1.*", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
     private static final Pattern UTF8 = Pattern.compile(
@@ -33,7 +33,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     @Override
     public int describe(final InputStream input, final IContentDescription description)
             throws IOException {
-        return describe2(input, description, new HashMap<String, Object>());
+        return describe2(input, description, new HashMap<>());
     }
 
     int describe2(final InputStream input, final IContentDescription description,
@@ -47,7 +47,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     @Override
     public int describe(final Reader input, final IContentDescription description)
             throws IOException {
-        return describe2(input, description, new HashMap<String, Object>());
+        return describe2(input, description, new HashMap<>());
     }
 
     public static Charset detectEncoding(final String s) {
@@ -55,11 +55,11 @@ public class ErlangContentDescriber implements ITextContentDescriber {
             return StandardCharsets.UTF_8;
         }
         final String line = s.trim();
-        Matcher matcher = LATIN1.matcher(line);
+        Matcher matcher = ErlangContentDescriber.LATIN1.matcher(line);
         if (matcher.matches()) {
             return StandardCharsets.ISO_8859_1;
         }
-        matcher = UTF8.matcher(line);
+        matcher = ErlangContentDescriber.UTF8.matcher(line);
         if (matcher.matches()) {
             return StandardCharsets.UTF_8;
         }
@@ -67,13 +67,13 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     }
 
     public static Charset detectCodingForFile(final File file) throws IOException {
-        return detectCodingForFile(file, StandardCharsets.UTF_8);
+        return ErlangContentDescriber.detectCodingForFile(file, StandardCharsets.UTF_8);
     }
 
     public static Charset detectCodingForFile(final File file, final Charset dflt)
             throws IOException {
         final String line = Files.readFirstLine(file, StandardCharsets.ISO_8859_1);
-        Charset coding = detectEncoding(line);
+        Charset coding = ErlangContentDescriber.detectEncoding(line);
         if (coding == null) {
             coding = dflt;
         }
@@ -89,7 +89,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     }
 
     private boolean isProcessed(final Map<String, Object> properties) {
-        final Boolean result = (Boolean) properties.get(RESULT);
+        final Boolean result = (Boolean) properties.get(ErlangContentDescriber.RESULT);
         if (result != null) {
             return true;
         }
@@ -106,9 +106,9 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     private void fillContentProperties(final String charset,
             final IContentDescription description, final Map<String, Object> properties) {
         if (charset != null) {
-            properties.put(CHARSET, charset);
+            properties.put(ErlangContentDescriber.CHARSET, charset);
         }
-        properties.put(RESULT, Boolean.TRUE);
+        properties.put(ErlangContentDescriber.RESULT, Boolean.TRUE);
     }
 
     private int internalDescribe(final IContentDescription description,
@@ -116,7 +116,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
         if (description == null) {
             return VALID;
         }
-        final String charset = (String) properties.get(CHARSET);
+        final String charset = (String) properties.get(ErlangContentDescriber.CHARSET);
         if (description.isRequested(IContentDescription.CHARSET)) {
             if (charset != null) {
                 if (!isCharsetValid(charset)) {
@@ -138,7 +138,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
         String line = null;
 
         while ((line = readLine(input)) != null) {
-            final Charset decl = detectEncoding(line);
+            final Charset decl = ErlangContentDescriber.detectEncoding(line);
             if (decl == null) {
                 return null;
             }
@@ -157,7 +157,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
             if (linesRead > 2) {
                 return null;
             }
-            final Charset decl = detectEncoding(line);
+            final Charset decl = ErlangContentDescriber.detectEncoding(line);
             if (decl != null) {
                 return decl.toString();
             }
@@ -167,7 +167,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
 
     @Override
     public QualifiedName[] getSupportedOptions() {
-        return SUPPORTED_OPTIONS;
+        return ErlangContentDescriber.SUPPORTED_OPTIONS;
     }
 
     /**

@@ -105,7 +105,7 @@ public class SendToConsoleAction extends SelectionDispatchAction {
 		}
 	}
 
-	private IErlangConsole getConsole(final @NonNull IProject aproject) {
+	private IErlangConsole getConsole(@NonNull final IProject aproject) {
 		final IBackendManager backendManager = BackendCore.getBackendManager();
 		final Set<IBackend> executionBackends = backendManager.getExecutionBackends(aproject);
 		final ErlConsoleManager erlConsoleManager = ErlideUIPlugin.getDefault().getErlConsoleManager();
@@ -174,9 +174,9 @@ public class SendToConsoleAction extends SelectionDispatchAction {
 		super(site);
 		this.getOutput = getOutput;
 		this.project = project;
-		setText(getString(bundle, prefix + "label")); //$NON-NLS-1$
-		setToolTipText(getString(bundle, prefix + "tooltip")); //$NON-NLS-1$
-		setDescription(getString(bundle, prefix + "description")); //$NON-NLS-1$
+		setText(SendToConsoleAction.getString(bundle, prefix + "label")); //$NON-NLS-1$
+		setToolTipText(SendToConsoleAction.getString(bundle, prefix + "tooltip")); //$NON-NLS-1$
+		setDescription(SendToConsoleAction.getString(bundle, prefix + "description")); //$NON-NLS-1$
 		this.editor = editor;
 	}
 

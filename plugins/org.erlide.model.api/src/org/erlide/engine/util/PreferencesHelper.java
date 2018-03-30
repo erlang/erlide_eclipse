@@ -42,7 +42,7 @@ public final class PreferencesHelper {
             final IScopeContext storeContext) {
         this.loadContexts = loadContexts;
         this.storeContext = storeContext;
-        nextContexts = getNextContexts(loadContexts, storeContext);
+        nextContexts = PreferencesHelper.getNextContexts(loadContexts, storeContext);
         service = Platform.getPreferencesService();
         this.qualifier = qualifier;
     }

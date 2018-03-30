@@ -35,7 +35,7 @@ public final class RuntimeInfo {
     private final Collection<String> codePath;
     private final boolean valid;
 
-    private RuntimeVersion version = null;
+    private RuntimeVersion version;
 
     @NonNull
     public static final RuntimeInfo NO_RUNTIME_INFO = new RuntimeInfo("");
@@ -87,7 +87,7 @@ public final class RuntimeInfo {
     }
 
     public RuntimeInfo(final String name) {
-        this(name, ".", "", new ArrayList<String>());
+        this(name, ".", "", new ArrayList<>());
     }
 
     public RuntimeInfo(final String name, final String otpHomeDir, final String args,
@@ -100,7 +100,7 @@ public final class RuntimeInfo {
         this.otpHomeDir = otpHomeDir;
         this.args = args;
         this.codePath = ImmutableList.copyOf(codePath);
-        valid = isValidOtpHome(otpHomeDir);
+        valid = RuntimeInfo.isValidOtpHome(otpHomeDir);
     }
 
     public RuntimeInfo(@NonNull final RuntimeInfo o) {
@@ -149,7 +149,7 @@ public final class RuntimeInfo {
     }
 
     public static boolean validateLocation(final String path) {
-        final String v = getRuntimeVersion(path);
+        final String v = RuntimeInfo.getRuntimeVersion(path);
         return v != null;
     }
 
@@ -163,7 +163,7 @@ public final class RuntimeInfo {
             return false;
         }
 
-        final boolean hasErl = hasExecutableFile(otpHome + "/bin/erl");
+        final boolean hasErl = RuntimeInfo.hasExecutableFile(otpHome + "/bin/erl");
 
         final File lib = new File(otpHome + "/lib");
         final boolean hasLib = lib.isDirectory() && lib.exists();
@@ -178,17 +178,17 @@ public final class RuntimeInfo {
     }
 
     public static boolean hasCompiler(final String otpHome) {
-        if (!isValidOtpHome(otpHome)) {
+        if (!RuntimeInfo.isValidOtpHome(otpHome)) {
             return false;
         }
-        final boolean hasErlc = hasExecutableFile(otpHome + "/bin/erlc");
+        final boolean hasErlc = RuntimeInfo.hasExecutableFile(otpHome + "/bin/erlc");
         return hasErlc;
     }
 
     protected static String cvt(final Collection<String> path) {
         final StringBuilder result = new StringBuilder();
         for (String s : path) {
-            if (s.length() > 0) {
+            if (!s.isEmpty()) {
                 if (s.contains(" ")) {
                     s = "\"" + s + "\"";
                 }
@@ -200,14 +200,14 @@ public final class RuntimeInfo {
 
     public RuntimeVersion getVersion() {
         if (version == null) {
-            version = getVersion(otpHomeDir);
+            version = RuntimeInfo.getVersion(otpHomeDir);
         }
         return version;
     }
 
     public static RuntimeVersion getVersion(final String homeDir) {
-        final String label = getRuntimeVersion(homeDir);
-        final String micro = getMicroRuntimeVersion(homeDir);
+        final String label = RuntimeInfo.getRuntimeVersion(homeDir);
+        final String micro = RuntimeInfo.getMicroRuntimeVersion(homeDir);
         return RuntimeVersion.Serializer.parse(label, micro);
     }
 
@@ -216,17 +216,17 @@ public final class RuntimeInfo {
         if (path == null) {
             return null;
         }
-        String result = readOtpVersion(path);
+        String result = RuntimeInfo.readOtpVersion(path);
         // System.out.println("> root: " + result);
         if (result != null) {
             return result;
         }
-        result = readReleaseOtpVersion(path + "/releases/");
+        result = RuntimeInfo.readReleaseOtpVersion(path + "/releases/");
         // System.out.println("> releases: " + result);
         if (result != null) {
             return result;
         }
-        result = readStartBoot(path);
+        result = RuntimeInfo.readStartBoot(path);
         // System.out.println("> boot: " + result);
         return result;
     }
@@ -248,7 +248,7 @@ public final class RuntimeInfo {
         }
         // sort!
         for (final String rel : rels) {
-            final String result = readOtpVersion(path + rel);
+            final String result = RuntimeInfo.readOtpVersion(path + rel);
             // System.out.println("> check: '" + path + rel + "'");
             if (result != null) {
                 return result;
@@ -262,8 +262,8 @@ public final class RuntimeInfo {
         final File file = new File(path + "/bin/start.boot");
         try (final FileInputStream is = new FileInputStream(file)) {
             is.skip(14);
-            readstring(is);
-            result = readstring(is);
+            RuntimeInfo.readstring(is);
+            result = RuntimeInfo.readstring(is);
         } catch (final IOException e) {
         }
         return result;

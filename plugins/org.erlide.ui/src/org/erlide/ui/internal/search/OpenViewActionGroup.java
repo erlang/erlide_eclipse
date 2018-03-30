@@ -275,7 +275,7 @@ public class OpenViewActionGroup extends ActionGroup {
                 .getWorkbench().getAdapter(IBindingService.class);
         if (bindingService != null) {
             keyBinding = bindingService
-                    .getBestActiveBindingFormattedFor(NAVIGATE_SHOW_IN_QUICK_MENU);
+                    .getBestActiveBindingFormattedFor(OpenViewActionGroup.NAVIGATE_SHOW_IN_QUICK_MENU);
         }
 
         if (keyBinding == null) {

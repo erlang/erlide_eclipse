@@ -1,10 +1,10 @@
-package org.erlide.core.internal.builder.external
+package org.erlide.core.builder.external
 
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.Path
 import org.erlide.backend.BackendCore
 import org.erlide.core.builder.BuildNotifier
-import org.erlide.core.internal.builder.ExternalBuilder
+import org.erlide.core.builder.ExternalBuilder
 import org.erlide.engine.MarkerUtils
 import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.engine.model.root.IErlProject

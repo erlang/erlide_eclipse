@@ -33,7 +33,7 @@ public class ErlangLineBreakpoint extends LineBreakpoint implements IErlangBreak
     private ErlangDebugTarget target;
     private String clauseHead;
     private int fHitCount;
-    private int fBreakAction = BREAK_ACTION_BREAK;
+    private int fBreakAction = IErlangBreakpoint.BREAK_ACTION_BREAK;
 
     public ErlangLineBreakpoint() {
         super();

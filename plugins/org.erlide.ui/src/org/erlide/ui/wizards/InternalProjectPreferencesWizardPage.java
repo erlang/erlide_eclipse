@@ -2,7 +2,6 @@ package org.erlide.ui.wizards;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
@@ -112,15 +111,14 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
     private List<String> dirs(final List<String> list, final IPath ref) {
         final int n = ref.segmentCount();
         final List<String> result = Lists.newArrayList();
-        for (final Iterator<String> iter = list.iterator(); iter.hasNext();) {
-            final String element = iter.next();
+        for (final String element : list) {
             IPath p = new Path(element);
             p = p.removeLastSegments(1).removeFirstSegments(n).setDevice(null);
             String ps = p.toString();
             if ("".equals(ps)) {
                 ps = ".";
             }
-            if (result.indexOf(ps) < 0) {
+            if (!result.contains(ps)) {
                 result.add(ps);
             }
         }
@@ -128,7 +126,7 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
     }
 
     private List<String> search(final String ext, final File file) {
-        return search(ext, file, new ArrayList<String>());
+        return search(ext, file, new ArrayList<>());
     }
 
     private List<String> search(final String ext, final File file,

@@ -60,7 +60,7 @@ public class ErlStructureCreator extends StructureCreator {
 
     // private final IErlProject fProject;
 
-    private IDocumentPartitioner documentPartitioner = null;
+    private IDocumentPartitioner documentPartitioner;
 
     public ErlStructureCreator() {
     }
@@ -70,7 +70,7 @@ public class ErlStructureCreator extends StructureCreator {
      */
     @Override
     public String getName() {
-        return ErlideUIPlugin.getResourceString(NAME);
+        return ErlideUIPlugin.getResourceString(ErlStructureCreator.NAME);
     }
 
     /**
@@ -190,7 +190,7 @@ public class ErlStructureCreator extends StructureCreator {
         if (node instanceof IStreamContentAccessor) {
             final IStreamContentAccessor sca = (IStreamContentAccessor) node;
             try {
-                return readString(sca.getContents());
+                return ErlStructureCreator.readString(sca.getContents());
             } catch (final CoreException ex) {
             }
         }
@@ -248,7 +248,7 @@ public class ErlStructureCreator extends StructureCreator {
                 }
                 if (document == null) {
                     try {
-                        s = readString(f.getContents());
+                        s = ErlStructureCreator.readString(f.getContents());
                         document = new Document(s);
                     } catch (final CoreException e1) {
                     }
@@ -258,7 +258,7 @@ public class ErlStructureCreator extends StructureCreator {
             try {
                 try (final InputStream contents = ((IStreamContentAccessor) element)
                         .getContents()) {
-                    s = readString(contents);
+                    s = ErlStructureCreator.readString(contents);
                 } catch (final IOException e) {
                 }
                 document = new Document(s);

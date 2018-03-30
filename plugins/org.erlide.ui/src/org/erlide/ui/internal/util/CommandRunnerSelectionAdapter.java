@@ -18,7 +18,7 @@ public final class CommandRunnerSelectionAdapter extends SelectionAdapter {
     @Override
     public void widgetSelected(final SelectionEvent e) {
         final IWorkbench workbench = PlatformUI.getWorkbench();
-        final @Nullable IHandlerService handlerService = workbench
+        @Nullable final IHandlerService handlerService = workbench
                 .getService(IHandlerService.class);
         try {
             if (handlerService != null) {

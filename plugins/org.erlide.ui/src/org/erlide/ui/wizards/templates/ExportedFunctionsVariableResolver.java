@@ -17,18 +17,18 @@ public class ExportedFunctionsVariableResolver extends FunctionVariableResolver 
     private static final ArrayList<FunctionVariableResolver> fInstances = new ArrayList<>();
 
     public ExportedFunctionsVariableResolver() {
-        fInstances.add(this);
+        ExportedFunctionsVariableResolver.fInstances.add(this);
     }
 
     public static ExportedFunctionsVariableResolver getDefault() {
-        if (fInstances.size() == 0) {
-            fInstances.add(new ExportedFunctionsVariableResolver());
+        if (ExportedFunctionsVariableResolver.fInstances.isEmpty()) {
+            ExportedFunctionsVariableResolver.fInstances.add(new ExportedFunctionsVariableResolver());
         }
-        return (ExportedFunctionsVariableResolver) fInstances.get(0);
+        return (ExportedFunctionsVariableResolver) ExportedFunctionsVariableResolver.fInstances.get(0);
     }
 
     public void addFunction(final String name, final int arity) {
-        for (final Object element0 : fInstances) {
+        for (final Object element0 : ExportedFunctionsVariableResolver.fInstances) {
             final ExportedFunctionsVariableResolver element = (ExportedFunctionsVariableResolver) element0;
             element.doAddFunction(name, arity);
         }
@@ -36,7 +36,7 @@ public class ExportedFunctionsVariableResolver extends FunctionVariableResolver 
     }
 
     public void clearFunctions() {
-        for (final Object element0 : fInstances) {
+        for (final Object element0 : ExportedFunctionsVariableResolver.fInstances) {
             final ExportedFunctionsVariableResolver element = (ExportedFunctionsVariableResolver) element0;
             element.doClearFunctions();
         }

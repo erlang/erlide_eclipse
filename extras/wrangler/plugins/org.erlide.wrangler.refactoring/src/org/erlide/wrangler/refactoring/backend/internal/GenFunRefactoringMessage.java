@@ -48,7 +48,7 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
         dupsInFun,
         logCmd,
         noOfClauses,
-        dupsInClause;
+        dupsInClause
         //@formatter:on
     }
 
@@ -57,19 +57,19 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
             throws WranglerException {
         final OtpErlangObject wranglerResult = resultTuple.elementAt(1);
         final String state = resultTuple.elementAt(0).toString();
-        if (state.equals("ok")) {
+        if ("ok".equals(state)) {
 
             if (wranglerResult instanceof OtpErlangList) {
                 changedFiles = parseFileList((OtpErlangList) wranglerResult);
                 setSuccessful();
                 return;
             }
-        } else if (state.equals("error")) {
+        } else if ("error".equals(state)) {
             final OtpErlangString msg = (OtpErlangString) wranglerResult;
             setUnsuccessful(msg.stringValue());
             return;
 
-        } else if (state.equals("multiple_instances")) {
+        } else if ("multiple_instances".equals(state)) {
             parameters = new HashMap<>();
             final OtpErlangTuple pars = (OtpErlangTuple) wranglerResult;
             setState("", RefactoringState.MULTI_INSTANCES);
@@ -82,7 +82,7 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
             parameters.put(GenFunReturnParameterName.dupsInFun, pars.elementAt(6));
             parameters.put(GenFunReturnParameterName.logCmd, pars.elementAt(7));
 
-        } else if (state.equals("unknown_side_effect")) {
+        } else if ("unknown_side_effect".equals(state)) {
             parameters = new HashMap<>();
             final OtpErlangTuple pars = (OtpErlangTuple) wranglerResult;
             setState("", RefactoringState.UNKNOWN_SIDE_EFFECT);
@@ -97,7 +97,7 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
             parameters.put(GenFunReturnParameterName.dupsInClause, pars.elementAt(7));
             parameters.put(GenFunReturnParameterName.logCmd, pars.elementAt(8));
 
-        } else if (state.equals("more_than_one_clause")) {
+        } else if ("more_than_one_clause".equals(state)) {
             parameters = new HashMap<>();
             final OtpErlangTuple pars = (OtpErlangTuple) wranglerResult;
             setState("", RefactoringState.MORE_THAN_ONE_CLAUSE);
@@ -116,7 +116,7 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
         }
     }
 
-    protected HashMap<GenFunReturnParameterName, OtpErlangObject> parameters = null;
+    protected HashMap<GenFunReturnParameterName, OtpErlangObject> parameters;
 
     /**
      * Get parameters in a map

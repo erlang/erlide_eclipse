@@ -16,15 +16,18 @@ public class ModuleSet {
     private static Map<String, ModuleStats> map;
 
     static {
-        map = new HashMap<>();
+        ModuleSet.map = new HashMap<>();
+    }
+
+    private ModuleSet() {
     }
 
     public static void add(final ModuleStats module) {
-        map.put(module.getLabel(), module);
+        ModuleSet.map.put(module.getLabel(), module);
     }
 
     public static ModuleStats get(final String name) {
-        return map.get(name);
+        return ModuleSet.map.get(name);
     }
 
     /**
@@ -33,15 +36,15 @@ public class ModuleSet {
      * @return
      */
     public static Set<String> getNames() {
-        return map.keySet();
+        return ModuleSet.map.keySet();
     }
 
     public static void clear() {
-        map.clear();
+        ModuleSet.map.clear();
     }
 
     public static Iterator<ModuleStats> iterator() {
-        return map.values().iterator();
+        return ModuleSet.map.values().iterator();
     }
 
 }

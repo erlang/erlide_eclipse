@@ -116,7 +116,7 @@ public class HyperlinkDetector extends AbstractHyperlinkDetector {
         }
 
         private int countArgs(final String args) {
-            if (args.length() == 0) {
+            if (args.isEmpty()) {
                 return 0;
             }
             return countArgs(args, 0, 1, 0);

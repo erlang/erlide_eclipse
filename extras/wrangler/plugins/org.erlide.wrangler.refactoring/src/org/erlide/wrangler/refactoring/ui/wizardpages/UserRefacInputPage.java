@@ -77,7 +77,7 @@ public class UserRefacInputPage extends InputPage {
         final List<String> parPrompts = ((UserRefactoring) getRefactoring())
                 .getParPrompts();
 
-        if (parPrompts.size() == 0) {
+        if (parPrompts.isEmpty()) {
             final Label label = new Label(composite, SWT.LEFT);
             label.setText("No arguments for this refactoring");
             setControl(composite);

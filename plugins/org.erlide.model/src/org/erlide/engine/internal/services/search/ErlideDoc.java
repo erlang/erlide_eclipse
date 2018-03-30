@@ -33,7 +33,7 @@ public class ErlideDoc implements OtpDocService {
             final String prefix) {
         OtpErlangObject res = null;
         try {
-            res = b.call(ERLIDE_OTP_DOC, "get_proposals", "ass", mod, prefix, stateDir);
+            res = b.call(ErlideDoc.ERLIDE_OTP_DOC, "get_proposals", "ass", mod, prefix, stateDir);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
@@ -46,7 +46,7 @@ public class ErlideDoc implements OtpDocService {
         OtpErlangObject res = null;
         try {
             final String what = includes ? "includes" : "modules";
-            res = b.call(ERLIDE_OTP_DOC, "get_modules", "slsa", prefix, projectModules,
+            res = b.call(ErlideDoc.ERLIDE_OTP_DOC, "get_modules", "slsa", prefix, projectModules,
                     what);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
@@ -64,7 +64,7 @@ public class ErlideDoc implements OtpDocService {
                 new OtpErlangAtom(functionCall.getName()),
                 new OtpErlangInt(functionCall.getArity()), new OtpErlangString("") });
         try {
-            res = b.call(ERLIDE_OTP_DOC, "get_doc", "sxs", functionCall.getModule(),
+            res = b.call(ErlideDoc.ERLIDE_OTP_DOC, "get_doc", "sxs", functionCall.getModule(),
                     input, stateDir);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
@@ -82,7 +82,7 @@ public class ErlideDoc implements OtpDocService {
             final OtpErlangObject input = backend.call("erlide_open", "open", "aix",
                     module, offset, ErlangEngine.getInstance().getOpenService()
                             .mkContext(externalModules, null, pathVars, null, imports));
-            res = b.call(ERLIDE_OTP_DOC, "get_doc", "sxs", module, input, stateDir);
+            res = b.call(ErlideDoc.ERLIDE_OTP_DOC, "get_doc", "sxs", module, input, stateDir);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }

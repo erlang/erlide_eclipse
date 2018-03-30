@@ -28,7 +28,7 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage
 
     public static final String SMART_TYPING_KEY = "smartTyping"; //$NON-NLS-1$
 
-    private static final String[] SMART_TYPING_KEYS = new String[] { "strings", "atoms", //$NON-NLS-1$ //$NON-NLS-2$
+    private static final String[] SMART_TYPING_KEYS = { "strings", "atoms", //$NON-NLS-1$ //$NON-NLS-2$
             "braces", "brackets",  //$NON-NLS-1$ //$NON-NLS-2$
             "parens", "embraceSelection", "pasteReindent" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
@@ -45,10 +45,10 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage
 
     public static final int PASTE_REINDENT = 6;
 
-    private static final String[] SMART_TYPING_DEFAULTS = new String[] { "1", //$NON-NLS-1$
+    private static final String[] SMART_TYPING_DEFAULTS = { "1", //$NON-NLS-1$
             "0", "1", "1", "1", "1", "1" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 
-    private static final String[] AUTO_NL_DEFAULTS = new String[] { "0", "0", //$NON-NLS-1$ //$NON-NLS-2$
+    private static final String[] AUTO_NL_DEFAULTS = { "0", "0", //$NON-NLS-1$ //$NON-NLS-2$
             "0", "0" }; //$NON-NLS-1$ //$NON-NLS-2$
 
     private final List<Button> buttons = new ArrayList<>();
@@ -141,33 +141,33 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage
      */
     @Override
     protected void performDefaults() {
-        setToDefaults(SMART_TYPING_KEYS, SMART_TYPING_DEFAULTS, buttons);
-        setToDefaults(AUTO_NL_KEYS, AUTO_NL_DEFAULTS, autoNLButtons);
+        setToDefaults(SmartTypingPreferencePage.SMART_TYPING_KEYS, SmartTypingPreferencePage.SMART_TYPING_DEFAULTS, buttons);
+        setToDefaults(SmartTypingPreferencePage.AUTO_NL_KEYS, SmartTypingPreferencePage.AUTO_NL_DEFAULTS, autoNLButtons);
         super.performDefaults();
     }
 
     @Override
     protected void putPreferences() {
-        putBooleanPreferences(SMART_TYPING_KEYS, buttons);
-        putBooleanPreferences(AUTO_NL_KEYS, autoNLButtons);
+        putBooleanPreferences(SmartTypingPreferencePage.SMART_TYPING_KEYS, buttons);
+        putBooleanPreferences(SmartTypingPreferencePage.AUTO_NL_KEYS, autoNLButtons);
     }
 
     private void setToPreferences() {
-        setToPreferences(SMART_TYPING_KEYS, SMART_TYPING_DEFAULTS, buttons);
-        setToPreferences(AUTO_NL_KEYS, AUTO_NL_DEFAULTS, autoNLButtons);
+        setToPreferences(SmartTypingPreferencePage.SMART_TYPING_KEYS, SmartTypingPreferencePage.SMART_TYPING_DEFAULTS, buttons);
+        setToPreferences(SmartTypingPreferencePage.AUTO_NL_KEYS, SmartTypingPreferencePage.AUTO_NL_DEFAULTS, autoNLButtons);
     }
 
     public static void addAutoNLKeysAndPrefs(final Map<String, String> prefs) {
-        addKeysAndPrefs(SMART_TYPING_KEY, AUTO_NL_KEYS, AUTO_NL_DEFAULTS, prefs);
+        ErlidePreferencePage.addKeysAndPrefs(SmartTypingPreferencePage.SMART_TYPING_KEY, SmartTypingPreferencePage.AUTO_NL_KEYS, SmartTypingPreferencePage.AUTO_NL_DEFAULTS, prefs);
     }
 
     public static List<Boolean> getBracketInserterPreferences() {
-        return getBooleanPreferences(getPreferences(SMART_TYPING_KEY, SMART_TYPING_KEYS,
-                SMART_TYPING_DEFAULTS));
+        return ErlidePreferencePage.getBooleanPreferences(ErlidePreferencePage.getPreferences(SmartTypingPreferencePage.SMART_TYPING_KEY, SmartTypingPreferencePage.SMART_TYPING_KEYS,
+                SmartTypingPreferencePage.SMART_TYPING_DEFAULTS));
     }
 
     @Override
     protected String getDialogPreferenceKey() {
-        return SMART_TYPING_KEY;
+        return SmartTypingPreferencePage.SMART_TYPING_KEY;
     }
 }

@@ -27,7 +27,7 @@ public final class StringUtils {
      * If it has no '.', returns the original string unchanged.
      */
     public static String stripExtension(final String input) {
-        return stripFromRigthCharOnwards(input, '.');
+        return StringUtils.stripFromRigthCharOnwards(input, '.');
     }
 
     public static int rFind(final String input, final char ch) {
@@ -36,7 +36,7 @@ public final class StringUtils {
         final int off = 0;
         final char[] val = input.toCharArray();
 
-        while (st < len && val[off + len - 1] != ch) {
+        while (len > st && val[off + len - 1] != ch) {
             len--;
         }
         len--;
@@ -44,7 +44,7 @@ public final class StringUtils {
     }
 
     private static String stripFromRigthCharOnwards(final String input, final char ch) {
-        final int len = rFind(input, ch);
+        final int len = StringUtils.rFind(input, ch);
         if (len == -1) {
             return input;
         }
@@ -52,7 +52,7 @@ public final class StringUtils {
     }
 
     public static String stripFromLastSlash(final String input) {
-        return stripFromRigthCharOnwards(input, '/');
+        return StringUtils.stripFromRigthCharOnwards(input, '/');
     }
 
     /**
@@ -65,7 +65,7 @@ public final class StringUtils {
         final int off = 0;
         final char[] val = input.toCharArray();
 
-        while (st < len && val[off + len - 1] == charToTrim) {
+        while (len > st && val[off + len - 1] == charToTrim) {
             len--;
         }
         return input.substring(0, len);
@@ -95,7 +95,7 @@ public final class StringUtils {
      * @note the new line characters are also added to the returned string.
      */
     public static List<String> splitLines(final String string) {
-        final ArrayList<String> ret = new ArrayList<>();
+        final List<String> ret = new ArrayList<>();
         final int len = string.length();
 
         char c;
@@ -142,7 +142,7 @@ public final class StringUtils {
         final StringBuilder b = new StringBuilder();
         int i = 0;
         for (;;) {
-            final Character c = checkCharAt(i, list);
+            final Character c = StringUtils.checkCharAt(i, list);
             if (c == null) {
                 break;
             }
@@ -174,7 +174,7 @@ public final class StringUtils {
         if (list.size() <= 1) {
             return list;
         }
-        final int prefixLength = getLongestPrefix(list).length();
+        final int prefixLength = StringUtils.getLongestPrefix(list).length();
         if (prefixLength == 0) {
             return list;
         }

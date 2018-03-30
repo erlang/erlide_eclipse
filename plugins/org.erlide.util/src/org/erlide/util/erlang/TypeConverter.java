@@ -173,13 +173,13 @@ public final class TypeConverter {
             }
 
             if (cls.isArray()) {
-                return cvtArray(obj, cls);
+                return TypeConverter.cvtArray(obj, cls);
             }
 
             if (cls == String.class) {
-                return cvtString(obj);
+                return TypeConverter.cvtString(obj);
             }
-            if (isNumericClass(cls)) {
+            if (TypeConverter.isNumericClass(cls)) {
                 if (obj instanceof OtpErlangLong) {
                     final long res = ((OtpErlangLong) obj).longValue();
                     if (cls == char.class || cls == Character.class) {
@@ -198,8 +198,8 @@ public final class TypeConverter {
                         return res;
                     }
                 }
-                throw new SignatureException(WRONG_ARG_TYPE + obj.getClass().getName()
-                        + CANT_CONVERT_TO + cls.getCanonicalName());
+                throw new SignatureException(TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName()
+                        + TypeConverter.CANT_CONVERT_TO + cls.getCanonicalName());
             }
             if (cls == boolean.class || cls == Boolean.class) {
                 if (obj instanceof OtpErlangAtom) {
@@ -211,8 +211,8 @@ public final class TypeConverter {
                         return false;
                     }
                 }
-                throw new SignatureException(WRONG_ARG_TYPE + obj.getClass().getName()
-                        + CANT_CONVERT_TO + cls.getCanonicalName());
+                throw new SignatureException(TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName()
+                        + TypeConverter.CANT_CONVERT_TO + cls.getCanonicalName());
             }
             if (Map.class.isAssignableFrom(cls)) {
                 if (obj instanceof OtpErlangMap) {
@@ -220,29 +220,29 @@ public final class TypeConverter {
                     final OtpErlangMap map = (OtpErlangMap) obj;
                     for (final OtpErlangObject key : map.keys()) {
                         final OtpErlangObject value = map.get(key);
-                        result.put(erlang2java(key, key.getClass()),
-                                erlang2java(value, value.getClass()));
+                        result.put(TypeConverter.erlang2java(key, key.getClass()),
+                                TypeConverter.erlang2java(value, value.getClass()));
                     }
                     return result;
                 }
-                throw new SignatureException(WRONG_ARG_TYPE + obj.getClass().getName()
-                        + CANT_CONVERT_TO + cls.getCanonicalName());
+                throw new SignatureException(TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName()
+                        + TypeConverter.CANT_CONVERT_TO + cls.getCanonicalName());
             }
             if (Collection.class.isAssignableFrom(cls)) {
                 if (obj instanceof OtpErlangList) {
                     final OtpErlangObject[] list = ((OtpErlangList) obj).elements();
                     final Object[] olist = new Object[list.length];
                     for (int i = 0; i < list.length; i++) {
-                        olist[i] = erlang2java(list[i], list[i].getClass());
+                        olist[i] = TypeConverter.erlang2java(list[i], list[i].getClass());
                     }
                     return Arrays.asList(olist);
                 }
-                throw new SignatureException(WRONG_ARG_TYPE + obj.getClass().getName()
-                        + CANT_CONVERT_TO + cls.getCanonicalName());
+                throw new SignatureException(TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName()
+                        + TypeConverter.CANT_CONVERT_TO + cls.getCanonicalName());
             }
             if (obj instanceof OtpErlangRef) {
-                throw new SignatureException(WRONG_ARG_TYPE + obj.getClass().getName()
-                        + CANT_CONVERT_TO + cls.getCanonicalName());
+                throw new SignatureException(TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName()
+                        + TypeConverter.CANT_CONVERT_TO + cls.getCanonicalName());
             }
             return obj;
         } catch (final SignatureException e) {
@@ -276,13 +276,13 @@ public final class TypeConverter {
                     final long l = ((OtpErlangLong) el).longValue();
                     res.append((char) (l & 0xFFFF));
                 } else {
-                    res.append(erlang2java(el, String.class));
+                    res.append(TypeConverter.erlang2java(el, String.class));
                 }
             }
             return res.toString();
         }
         throw new SignatureException(
-                WRONG_ARG_TYPE + obj.getClass().getName() + CANT_CONVERT_TO + "String");
+                TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName() + TypeConverter.CANT_CONVERT_TO + "String");
     }
 
     private static Object cvtArray(final OtpErlangObject obj, final Class<?> cls)
@@ -297,7 +297,7 @@ public final class TypeConverter {
         if (els != null) {
             final Object arr = Array.newInstance(cls.getComponentType(), els.length);
             for (int i = 0; i < els.length; i++) {
-                Array.set(arr, i, erlang2java(els[i], cls.getComponentType()));
+                Array.set(arr, i, TypeConverter.erlang2java(els[i], cls.getComponentType()));
             }
             return arr;
         }
@@ -325,43 +325,43 @@ public final class TypeConverter {
      */
     public static OtpErlangObject java2erlang(final Object obj, final String type)
             throws SignatureException {
-        return java2erlang(obj, Signature.parse(type)[0]);
+        return TypeConverter.java2erlang(obj, Signature.parse(type)[0]);
     }
 
     @SuppressWarnings("boxing")
     public static OtpErlangObject java2erlang(final Object obj, final Signature type)
             throws SignatureException {
         if (type.kind == 'x') {
-            return java2erlang(obj);
+            return TypeConverter.java2erlang(obj);
         }
         if (obj instanceof String) {
-            return cvtString(obj, type);
+            return TypeConverter.cvtString(obj, type);
         }
         if (obj instanceof Character) {
             if (type.kind == 'i') {
                 return new OtpErlangChar((Character) obj);
             }
-            failConversion(obj, type);
+            TypeConverter.failConversion(obj, type);
         }
         if (obj instanceof Number) {
-            return cvtNumber(obj, type);
+            return TypeConverter.cvtNumber(obj, type);
         }
         if (obj instanceof Boolean) {
             if (type.kind == 'o') {
                 return new OtpErlangAtom((Boolean) obj ? "true" : "false");
             }
-            failConversion(obj, type);
+            TypeConverter.failConversion(obj, type);
         }
         if (obj instanceof Collection<?>) {
             if (type.kind == 'l') {
                 final Object[] v = ((Collection<?>) obj).toArray(new Object[] {});
                 final OtpErlangObject[] vv = new OtpErlangObject[v.length];
                 for (int i = 0; i < v.length; i++) {
-                    vv[i] = java2erlang(v[i], type.content[0]);
+                    vv[i] = TypeConverter.java2erlang(v[i], type.content[0]);
                 }
                 return new OtpErlangList(vv);
             }
-            failConversion(obj, type);
+            TypeConverter.failConversion(obj, type);
         }
         if (obj instanceof Map<?, ?>) {
             if (type.kind == 'm') {
@@ -376,7 +376,7 @@ public final class TypeConverter {
                 }
                 return new OtpErlangMap(keys, values);
             }
-            failConversion(obj, type);
+            TypeConverter.failConversion(obj, type);
         }
 
         if (obj instanceof OtpErlangPid) {
@@ -389,7 +389,7 @@ public final class TypeConverter {
             return (OtpErlangObject) obj;
         }
         if (obj instanceof OtpErlangObject) {
-            checkConversion(obj);
+            TypeConverter.checkConversion(obj);
             return (OtpErlangObject) obj;
         }
         if (obj instanceof IConvertible) {
@@ -406,17 +406,17 @@ public final class TypeConverter {
             if (type.kind == 'l') {
                 final OtpErlangObject[] vv = new OtpErlangObject[len];
                 for (int i = 0; i < len; i++) {
-                    vv[i] = java2erlang(Array.get(obj, i), type.content[0]);
+                    vv[i] = TypeConverter.java2erlang(Array.get(obj, i), type.content[0]);
                 }
                 return new OtpErlangList(vv);
             } else if (type.kind == 't') {
                 final OtpErlangObject[] vv = new OtpErlangObject[len];
                 for (int i = 0; i < len; i++) {
-                    vv[i] = java2erlang(Array.get(obj, i), type.content[i]);
+                    vv[i] = TypeConverter.java2erlang(Array.get(obj, i), type.content[i]);
                 }
                 return new OtpErlangTuple(vv);
             } else {
-                failConversion(obj, type);
+                TypeConverter.failConversion(obj, type);
             }
         }
 
@@ -426,14 +426,14 @@ public final class TypeConverter {
         if (type.kind == 'b' && obj != null) {
             return new OtpErlangBinary(obj.toString().getBytes());
         }
-        failConversion(obj, type);
+        TypeConverter.failConversion(obj, type);
         return null;
     }
 
     private static void checkConversion(final Object obj) {
         if (TypeConverter.willCheckConversion()) {
             final StackTraceElement[] st = new Throwable().getStackTrace();
-            final StackTraceElement el = findRpcStacktraceElement(st);
+            final StackTraceElement el = TypeConverter.findRpcStacktraceElement(st);
             ErlLogger.debug(" *** deprecated use of java2erlang: "
                     + obj.getClass().getSimpleName() + " " + el);
             if (el == null) {
@@ -450,11 +450,11 @@ public final class TypeConverter {
         boolean found = false;
         for (final StackTraceElement ste : st) {
             if (found) {
-                if (!isRelevantMethod(ste)) {
+                if (!TypeConverter.isRelevantMethod(ste)) {
                     return ste;
                 }
             }
-            if (isRelevantMethod(ste)) {
+            if (TypeConverter.isRelevantMethod(ste)) {
                 found = true;
             }
         }
@@ -462,11 +462,11 @@ public final class TypeConverter {
     }
 
     private static boolean isRelevantMethod(final StackTraceElement ste) {
-        return (ste.getMethodName().equals("send")
-                || ste.getMethodName().equals("sendRpc")
-                || ste.getMethodName().equals("rpc") || ste.getMethodName().equals("rpct")
-                || ste.getMethodName().equals("rpcx")
-                || ste.getMethodName().equals("rpcxt"))
+        return ("send".equals(ste.getMethodName())
+                || "sendRpc".equals(ste.getMethodName())
+                || "rpc".equals(ste.getMethodName()) || "rpct".equals(ste.getMethodName())
+                || "rpcx".equals(ste.getMethodName())
+                || "rpcxt".equals(ste.getMethodName()))
                 && ste.getClassName().endsWith("Backend");
     }
 
@@ -476,19 +476,19 @@ public final class TypeConverter {
             if (type.kind == 'd') {
                 return new OtpErlangFloat((Float) obj);
             }
-            failConversion(obj, type);
+            TypeConverter.failConversion(obj, type);
         } else if (obj instanceof Double) {
             if (type.kind == 'd') {
                 return new OtpErlangDouble((Double) obj);
             }
-            failConversion(obj, type);
+            TypeConverter.failConversion(obj, type);
         } else if (type.kind == 'i') {
             if (obj instanceof BigInteger) {
                 return new OtpErlangLong((BigInteger) obj);
             }
             return new OtpErlangLong(((Number) obj).longValue());
         } else {
-            failConversion(obj, type);
+            TypeConverter.failConversion(obj, type);
         }
         return null;
     }
@@ -502,7 +502,7 @@ public final class TypeConverter {
         } else if (type.kind == 'b') {
             return new OtpErlangBinary(((String) obj).getBytes());
         } else {
-            failConversion(obj, type);
+            TypeConverter.failConversion(obj, type);
         }
         return null;
     }
@@ -549,7 +549,7 @@ public final class TypeConverter {
             final Object[] v = ((Collection<?>) obj).toArray(new Object[] {});
             final OtpErlangObject[] vv = new OtpErlangObject[v.length];
             for (int i = 0; i < v.length; i++) {
-                vv[i] = java2erlang(v[i]);
+                vv[i] = TypeConverter.java2erlang(v[i]);
             }
             return new OtpErlangList(vv);
         }
@@ -560,8 +560,8 @@ public final class TypeConverter {
             final OtpErlangObject[] kk = new OtpErlangObject[k.length];
             final OtpErlangObject[] vv = new OtpErlangObject[k.length];
             for (int i = 0; i < k.length; i++) {
-                kk[i] = java2erlang(k[i]);
-                vv[i] = java2erlang(map.get(k[i]));
+                kk[i] = TypeConverter.java2erlang(k[i]);
+                vv[i] = TypeConverter.java2erlang(map.get(k[i]));
             }
             return new OtpErlangMap(kk, vv);
         }
@@ -585,7 +585,7 @@ public final class TypeConverter {
             return (OtpErlangObject) obj;
         }
         if (obj instanceof OtpErlangObject) {
-            checkConversion(obj);
+            TypeConverter.checkConversion(obj);
             return (OtpErlangObject) obj;
         }
 
@@ -593,7 +593,7 @@ public final class TypeConverter {
             final int len = Array.getLength(obj);
             final OtpErlangObject[] vv = new OtpErlangObject[len];
             for (int i = 0; i < len; i++) {
-                vv[i] = java2erlang(Array.get(obj, i));
+                vv[i] = TypeConverter.java2erlang(Array.get(obj, i));
             }
             return new OtpErlangList(vv);
         }

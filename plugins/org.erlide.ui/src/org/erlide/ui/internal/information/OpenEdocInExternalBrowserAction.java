@@ -215,7 +215,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
      * @noreference This method is not intended to be referenced by clients.
      */
     protected String getDialogTitle() {
-        return getTitle();
+        return OpenEdocInExternalBrowserAction.getTitle();
     }
 
     /**

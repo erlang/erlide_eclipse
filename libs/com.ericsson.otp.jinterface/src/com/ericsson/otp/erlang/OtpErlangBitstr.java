@@ -63,7 +63,7 @@ public class OtpErlangBitstr extends OtpErlangObject {
     }
 
     private void check_bitstr(final byte[] abin, final int a_pad_bits) {
-        if (a_pad_bits < 0 || 7 < a_pad_bits) {
+        if (a_pad_bits < 0 || a_pad_bits > 7) {
             throw new java.lang.IllegalArgumentException("Padding must be in range 0..7");
         }
         if (a_pad_bits != 0 && abin.length == 0) {
@@ -104,7 +104,7 @@ public class OtpErlangBitstr extends OtpErlangObject {
      */
     public OtpErlangBitstr(final Object o) {
         try {
-            bin = toByteArray(o);
+            bin = OtpErlangBitstr.toByteArray(o);
             pad_bits = 0;
         } catch (final IOException e) {
             throw new java.lang.IllegalArgumentException(
@@ -192,7 +192,7 @@ public class OtpErlangBitstr extends OtpErlangObject {
         if (pad_bits != 0) {
             return null;
         }
-        return fromByteArray(bin);
+        return OtpErlangBitstr.fromByteArray(bin);
     }
 
     /**

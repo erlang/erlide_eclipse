@@ -48,7 +48,7 @@ public class ErlangSourceContextTypeComment extends TemplateContextType {
      */
     public ErlangSourceContextTypeComment() {
         addGlobalResolvers();
-        fInstance = this;
+        ErlangSourceContextTypeComment.fInstance = this;
     }
 
     private void addGlobalResolvers() {
@@ -65,10 +65,10 @@ public class ErlangSourceContextTypeComment extends TemplateContextType {
      * @return the shared instance
      */
     public static ErlangSourceContextTypeComment getDefault() {
-        if (fInstance == null) {
-            fInstance = new ErlangSourceContextTypeComment();
+        if (ErlangSourceContextTypeComment.fInstance == null) {
+            ErlangSourceContextTypeComment.fInstance = new ErlangSourceContextTypeComment();
         }
-        return fInstance;
+        return ErlangSourceContextTypeComment.fInstance;
     }
 
     /**
@@ -80,7 +80,7 @@ public class ErlangSourceContextTypeComment extends TemplateContextType {
         if (fStore == null) {
             fStore = new ContributionTemplateStore(getContextTypeRegistry(),
                     ErlideUIPlugin.getDefault().getPreferenceStore(),
-                    ERLANGSOURCE_TEMPLATES_KEY);
+                    ErlangSourceContextTypeComment.ERLANGSOURCE_TEMPLATES_KEY);
             try {
                 fStore.load();
             } catch (final IOException e) {
@@ -100,9 +100,9 @@ public class ErlangSourceContextTypeComment extends TemplateContextType {
         if (fRegistry == null) {
             // create an configure the contexts available in the template editor
             fRegistry = new ContributionContextTypeRegistry();
-            fRegistry.addContextType(ERLANGSOURCE_CONTEXT_TYPE_COMMENTS);
-            fRegistry.addContextType(ERLANGSOURCE_CONTEXT_TYPE_BEHAVIOUR);
-            fRegistry.addContextType(ERLANGSOURCE_CONTEXT_TYPE_LAYOUT);
+            fRegistry.addContextType(ErlangSourceContextTypeComment.ERLANGSOURCE_CONTEXT_TYPE_COMMENTS);
+            fRegistry.addContextType(ErlangSourceContextTypeComment.ERLANGSOURCE_CONTEXT_TYPE_BEHAVIOUR);
+            fRegistry.addContextType(ErlangSourceContextTypeComment.ERLANGSOURCE_CONTEXT_TYPE_LAYOUT);
         }
         return fRegistry;
     }

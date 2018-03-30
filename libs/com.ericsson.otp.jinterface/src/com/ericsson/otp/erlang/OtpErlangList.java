@@ -35,15 +35,15 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
 
     private static final OtpErlangObject[] NO_ELEMENTS = new OtpErlangObject[0];
 
-    final private OtpErlangObject[] elems;
+    private final OtpErlangObject[] elems;
 
-    private OtpErlangObject lastTail = null;
+    private OtpErlangObject lastTail;
 
     /**
      * Create an empty list.
      */
     public OtpErlangList() {
-        elems = NO_ELEMENTS;
+        elems = OtpErlangList.NO_ELEMENTS;
     }
 
     /**
@@ -54,8 +54,8 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
      *            the characters from which to create the list.
      */
     public OtpErlangList(final String str) {
-        if (str == null || str.length() == 0) {
-            elems = NO_ELEMENTS;
+        if (str == null || str.isEmpty()) {
+            elems = OtpErlangList.NO_ELEMENTS;
         } else {
             final int[] codePoints = OtpErlangString.stringToCodePoints(str);
             elems = new OtpErlangObject[codePoints.length];
@@ -119,7 +119,7 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
             this.elems = new OtpErlangObject[count];
             System.arraycopy(elems, start, this.elems, 0, count);
         } else {
-            this.elems = NO_ELEMENTS;
+            this.elems = OtpErlangList.NO_ELEMENTS;
         }
     }
 
@@ -147,7 +147,7 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
                 lastTail = buf.read_any();
             }
         } else {
-            elems = NO_ELEMENTS;
+            elems = OtpErlangList.NO_ELEMENTS;
         }
     }
 
@@ -183,7 +183,7 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
      */
     public OtpErlangObject[] elements() {
         if (arity() == 0) {
-            return NO_ELEMENTS;
+            return OtpErlangList.NO_ELEMENTS;
         }
         final OtpErlangObject[] res = new OtpErlangObject[arity()];
         System.arraycopy(elems, 0, res, 0, res.length);
@@ -202,7 +202,7 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
     }
 
     protected String toString(final int start) {
-        final StringBuffer s = new StringBuffer();
+        final StringBuilder s = new StringBuilder();
         s.append("[");
 
         for (int i = start; i < arity(); i++) {

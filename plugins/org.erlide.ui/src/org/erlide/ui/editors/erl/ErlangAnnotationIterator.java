@@ -54,7 +54,7 @@ public class ErlangAnnotationIterator implements Iterator<Annotation> {
         if (model != null) {
             fIterator = model.getAnnotationIterator();
         } else {
-            fIterator = Collections.EMPTY_LIST.iterator();
+            fIterator = Collections.emptyList().iterator();
         }
         fSkipIrrelevants = skipIrrelevants;
         skip();

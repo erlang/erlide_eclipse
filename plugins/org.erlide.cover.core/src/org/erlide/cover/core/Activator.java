@@ -14,7 +14,7 @@ public class Activator extends Plugin implements Logger {
     @Override
     public void start(final BundleContext bundleContext) throws Exception {
         super.start(bundleContext);
-        plugin = this;
+        Activator.plugin = this;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class Activator extends Plugin implements Logger {
     }
 
     public static Activator getDefault() {
-        return plugin;
+        return Activator.plugin;
     }
 
 }

@@ -22,8 +22,8 @@ public class ClearCacheAction extends TextEditorAction {
     private static final String NOPARSE_CACHE_SUFFIX = ".noparse";
     private static final String SCANNER_CACHE_SUFFIX = ".scan";
     private static final String REFS_CACHE_SUFFIX = ".refs";
-    private static final String[] suffixes = { NOPARSE_CACHE_SUFFIX, SCANNER_CACHE_SUFFIX,
-            REFS_CACHE_SUFFIX };
+    private static final String[] suffixes = {ClearCacheAction.NOPARSE_CACHE_SUFFIX, ClearCacheAction.SCANNER_CACHE_SUFFIX,
+            ClearCacheAction.REFS_CACHE_SUFFIX};
 
     public ClearCacheAction(final ResourceBundle bundle, final String prefix,
             final ErlangEditor erlangEditor) {
@@ -33,7 +33,7 @@ public class ClearCacheAction extends TextEditorAction {
 
     @Override
     public void run() {
-        resetCacheForEditor(erlangEditor);
+        ClearCacheAction.resetCacheForEditor(erlangEditor);
     }
 
     public static void resetCacheForEditor(final ErlangEditor erlangEditor) {
@@ -41,7 +41,7 @@ public class ClearCacheAction extends TextEditorAction {
         if (module == null) {
             return;
         }
-        for (final String suffix : suffixes) {
+        for (final String suffix : ClearCacheAction.suffixes) {
             final String cacheFileOSPath = ErlangEngine.getInstance().getStateDir()
                     + module.getScannerName() + suffix;
             final File cacheFile = new File(cacheFileOSPath);

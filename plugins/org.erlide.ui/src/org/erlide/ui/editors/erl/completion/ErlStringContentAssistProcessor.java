@@ -10,7 +10,7 @@ import org.erlide.engine.model.root.IErlProject;
 
 public class ErlStringContentAssistProcessor extends AbstractErlContentAssistProcessor {
 
-    private static final char[] NONE = new char[] {};
+    private static final char[] NONE = {};
 
     public ErlStringContentAssistProcessor(final ISourceViewer sourceViewer,
             final IErlModule module, final IErlProject project,
@@ -31,7 +31,7 @@ public class ErlStringContentAssistProcessor extends AbstractErlContentAssistPro
 
     @Override
     public char[] getCompletionProposalAutoActivationCharacters() {
-        return NONE;
+        return ErlStringContentAssistProcessor.NONE;
     }
 
     @Override

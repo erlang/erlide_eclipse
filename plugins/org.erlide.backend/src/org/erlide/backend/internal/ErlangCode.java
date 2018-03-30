@@ -20,7 +20,7 @@ public final class ErlangCode {
 
     public static void addPathA(final IOtpRpc backend, final String path) {
         try {
-            backend.call(CODE, "add_patha", "s", path);
+            backend.call(ErlangCode.CODE, "add_patha", "s", path);
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -28,7 +28,7 @@ public final class ErlangCode {
 
     public static void addPathZ(final IOtpRpc backend, final String path) {
         try {
-            backend.call(CODE, "add_pathz", "s", path);
+            backend.call(ErlangCode.CODE, "add_pathz", "s", path);
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -45,7 +45,7 @@ public final class ErlangCode {
             } catch (final Exception e) {
                 // ignore
             }
-            backend.call(CODE, "del_path", "s", path);
+            backend.call(ErlangCode.CODE, "del_path", "s", path);
         } catch (final Exception e) {
         }
     }
@@ -53,13 +53,13 @@ public final class ErlangCode {
     public static OtpErlangObject loadBinary(final IOtpRpc b, final String beamf,
             final OtpErlangBinary code) throws RpcException {
         OtpErlangObject result;
-        result = b.call(CODE, "load_binary", "asb", beamf, beamf, code);
+        result = b.call(ErlangCode.CODE, "load_binary", "asb", beamf, beamf, code);
         return result;
     }
 
     public static void delete(final IOtpRpc fBackend, final String moduleName) {
         try {
-            fBackend.call(CODE, "delete", "a", moduleName);
+            fBackend.call(ErlangCode.CODE, "delete", "a", moduleName);
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -79,10 +79,10 @@ public final class ErlangCode {
 
     public static boolean isEmbedded(final IOtpRpc backend) {
         try {
-            final OtpErlangObject r = backend.call(CODE, "ensure_loaded", "a",
+            final OtpErlangObject r = backend.call(ErlangCode.CODE, "ensure_loaded", "a",
                     "funny_module_name_that_nobody_would_use");
             final OtpBindings b = OtpErlang.match("{error, What}", r);
-            if (b.getAtom("What").equals("embedded")) {
+            if ("embedded".equals(b.getAtom("What"))) {
                 return true;
             }
         } catch (final Exception e) {

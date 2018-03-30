@@ -38,7 +38,7 @@ public class NodeCellModifier implements ICellModifier {
         case COOKIE:
             return node.getCookie();
         case ENABLED:
-            return new Boolean(node.isEnabled());
+            return node.isEnabled();
         case NODE_NAME:
             return node.getNodeName();
         default:

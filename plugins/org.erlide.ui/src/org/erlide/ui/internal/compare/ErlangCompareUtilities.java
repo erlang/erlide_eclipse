@@ -95,7 +95,7 @@ class ErlangCompareUtilities {
         }
         BufferedReader reader = null;
         try {
-            final StringBuffer buffer = new StringBuffer();
+            final StringBuilder buffer = new StringBuilder();
             final char[] part = new char[2048];
             int read = 0;
             reader = new BufferedReader(new InputStreamReader(is, encoding));
@@ -134,7 +134,7 @@ class ErlangCompareUtilities {
                 if (encoding == null) {
                     encoding = ResourcesPlugin.getEncoding();
                 }
-                return readString(is, encoding);
+                return ErlangCompareUtilities.readString(is, encoding);
             }
         } catch (final IOException e1) {
             return null;

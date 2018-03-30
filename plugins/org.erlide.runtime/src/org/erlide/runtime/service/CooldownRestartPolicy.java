@@ -7,10 +7,10 @@ public class CooldownRestartPolicy extends ServiceRestartPolicy {
     public static final int RESTART_INTERVAL = 5000;
 
     private long last;
-    private long interval = RESTART_INTERVAL;
+    private long interval = CooldownRestartPolicy.RESTART_INTERVAL;
 
     public CooldownRestartPolicy() {
-        this(RESTART_INTERVAL);
+        this(CooldownRestartPolicy.RESTART_INTERVAL);
     }
 
     public CooldownRestartPolicy(final long interval) {

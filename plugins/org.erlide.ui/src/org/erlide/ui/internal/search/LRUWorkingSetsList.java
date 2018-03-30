@@ -14,10 +14,8 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -33,7 +31,7 @@ public class LRUWorkingSetsList {
         public int compare(final IWorkingSet[] o1, final IWorkingSet[] o2) {
             final String s1 = o1.length > 0 ? o1[0].getLabel() : null;
             final String s2 = o2.length > 0 ? o2[0].getLabel() : null;
-            return collator.compare(s1, s2);
+            return WorkingSetsComparator.collator.compare(s1, s2);
         }
 
     }
@@ -61,7 +59,7 @@ public class LRUWorkingSetsList {
 
     public Collection<IWorkingSet[]> getSorted() {
         final List<IWorkingSet[]> sortedList = new ArrayList<>(fLRUList);
-        Collections.sort(sortedList, fComparator);
+        sortedList.sort(fComparator);
         return sortedList;
     }
 
@@ -70,13 +68,10 @@ public class LRUWorkingSetsList {
     }
 
     private void removeDeletedWorkingSets() {
-        final Iterator<IWorkingSet[]> iter = new ArrayList<>(fLRUList)
-                .iterator();
-        while (iter.hasNext()) {
-            final IWorkingSet[] workingSets = iter.next();
-            for (int i = 0; i < workingSets.length; i++) {
+        for (IWorkingSet[] workingSets : new ArrayList<>(fLRUList)) {
+            for (IWorkingSet workingSet : workingSets) {
                 if (PlatformUI.getWorkbench().getWorkingSetManager()
-                        .getWorkingSet(workingSets[i].getName()) == null) {
+                        .getWorkingSet(workingSet.getName()) == null) {
                     fLRUList.remove(workingSets);
                     break;
                 }
@@ -88,9 +83,7 @@ public class LRUWorkingSetsList {
             final IWorkingSet[] workingSets) {
         final Set<IWorkingSet> workingSetList = new HashSet<>(
                 Arrays.asList(workingSets));
-        final Iterator<IWorkingSet[]> iter = list.iterator();
-        while (iter.hasNext()) {
-            final IWorkingSet[] lruWorkingSets = iter.next();
+        for (IWorkingSet[] lruWorkingSets : list) {
             final Set<IWorkingSet> lruWorkingSetList = new HashSet<>(
                     Arrays.asList(lruWorkingSets));
             if (lruWorkingSetList.equals(workingSetList)) {

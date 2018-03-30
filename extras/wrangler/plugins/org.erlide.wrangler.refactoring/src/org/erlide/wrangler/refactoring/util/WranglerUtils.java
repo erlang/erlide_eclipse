@@ -72,7 +72,7 @@ public final class WranglerUtils {
      *            current document, in which the offset is calculated
      * @return column number
      */
-    static public int calculateColumnFromOffset(final int offset, final int line,
+    public static int calculateColumnFromOffset(final int offset, final int line,
             final IDocument doc) {
         int lineOffset;
         try {
@@ -99,7 +99,7 @@ public final class WranglerUtils {
      * @throws BadLocationException
      *             if the given position doesn't exist
      */
-    static public int calculateOffsetFromPosition(final int line, final int column,
+    public static int calculateOffsetFromPosition(final int line, final int column,
             final IDocument doc) throws BadLocationException {
         return doc.getLineOffset(line - 1) + column - 1;
     }
@@ -117,11 +117,11 @@ public final class WranglerUtils {
      * @throws BadLocationException
      *             if the given position doesn't exist
      */
-    static public int calculateOffsetFromErlangPos(final OtpErlangTuple pos,
+    public static int calculateOffsetFromErlangPos(final OtpErlangTuple pos,
             final IDocument doc) throws OtpErlangRangeException, BadLocationException {
         final int line = ((OtpErlangLong) pos.elementAt(0)).intValue();
         final int column = ((OtpErlangLong) pos.elementAt(1)).intValue();
-        final int offset = calculateOffsetFromPosition(line, column, doc);
+        final int offset = WranglerUtils.calculateOffsetFromPosition(line, column, doc);
         return offset - 1;
     }
 
@@ -134,7 +134,7 @@ public final class WranglerUtils {
      *            source document
      * @return requested string
      */
-    static public String getTextFromEditor(final IErlRange range, final IDocument doc) {
+    public static String getTextFromEditor(final IErlRange range, final IDocument doc) {
         try {
             final String s = doc.get(range.getOffset(), range.getLength());
             return s;
@@ -152,12 +152,12 @@ public final class WranglerUtils {
      *            the containing project in which the scan is run
      * @return module names' list
      */
-    static public ArrayList<String> getModuleNames(final IProject project) {
-        final ArrayList<IFile> erlangFiles = getModules(project);
+    public static ArrayList<String> getModuleNames(final IProject project) {
+        final Iterable<IFile> erlangFiles = WranglerUtils.getModules(project);
 
         final ArrayList<String> moduleNames = new ArrayList<>();
         for (final IFile f : erlangFiles) {
-            moduleNames.add(removeExtension(f.getName()));
+            moduleNames.add(WranglerUtils.removeExtension(f.getName()));
         }
         Collections.sort(moduleNames);
         return moduleNames;
@@ -170,10 +170,10 @@ public final class WranglerUtils {
      *            the project in which the scan is run
      * @return module list
      */
-    static public ArrayList<IFile> getModules(final IProject project) {
+    public static ArrayList<IFile> getModules(final IProject project) {
         final ArrayList<IFile> erlangFiles = new ArrayList<>();
         try {
-            findModulesRecursively(project, erlangFiles);
+            WranglerUtils.findModulesRecursively(project, erlangFiles);
         } catch (final CoreException e) {
             ErlLogger.error(e);
             return new ArrayList<>();
@@ -181,22 +181,22 @@ public final class WranglerUtils {
         return erlangFiles;
     }
 
-    static private void findModulesRecursively(final IResource res,
-            final List<IFile> files) throws CoreException {
+    private static void findModulesRecursively(final IResource res,
+                                               final List<IFile> files) throws CoreException {
         if (res instanceof IContainer) {
             final IContainer c = (IContainer) res;
             for (final IResource r : c.members()) {
-                findModulesRecursively(r, files);
+                WranglerUtils.findModulesRecursively(r, files);
             }
         } else if (res instanceof IFile) {
             final IFile file = (IFile) res;
-            if (isErlangFile(file)) {
+            if (WranglerUtils.isErlangFile(file)) {
                 files.add(file);
             }
         }
     }
 
-    static public boolean isErlangFile(final IFile file) {
+    public static boolean isErlangFile(final IFile file) {
         return "erl".equals(file.getFileExtension())
                 || "hrl".equals(file.getFileExtension());
     }
@@ -208,7 +208,7 @@ public final class WranglerUtils {
      *            the file's name
      * @return file name without the extension
      */
-    static public String removeExtension(final String fileName) {
+    public static String removeExtension(final String fileName) {
         return fileName.substring(0, fileName.lastIndexOf("."));
     }
 
@@ -227,12 +227,12 @@ public final class WranglerUtils {
      * @throws BadLocationException
      *             if the given position does not exist
      */
-    static public String getTextSegment(final OtpErlangTuple start,
+    public static String getTextSegment(final OtpErlangTuple start,
             final OtpErlangTuple end, final IDocument doc)
             throws OtpErlangRangeException, BadLocationException {
-        final int startOffset = calculateOffsetFromErlangPos(start, doc);
-        final int endOffset = calculateOffsetFromErlangPos(end, doc);
-        return getTextSegment(startOffset, endOffset, doc);
+        final int startOffset = WranglerUtils.calculateOffsetFromErlangPos(start, doc);
+        final int endOffset = WranglerUtils.calculateOffsetFromErlangPos(end, doc);
+        return WranglerUtils.getTextSegment(startOffset, endOffset, doc);
     }
 
     /**
@@ -264,9 +264,9 @@ public final class WranglerUtils {
     protected static String getTextSegment(final int startLine, final int startPos,
             final int endLine, final int endPos, final IDocument doc)
             throws BadLocationException {
-        final int startOffset = calculateOffsetFromPosition(startLine, startPos, doc);
-        final int endOffset = calculateOffsetFromPosition(endLine, endPos, doc);
-        return getTextSegment(startOffset, endOffset, doc);
+        final int startOffset = WranglerUtils.calculateOffsetFromPosition(startLine, startPos, doc);
+        final int endOffset = WranglerUtils.calculateOffsetFromPosition(endLine, endPos, doc);
+        return WranglerUtils.getTextSegment(startOffset, endOffset, doc);
     }
 
     /**
@@ -279,9 +279,9 @@ public final class WranglerUtils {
      * @param editor
      *            editor in which the highlightion should be done
      */
-    static public void highlightOffsetSelection(final int startOffset,
+    public static void highlightOffsetSelection(final int startOffset,
             final int endOffset, final ITextEditor editor) {
-        highlightSelection(startOffset, endOffset - startOffset, editor);
+        WranglerUtils.highlightSelection(startOffset, endOffset - startOffset, editor);
     }
 
     /**
@@ -294,7 +294,7 @@ public final class WranglerUtils {
      * @param editor
      *            editor in which the highlightion should be done
      */
-    static protected void highlightSelection(final int offset, final int length,
+    protected static void highlightSelection(final int offset, final int length,
             final ITextEditor editor) {
         editor.setHighlightRange(offset, length, true);
         editor.selectAndReveal(offset, length);
@@ -314,8 +314,8 @@ public final class WranglerUtils {
      */
     public static void highlightSelection(final int offset, final int length,
             final IErlMemberSelection selection) {
-        final ITextEditor editor = (ITextEditor) openFile(selection.getFile());
-        highlightSelection(offset, length, editor);
+        final ITextEditor editor = (ITextEditor) WranglerUtils.openFile(selection.getFile());
+        WranglerUtils.highlightSelection(offset, length, editor);
     }
 
     /**
@@ -325,13 +325,14 @@ public final class WranglerUtils {
      *            erlang function clause
      */
     public static void highlightSelection(final IErlFunctionClause clause) {
-        int offset, length;
+        int offset;
+        int length;
         offset = clause.getNameRange().getOffset();
         length = clause.getNameRange().getLength();
         final IErlModule module = ErlangEngine.getInstance().getModelUtilService()
                 .getModule(clause);
-        final IEditorPart editor = openFile((IFile) module.getResource());
-        highlightSelection(offset, length, (ITextEditor) editor);
+        final IEditorPart editor = WranglerUtils.openFile((IFile) module.getResource());
+        WranglerUtils.highlightSelection(offset, length, (ITextEditor) editor);
 
     }
 
@@ -342,7 +343,7 @@ public final class WranglerUtils {
      *            file
      * @return the opened editor
      */
-    static public IEditorPart openFile(final IFile file) {
+    public static IEditorPart openFile(final IFile file) {
         final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                 .getActivePage();
         /*
@@ -366,7 +367,7 @@ public final class WranglerUtils {
      *
      * @return document in the current editor
      */
-    static public IDocument getDocument() {
+    public static IDocument getDocument() {
         final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                 .getActivePage();
         final IEditorPart part = page.getActiveEditor();
@@ -383,8 +384,8 @@ public final class WranglerUtils {
      *            corresponding file
      * @return document
      */
-    static public IDocument getDocument(final IFile file) {
-        return new Document(getFileContent(file));
+    public static IDocument getDocument(final IFile file) {
+        return new Document(WranglerUtils.getFileContent(file));
     }
 
     /**
@@ -394,14 +395,14 @@ public final class WranglerUtils {
      *            editor which has the document
      * @return document is conatained by the editor
      */
-    static public IDocument getDocument(final ITextEditor editor) {
+    public static IDocument getDocument(final ITextEditor editor) {
         final IFileEditorInput input = (IFileEditorInput) editor.getEditorInput();
         final IDocument doc = editor.getDocumentProvider().getDocument(input);
 
         return doc;
     }
 
-    static private String getFileContent(final IFile file) {
+    private static String getFileContent(final IFile file) {
         try (final InputStream in = file.getContents();
                 final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             final byte[] buf = new byte[1024];
@@ -426,7 +427,7 @@ public final class WranglerUtils {
      *            file path
      * @return IFile object
      */
-    static public IFile getFileFromPath(final String pathString) {
+    public static IFile getFileFromPath(final String pathString) {
         final Path path = new Path(pathString);
         return getFileFromPath(path);
     }
@@ -468,7 +469,7 @@ public final class WranglerUtils {
         for (final ChangedFile f : changedFiles) {
             IFile file;
             try {
-                file = getFileFromPath(f.getNewPath());
+                file = WranglerUtils.getFileFromPath(f.getNewPath());
                 final IErlElement element = model.findElement(file);
                 final IErlModule m = (IErlModule) element;
                 m.resourceChanged(null);

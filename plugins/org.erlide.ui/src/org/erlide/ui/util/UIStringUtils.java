@@ -32,7 +32,7 @@ public final class UIStringUtils {
 
         final List<String> splitted = StringUtils.splitLines(hoverInfo);
         for (final String line : splitted) {
-            if (line.trim().length() > 0) {
+            if (!line.trim().isEmpty()) {
                 final int found = ErlideSelection.getFirstCharPosition(line);
                 firstCharPosition = Math.min(found, firstCharPosition);
             }

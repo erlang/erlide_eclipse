@@ -43,7 +43,7 @@ public class GenericQueue {
     /** Create an empty queue */
     public GenericQueue() {
         init();
-        status = open;
+        status = GenericQueue.open;
     }
 
     /** Clear a queue */
@@ -52,7 +52,7 @@ public class GenericQueue {
     }
 
     public void close() {
-        status = closing;
+        status = GenericQueue.closing;
     }
 
     /**
@@ -107,7 +107,7 @@ public class GenericQueue {
      * @return The object at the head of the queue, or null if none arrived in time.
      */
     public synchronized Object get(final long timeout) throws InterruptedException {
-        if (status == closed) {
+        if (status == GenericQueue.closed) {
             return null;
         }
 

@@ -20,4 +20,6 @@ public class CoverConstants {
     public static final String FUN_SET_INCLUDES = "set_includes";
     public static final String FUN_SET_REPORT_DIR = "set_report_dir";
 
+    private CoverConstants() {
+    }
 }

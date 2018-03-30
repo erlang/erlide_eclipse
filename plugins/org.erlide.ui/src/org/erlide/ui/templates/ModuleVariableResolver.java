@@ -25,14 +25,14 @@ public class ModuleVariableResolver extends TemplateVariableResolver {
 
     public ModuleVariableResolver() {
         super("module", "The current erlang module");
-        fInstances.add(this);
+        ModuleVariableResolver.fInstances.add(this);
     }
 
     public static ModuleVariableResolver getDefault() {
-        if (fInstances.isEmpty()) {
-            fInstances.add(new ModuleVariableResolver());
+        if (ModuleVariableResolver.fInstances.isEmpty()) {
+            ModuleVariableResolver.fInstances.add(new ModuleVariableResolver());
         }
-        return fInstances.get(0);
+        return ModuleVariableResolver.fInstances.get(0);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ModuleVariableResolver extends TemplateVariableResolver {
      *            The module to set.
      */
     public void setModule(final String module) {
-        for (final Object element0 : fInstances) {
+        for (final Object element0 : ModuleVariableResolver.fInstances) {
             final ModuleVariableResolver element = (ModuleVariableResolver) element0;
             element.doSetModule(module);
         }

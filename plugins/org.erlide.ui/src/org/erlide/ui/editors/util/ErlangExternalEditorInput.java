@@ -8,7 +8,7 @@ import org.erlide.engine.model.root.IErlModule;
 public class ErlangExternalEditorInput extends FileStoreEditorInput
         implements IErlangExternalEditorInput {
 
-    final private IErlModule module;
+    private final IErlModule module;
 
     public ErlangExternalEditorInput(final IFileStore fileStore,
             final IErlModule module) {

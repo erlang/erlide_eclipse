@@ -11,7 +11,6 @@
 package org.erlide.ui.util;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.swt.graphics.Color;
@@ -63,9 +62,7 @@ public class ColorManager implements IColorManager {
     public void dispose(final Display display) {
         final Map<RGB, Color> colorTable = fDisplayTable.get(display);
         if (colorTable != null) {
-            final Iterator<Color> e = colorTable.values().iterator();
-            while (e.hasNext()) {
-                final Color color = e.next();
+            for (Color color : colorTable.values()) {
                 if (color != null && !color.isDisposed()) {
                     color.dispose();
                 }
@@ -99,11 +96,7 @@ public class ColorManager implements IColorManager {
             }
         }
 
-        Color color = colorTable.get(rgb);
-        if (color == null) {
-            color = new Color(Display.getCurrent(), rgb);
-            colorTable.put(rgb, color);
-        }
+        Color color = colorTable.computeIfAbsent(rgb, r -> new Color(Display.getCurrent(), r));
 
         return color;
     }

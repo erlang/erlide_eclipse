@@ -28,65 +28,67 @@ import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCode
  *
  */
 public class DuplicatesUIManager {
-    /**
-     * Duplicated view ID.
-     */
-    public static final String duplicatedView = "org.erlide.wrangler.refactoring.duplicatedcode.views.DuplicatedCodeView";
-    // private static List<DuplicatedCode> result;
-    private static IDuplicatedCodeResultDisplayer dupDisplayer;
+	/**
+	 * Duplicated view ID.
+	 */
+	public static final String duplicatedView = "org.erlide.wrangler.refactoring.duplicatedcode.views.DuplicatedCodeView";
+	// private static List<DuplicatedCode> result;
+	private static IDuplicatedCodeResultDisplayer dupDisplayer;
 
-    /**
-     * Stores the view object
-     *
-     * @param displayer
-     *            duplicates view
-     */
-    public static void setDuplicatedCodeResultDisplayer(
-            final IDuplicatedCodeResultDisplayer displayer) {
-        dupDisplayer = displayer;
-    }
+	private DuplicatesUIManager() {
+	}
 
-    /**
-     * Sets the duplicates in the view.
-     *
-     * @param root
-     *            list of the duplicates
-     */
-    public static void setRefactoringResults(final List<DuplicatedCodeElement> root) {
-        dupDisplayer.showResult(root);
-    }
+	/**
+	 * Stores the view object
+	 *
+	 * @param displayer
+	 *            duplicates view
+	 */
+	public static void setDuplicatedCodeResultDisplayer(final IDuplicatedCodeResultDisplayer displayer) {
+		DuplicatesUIManager.dupDisplayer = displayer;
+	}
 
-    /**
-     * Shows the duplicates view.
-     */
-    public static void showDuplicatesView() {
-        final IWorkbench workbench = PlatformUI.getWorkbench();
+	/**
+	 * Sets the duplicates in the view.
+	 *
+	 * @param root
+	 *            list of the duplicates
+	 */
+	public static void setRefactoringResults(final List<DuplicatedCodeElement> root) {
+		DuplicatesUIManager.dupDisplayer.showResult(root);
+	}
 
-        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        try {
+	/**
+	 * Shows the duplicates view.
+	 */
+	public static void showDuplicatesView() {
+		final IWorkbench workbench = PlatformUI.getWorkbench();
 
-            @SuppressWarnings("unused")
-            final IViewPart view = window.getActivePage().showView(duplicatedView);
+		final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+		try {
 
-        } catch (final PartInitException e) {
-            ErlLogger.error(e);
-        }
-    }
+			@SuppressWarnings("unused")
+			final IViewPart view = window.getActivePage().showView(DuplicatesUIManager.duplicatedView);
 
-    /**
-     * Hide the duplicates view.
-     */
-    public static void closeDuplicatesView() {
-        final IWorkbench workbench = PlatformUI.getWorkbench();
+		} catch (final PartInitException e) {
+			ErlLogger.error(e);
+		}
+	}
 
-        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        IViewPart view;
-        try {
-            view = window.getActivePage().showView(duplicatedView);
-            window.getActivePage().hideView(view);
-        } catch (final PartInitException e) {
-            ErlLogger.error(e);
-        }
+	/**
+	 * Hide the duplicates view.
+	 */
+	public static void closeDuplicatesView() {
+		final IWorkbench workbench = PlatformUI.getWorkbench();
 
-    }
+		final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+		IViewPart view;
+		try {
+			view = window.getActivePage().showView(DuplicatesUIManager.duplicatedView);
+			window.getActivePage().hideView(view);
+		} catch (final PartInitException e) {
+			ErlLogger.error(e);
+		}
+
+	}
 }

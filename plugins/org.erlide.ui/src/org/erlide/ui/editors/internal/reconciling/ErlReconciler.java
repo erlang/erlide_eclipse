@@ -68,9 +68,9 @@ public class ErlReconciler implements IReconciler {
     class ReconcilerThread extends Thread {
 
         private static final int RECONCILER_SUSPEND_LOOP_MAX = 10;
-        private boolean fCanceled = false;
-        private boolean fReset = false;
-        private boolean fIsActive = false;
+        private boolean fCanceled;
+        private boolean fReset;
+        private boolean fIsActive;
 
         public ReconcilerThread(final String name) {
             super(name);
@@ -101,7 +101,7 @@ public class ErlReconciler implements IReconciler {
 
         public void suspendCallerWhileDirty() {
             boolean isDirty = true;
-            int i = RECONCILER_SUSPEND_LOOP_MAX;
+            int i = ReconcilerThread.RECONCILER_SUSPEND_LOOP_MAX;
             while (i > 0 && isDirty) {
                 i--;
                 synchronized (fDirtyRegionQueue) {

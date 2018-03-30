@@ -35,7 +35,7 @@ import org.erlide.ui.util.StatusInfo;
 
 public class ProjectSelectionDialog extends SelectionStatusDialog {
 
-    final static class OurLabelProvider implements ILabelProvider {
+    static final class OurLabelProvider implements ILabelProvider {
         @Override
         public Image getImage(final Object element) {
             return null;
@@ -87,11 +87,11 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
     private final Set<IProject> fProjectsWithSpecifics;
 
     // sizing constants
-    private final static int SIZING_SELECTION_WIDGET_HEIGHT = 250;
-    private final static int SIZING_SELECTION_WIDGET_WIDTH = 300;
+    private static final int SIZING_SELECTION_WIDGET_HEIGHT = 250;
+    private static final int SIZING_SELECTION_WIDGET_WIDTH = 300;
 
     private static final String DIALOG_SETTINGS = "org.erlide.ui.dialogs.ProjectSelectionDialog"; //$NON-NLS-1$
-    private final static String DIALOG_SETTINGS_SHOW_ALL = "ProjectSelectionDialog.show_all"; //$NON-NLS-1$
+    private static final String DIALOG_SETTINGS_SHOW_ALL = "ProjectSelectionDialog.show_all"; //$NON-NLS-1$
 
     private final ViewerFilter fFilter;
 
@@ -138,8 +138,8 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
             }
         });
         final GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
-        data.heightHint = SIZING_SELECTION_WIDGET_HEIGHT;
-        data.widthHint = SIZING_SELECTION_WIDGET_WIDTH;
+        data.heightHint = ProjectSelectionDialog.SIZING_SELECTION_WIDGET_HEIGHT;
+        data.widthHint = ProjectSelectionDialog.SIZING_SELECTION_WIDGET_WIDTH;
         fTableViewer.getTable().setLayoutData(data);
 
         fTableViewer.setLabelProvider(new OurLabelProvider());
@@ -162,8 +162,8 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
             }
         });
         final IDialogSettings dialogSettings = ErlideUIPlugin.getDefault()
-                .getDialogSettingsSection(DIALOG_SETTINGS);
-        final boolean doFilter = !dialogSettings.getBoolean(DIALOG_SETTINGS_SHOW_ALL)
+                .getDialogSettingsSection(ProjectSelectionDialog.DIALOG_SETTINGS);
+        final boolean doFilter = !dialogSettings.getBoolean(ProjectSelectionDialog.DIALOG_SETTINGS_SHOW_ALL)
                 && !fProjectsWithSpecifics.isEmpty();
         checkbox.setSelection(doFilter);
         updateFilter(doFilter);
@@ -182,8 +182,8 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
             fTableViewer.removeFilter(fFilter);
         }
         final IDialogSettings dialogSettings = ErlideUIPlugin.getDefault()
-                .getDialogSettingsSection(DIALOG_SETTINGS);
-        dialogSettings.put(DIALOG_SETTINGS_SHOW_ALL, !selected);
+                .getDialogSettingsSection(ProjectSelectionDialog.DIALOG_SETTINGS);
+        dialogSettings.put(ProjectSelectionDialog.DIALOG_SETTINGS_SHOW_ALL, !selected);
     }
 
     void doSelectionChanged(final Object[] objects) {

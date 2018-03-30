@@ -11,8 +11,8 @@
 package org.erlide.wrangler.refactoring.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.erlide.wrangler.refactoring.util.IErlRange;
 
@@ -30,8 +30,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public abstract class CostumWorkflowRefactoringWithPositionsSelection
         extends CostumWorkflowRefactoring {
 
-    protected HashMap<IErlRange, OtpErlangTuple> positions;
-    protected ArrayList<IErlRange> selectedPositions;
+    protected Map<IErlRange, OtpErlangTuple> positions;
+    protected List<IErlRange> selectedPositions;
 
     /**
      * Get those exporessions with positions which can be selected by the user.
@@ -39,10 +39,8 @@ public abstract class CostumWorkflowRefactoringWithPositionsSelection
      * @return List of positions
      */
     public List<IErlRange> getPositions() {
-        final ArrayList<IErlRange> ret = new ArrayList<>();
-        for (final IErlRange r : positions.keySet()) {
-            ret.add(r);
-        }
+        final List<IErlRange> ret = new ArrayList<>();
+        ret.addAll(positions.keySet());
 
         return ret;
     }

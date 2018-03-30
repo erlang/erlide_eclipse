@@ -23,15 +23,15 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 public class ErlideUIDebugImages {
 
     /* Declare Common paths */
-    private static URL ICON_BASE_URL = null;
+    private static URL ICON_BASE_URL;
 
     static {
         final String pathSuffix = "icons/full/"; //$NON-NLS-1$
-        ICON_BASE_URL = ErlideUIPlugin.getDefault().getBundle().getEntry(pathSuffix);
+        ErlideUIDebugImages.ICON_BASE_URL = ErlideUIPlugin.getDefault().getBundle().getEntry(pathSuffix);
     }
 
     // The plugin registry
-    private static ImageRegistry fgImageRegistry = null;
+    private static ImageRegistry fgImageRegistry;
 
     /*
      * Available cached Images in the Erlang debug plug-in image registry.
@@ -149,7 +149,7 @@ public class ErlideUIDebugImages {
      * @return the image managed under the given key
      */
     public static Image get(final String key) {
-        return getImageRegistry().get(key);
+        return ErlideUIDebugImages.getImageRegistry().get(key);
     }
 
     /**
@@ -157,7 +157,7 @@ public class ErlideUIDebugImages {
      * <code>null</code> if it does not exist.
      */
     public static ImageDescriptor getImageDescriptor(final String key) {
-        return getImageRegistry().getDescriptor(key);
+        return ErlideUIDebugImages.getImageRegistry().getDescriptor(key);
     }
 
     /*
@@ -165,90 +165,90 @@ public class ErlideUIDebugImages {
      * class.
      */
     /* package */static ImageRegistry getImageRegistry() {
-        if (fgImageRegistry == null) {
-            initializeImageRegistry();
+        if (ErlideUIDebugImages.fgImageRegistry == null) {
+            ErlideUIDebugImages.initializeImageRegistry();
         }
-        return fgImageRegistry;
+        return ErlideUIDebugImages.fgImageRegistry;
     }
 
     private static void initializeImageRegistry() {
-        fgImageRegistry = new ImageRegistry(ErlideUIPlugin.getStandardDisplay());
-        declareImages();
+        ErlideUIDebugImages.fgImageRegistry = new ImageRegistry(ErlideUIPlugin.getStandardDisplay());
+        ErlideUIDebugImages.declareImages();
     }
 
     private static void declareImages() {
-        declareRegistryImage(IMG_OBJS_EXCEPTION, T_OBJ + "jexception_obj.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OBJS_EXCEPTION_DISABLED, T_OBJ + "jexceptiond_obj.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OVR_BREAKPOINT_INSTALLED, T_OVR + "installed_ovr.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OVR_BREAKPOINT_INSTALLED_DISABLED,
-                T_OVR + "installed_ovr_disabled.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJS_EXCEPTION, ErlideUIDebugImages.T_OBJ + "jexception_obj.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJS_EXCEPTION_DISABLED, ErlideUIDebugImages.T_OBJ + "jexceptiond_obj.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_BREAKPOINT_INSTALLED, ErlideUIDebugImages.T_OVR + "installed_ovr.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_BREAKPOINT_INSTALLED_DISABLED,
+                ErlideUIDebugImages.T_OVR + "installed_ovr_disabled.gif"); //$NON-NLS-1$
 
-        declareRegistryImage(IMG_OBJS_LOCAL_VARIABLE, T_OBJ + "localvariable_obj.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJS_LOCAL_VARIABLE, ErlideUIDebugImages.T_OBJ + "localvariable_obj.gif"); //$NON-NLS-1$
 
-        declareRegistryImage(IMG_OVR_METHOD_BREAKPOINT_ENTRY, T_OVR + "entry_ovr.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OVR_METHOD_BREAKPOINT_ENTRY_DISABLED,
-                T_OVR + "entry_ovr_disabled.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OVR_METHOD_BREAKPOINT_EXIT, T_OVR + "exit_ovr.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OVR_METHOD_BREAKPOINT_EXIT_DISABLED,
-                T_OVR + "exit_ovr_disabled.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_METHOD_BREAKPOINT_ENTRY, ErlideUIDebugImages.T_OVR + "entry_ovr.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_METHOD_BREAKPOINT_ENTRY_DISABLED,
+                ErlideUIDebugImages.T_OVR + "entry_ovr_disabled.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_METHOD_BREAKPOINT_EXIT, ErlideUIDebugImages.T_OVR + "exit_ovr.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_METHOD_BREAKPOINT_EXIT_DISABLED,
+                ErlideUIDebugImages.T_OVR + "exit_ovr_disabled.gif"); //$NON-NLS-1$
 
-        declareRegistryImage(IMG_OVR_CONDITIONAL_BREAKPOINT,
-                T_OVR + "conditional_ovr.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OVR_CONDITIONAL_BREAKPOINT_DISABLED,
-                T_OVR + "conditional_ovr_disabled.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_CONDITIONAL_BREAKPOINT,
+                ErlideUIDebugImages.T_OVR + "conditional_ovr.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_CONDITIONAL_BREAKPOINT_DISABLED,
+                ErlideUIDebugImages.T_OVR + "conditional_ovr_disabled.gif"); //$NON-NLS-1$
 
-        declareRegistryImage(IMG_OVR_SCOPED_BREAKPOINT, T_OVR + "scoped_ovr.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OVR_SCOPED_BREAKPOINT_DISABLED,
-                T_OVR + "scoped_ovr_disabled.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_SCOPED_BREAKPOINT, ErlideUIDebugImages.T_OVR + "scoped_ovr.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_SCOPED_BREAKPOINT_DISABLED,
+                ErlideUIDebugImages.T_OVR + "scoped_ovr_disabled.gif"); //$NON-NLS-1$
 
-        declareRegistryImage(IMG_OVR_UNCAUGHT_BREAKPOINT, T_OVR + "uncaught_ovr.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OVR_UNCAUGHT_BREAKPOINT_DISABLED,
-                T_OVR + "uncaught_ovr_disabled.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_UNCAUGHT_BREAKPOINT, ErlideUIDebugImages.T_OVR + "uncaught_ovr.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_UNCAUGHT_BREAKPOINT_DISABLED,
+                ErlideUIDebugImages.T_OVR + "uncaught_ovr_disabled.gif"); //$NON-NLS-1$
 
-        declareRegistryImage(IMG_OVR_CAUGHT_BREAKPOINT, T_OVR + "caught_ovr.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OVR_CAUGHT_BREAKPOINT_DISABLED,
-                T_OVR + "caught_ovr_disabled.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_CAUGHT_BREAKPOINT, ErlideUIDebugImages.T_OVR + "caught_ovr.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_CAUGHT_BREAKPOINT_DISABLED,
+                ErlideUIDebugImages.T_OVR + "caught_ovr_disabled.gif"); //$NON-NLS-1$
 
-        declareRegistryImage(IMG_OBJS_ERROR, T_OBJ + "jrtexception_obj.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJS_ERROR, ErlideUIDebugImages.T_OBJ + "jrtexception_obj.gif"); //$NON-NLS-1$
 
-        declareRegistryImage(IMG_OBJS_SNIPPET_EVALUATING, T_OBJ + "jsbook_run_obj.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJS_SNIPPET_EVALUATING, ErlideUIDebugImages.T_OBJ + "jsbook_run_obj.gif"); //$NON-NLS-1$
 
-        declareRegistryImage(IMG_VIEW_ARGUMENTS_TAB, T_EVIEW + "variable_tab.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_VIEW_ARGUMENTS_TAB, ErlideUIDebugImages.T_EVIEW + "variable_tab.gif"); //$NON-NLS-1$
 
-        declareRegistryImage(IMG_OVR_OUT_OF_SYNCH, T_OVR + "error_co.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OVR_MAY_BE_OUT_OF_SYNCH, T_OVR + "warning_co.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OVR_SYNCHRONIZED, T_OVR + "sync_ovr.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_OUT_OF_SYNCH, ErlideUIDebugImages.T_OVR + "error_co.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_MAY_BE_OUT_OF_SYNCH, ErlideUIDebugImages.T_OVR + "warning_co.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_SYNCHRONIZED, ErlideUIDebugImages.T_OVR + "sync_ovr.gif"); //$NON-NLS-1$
 
-        declareRegistryImage(IMG_OBJS_MONITOR, T_OBJ + "monitor_obj.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OVR_OWNED, T_OVR + "owned_ovr.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OVR_OWNS_MONITOR, T_OVR + "ownsmonitor_ovr.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OVR_IN_CONTENTION, T_OVR + "contention_ovr.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OVR_IN_CONTENTION_FOR_MONITOR,
-                T_OVR + "contentionformonitor_ovr.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OVR_IN_DEADLOCK, T_OVR + "deadlock_ovr.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OBJS_CONTENDED_MONITOR,
-                T_OBJ + "contended_monitor_obj.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OBJS_OWNED_MONITOR, T_OBJ + "owned_monitor_obj.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJS_MONITOR, ErlideUIDebugImages.T_OBJ + "monitor_obj.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_OWNED, ErlideUIDebugImages.T_OVR + "owned_ovr.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_OWNS_MONITOR, ErlideUIDebugImages.T_OVR + "ownsmonitor_ovr.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_IN_CONTENTION, ErlideUIDebugImages.T_OVR + "contention_ovr.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_IN_CONTENTION_FOR_MONITOR,
+                ErlideUIDebugImages.T_OVR + "contentionformonitor_ovr.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OVR_IN_DEADLOCK, ErlideUIDebugImages.T_OVR + "deadlock_ovr.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJS_CONTENDED_MONITOR,
+                ErlideUIDebugImages.T_OBJ + "contended_monitor_obj.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJS_OWNED_MONITOR, ErlideUIDebugImages.T_OBJ + "owned_monitor_obj.gif"); //$NON-NLS-1$
 
-        declareRegistryImage(IMG_WIZBAN_NEWSCRAPPAGE, T_WIZBAN + "newsbook_wiz.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_WIZBAN_LIBRARY, T_WIZBAN + "library_wiz.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_WIZBAN_NEWSCRAPPAGE, ErlideUIDebugImages.T_WIZBAN + "newsbook_wiz.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_WIZBAN_LIBRARY, ErlideUIDebugImages.T_WIZBAN + "library_wiz.gif"); //$NON-NLS-1$
 
-        declareRegistryImage(IMG_TOOL_TERMSNIPPET, T_ELCL + "term_sbook.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_TOOL_TERMSNIPPET_HOVER, T_ELCL + "term_sbook.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_TOOL_TERMSNIPPET_DISABLED, T_DLCL + "term_sbook.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_TOOL_TERMSNIPPET, ErlideUIDebugImages.T_ELCL + "term_sbook.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_TOOL_TERMSNIPPET_HOVER, ErlideUIDebugImages.T_ELCL + "term_sbook.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_TOOL_TERMSNIPPET_DISABLED, ErlideUIDebugImages.T_DLCL + "term_sbook.gif"); //$NON-NLS-1$
 
-        declareRegistryImage(IMG_OBJ_JAVA_INSPECT_EXPRESSION, T_OBJ + "insp_sbook.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OBJS_CLASSPATH, T_OBJ + "classpath_obj.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJ_JAVA_INSPECT_EXPRESSION, ErlideUIDebugImages.T_OBJ + "insp_sbook.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJS_CLASSPATH, ErlideUIDebugImages.T_OBJ + "classpath_obj.gif"); //$NON-NLS-1$
 
-        declareRegistryImage(IMG_OBJS_EXCEPTION_BRKPT_TYPE, T_OBJ + "jexcept_obj.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OBJS_LINE_BRKPT_TYPE, T_OBJ + "jline_obj.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OBJS_CLASSLOAD_BRKPT_TYPE, T_OBJ + "jload_obj.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OBJS_METHOD_BRKPT_TYPE, T_OBJ + "jmeth_obj.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OBJS_JSP_BRKPT_TYPE, T_OBJ + "jspbrkpt_obj.gif"); //$NON-NLS-1$
-        declareRegistryImage(IMG_OBJS_WATCHPOINT_TYPE, T_OBJ + "jwatch_obj.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJS_EXCEPTION_BRKPT_TYPE, ErlideUIDebugImages.T_OBJ + "jexcept_obj.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJS_LINE_BRKPT_TYPE, ErlideUIDebugImages.T_OBJ + "jline_obj.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJS_CLASSLOAD_BRKPT_TYPE, ErlideUIDebugImages.T_OBJ + "jload_obj.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJS_METHOD_BRKPT_TYPE, ErlideUIDebugImages.T_OBJ + "jmeth_obj.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJS_JSP_BRKPT_TYPE, ErlideUIDebugImages.T_OBJ + "jspbrkpt_obj.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJS_WATCHPOINT_TYPE, ErlideUIDebugImages.T_OBJ + "jwatch_obj.gif"); //$NON-NLS-1$
 
-        declareRegistryImage(IMG_OBJ_UNINTERPRETED_STACK_FRAME,
-                T_OBJ + "uninterpreted_stckframe_obj.gif"); //$NON-NLS-1$
+        ErlideUIDebugImages.declareRegistryImage(ErlideUIDebugImages.IMG_OBJ_UNINTERPRETED_STACK_FRAME,
+                ErlideUIDebugImages.T_OBJ + "uninterpreted_stckframe_obj.gif"); //$NON-NLS-1$
 
     }
 
@@ -262,23 +262,23 @@ public class ErlideUIDebugImages {
      *            to where this plugin class is found (i.e. typically the
      *            packages directory)
      */
-    private final static void declareRegistryImage(final String key, final String path) {
+    private static final void declareRegistryImage(final String key, final String path) {
         ImageDescriptor desc = ImageDescriptor.getMissingImageDescriptor();
         try {
-            desc = ImageDescriptor.createFromURL(makeIconFileURL(path));
+            desc = ImageDescriptor.createFromURL(ErlideUIDebugImages.makeIconFileURL(path));
         } catch (final MalformedURLException me) {
             // ErlideUIPlugin.log(me);
         }
-        fgImageRegistry.put(key, desc);
+        ErlideUIDebugImages.fgImageRegistry.put(key, desc);
     }
 
     private static URL makeIconFileURL(final String iconPath)
             throws MalformedURLException {
-        if (ICON_BASE_URL == null) {
+        if (ErlideUIDebugImages.ICON_BASE_URL == null) {
             throw new MalformedURLException();
         }
 
-        return new URL(ICON_BASE_URL, iconPath);
+        return new URL(ErlideUIDebugImages.ICON_BASE_URL, iconPath);
     }
 
 }

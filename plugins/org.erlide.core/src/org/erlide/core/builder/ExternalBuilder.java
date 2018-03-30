@@ -1,4 +1,4 @@
-package org.erlide.core.internal.builder;
+package org.erlide.core.builder;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -7,11 +7,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.builder.BuildNotifier;
-import org.erlide.core.builder.BuilderHelper;
-import org.erlide.core.executor.ProgressCallback;
-import org.erlide.core.executor.ToolExecutor;
-import org.erlide.core.executor.ToolExecutor.ToolResults;
+import org.erlide.core.builder.executor.ProgressCallback;
+import org.erlide.core.builder.executor.ToolExecutor;
+import org.erlide.core.builder.executor.ToolExecutor.ToolResults;
 import org.erlide.engine.MarkerUtils;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.IErlProject;
@@ -19,7 +17,7 @@ import org.erlide.util.ErlLogger;
 
 public abstract class ExternalBuilder extends ErlangBuilder {
 
-	public static boolean DEBUG = false;
+	public static boolean DEBUG;
 
 	protected final ToolExecutor ex;
 	protected final BuilderHelper helper = new BuilderHelper();
@@ -56,7 +54,7 @@ public abstract class ExternalBuilder extends ErlangBuilder {
 
 				@Override
 				public void stdout(final String line) {
-					if (DEBUG) {
+					if (ExternalBuilder.DEBUG) {
 						System.out.println("out: " + line);
 					}
 					final IMessageParser parser = getMessageParser(erlProject);
@@ -65,7 +63,7 @@ public abstract class ExternalBuilder extends ErlangBuilder {
 
 				@Override
 				public void stderr(final String line) {
-					if (DEBUG) {
+					if (ExternalBuilder.DEBUG) {
 						System.out.println("err: " + line);
 					}
 				}

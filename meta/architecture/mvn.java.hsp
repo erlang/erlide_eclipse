@@ -8719,11 +8719,11 @@
             </composite-set>
             <group-move />
           </action>
-          <action type="wrap" active="true" last-applied="true" description="Wrap (11) items into builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder">
+          <action type="wrap" active="true" last-applied="true" description="Wrap (11) items into builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder">
             <composite-set>
-              <action type="add-folder" active="true" last-applied="true" description="Add builder to org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder">
+              <action type="add-folder" active="true" last-applied="true" description="Add builder to org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder">
                 <params name="builder">
-                  <parent-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder" type="package">
+                  <parent-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder" type="package">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8735,9 +8735,9 @@
                   </parent-fqn>
                 </params>
               </action>
-              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.ErlangBuilder to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder">
+              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.ErlangBuilder to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder">
                 <params toChild="builder" toChildType="folder">
-                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.ErlangBuilder" type="class" path="org.erlide.core.internal.builder.ErlangBuilder">
+                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.ErlangBuilder" type="class" path="org.erlide.core.builder.ErlangBuilder">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8748,7 +8748,7 @@
                     <node name="builder" type="package" />
                     <node name="ErlangBuilder" type="class" />
                   </source-fqn>
-                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder" type="package">
+                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder" type="package">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8760,9 +8760,9 @@
                   </to-fqn>
                 </params>
               </action>
-              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.InternalBuilder to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder">
+              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.InternalBuilder to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder">
                 <params toChild="builder" toChildType="folder">
-                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.InternalBuilder" type="class" path="org.erlide.core.internal.builder.InternalBuilder">
+                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.InternalBuilder" type="class" path="org.erlide.core.builder.InternalBuilder">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8773,7 +8773,7 @@
                     <node name="builder" type="package" />
                     <node name="InternalBuilder" type="class" />
                   </source-fqn>
-                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder" type="package">
+                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder" type="package">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8785,9 +8785,9 @@
                   </to-fqn>
                 </params>
               </action>
-              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.ErlcMessageParser to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder">
+              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.ErlcMessageParser to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder">
                 <params toChild="builder" toChildType="folder">
-                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.ErlcMessageParser" type="class" path="org.erlide.core.internal.builder.ErlcMessageParser">
+                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.ErlcMessageParser" type="class" path="org.erlide.core.builder.ErlcMessageParser">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8798,7 +8798,7 @@
                     <node name="builder" type="package" />
                     <node name="ErlcMessageParser" type="class" />
                   </source-fqn>
-                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder" type="package">
+                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder" type="package">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8810,9 +8810,9 @@
                   </to-fqn>
                 </params>
               </action>
-              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.ErlangBuilderFactory to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder">
+              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.ErlangBuilderFactory to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder">
                 <params toChild="builder" toChildType="folder">
-                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.ErlangBuilderFactory" type="class" path="org.erlide.core.internal.builder.ErlangBuilderFactory">
+                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.ErlangBuilderFactory" type="class" path="org.erlide.core.builder.ErlangBuilderFactory">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8823,7 +8823,7 @@
                     <node name="builder" type="package" />
                     <node name="ErlangBuilderFactory" type="class" />
                   </source-fqn>
-                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder" type="package">
+                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder" type="package">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8835,9 +8835,9 @@
                   </to-fqn>
                 </params>
               </action>
-              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.IMessageParser to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder">
+              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.IMessageParser to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder">
                 <params toChild="builder" toChildType="folder">
-                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.IMessageParser" type="class" path="org.erlide.core.internal.builder.IMessageParser">
+                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.IMessageParser" type="class" path="org.erlide.core.builder.IMessageParser">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8848,7 +8848,7 @@
                     <node name="builder" type="package" />
                     <node name="IMessageParser" type="class" />
                   </source-fqn>
-                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder" type="package">
+                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder" type="package">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8860,9 +8860,9 @@
                   </to-fqn>
                 </params>
               </action>
-              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.ExternalBuilder to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder">
+              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.ExternalBuilder to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder">
                 <params toChild="builder" toChildType="folder">
-                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.ExternalBuilder" type="class" path="org.erlide.core.internal.builder.ExternalBuilder">
+                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.ExternalBuilder" type="class" path="org.erlide.core.builder.ExternalBuilder">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8873,7 +8873,7 @@
                     <node name="builder" type="package" />
                     <node name="ExternalBuilder" type="class" />
                   </source-fqn>
-                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder" type="package">
+                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder" type="package">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8885,9 +8885,9 @@
                   </to-fqn>
                 </params>
               </action>
-              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.BuildNotifier to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder">
+              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.BuildNotifier to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder">
                 <params toChild="builder" toChildType="folder">
-                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.BuildNotifier" type="class" path="org.erlide.core.internal.builder.BuildNotifier">
+                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.BuildNotifier" type="class" path="org.erlide.core.builder.BuildNotifier">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8898,7 +8898,7 @@
                     <node name="builder" type="package" />
                     <node name="BuildNotifier" type="class" />
                   </source-fqn>
-                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder" type="package">
+                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder" type="package">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8910,9 +8910,9 @@
                   </to-fqn>
                 </params>
               </action>
-              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.ErlangToolExtensions to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder">
+              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.ErlangToolExtensions to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder">
                 <params toChild="builder" toChildType="folder">
-                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.ErlangToolExtensions" type="class" path="org.erlide.core.internal.builder.ErlangToolExtensions">
+                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.ErlangToolExtensions" type="class" path="org.erlide.core.builder.ErlangToolExtensions">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8923,7 +8923,7 @@
                     <node name="builder" type="package" />
                     <node name="ErlangToolExtensions" type="class" />
                   </source-fqn>
-                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder" type="package">
+                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder" type="package">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8935,9 +8935,9 @@
                   </to-fqn>
                 </params>
               </action>
-              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.BuilderMessages to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder">
+              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.BuilderMessages to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder">
                 <params toChild="builder" toChildType="folder">
-                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.BuilderMessages" type="class" path="org.erlide.core.internal.builder.BuilderMessages">
+                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.BuilderMessages" type="class" path="org.erlide.core.builder.BuilderMessages">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8948,7 +8948,7 @@
                     <node name="builder" type="package" />
                     <node name="BuilderMessages" type="class" />
                   </source-fqn>
-                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder" type="package">
+                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder" type="package">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8960,9 +8960,9 @@
                   </to-fqn>
                 </params>
               </action>
-              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.ErlangEclipseBuilder to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder">
+              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.ErlangEclipseBuilder to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder">
                 <params toChild="builder" toChildType="folder">
-                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.ErlangEclipseBuilder" type="class" path="org.erlide.core.internal.builder.ErlangEclipseBuilder">
+                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.ErlangEclipseBuilder" type="class" path="org.erlide.core.builder.ErlangEclipseBuilder">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8973,7 +8973,7 @@
                     <node name="builder" type="package" />
                     <node name="ErlangEclipseBuilder" type="class" />
                   </source-fqn>
-                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder" type="package">
+                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder" type="package">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8985,9 +8985,9 @@
                   </to-fqn>
                 </params>
               </action>
-              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.ErlangNature to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder">
+              <action type="move" active="true" last-applied="true" description="Move org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.ErlangNature to builder in org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder">
                 <params toChild="builder" toChildType="folder">
-                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder.ErlangNature" type="class" path="org.erlide.core.internal.builder.ErlangNature">
+                  <source-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder.ErlangNature" type="class" path="org.erlide.core.builder.ErlangNature">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />
@@ -8998,7 +8998,7 @@
                     <node name="builder" type="package" />
                     <node name="ErlangNature" type="class" />
                   </source-fqn>
-                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.internal.builder" type="package">
+                  <to-fqn fqn="org.erlide.parent.org.erlide.core.org_erlide_core-0_24_14-SNAPSHOT.org.erlide.core.builder" type="package">
                     <node name="org.erlide.parent" type="pom" />
                     <node name="org.erlide.core" type="pom" />
                     <node name="org_erlide_core-0_24_14-SNAPSHOT" type="jar" />

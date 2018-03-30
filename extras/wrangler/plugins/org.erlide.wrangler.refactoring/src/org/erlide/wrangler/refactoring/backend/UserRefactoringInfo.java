@@ -26,7 +26,7 @@ public class UserRefactoringInfo {
 
     // prepare label's text based on module name
     private String prepareLabel(final String module) {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         for (final String part : module.split("_")) {
             buf.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1))
                     .append(" ");

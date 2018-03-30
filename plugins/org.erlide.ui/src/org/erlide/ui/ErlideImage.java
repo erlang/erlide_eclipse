@@ -64,9 +64,9 @@ public enum ErlideImage {
 
     private static volatile ImageRegistry registry;
 
-    private static URL fgIconBaseURL = null;
+    private static URL fgIconBaseURL;
     static {
-        fgIconBaseURL = ErlideUIPlugin.getDefault().getBundle().getEntry("/icons/full/"); //$NON-NLS-1$
+        ErlideImage.fgIconBaseURL = ErlideUIPlugin.getDefault().getBundle().getEntry("/icons/full/"); //$NON-NLS-1$
     }
 
     private ErlideImage(final ErlideImagePrefix prefix, final String path) {
@@ -75,38 +75,38 @@ public enum ErlideImage {
     }
 
     public URL url() throws MalformedURLException {
-        return makeIconFileURL(prefix, path);
+        return ErlideImage.makeIconFileURL(prefix, path);
     }
 
     public Image getImage() {
-        return getRegistry().get(name());
+        return ErlideImage.getRegistry().get(name());
     }
 
     public ImageDescriptor getDescriptor() {
-        return getRegistry().getDescriptor(name());
+        return ErlideImage.getRegistry().getDescriptor(name());
     }
 
     public static synchronized void dispose() {
-        if (registry != null) {
-            registry.dispose();
+        if (ErlideImage.registry != null) {
+            ErlideImage.registry.dispose();
         }
-        registry = null;
+        ErlideImage.registry = null;
     }
 
     private static ImageRegistry getRegistry() {
-        if (registry == null) {
+        if (ErlideImage.registry == null) {
             synchronized (ErlideImage.class) {
-                if (registry == null) {
-                    registry = new ImageRegistry(Display.getDefault());
-                    registerAllImages();
+                if (ErlideImage.registry == null) {
+                    ErlideImage.registry = new ImageRegistry(Display.getDefault());
+                    ErlideImage.registerAllImages();
                 }
             }
         }
-        return registry;
+        return ErlideImage.registry;
     }
 
     private static void registerAllImages() {
-        for (final ErlideImage key : values()) {
+        for (final ErlideImage key : ErlideImage.values()) {
             ImageDescriptor descriptor;
             try {
                 final URL url = key.url();
@@ -114,20 +114,20 @@ public enum ErlideImage {
             } catch (final MalformedURLException e) {
                 descriptor = ImageDescriptor.getMissingImageDescriptor();
             }
-            registry.put(key.name(), descriptor);
+            ErlideImage.registry.put(key.name(), descriptor);
         }
     }
 
     private static URL makeIconFileURL(final String prefix, final String name)
             throws MalformedURLException {
-        if (fgIconBaseURL == null) {
+        if (ErlideImage.fgIconBaseURL == null) {
             throw new MalformedURLException();
         }
 
         final StringBuilder buffer = new StringBuilder(prefix);
         buffer.append('/');
         buffer.append(name);
-        return new URL(fgIconBaseURL, buffer.toString());
+        return new URL(ErlideImage.fgIconBaseURL, buffer.toString());
     }
 
     /**
@@ -141,7 +141,7 @@ public enum ErlideImage {
      */
     public static void setToolImageDescriptors(final IAction action,
             final String iconName) {
-        setImageDescriptors(action, "tool16", iconName);
+        ErlideImage.setImageDescriptors(action, "tool16", iconName);
     }
 
     /**
@@ -155,7 +155,7 @@ public enum ErlideImage {
      */
     public static void setLocalImageDescriptors(final IAction action,
             final String iconName) {
-        setImageDescriptors(action, "lcl16", iconName);
+        ErlideImage.setImageDescriptors(action, "lcl16", iconName);
     }
 
     private static void setImageDescriptors(final IAction action, final String type,
@@ -163,7 +163,7 @@ public enum ErlideImage {
 
         try {
             final ImageDescriptor id = ImageDescriptor
-                    .createFromURL(makeIconFileURL("d" + type, relPath));
+                    .createFromURL(ErlideImage.makeIconFileURL("d" + type, relPath));
             if (id != null) {
                 action.setDisabledImageDescriptor(id);
             }
@@ -173,7 +173,7 @@ public enum ErlideImage {
 
         try {
             final ImageDescriptor descriptor = ImageDescriptor
-                    .createFromURL(makeIconFileURL("e" + type, relPath));
+                    .createFromURL(ErlideImage.makeIconFileURL("e" + type, relPath));
             action.setHoverImageDescriptor(descriptor);
             action.setImageDescriptor(descriptor);
         } catch (final MalformedURLException e) {

@@ -18,27 +18,27 @@ public class DebuggerEventFactory {
         try {
             OtpBindings b = OtpErlang.match("{started, Pid:p}", message);
             if (b != null) {
-                return buildStartedEvent(b);
+                return DebuggerEventFactory.buildStartedEvent(b);
             }
             b = OtpErlang.match("{terminated, Pid:p}", message);
             if (b != null) {
-                return buildTerminatedEvent(b);
+                return DebuggerEventFactory.buildTerminatedEvent(b);
             }
             b = OtpErlang.match("{int, Cmd}", message);
             if (b != null) {
-                return buildIntEvent(b);
+                return DebuggerEventFactory.buildIntEvent(b);
             }
             b = OtpErlang.match("{attached, Pid:p}", message);
             if (b != null) {
-                return buildAttachedEvent(b);
+                return DebuggerEventFactory.buildAttachedEvent(b);
             }
             b = OtpErlang.match("{Other:a, Cmd}", message);
             if (b != null) {
-                return buildUnknownEvent(message);
+                return DebuggerEventFactory.buildUnknownEvent(message);
             }
             b = OtpErlang.match("{Meta:p, Event}", message);
             if (b != null) {
-                return buildMetaEvent(b);
+                return DebuggerEventFactory.buildMetaEvent(b);
             }
         } catch (final OtpParserException e) {
             ErlLogger.error(e);
@@ -50,7 +50,7 @@ public class DebuggerEventFactory {
 
     private static DebuggerEvent buildMetaEvent(final OtpBindings b)
             throws OtpErlangException {
-        return parseMeta(b.getPid("Meta"), b.get("Event"));
+        return DebuggerEventFactory.parseMeta(b.getPid("Meta"), b.get("Event"));
     }
 
     private static MetaEvent parseMeta(final OtpErlangPid pid,
@@ -97,15 +97,15 @@ public class DebuggerEventFactory {
         try {
             final OtpErlangObject[] cmds = b.getTuple("Cmd");
             final String cmd = ((OtpErlangAtom) cmds[0]).atomValue();
-            if (cmd.equals("new_break")) {
+            if ("new_break".equals(cmd)) {
                 return new NewBreakEvent(cmds);
-            } else if (cmd.equals("new_status")) {
+            } else if ("new_status".equals(cmd)) {
                 return new NewStatusEvent(cmds);
-            } else if (cmd.equals("new_process")) {
+            } else if ("new_process".equals(cmd)) {
                 return new NewProcessEvent(cmds);
-            } else if (cmd.equals("interpret")) {
+            } else if ("interpret".equals(cmd)) {
                 return new InterpretEvent(cmds);
-            } else if (cmd.equals("no_interpret")) {
+            } else if ("no_interpret".equals(cmd)) {
                 return new NoInterpretEvent(cmds);
             } else {
                 return new IntEvent(cmds);

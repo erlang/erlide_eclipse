@@ -32,7 +32,7 @@ public abstract class AbstractInputDialog extends Dialog {
 
     protected Text errorMessageText;
     protected final String title;
-    protected boolean isFinished = false;
+    protected boolean isFinished;
     protected Button okButton;
 
     /**
@@ -48,7 +48,7 @@ public abstract class AbstractInputDialog extends Dialog {
         this.title = title;
     }
 
-    abstract protected void validateInput();
+    protected abstract void validateInput();
 
     /**
      * Returns true if the dialog is finsihed normally

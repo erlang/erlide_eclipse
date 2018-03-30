@@ -11,6 +11,7 @@
 package org.erlide.wrangler.refactoring.backend.internal;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.jface.text.IDocument;
@@ -38,14 +39,14 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ExpressionPosRpcMessage extends AbstractRpcMessage {
 
     protected OtpErlangObject syntaxTree;
-    protected HashMap<IRange, OtpErlangTuple> positionDefs;
+    protected Map<IRange, OtpErlangTuple> positionDefs;
 
     @Override
     protected void parseRefactoringMessage(final OtpErlangTuple resultTuple)
             throws WranglerException {
         try {
             final OtpErlangObject wranglerResult = resultTuple.elementAt(1);
-            if (resultTuple.elementAt(0).toString().equals("ok")) {
+            if ("ok".equals(resultTuple.elementAt(0).toString())) {
                 OtpErlangList posDefList;
                 if (wranglerResult instanceof OtpErlangTuple) {
                     syntaxTree = ((OtpErlangTuple) wranglerResult).elementAt(0);

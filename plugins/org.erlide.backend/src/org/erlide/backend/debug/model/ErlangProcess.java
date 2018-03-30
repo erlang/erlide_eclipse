@@ -57,7 +57,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
     private final OtpErlangPid fPid;
 
-    private OtpErlangPid fCachedMetaPid = null;
+    private OtpErlangPid fCachedMetaPid;
 
     private final IBackend fBackend;
 
@@ -76,7 +76,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
         super(target);
         fPid = pid;
         fBackend = backend;
-        fStatus = STATUS_UNKNOWN;
+        fStatus = ErlangProcess.STATUS_UNKNOWN;
         fExitStatus = null;
         stackFrames = new ArrayList<>();
         stepping = false;
@@ -349,7 +349,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
     @Override
     public String getName() throws DebugException {
-        return toLocalPid(fPid);
+        return ErlangProcess.toLocalPid(fPid);
     }
 
     public static String toLocalPid(final OtpErlangPid pid) {
@@ -397,12 +397,12 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
         // return getStatus().equals(STATUS_SUSPENDED)
         // || getStatus().equals(STATUS_BREAK)
         // || getStatus().equals(STATUS_IDLE);
-        return getStatus().equals(STATUS_SUSPENDED) || getStatus().equals(STATUS_BREAK);
+        return getStatus().equals(ErlangProcess.STATUS_SUSPENDED) || getStatus().equals(ErlangProcess.STATUS_BREAK);
     }
 
     @Override
     public boolean isTerminated() {
-        return getStatus().equals(STATUS_TERMINATED);
+        return getStatus().equals(ErlangProcess.STATUS_TERMINATED);
     }
 
     @Override

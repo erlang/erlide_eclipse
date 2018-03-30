@@ -68,7 +68,7 @@ import com.google.common.collect.Lists;
 public class ErlangDebugTarget extends ErlangDebugElement
         implements IDebugTarget, IErlangDebugNode, IDisposable {
 
-    public static final IThread[] NO_PROCS = new IThread[] {};
+    public static final IThread[] NO_PROCS = {};
 
     public static final int INTERPRETED_MODULES_CHANGED = 0;
     public static final int TRACE_CHANGED = 1;
@@ -77,12 +77,12 @@ public class ErlangDebugTarget extends ErlangDebugElement
     private final List<ErlangProcess> localProcesses;
     final IBackend backend;
     private final ILaunch launch;
-    private boolean disconnected = false;
+    private boolean disconnected;
     // private final DebuggerListener fDbgListener;
     // private final DebuggerEventListener fDebuggerEventListener;
-    private boolean terminated = false;
-    private boolean showSystemProcesses = false;
-    private boolean showErlideProcesses = false;
+    private boolean terminated;
+    private boolean showSystemProcesses;
+    private boolean showErlideProcesses;
     private final Set<String> interpretedModules;
     private final Collection<IProject> projects;
 
@@ -90,7 +90,7 @@ public class ErlangDebugTarget extends ErlangDebugElement
     private final Map<OtpErlangPid, OtpErlangPid> pidsFromMeta = new TreeMap<>();
 
     private final DebuggerEventDaemon debuggerDaemon;
-    private boolean disposed = false;
+    private boolean disposed;
 
     public ErlangDebugTarget(final ILaunch launch, final IBackend backend,
             final Collection<IProject> projects) throws DebugException {
@@ -141,7 +141,7 @@ public class ErlangDebugTarget extends ErlangDebugElement
     @Override
     public IThread[] getThreads() throws DebugException {
         if (isTerminated()) {
-            return NO_PROCS;
+            return ErlangDebugTarget.NO_PROCS;
         }
         return localProcesses.toArray(new IThread[localProcesses.size()]);
     }
@@ -227,8 +227,8 @@ public class ErlangDebugTarget extends ErlangDebugElement
     public void installDeferredBreakpoints() {
         final IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager()
                 .getBreakpoints(getModelIdentifier());
-        for (int i = 0; i < breakpoints.length; i++) {
-            breakpointAdded(breakpoints[i]);
+        for (IBreakpoint breakpoint : breakpoints) {
+            breakpointAdded(breakpoint);
         }
     }
 
@@ -388,8 +388,7 @@ public class ErlangDebugTarget extends ErlangDebugElement
     }
 
     public ErlangProcess getErlangProcess(final OtpErlangPid pid) {
-        for (int i = 0; i < allProcesses.size(); ++i) {
-            final ErlangProcess p = allProcesses.get(i);
+        for (final ErlangProcess p : allProcesses) {
             if (p.getPid().equals(pid)) {
                 return p;
             }

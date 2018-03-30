@@ -226,7 +226,7 @@ public class IErlElementTest extends ErlModelTestBase {
                     return false; // avoid digging through otp
                 }
                 final String name = element.getName();
-                if (name.equals("ebin")) {
+                if ("ebin".equals(name)) {
                     return false; // avoid possible beam-files
                 } else if (name.startsWith(".")) {
                     return false; // avoid eclipse internals

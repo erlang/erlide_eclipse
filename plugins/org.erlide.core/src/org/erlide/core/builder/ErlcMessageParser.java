@@ -1,4 +1,4 @@
-package org.erlide.core.internal.builder;
+package org.erlide.core.builder;
 
 import java.util.Iterator;
 
@@ -28,7 +28,7 @@ public class ErlcMessageParser implements IMessageParser {
     public boolean createMarkers(final String msg) {
         boolean result = false;
         final Iterable<String> pars = Splitter.on(':').limit(3).split(msg);
-        if (pars.iterator().next().equals("ERROR")) {
+        if ("ERROR".equals(pars.iterator().next())) {
             MarkerUtils.createProblemMarker(project, null, pars.iterator().next(), -1,
                     IMarker.SEVERITY_ERROR);
             result = true;

@@ -24,7 +24,7 @@ import com.google.common.collect.Sets;
 
 public class DialyzerBuilder {
 	public static final String BUILDER_ID = "org.erlide.core.builder.dialyzer";
-	private IProject project;
+	private final IProject project;
 
 	public DialyzerBuilder(IProject project) {
 		this.project = project;

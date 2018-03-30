@@ -19,7 +19,7 @@ public class CachingTermParser extends OtpParser {
                     @Override
                     public OtpErlangObject load(final String key)
                             throws OtpParserException {
-                        return doParse(key);
+                        return OtpParser.doParse(key);
                     }
                 });
     }

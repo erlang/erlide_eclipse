@@ -32,7 +32,7 @@ public class CoverRunner extends AbstractCoverRunner {
     public void run() {
         final CoverBackend backend = CoverBackend.getInstance();
         try {
-            semaphore.acquireUninterruptibly();
+            CoverRunner.semaphore.acquireUninterruptibly();
             final IConfiguration config = backend.getSettings().getConfig();
             CoverageAnalysis.prepareAnalysis(config);
             runTests(config);
@@ -42,7 +42,7 @@ public class CoverRunner extends AbstractCoverRunner {
             ErlLogger.error(e);
             backend.handleError("Exception while running cover: " + e);
         } finally {
-            semaphore.release();
+            CoverRunner.semaphore.release();
         }
     }
 

@@ -10,25 +10,28 @@ public class OtpRpcFactory {
 
     private static IOtpRpcProvider provider;
 
+    private OtpRpcFactory() {
+    }
+
     public static IOtpRpc getOtpRpc(final RuntimeVersion version) {
-        if (provider == null) {
-            provider = getOtpRpcProvider();
+        if (OtpRpcFactory.provider == null) {
+            OtpRpcFactory.provider = OtpRpcFactory.getOtpRpcProvider();
         }
-        return provider.get(version);
+        return OtpRpcFactory.provider.get(version);
     }
 
     public static IOtpRpc getOtpRpcForProject(final IErlProject project) {
-        if (provider == null) {
-            provider = getOtpRpcProvider();
+        if (OtpRpcFactory.provider == null) {
+            OtpRpcFactory.provider = OtpRpcFactory.getOtpRpcProvider();
         }
-        return provider.get(project.getName());
+        return OtpRpcFactory.provider.get(project.getName());
     }
 
     public static IOtpRpc getOtpRpc() {
-        if (provider == null) {
-            provider = getOtpRpcProvider();
+        if (OtpRpcFactory.provider == null) {
+            OtpRpcFactory.provider = OtpRpcFactory.getOtpRpcProvider();
         }
-        return provider.get();
+        return OtpRpcFactory.provider.get();
     }
 
     private static IOtpRpcProvider getOtpRpcProvider() {

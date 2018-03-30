@@ -41,7 +41,7 @@ public final class LayoutUtil {
      */
     public static void doDefaultLayout(final Composite parent,
             final DialogField[] editors, final boolean labelOnTop) {
-        doDefaultLayout(parent, editors, labelOnTop, 0, 0);
+        LayoutUtil.doDefaultLayout(parent, editors, labelOnTop, 0, 0);
     }
 
     /**
@@ -58,14 +58,14 @@ public final class LayoutUtil {
     public static void doDefaultLayout(final Composite parent,
             final DialogField[] editors, final boolean labelOnTop, final int marginWidth,
             final int marginHeight) {
-        int nColumns = getNumberOfColumns(editors);
+        int nColumns = LayoutUtil.getNumberOfColumns(editors);
         final Control[][] controls = new Control[editors.length][];
         for (int i = 0; i < editors.length; i++) {
             controls[i] = editors[i].doFillIntoGrid(parent, nColumns);
         }
         if (labelOnTop) {
             nColumns--;
-            modifyLabelSpans(controls, nColumns);
+            LayoutUtil.modifyLabelSpans(controls, nColumns);
         }
         GridLayout layout = null;
         if (parent.getLayout() instanceof GridLayout) {
@@ -85,7 +85,7 @@ public final class LayoutUtil {
 
     private static void modifyLabelSpans(final Control[][] controls, final int nCulumns) {
         for (final Control[] element : controls) {
-            setHorizontalSpan(element[0], nCulumns);
+            LayoutUtil.setHorizontalSpan(element[0], nCulumns);
         }
     }
 

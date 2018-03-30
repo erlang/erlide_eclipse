@@ -21,12 +21,12 @@ public class ErlElementDelta implements IErlElementDelta {
     /**
      * @see #getMovedFromElement()
      */
-    protected IErlElement fMovedFromElement = null;
+    protected IErlElement fMovedFromElement;
 
     /**
      * @see #getMovedToElement()
      */
-    protected IErlElement fMovedToElement = null;
+    protected IErlElement fMovedToElement;
 
     /**
      * @param kind
@@ -34,7 +34,7 @@ public class ErlElementDelta implements IErlElementDelta {
      * @param element
      */
     public ErlElementDelta(final int kind, final int flags, final IErlElement element) {
-        this(kind, flags, element, new ArrayList<ErlElementDelta>(0),
+        this(kind, flags, element, new ArrayList<>(0),
                 new ArrayList<IResourceDelta>(0));
     }
 
@@ -70,9 +70,9 @@ public class ErlElementDelta implements IErlElementDelta {
     @Override
     public IErlElementDelta[] getChildren(final int kind) {
         final ArrayList<IErlElementDelta> children = new ArrayList<>(0);
-        for (int i = 0; i < fChildren.size(); ++i) {
-            final IErlElementDelta c = fChildren.get(i);
-            if (c.getKind() == kind || kind == ALL) {
+        for (ErlElementDelta aFChildren : fChildren) {
+            final IErlElementDelta c = aFChildren;
+            if (c.getKind() == kind || kind == IErlElementDelta.ALL) {
                 children.add(c);
             }
         }
@@ -161,16 +161,16 @@ public class ErlElementDelta implements IErlElementDelta {
      */
     protected void addAffectedChild(final ErlElementDelta child) {
         switch (fKind) {
-        case ADDED:
-        case REMOVED:
+        case IErlElementDelta.ADDED:
+        case IErlElementDelta.REMOVED:
             // no need to add a child if this parent is added or removed
             return;
-        case CHANGED:
-            fFlags |= F_CHILDREN;
+        case IErlElementDelta.CHANGED:
+            fFlags |= IErlElementDelta.F_CHILDREN;
             break;
         default:
-            fKind = CHANGED;
-            fFlags |= F_CHILDREN;
+            fKind = IErlElementDelta.CHANGED;
+            fFlags |= IErlElementDelta.F_CHILDREN;
             break;
         }
 
@@ -191,51 +191,51 @@ public class ErlElementDelta implements IErlElementDelta {
             fChildren.add(child);
         } else {
             switch (existingChild.getKind()) {
-            case ADDED:
+            case IErlElementDelta.ADDED:
                 switch (child.getKind()) {
                 // child was added then added -> it is added
-                case ADDED:
+                case IErlElementDelta.ADDED:
                     // child was added then changed -> it is added
-                case CHANGED:
+                case IErlElementDelta.CHANGED:
                     return;
 
                 // child was added then removed -> noop
-                case REMOVED:
+                case IErlElementDelta.REMOVED:
                     fChildren.remove(existingChildIndex);
                     return;
                 default:
                     break;
                 }
                 break;
-            case REMOVED:
+            case IErlElementDelta.REMOVED:
                 switch (child.getKind()) {
                 // child was removed then added -> it is changed
-                case ADDED:
-                    child.fKind = CHANGED;
+                case IErlElementDelta.ADDED:
+                    child.fKind = IErlElementDelta.CHANGED;
                     fChildren.set(existingChildIndex, child);
                     return;
 
                 // child was removed then changed -> it is removed
-                case CHANGED:
+                case IErlElementDelta.CHANGED:
                     // child was removed then removed -> it is removed
-                case REMOVED:
+                case IErlElementDelta.REMOVED:
                     return;
                 default:
                     break;
                 }
                 break;
-            case CHANGED:
+            case IErlElementDelta.CHANGED:
                 switch (child.getKind()) {
                 // child was changed then added -> it is added
-                case ADDED:
+                case IErlElementDelta.ADDED:
                     // child was changed then removed -> it is removed
-                case REMOVED:
+                case IErlElementDelta.REMOVED:
                     fChildren.set(existingChildIndex, child);
                     return;
 
                 // child was changed then changed -> it is changed
-                case CHANGED:
-                    final IErlElementDelta[] children = child.getChildren(ALL);
+                case IErlElementDelta.CHANGED:
+                    final IErlElementDelta[] children = child.getChildren(IErlElementDelta.ALL);
                     for (final IErlElementDelta element : children) {
                         final ErlElementDelta childsChild = (ErlElementDelta) element;
                         ((ErlElementDelta) existingChild).addAffectedChild(childsChild);
@@ -299,16 +299,16 @@ public class ErlElementDelta implements IErlElementDelta {
      */
     public void addResourceDelta(final IResourceDelta child) {
         switch (fKind) {
-        case ADDED:
-        case REMOVED:
+        case IErlElementDelta.ADDED:
+        case IErlElementDelta.REMOVED:
             // no need to add a child if this parent is added or removed
             return;
-        case CHANGED:
-            fFlags |= F_CONTENT;
+        case IErlElementDelta.CHANGED:
+            fFlags |= IErlElementDelta.F_CONTENT;
             break;
         default:
-            fKind = CHANGED;
-            fFlags |= F_CONTENT;
+            fKind = IErlElementDelta.CHANGED;
+            fFlags |= IErlElementDelta.F_CONTENT;
         }
         fResourceDeltas.add(child);
     }
@@ -320,7 +320,7 @@ public class ErlElementDelta implements IErlElementDelta {
      */
     public void changed(final IErlElement element, final int flag) {
         final ErlElementDelta changedDelta = new ErlElementDelta(0, 0, element);
-        changedDelta.fKind = CHANGED;
+        changedDelta.fKind = IErlElementDelta.CHANGED;
         changedDelta.fFlags |= flag;
         insertDeltaTree(element, changedDelta);
     }
@@ -330,8 +330,8 @@ public class ErlElementDelta implements IErlElementDelta {
         if (fElement.equals(element)) {
             return this;
         }
-        for (int i = 0; i < fChildren.size(); ++i) {
-            final IErlElementDelta d = fChildren.get(i).findElement(element);
+        for (ErlElementDelta aFChildren : fChildren) {
+            final IErlElementDelta d = aFChildren.findElement(element);
             if (d != null) {
                 return d;
             }

@@ -21,7 +21,7 @@ import org.erlide.util.ErlLogger;
 
 public class ErlangContentProvider implements ITreeContentProvider {
 
-    private final Object[] NO_CHILDREN = new Object[] {};
+    private final Object[] NO_CHILDREN = {};
 
     private ElementChangedListener fListener;
 

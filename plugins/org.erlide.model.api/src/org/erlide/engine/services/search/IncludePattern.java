@@ -10,7 +10,7 @@ public class IncludePattern extends NamePattern {
 
     @Override
     public OtpErlangObject getSearchObject() {
-        return makeIncludePatternObject(getName());
+        return ErlangSearchPattern.makeIncludePatternObject(getName());
     }
 
     @Override

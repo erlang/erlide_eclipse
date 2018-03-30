@@ -187,7 +187,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     // initialPopulateContainerField();
     // }
 
-    abstract protected void restoreWidgetValues();
+    protected abstract void restoreWidgetValues();
 
     /**
      * Create the options specification widgets.
@@ -209,7 +209,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
 
     }
 
-    abstract protected void createOptionsGroupButtons(final Group optionsGroup);
+    protected abstract void createOptionsGroupButtons(final Group optionsGroup);
 
     /**
      * Create the import source selection widget
@@ -377,8 +377,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
         final Object[] newSelectedTypes = dialog.getResult();
         if (newSelectedTypes != null) { // ie.- did not press Cancel
             selectedTypes = new ArrayList<>(newSelectedTypes.length);
-            for (int i = 0; i < newSelectedTypes.length; i++) {
-                selectedTypes.add(newSelectedTypes[i]);
+            for (Object newSelectedType : newSelectedTypes) {
+                selectedTypes.add(newSelectedType);
             }
             setupSelectionsBasedOnSelectedTypes();
         }
@@ -577,7 +577,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      *            the entry to add to the history
      */
     protected String[] addToHistory(final String[] history, final String newEntry) {
-        final java.util.ArrayList<String> l = new java.util.ArrayList<>(
+        final List<String> l = new java.util.ArrayList<>(
                 Arrays.asList(history));
         addToHistory(l, newEntry);
         final String[] r = new String[l.size()];
@@ -602,8 +602,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
 
         // since only one new item was added, we can be over the limit
         // by at most one item
-        if (history.size() > COMBO_HISTORY_LENGTH) {
-            history.remove(COMBO_HISTORY_LENGTH);
+        if (history.size() > ErlangWizardResourceImportPage.COMBO_HISTORY_LENGTH) {
+            history.remove(ErlangWizardResourceImportPage.COMBO_HISTORY_LENGTH);
         }
     }
 

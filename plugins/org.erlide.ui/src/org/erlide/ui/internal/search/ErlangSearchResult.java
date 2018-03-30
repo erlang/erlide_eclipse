@@ -145,7 +145,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult
             final IFileEditorInput fileEditorInput = (IFileEditorInput) editorInput;
             return computeContainedMatches(aResult, fileEditorInput.getFile());
         }
-        return NO_MATCHES;
+        return ErlangSearchResult.NO_MATCHES;
     }
 
     @Override
@@ -173,7 +173,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult
         final List<ErlangSearchElement> eses = esr.getResult();
         final String name = file.getName();
         if (eses == null) {// || !ErlideUtil.hasModuleExtension(name)) {
-            return NO_MATCHES;
+            return ErlangSearchResult.NO_MATCHES;
         }
         for (final ErlangSearchElement ese : eses) {
             final String moduleName = new Path(ese.getModuleName()).lastSegment();

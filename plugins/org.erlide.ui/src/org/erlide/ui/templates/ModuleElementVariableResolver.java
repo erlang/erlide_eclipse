@@ -23,7 +23,7 @@ import org.eclipse.jface.text.templates.TemplateVariableResolver;
 public class ModuleElementVariableResolver extends TemplateVariableResolver {
 
     private final Template fTemplate;
-    private boolean reentry = false;
+    private boolean reentry;
 
     public ModuleElementVariableResolver(final String type, final Template template) {
         super(type, "");

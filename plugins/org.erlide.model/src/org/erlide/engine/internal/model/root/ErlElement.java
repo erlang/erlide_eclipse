@@ -259,7 +259,7 @@ public abstract class ErlElement extends PlatformObject
      */
     public String toDebugString() {
         final StringBuilder buffer = new StringBuilder();
-        this.toStringInfo(0, buffer, NO_INFO);
+        this.toStringInfo(0, buffer, ErlElement.NO_INFO);
         return buffer.toString();
     }
 
@@ -287,7 +287,7 @@ public abstract class ErlElement extends PlatformObject
     @Override
     public String toStringWithAncestors() {
         final StringBuilder buffer = new StringBuilder();
-        this.toStringInfo(0, buffer, NO_INFO);
+        this.toStringInfo(0, buffer, ErlElement.NO_INFO);
         toStringAncestors(buffer);
         return buffer.toString();
     }
@@ -301,7 +301,7 @@ public abstract class ErlElement extends PlatformObject
             if (parent instanceof ErlElement) {
                 final ErlElement parentElement = (ErlElement) parent;
                 buffer.append("[> "); //$NON-NLS-1$
-                parentElement.toStringInfo(0, buffer, NO_INFO);
+                parentElement.toStringInfo(0, buffer, ErlElement.NO_INFO);
                 parentElement.toStringAncestors(buffer);
             }
             buffer.append("] "); //$NON-NLS-1$
@@ -360,7 +360,7 @@ public abstract class ErlElement extends PlatformObject
      *
      * @see IErlElement#isStructureKnown()
      */
-    protected boolean structureKnown = false;
+    protected boolean structureKnown;
 
     @Override
     public void clearCaches() {
@@ -414,12 +414,12 @@ public abstract class ErlElement extends PlatformObject
 
     @Override
     public IErlElement getChildNamed(final String name) {
-        return getChildNamed(this, name);
+        return ErlElement.getChildNamed(this, name);
     }
 
     @Override
     public IErlElement getChildWithResource(final IResource rsrc) {
-        return getChildWithResource(this, rsrc);
+        return ErlElement.getChildWithResource(this, rsrc);
     }
 
     /**

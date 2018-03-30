@@ -46,7 +46,7 @@ public class ErlContentViewer extends Viewer {
     @Override
     public void setInput(final Object input) {
         if (input instanceof IStreamContentAccessor) {
-            final Document document = new Document(getString(input));
+            final Document document = new Document(ErlContentViewer.getString(input));
             // ErlangCompareUtilities.setupDocument(document);
             fSourceViewer.setDocument(document);
         }

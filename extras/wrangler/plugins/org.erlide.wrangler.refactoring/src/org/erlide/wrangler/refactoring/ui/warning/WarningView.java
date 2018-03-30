@@ -11,6 +11,7 @@
 package org.erlide.wrangler.refactoring.ui.warning;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -43,7 +44,7 @@ public class WarningView extends ViewPart implements IWarningHandler {
 
 	private TableViewer viewer;
 
-	private final ArrayList<WarningMessage> warningMessages = new ArrayList<>();
+	private final List<WarningMessage> warningMessages = new ArrayList<>();
 
 	protected final class RemoveAction extends Action {
 		protected RemoveAction() {

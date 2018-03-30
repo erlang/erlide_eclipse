@@ -47,5 +47,5 @@ public enum RefactoringState {
     /**
      * more_than_one_clause - for fold expression
      */
-    MORE_THAN_ONE_CLAUSE;
+    MORE_THAN_ONE_CLAUSE
 }

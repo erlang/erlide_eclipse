@@ -26,7 +26,7 @@ public class ToggleCommentHandler extends ErlangAbstractHandler {
     protected void doAction(final ISelection sel, final ITextEditor textEditor) {
         final IDocument document = textEditor.getDocumentProvider()
                 .getDocument(textEditor.getEditorInput());
-        final ITextSelection selection = extendSelectionToWholeLines(document,
+        final ITextSelection selection = ErlangAbstractHandler.extendSelectionToWholeLines(document,
                 (ITextSelection) sel);
         final ITextSelection getSelection = getTextSelection(document, selection,
                 textEditor);

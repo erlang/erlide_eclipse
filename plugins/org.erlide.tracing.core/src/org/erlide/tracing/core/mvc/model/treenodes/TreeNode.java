@@ -1,6 +1,7 @@
 package org.erlide.tracing.core.mvc.model.treenodes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.swt.graphics.Image;
@@ -48,7 +49,7 @@ public class TreeNode implements ITreeNode {
 
     @Override
     public boolean hasChildren() {
-        return children.size() > 0;
+        return !children.isEmpty();
     }
 
     @Override
@@ -58,9 +59,7 @@ public class TreeNode implements ITreeNode {
 
     @Override
     public void addChildren(final ITreeNode... childrenList) {
-        for (final ITreeNode child : childrenList) {
-            children.add(child);
-        }
+        children.addAll(Arrays.asList(childrenList));
     }
 
     @Override

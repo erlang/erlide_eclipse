@@ -33,7 +33,7 @@ public class StringMatcher {
     // the given pattern is split into separated segments
 
     /* boundary value beyond which we don't need to search in the text */
-    protected int fBound = 0;
+    protected int fBound;
 
     protected static final char SINGLE_WILD_CARD = '\u0000';
 
@@ -199,7 +199,7 @@ public class StringMatcher {
      *            substring
      */
     public boolean match(final String text, final int start0, final int end0) {
-        if (null == text) {
+        if (text == null) {
             throw new IllegalArgumentException();
         }
         int start = start0;
@@ -258,7 +258,7 @@ public class StringMatcher {
         while (i < segCount) {
             current = fSegments[i];
             int currentMatch;
-            final int k = current.indexOf(SINGLE_WILD_CARD);
+            final int k = current.indexOf(StringMatcher.SINGLE_WILD_CARD);
             if (k < 0) {
                 currentMatch = textPosIn(text, tCurPos, end, current);
                 if (currentMatch < 0) {
@@ -344,7 +344,7 @@ public class StringMatcher {
                 break;
             case '?':
                 /* append special character representing single match wildcard */
-                buf.append(SINGLE_WILD_CARD);
+                buf.append(StringMatcher.SINGLE_WILD_CARD);
                 break;
             default:
                 buf.append(c);
@@ -456,7 +456,7 @@ public class StringMatcher {
             /* process wild cards */
             if (!fIgnoreWildCards) {
                 /* skip single wild cards */
-                if (pchar == SINGLE_WILD_CARD) {
+                if (pchar == StringMatcher.SINGLE_WILD_CARD) {
                     continue;
                 }
             }

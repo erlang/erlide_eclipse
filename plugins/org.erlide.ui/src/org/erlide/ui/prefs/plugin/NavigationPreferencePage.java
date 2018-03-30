@@ -16,7 +16,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 public class NavigationPreferencePage extends ErlidePreferencePage
         implements IWorkbenchPreferencePage {
 
-    private static Boolean fCachedCheckAllProjects = null;
+    private static Boolean fCachedCheckAllProjects;
     private final List<Button> buttons = new ArrayList<>();
 
     private void addCheckAllSection(final Composite composite) {
@@ -41,33 +41,33 @@ public class NavigationPreferencePage extends ErlidePreferencePage
 
     private static final String NAVIGATION_KEY = "erlangNavigation"; //$NON-NLS-1$
     private static final String CHECK_ALL_PROJECTS_KEY = "checkAllProjects"; //$NON-NLS-1$
-    private static final String[] NAVIGATION_KEYS = { CHECK_ALL_PROJECTS_KEY };
+    private static final String[] NAVIGATION_KEYS = {NavigationPreferencePage.CHECK_ALL_PROJECTS_KEY};
     private static final String[] NAVIGATION_DEFAULTS = { "1" };
 
     @Override
     protected void performDefaults() {
-        setToDefaults(NAVIGATION_KEYS, NAVIGATION_DEFAULTS, buttons);
+        setToDefaults(NavigationPreferencePage.NAVIGATION_KEYS, NavigationPreferencePage.NAVIGATION_DEFAULTS, buttons);
         super.performDefaults();
     }
 
     @Override
     protected void putPreferences() {
-        putBooleanPreferences(NAVIGATION_KEYS, buttons);
-        fCachedCheckAllProjects = null;
+        putBooleanPreferences(NavigationPreferencePage.NAVIGATION_KEYS, buttons);
+        NavigationPreferencePage.fCachedCheckAllProjects = null;
     }
 
     private void setToPreferences() {
-        setToPreferences(NAVIGATION_KEYS, NAVIGATION_DEFAULTS, buttons);
+        setToPreferences(NavigationPreferencePage.NAVIGATION_KEYS, NavigationPreferencePage.NAVIGATION_DEFAULTS, buttons);
     }
 
     public static boolean getCheckAllProjects() {
-        if (fCachedCheckAllProjects == null) {
+        if (NavigationPreferencePage.fCachedCheckAllProjects == null) {
             final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
             final boolean checkAllProjects = node
-                    .getBoolean(NAVIGATION_KEY + "/" + CHECK_ALL_PROJECTS_KEY, true);
-            fCachedCheckAllProjects = checkAllProjects;
+                    .getBoolean(NavigationPreferencePage.NAVIGATION_KEY + "/" + NavigationPreferencePage.CHECK_ALL_PROJECTS_KEY, true);
+            NavigationPreferencePage.fCachedCheckAllProjects = checkAllProjects;
         }
-        return fCachedCheckAllProjects.booleanValue();
+        return NavigationPreferencePage.fCachedCheckAllProjects;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class NavigationPreferencePage extends ErlidePreferencePage
 
     @Override
     protected String getDialogPreferenceKey() {
-        return NAVIGATION_KEY;
+        return NavigationPreferencePage.NAVIGATION_KEY;
     }
 
 }

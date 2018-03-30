@@ -88,7 +88,7 @@ public class BackendFactory implements IBackendFactory {
         return result;
     }
 
-    private BackendData getBuildBackendData(final @NonNull RuntimeInfo info) {
+    private BackendData getBuildBackendData(@NonNull final RuntimeInfo info) {
         final RuntimeInfo myinfo = new RuntimeInfo(info);
 
         final BackendData result = new BackendData(myinfo);
@@ -129,7 +129,7 @@ public class BackendFactory implements IBackendFactory {
 
     private String getIdeNodeName() {
         final String dflt = BackendUtils.getErlideNodeNameTag() + "_erlide";
-        return getLabelProperty(dflt);
+        return BackendFactory.getLabelProperty(dflt);
     }
 
     private static String getLabelProperty(final String dflt) {

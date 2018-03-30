@@ -45,12 +45,15 @@ import com.ericsson.otp.erlang.OtpErlangString;
  */
 public class GlobalParameters {
     // TODO:: handle null exceptions
-    static IEditorPart editor = null;
+    static IEditorPart editor;
 
-    static IErlSelection wranglerSelection = null;
+    static IErlSelection wranglerSelection;
 
-    static boolean hasQuickCheck = false;
-    static boolean isQCchecked = false;
+    static boolean hasQuickCheck;
+    static boolean isQCchecked;
+
+    private GlobalParameters() {
+    }
 
     /**
      * Checks if QuickCheck is installed in the current machine.
@@ -58,8 +61,8 @@ public class GlobalParameters {
      * @return true if QC is installed, else false
      */
     public static boolean hasQuickCheck() {
-        if (isQCchecked) {
-            return hasQuickCheck;
+        if (GlobalParameters.isQCchecked) {
+            return GlobalParameters.hasQuickCheck;
         }
         final RpcResult res = Activator.getDefault().getBackend().call_noexception("code",
                 "which", "a", "eqc");
@@ -67,13 +70,13 @@ public class GlobalParameters {
             return false;
         }
         if (res.getValue() instanceof OtpErlangString) {
-            hasQuickCheck = true;
-            isQCchecked = true;
+            GlobalParameters.hasQuickCheck = true;
+            GlobalParameters.isQCchecked = true;
         } else {
-            isQCchecked = true;
-            hasQuickCheck = false;
+            GlobalParameters.isQCchecked = true;
+            GlobalParameters.hasQuickCheck = false;
         }
-        return hasQuickCheck;
+        return GlobalParameters.hasQuickCheck;
     }
 
     /**
@@ -92,8 +95,8 @@ public class GlobalParameters {
      *            stored editor
      */
     public static void setEditor(final IEditorPart _editor) {
-        editor = _editor;
-        wranglerSelection = new ErlTextMemberSelection((ITextEditor) editor);
+        GlobalParameters.editor = _editor;
+        GlobalParameters.wranglerSelection = new ErlTextMemberSelection((ITextEditor) GlobalParameters.editor);
     }
 
     /**
@@ -102,7 +105,7 @@ public class GlobalParameters {
      * @return selection in the workbench
      */
     public static IErlSelection getWranglerSelection() {
-        return wranglerSelection;
+        return GlobalParameters.wranglerSelection;
     }
 
     /**
@@ -114,39 +117,39 @@ public class GlobalParameters {
     public static void setSelection(final ISelection selection) throws WranglerException {
         // TODO:: if the module is selected it is not handled
         try {
-            if (editor == null) {
+            if (GlobalParameters.editor == null) {
                 final IWorkbench instance = PlatformUI.getWorkbench();
                 final IWorkbenchWindow activeWorkbenchWindow = instance
                         .getActiveWorkbenchWindow();
-                editor = activeWorkbenchWindow.getActivePage().getActiveEditor();
+                GlobalParameters.editor = activeWorkbenchWindow.getActivePage().getActiveEditor();
             }
             if (selection instanceof ITextSelection) {
                 final IWorkbench instance = PlatformUI.getWorkbench();
                 final IWorkbenchWindow activeWorkbenchWindow = instance
                         .getActiveWorkbenchWindow();
-                editor = activeWorkbenchWindow.getActivePage().getActiveEditor();
+                GlobalParameters.editor = activeWorkbenchWindow.getActivePage().getActiveEditor();
 
-                wranglerSelection = new ErlTextMemberSelection((ITextSelection) selection,
-                        (ITextEditor) editor);
+                GlobalParameters.wranglerSelection = new ErlTextMemberSelection((ITextSelection) selection,
+                        (ITextEditor) GlobalParameters.editor);
             } else if (selection instanceof ITreeSelection) {
                 final Object firstElement = ((ITreeSelection) selection)
                         .getFirstElement();
                 if (firstElement instanceof IErlElement) {
                     final IErlElement element = (IErlElement) firstElement;
                     final IFile file = (IFile) element.getResource();
-                    wranglerSelection = new ErlMemberSelection(element, file,
+                    GlobalParameters.wranglerSelection = new ErlMemberSelection(element, file,
                             WranglerUtils.getDocument(file));
                 } else if (firstElement instanceof IFile) {
                     final IFile file = (IFile) firstElement;
                     final IErlModule module = ErlangEngine.getInstance().getModel()
                             .findModule(file);
-                    wranglerSelection = new ErlModuleSelection(module, file);
+                    GlobalParameters.wranglerSelection = new ErlModuleSelection(module, file);
                 } else {
-                    wranglerSelection = null;
+                    GlobalParameters.wranglerSelection = null;
                     throw new WranglerException("Please select an Erlang element!");
                 }
             } else {
-                wranglerSelection = null;
+                GlobalParameters.wranglerSelection = null;
                 throw new WranglerException("Please select an Erlang element!");
 
             }
@@ -200,6 +203,6 @@ public class GlobalParameters {
      * @return actual editor
      */
     public static IEditorPart getEditor() {
-        return editor;
+        return GlobalParameters.editor;
     }
 }

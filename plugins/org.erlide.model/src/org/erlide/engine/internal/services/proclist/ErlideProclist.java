@@ -18,7 +18,7 @@ public class ErlideProclist implements ProclistService {
             return;
         }
         try {
-            b.call(MODULE_NAME, "process_list_init", "");
+            b.call(ErlideProclist.MODULE_NAME, "process_list_init", "");
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -30,7 +30,7 @@ public class ErlideProclist implements ProclistService {
             return new OtpErlangList();
         }
         try {
-            final OtpErlangObject result = b.call(MODULE_NAME, "process_list", "");
+            final OtpErlangObject result = b.call(ErlideProclist.MODULE_NAME, "process_list", "");
             return (OtpErlangList) result;
         } catch (final Exception e) {
             ErlLogger.warn(e);
@@ -44,7 +44,7 @@ public class ErlideProclist implements ProclistService {
             return new OtpErlangAtom("error");
         }
         try {
-            return b.call(MODULE_NAME, "get_process_info", "p", pid);
+            return b.call(ErlideProclist.MODULE_NAME, "get_process_info", "p", pid);
         } catch (final Exception e) {
             ErlLogger.warn(e);
         }

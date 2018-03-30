@@ -126,7 +126,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
                 GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
         data.widthHint = convertWidthInCharsToPixels(59);
         fUserDefinedPatterns.setLayoutData(data);
-        final String patterns = convertToString(fPatterns, SEPARATOR);
+        final String patterns = convertToString(fPatterns, CustomOutlineFiltersDialog.SEPARATOR);
         fUserDefinedPatterns.setText(patterns);
 
         // Info text
@@ -315,7 +315,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
         super.setResult(newResult);
         if (fUserDefinedPatterns.getText().length() > 0) {
             fEnablePatterns = fEnableUserDefinedPatterns.getSelection();
-            fPatterns = convertFromString(fUserDefinedPatterns.getText(), SEPARATOR);
+            fPatterns = convertFromString(fUserDefinedPatterns.getText(), CustomOutlineFiltersDialog.SEPARATOR);
         } else {
             fEnablePatterns = false;
             fPatterns = Lists.newArrayList();

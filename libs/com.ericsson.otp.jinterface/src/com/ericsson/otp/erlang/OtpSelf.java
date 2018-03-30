@@ -70,7 +70,7 @@ public class OtpSelf extends OtpLocalNode {
      *
      */
     public OtpSelf(final String node) throws IOException {
-        this(node, defaultCookie, 0);
+        this(node, AbstractNode.defaultCookie, 0);
     }
 
     /**
@@ -98,7 +98,7 @@ public class OtpSelf extends OtpLocalNode {
      */
     public OtpSelf(final String node, final OtpTransportFactory transportFactory)
             throws IOException {
-        this(node, defaultCookie, 0, transportFactory);
+        this(node, AbstractNode.defaultCookie, 0, transportFactory);
     }
 
     /**

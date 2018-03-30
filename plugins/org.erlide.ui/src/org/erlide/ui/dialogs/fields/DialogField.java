@@ -105,7 +105,7 @@ public class DialogField {
         assertEnoughColumns(nColumns);
 
         final Label label = getLabelControl(parent);
-        label.setLayoutData(gridDataForLabel(nColumns));
+        label.setLayoutData(DialogField.gridDataForLabel(nColumns));
 
         return new Control[] { label };
     }
@@ -157,7 +157,7 @@ public class DialogField {
      *            The parent composite
      */
     public static Control createEmptySpace(final Composite parent) {
-        return createEmptySpace(parent, 1);
+        return DialogField.createEmptySpace(parent, 1);
     }
 
     /**

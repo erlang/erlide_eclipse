@@ -74,7 +74,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             }
         } catch (final ErlModelException e) {
         }
-        return NO_CHILDREN;
+        return ErlangExternalsContentProvider.NO_CHILDREN;
     }
 
     @Override

@@ -351,7 +351,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             return false;
         }
         String workingDir = workingDirText.getText();
-        if (workingDir.equals(".")) {
+        if (".".equals(workingDir)) {
             workingDir = "";
         }
         final File d = new File(workingDir);

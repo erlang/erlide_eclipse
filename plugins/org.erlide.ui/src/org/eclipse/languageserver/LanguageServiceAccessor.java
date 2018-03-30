@@ -36,8 +36,8 @@ public class LanguageServiceAccessor {
     public static LanguageServer getLanguageServer(final IFile file,
             final IDocument document) throws IOException {
         final IProject project = file.getProject();
-        if (!projectServers.containsKey(project)) {
-            projectServers.put(project, new HashMap<>());
+        if (!LanguageServiceAccessor.projectServers.containsKey(project)) {
+            LanguageServiceAccessor.projectServers.put(project, new HashMap<>());
         }
         IContentType[] contentTypes = null;
         try (InputStream contents = file.getContents()) {
@@ -47,7 +47,7 @@ public class LanguageServiceAccessor {
             // 1st: search existing server for that file
             for (final IContentType contentType : contentTypes) {
                 if (wrapper == null) {
-                    wrapper = projectServers.get(project).get(contentType);
+                    wrapper = LanguageServiceAccessor.projectServers.get(project).get(contentType);
                 }
             }
             if (wrapper == null) {
@@ -59,7 +59,7 @@ public class LanguageServiceAccessor {
                         if (connection != null) {
                             wrapper = new ProjectSpecificLanguageServerWrapper(project,
                                     contentType, connection);
-                            projectServers.get(project).put(contentType, wrapper);
+                            LanguageServiceAccessor.projectServers.get(project).put(contentType, wrapper);
                         }
                     }
                 }

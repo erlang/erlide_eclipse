@@ -70,12 +70,12 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
             public void run(final IProgressMonitor monitor) throws CoreException {
                 final IErlangBreakpoint breakpoint = getBreakpoint();
                 final boolean delOnCancel = breakpoint.getMarker()
-                        .getAttribute(ATTR_DELETE_ON_CANCEL) != null;
+                        .getAttribute(ErlangBreakpointPropertyPage.ATTR_DELETE_ON_CANCEL) != null;
                 if (delOnCancel) {
                     // if this breakpoint is being created, remove the
                     // "delete on cancel" attribute
                     // and register with the breakpoint manager
-                    breakpoint.getMarker().setAttribute(ATTR_DELETE_ON_CANCEL,
+                    breakpoint.getMarker().setAttribute(ErlangBreakpointPropertyPage.ATTR_DELETE_ON_CANCEL,
                             (String) null);
                     breakpoint.setRegistered(true);
                 }
@@ -215,7 +215,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
         // if this breakpoint is being created, change the shell title to
         // indicate 'creation'
         try {
-            if (getBreakpoint().getMarker().getAttribute(ATTR_DELETE_ON_CANCEL) != null) {
+            if (getBreakpoint().getMarker().getAttribute(ErlangBreakpointPropertyPage.ATTR_DELETE_ON_CANCEL) != null) {
                 getShell().addShellListener(new ShellListener() {
                     @Override
                     public void shellActivated(final ShellEvent e) {
@@ -269,7 +269,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
         if (adapter != null) {
             return adapter.getLabel(element);
         }
-        return EMPTY_STRING;
+        return ErlangBreakpointPropertyPage.EMPTY_STRING;
     }
 
     /**
@@ -513,7 +513,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     @Override
     public boolean performCancel() {
         try {
-            if (getBreakpoint().getMarker().getAttribute(ATTR_DELETE_ON_CANCEL) != null) {
+            if (getBreakpoint().getMarker().getAttribute(ErlangBreakpointPropertyPage.ATTR_DELETE_ON_CANCEL) != null) {
                 // if this breakpoint is being created, delete on cancel
                 getBreakpoint().delete();
             }

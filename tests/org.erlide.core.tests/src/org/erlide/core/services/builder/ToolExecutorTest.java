@@ -2,7 +2,7 @@ package org.erlide.core.services.builder;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import org.erlide.core.executor.ToolExecutor;
+import org.erlide.core.builder.executor.ToolExecutor;
 import org.erlide.util.SystemConfiguration;
 import org.junit.Test;
 

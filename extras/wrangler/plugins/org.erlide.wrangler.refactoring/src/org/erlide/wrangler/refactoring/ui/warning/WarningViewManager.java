@@ -29,6 +29,9 @@ public class WarningViewManager {
 
     private static IWarningHandler view;
 
+    private WarningViewManager() {
+    }
+
     /**
      * Sets the warning view
      *
@@ -36,7 +39,7 @@ public class WarningViewManager {
      *            Warning message view
      */
     public static void setWarningView(final IWarningHandler _view) {
-        view = _view;
+        WarningViewManager.view = _view;
     }
 
     /**
@@ -48,10 +51,10 @@ public class WarningViewManager {
     public static void addWarningMessage(final String message) {
         try {
             // if (view == null) {
-            setWarningView((IWarningHandler) showWarningView());
+            WarningViewManager.setWarningView((IWarningHandler) WarningViewManager.showWarningView());
             // }
-            view.addMessage(message);
-            view.refresh();
+            WarningViewManager.view.addMessage(message);
+            WarningViewManager.view.refresh();
 
         } catch (final Exception t) {
             t.printStackTrace();
@@ -69,7 +72,7 @@ public class WarningViewManager {
 
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         try {
-            final IViewPart theView = window.getActivePage().showView(warningViewID);
+            final IViewPart theView = window.getActivePage().showView(WarningViewManager.warningViewID);
             return theView;
         } catch (final PartInitException e) {
             ErlLogger.error(e);
@@ -84,7 +87,7 @@ public class WarningViewManager {
         final IWorkbench workbench = PlatformUI.getWorkbench();
 
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        final IViewPart theView = window.getActivePage().findView(warningViewID);
+        final IViewPart theView = window.getActivePage().findView(WarningViewManager.warningViewID);
         window.getActivePage().hideView(theView);
 
     }

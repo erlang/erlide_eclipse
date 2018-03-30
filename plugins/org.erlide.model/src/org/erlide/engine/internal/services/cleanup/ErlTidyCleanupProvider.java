@@ -60,7 +60,7 @@ public class ErlTidyCleanupProvider implements CleanupProvider {
                 absolutePathToErlangModule);
 
         // wait as long as reasonable for erl_tidy to finish
-        erlTidyFuture.get(PATIENCE_LIMIT, TimeUnit.MILLISECONDS);
+        erlTidyFuture.get(ErlTidyCleanupProvider.PATIENCE_LIMIT, TimeUnit.MILLISECONDS);
 
         // refresh the resource so it reflects the altered state on disk
         resource.refreshLocal(IResource.DEPTH_ZERO, null);

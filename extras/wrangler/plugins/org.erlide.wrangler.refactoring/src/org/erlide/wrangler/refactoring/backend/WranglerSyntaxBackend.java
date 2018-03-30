@@ -47,7 +47,7 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
 
     protected OtpErlangTuple parseFile(final IFile f) {
         final String filePath = f.getLocation().toOSString();
-        final RpcResult res = backend.call_noexception(MODULE, PARSE_FUNCTION, "sax",
+        final RpcResult res = backend.call_noexception(WranglerSyntaxBackend.MODULE, WranglerSyntaxBackend.PARSE_FUNCTION, "sax",
                 filePath, "true",
                 GlobalParameters.getWranglerSelection().getSearchPath());
         return parseParserResult(res.getValue());
@@ -55,7 +55,7 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
 
     protected OtpErlangTuple parseParserResult(final OtpErlangObject value) {
         final OtpErlangTuple backendResult = (OtpErlangTuple) value;
-        if (!((OtpErlangAtom) backendResult.elementAt(0)).atomValue().equals("ok")) {
+        if (!"ok".equals(((OtpErlangAtom) backendResult.elementAt(0)).atomValue())) {
             return null;
         }
         final OtpErlangTuple wranglerResult = (OtpErlangTuple) backendResult.elementAt(1);
@@ -69,7 +69,7 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
         final OtpErlangInt[] position = new OtpErlangInt[2];
         position[0] = new OtpErlangInt(line);
         position[1] = new OtpErlangInt(col);
-        final RpcResult res = backend.call_noexception(INTERFACE_MODULE, VAR_FUNCTION,
+        final RpcResult res = backend.call_noexception(WranglerSyntaxBackend.INTERFACE_MODULE, WranglerSyntaxBackend.VAR_FUNCTION,
                 "xx", syntaxTree, new OtpErlangTuple(position));
         return parseVarInfo(res.getValue());
     }
@@ -77,14 +77,15 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
     private SyntaxInfo parseVarInfo(final OtpErlangObject value) {
         try {
             final OtpErlangTuple result = (OtpErlangTuple) value;
-            if (!((OtpErlangAtom) result.elementAt(0)).atomValue().equals("ok")) {
+            if (!"ok".equals(((OtpErlangAtom) result.elementAt(0)).atomValue())) {
                 return new SyntaxInfo(Type.NONE, -1, -1);
             }
             SyntaxInfo ret;
             final OtpErlangTuple res = (OtpErlangTuple) result.elementAt(1);
             final OtpErlangTuple position = (OtpErlangTuple) ((OtpErlangList) res
                     .elementAt(1)).elementAt(0);
-            OtpErlangLong line, col;
+            OtpErlangLong line;
+            OtpErlangLong col;
             line = (OtpErlangLong) position.elementAt(0);
             col = (OtpErlangLong) position.elementAt(0);
             ret = new SyntaxInfo(Type.VARIABLE, line.intValue(), col.intValue());

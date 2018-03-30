@@ -11,6 +11,7 @@
 package org.erlide.wrangler.refactoring.ui.wizardpages;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -122,7 +123,7 @@ public class RecordDataInputPage extends MultiInputPage {
         final IValidator theValidator = new AtomValidator();
         boolean valid = theValidator.isValid(recordName.getText());
 
-        final ArrayList<String> fn = new ArrayList<>();
+        final List<String> fn = new ArrayList<>();
         for (final Text t : fieldNames) {
             valid = valid && theValidator.isValid(t.getText());
             fn.add(t.getText());

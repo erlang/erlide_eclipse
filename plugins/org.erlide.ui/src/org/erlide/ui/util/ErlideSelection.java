@@ -99,7 +99,7 @@ public class ErlideSelection {
      * @return the absolute cursor offset in the contained document
      */
     public int getAbsoluteCursorOffset(final int line, final int col) {
-        return getAbsoluteCursorOffset(doc, line, col);
+        return ErlideSelection.getAbsoluteCursorOffset(doc, line, col);
     }
 
     /**
@@ -174,7 +174,7 @@ public class ErlideSelection {
      * @return String line in String form
      */
     public String getLine() {
-        return getLine(getDoc(), getCursorLine());
+        return ErlideSelection.getLine(getDoc(), getCursorLine());
     }
 
     /**
@@ -185,7 +185,7 @@ public class ErlideSelection {
      * @return String line in String form
      */
     public String getLine(final int i) {
-        return getLine(getDoc(), i);
+        return ErlideSelection.getLine(getDoc(), i);
     }
 
     /**
@@ -209,7 +209,7 @@ public class ErlideSelection {
     }
 
     public int getLineOfOffset(final int offset) {
-        return getLineOfOffset(getDoc(), offset);
+        return ErlideSelection.getLineOfOffset(getDoc(), offset);
     }
 
     /**
@@ -249,7 +249,7 @@ public class ErlideSelection {
      * @param i
      */
     public void deleteLine(final int i) {
-        deleteLine(getDoc(), i);
+        ErlideSelection.deleteLine(getDoc(), i);
     }
 
     /**
@@ -323,7 +323,7 @@ public class ErlideSelection {
     }
 
     public void addLine(final String contents, final int afterLine) {
-        addLine(getDoc(), getEndLineDelim(), contents, afterLine);
+        ErlideSelection.addLine(getDoc(), getEndLineDelim(), contents, afterLine);
     }
 
     /**
@@ -470,7 +470,7 @@ public class ErlideSelection {
      * @return Returns the endLineDelim.
      */
     public String getEndLineDelim() {
-        return getDelimiter(getDoc());
+        return ErlideSelection.getDelimiter(getDoc());
     }
 
     /**
@@ -583,7 +583,7 @@ public class ErlideSelection {
      */
     @SuppressWarnings("boxing")
     public Pair<String, Integer> getCurrToken() throws BadLocationException {
-        final Pair<String, Integer> tup = extractActivationToken(doc,
+        final Pair<String, Integer> tup = ErlideSelection.extractActivationToken(doc,
                 getAbsoluteCursorOffset(), false);
         final String prefix = tup.getKey();
 
@@ -650,7 +650,7 @@ public class ErlideSelection {
             throw new AssertionError("Expecting ) to eat callable. Received: " + c);
         }
 
-        while (documentOffset > 0 && !theDoc.get(documentOffset, 1).equals("(")) {
+        while (documentOffset > 0 && !"(".equals(theDoc.get(documentOffset, 1))) {
             documentOffset -= 1;
         }
 
@@ -662,8 +662,8 @@ public class ErlideSelection {
      */
     public static boolean endsWithSomeChar(final char[] cs,
             final String activationToken) {
-        for (int i = 0; i < cs.length; i++) {
-            if (activationToken.endsWith(cs[i] + "")) {
+        for (char c : cs) {
+            if (activationToken.endsWith(c + "")) {
                 return true;
             }
         }
@@ -672,7 +672,7 @@ public class ErlideSelection {
     }
 
     public static List<Integer> getLineStartOffsets(final String replacementString) {
-        final ArrayList<Integer> ret = new ArrayList<>();
+        final List<Integer> ret = new ArrayList<>();
         ret.add(0);// there is always a starting one at 0
 
         // we may have line breaks with \r\n, or only \n or \r
@@ -700,7 +700,7 @@ public class ErlideSelection {
     }
 
     public static List<Integer> getLineBreakOffsets(final String replacementString) {
-        final ArrayList<Integer> ret = new ArrayList<>();
+        final List<Integer> ret = new ArrayList<>();
 
         int ignoreNextNAt = -1;
 
@@ -832,12 +832,12 @@ public class ErlideSelection {
      *         char in the passed line.
      */
     public static String getIndentationFromLine(final String selection) {
-        final int firstCharPosition = getFirstCharPosition(selection);
+        final int firstCharPosition = ErlideSelection.getFirstCharPosition(selection);
         return selection.substring(0, firstCharPosition);
     }
 
     public String getIndentationFromLine() {
-        return getIndentationFromLine(getCursorLineContents());
+        return ErlideSelection.getIndentationFromLine(getCursorLineContents());
     }
 
     /**
@@ -872,7 +872,7 @@ public class ErlideSelection {
         final int offset = region.getOffset();
         final String src = doc.get(offset, region.getLength());
 
-        return getFirstCharPosition(src);
+        return ErlideSelection.getFirstCharPosition(src);
     }
 
     /**
@@ -885,7 +885,7 @@ public class ErlideSelection {
             final int line) throws BadLocationException {
         IRegion region;
         region = doc.getLineInformation(line);
-        return getFirstCharRelativePosition(doc, region);
+        return ErlideSelection.getFirstCharRelativePosition(doc, region);
     }
 
     /**
@@ -898,7 +898,7 @@ public class ErlideSelection {
             final int cursorOffset) throws BadLocationException {
         IRegion region;
         region = doc.getLineInformationOfOffset(cursorOffset);
-        return getFirstCharRelativePosition(doc, region);
+        return ErlideSelection.getFirstCharRelativePosition(doc, region);
     }
 
     /**
@@ -916,7 +916,7 @@ public class ErlideSelection {
         IRegion region;
         region = doc.getLineInformationOfOffset(cursorOffset);
         final int offset = region.getOffset();
-        return offset + getFirstCharRelativePosition(doc, cursorOffset);
+        return offset + ErlideSelection.getFirstCharRelativePosition(doc, cursorOffset);
     }
 
     /**
@@ -1052,7 +1052,7 @@ public class ErlideSelection {
      *         a colon is reached.
      */
     public String getToColon() {
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
 
         for (int i = getLineOffset(); i < doc.getLength(); i++) {
             try {
@@ -1069,7 +1069,7 @@ public class ErlideSelection {
     }
 
     public static boolean isIdentifier(final String str) {
-        return IdentifierPattern.matcher(str).matches();
+        return ErlideSelection.IdentifierPattern.matcher(str).matches();
     }
 
     private static final Pattern IdentifierPattern = Pattern.compile("\\w*");

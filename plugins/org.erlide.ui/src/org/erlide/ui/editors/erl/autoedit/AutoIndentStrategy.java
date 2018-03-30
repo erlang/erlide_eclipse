@@ -78,14 +78,14 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
         final int lineLength = d.getLineLength(lineN);
         final String oldLine = d.get(offset, lineLength + lineOffset - offset);
         try {
-            final int indentw = getIndentWidthFromPreferences();
+            final int indentw = AutoIndentStrategy.getIndentWidthFromPreferences();
             final int tabw = EditorsUI.getPreferenceStore().getInt(
                     AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 
             final Map<String, String> prefs = new TreeMap<>();
             IndentationPreferencePage.addKeysAndPrefs(prefs);
             SmartTypingPreferencePage.addAutoNLKeysAndPrefs(prefs);
-            final boolean useTabs = getUseTabsFromPreferences();
+            final boolean useTabs = AutoIndentStrategy.getUseTabsFromPreferences();
             final IndentResult res = ErlangEngine.getInstance().getIndentService()
                     .indentLine(oldLine, txt, c.text, indentw, tabw, useTabs, prefs);
 

@@ -211,7 +211,7 @@ public class TestResultsView extends ViewPart {
             final OtpBindings b = OtpErlang.match("{D,S,C}", value);
             final String suite = b.getAtom("S");
             final String tcase = b.getAtom("C");
-            if (tcase.length() == 0) {
+            if (tcase.isEmpty()) {
                 return "suite " + suite;
             }
             return "suite " + suite + "; case " + tcase;

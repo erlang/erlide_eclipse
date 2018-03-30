@@ -115,7 +115,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
         public static SearchPatternData create(final IDialogSettings settings) {
             final String pattern = settings.get("pattern");
-            if (pattern.length() == 0) {
+            if (pattern.isEmpty()) {
                 return null;
             }
             final String[] wsIds = settings.getArray("workingSets");
@@ -172,10 +172,10 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     private static final int HISTORY_SIZE = 12;
 
     // Dialog store id constants
-    private final static String PAGE_NAME = "ErlangSearchPage"; //$NON-NLS-1$
-    private final static String STORE_INCLUDE_MASK = "INCLUDE_MASK"; //$NON-NLS-1$
-    private final static String STORE_HISTORY = "HISTORY"; //$NON-NLS-1$
-    private final static String STORE_HISTORY_SIZE = "HISTORY_SIZE"; //$NON-NLS-1$
+    private static final String PAGE_NAME = "ErlangSearchPage"; //$NON-NLS-1$
+    private static final String STORE_INCLUDE_MASK = "INCLUDE_MASK"; //$NON-NLS-1$
+    private static final String STORE_HISTORY = "HISTORY"; //$NON-NLS-1$
+    private static final String STORE_HISTORY_SIZE = "HISTORY_SIZE"; //$NON-NLS-1$
 
     private final List<SearchPatternData> fPreviousSearchPatterns;
 
@@ -217,7 +217,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         final SearchPatternData data = getPatternData();
         final int includeMask = getIncludeMask();
         // Setup search scope
-        ErlSearchScope scope = EMPTY_SCOPE;
+        ErlSearchScope scope = ErlangSearchPage.EMPTY_SCOPE;
         String scopeDescription = null;
         final boolean searchSources = (includeMask & SearchUtil.SEARCH_IN_SOURCES) != 0;
         final boolean searchExternals = (includeMask
@@ -446,7 +446,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
     private boolean isValidSearchPattern() {
         // FIXME borde kollas ordentligt! kanske via open
-        if (getPattern().length() > 0) {
+        if (!getPattern().isEmpty()) {
             return true;
         }
         return false;
@@ -489,8 +489,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     }
 
     private SearchFor getSearchFor() {
-        for (int i = 0; i < fSearchFor.length; i++) {
-            final Button button = fSearchFor[i];
+        for (final Button button : fSearchFor) {
             if (button.getSelection()) {
                 return (SearchFor) button.getData();
             }
@@ -512,8 +511,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     }
 
     private void setIncludeMask(final int includeMask) {
-        for (int i = 0; i < fIncludeMasks.length; i++) {
-            final Button button = fIncludeMasks[i];
+        for (final Button button : fIncludeMasks) {
             button.setSelection((includeMask & getIntData(button)) != 0);
         }
     }
@@ -570,7 +568,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             final int data, final boolean isSelected) {
         final Button button = new Button(parent, SWT.CHECK);
         button.setText(text);
-        button.setData(Integer.valueOf(data));
+        button.setData(data);
         button.setLayoutData(new GridData());
         button.setSelection(isSelected);
         return button;
@@ -640,12 +638,11 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     }
 
     private int getIntData(final Button button) {
-        return ((Integer) button.getData()).intValue();
+        return (Integer) button.getData();
     }
 
     private LimitTo getLimitTo() {
-        for (int i = 0; i < fLimitTo.length; i++) {
-            final Button button = fLimitTo[i];
+        for (final Button button : fLimitTo) {
             if (button.getSelection()) {
                 return (LimitTo) button.getData();
             }
@@ -656,8 +653,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
     private int getIncludeMask() {
         int mask = 0;
-        for (int i = 0; i < fIncludeMasks.length; i++) {
-            final Button button = fIncludeMasks[i];
+        for (final Button button : fIncludeMasks) {
             if (button.getSelection()) {
                 mask |= getIntData(button);
             }
@@ -667,7 +663,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
     private int getLastIncludeMask() {
         try {
-            return getDialogSettings().getInt(STORE_INCLUDE_MASK);
+            return getDialogSettings().getInt(ErlangSearchPage.STORE_INCLUDE_MASK);
         } catch (final NumberFormatException e) {
         }
         return 0;
@@ -704,7 +700,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
     private SearchPatternData trySimpleTextSelection(final ITextSelection selection) {
         final String selectedText = selection.getText();
-        if (selectedText != null && selectedText.length() > 0) {
+        if (selectedText != null && !selectedText.isEmpty()) {
             int i = 0;
             while (i < selectedText.length()
                     && !SearchCoreUtil.isLineDelimiterChar(selectedText.charAt(i))) {
@@ -766,7 +762,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     private IDialogSettings getDialogSettings() {
         if (fDialogSettings == null) {
             fDialogSettings = ErlideUIPlugin.getDefault()
-                    .getDialogSettingsSection(PAGE_NAME);
+                    .getDialogSettingsSection(ErlangSearchPage.PAGE_NAME);
         }
         return fDialogSettings;
     }
@@ -778,9 +774,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         final IDialogSettings s = getDialogSettings();
 
         try {
-            final int historySize = s.getInt(STORE_HISTORY_SIZE);
+            final int historySize = s.getInt(ErlangSearchPage.STORE_HISTORY_SIZE);
             for (int i = 0; i < historySize; i++) {
-                final IDialogSettings histSettings = s.getSection(STORE_HISTORY + i);
+                final IDialogSettings histSettings = s.getSection(ErlangSearchPage.STORE_HISTORY + i);
                 if (histSettings != null) {
                     final SearchPatternData data = SearchPatternData.create(histSettings);
                     if (data != null) {
@@ -799,10 +795,10 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     private void writeConfiguration() {
         final IDialogSettings s = getDialogSettings();
 
-        final int historySize = Math.min(fPreviousSearchPatterns.size(), HISTORY_SIZE);
-        s.put(STORE_HISTORY_SIZE, historySize);
+        final int historySize = Math.min(fPreviousSearchPatterns.size(), ErlangSearchPage.HISTORY_SIZE);
+        s.put(ErlangSearchPage.STORE_HISTORY_SIZE, historySize);
         for (int i = 0; i < historySize; i++) {
-            final IDialogSettings histSettings = s.addNewSection(STORE_HISTORY + i);
+            final IDialogSettings histSettings = s.addNewSection(ErlangSearchPage.STORE_HISTORY + i);
             final SearchPatternData data = fPreviousSearchPatterns.get(i);
             data.store(histSettings);
         }

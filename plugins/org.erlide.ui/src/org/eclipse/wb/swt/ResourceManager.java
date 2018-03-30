@@ -17,7 +17,6 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Platform;
@@ -96,11 +95,7 @@ public class ResourceManager extends SWTResourceManager {
         if (descriptor == null) {
             return null;
         }
-        Image image = descriptorImageMap.get(descriptor);
-        if (image == null) {
-            image = descriptor.createImage();
-            descriptorImageMap.put(descriptor, image);
-        }
+        Image image = ResourceManager.descriptorImageMap.computeIfAbsent(descriptor, d -> d.createImage());
         return image;
     }
 
@@ -108,7 +103,7 @@ public class ResourceManager extends SWTResourceManager {
      * Maps images to decorated images.
      */
     @SuppressWarnings("unchecked")
-    private static Map<Image, Map<Image, Image>>[] m_decoratedImageMap = new Map[LAST_CORNER_KEY];
+    private static Map<Image, Map<Image, Image>>[] m_decoratedImageMap = new Map[SWTResourceManager.LAST_CORNER_KEY];
 
     /**
      * Returns an {@link Image} composed of a base image decorated by another
@@ -121,7 +116,7 @@ public class ResourceManager extends SWTResourceManager {
      * @return {@link Image} The resulting decorated image.
      */
     public static Image decorateImage(final Image baseImage, final Image decorator) {
-        return decorateImage(baseImage, decorator, BOTTOM_RIGHT);
+        return ResourceManager.decorateImage(baseImage, decorator, SWTResourceManager.BOTTOM_RIGHT);
     }
 
     /**
@@ -138,19 +133,15 @@ public class ResourceManager extends SWTResourceManager {
      */
     public static Image decorateImage(final Image baseImage, final Image decorator,
             final int corner) {
-        if (corner <= 0 || corner >= LAST_CORNER_KEY) {
+        if (corner <= 0 || corner >= SWTResourceManager.LAST_CORNER_KEY) {
             throw new IllegalArgumentException("Wrong decorate corner");
         }
-        Map<Image, Map<Image, Image>> cornerDecoratedImageMap = m_decoratedImageMap[corner];
+        Map<Image, Map<Image, Image>> cornerDecoratedImageMap = ResourceManager.m_decoratedImageMap[corner];
         if (cornerDecoratedImageMap == null) {
             cornerDecoratedImageMap = new HashMap<>();
-            m_decoratedImageMap[corner] = cornerDecoratedImageMap;
+            ResourceManager.m_decoratedImageMap[corner] = cornerDecoratedImageMap;
         }
-        Map<Image, Image> decoratedMap = cornerDecoratedImageMap.get(baseImage);
-        if (decoratedMap == null) {
-            decoratedMap = new HashMap<>();
-            cornerDecoratedImageMap.put(baseImage, decoratedMap);
-        }
+        Map<Image, Image> decoratedMap = cornerDecoratedImageMap.computeIfAbsent(baseImage, k -> new HashMap<>());
         //
         Image result = decoratedMap.get(decorator);
         if (result == null) {
@@ -161,13 +152,13 @@ public class ResourceManager extends SWTResourceManager {
                 @Override
                 protected void drawCompositeImage(final int width, final int height) {
                     drawImage(baseImage.getImageData(), 0, 0);
-                    if (corner == TOP_LEFT) {
+                    if (corner == SWTResourceManager.TOP_LEFT) {
                         drawImage(decorator.getImageData(), 0, 0);
-                    } else if (corner == TOP_RIGHT) {
+                    } else if (corner == SWTResourceManager.TOP_RIGHT) {
                         drawImage(decorator.getImageData(), bib.width - dib.width, 0);
-                    } else if (corner == BOTTOM_LEFT) {
+                    } else if (corner == SWTResourceManager.BOTTOM_LEFT) {
                         drawImage(decorator.getImageData(), 0, bib.height - dib.height);
-                    } else if (corner == BOTTOM_RIGHT) {
+                    } else if (corner == SWTResourceManager.BOTTOM_RIGHT) {
                         drawImage(decorator.getImageData(), bib.width - dib.width,
                                 bib.height - dib.height);
                     }
@@ -192,15 +183,13 @@ public class ResourceManager extends SWTResourceManager {
         SWTResourceManager.disposeImages();
         // dispose ImageDescriptor images
         {
-            for (final Iterator<Image> I = descriptorImageMap.values().iterator(); I
-                    .hasNext();) {
-                I.next().dispose();
+            for (Image image : ResourceManager.descriptorImageMap.values()) {
+                image.dispose();
             }
-            descriptorImageMap.clear();
+            ResourceManager.descriptorImageMap.clear();
         }
         // dispose decorated images
-        for (int i = 0; i < m_decoratedImageMap.length; i++) {
-            final Map<Image, Map<Image, Image>> cornerDecoratedImageMap = m_decoratedImageMap[i];
+        for (final Map<Image, Map<Image, Image>> cornerDecoratedImageMap : ResourceManager.m_decoratedImageMap) {
             if (cornerDecoratedImageMap != null) {
                 for (final Map<Image, Image> decoratedMap : cornerDecoratedImageMap
                         .values()) {
@@ -214,10 +203,10 @@ public class ResourceManager extends SWTResourceManager {
         }
         // dispose plugin images
         {
-            for (final Iterator<Image> I = m_URLImageMap.values().iterator(); I.hasNext();) {
-                I.next().dispose();
+            for (Image image : ResourceManager.m_URLImageMap.values()) {
+                image.dispose();
             }
-            m_URLImageMap.clear();
+            ResourceManager.m_URLImageMap.clear();
         }
     }
 
@@ -242,7 +231,7 @@ public class ResourceManager extends SWTResourceManager {
      * Instance of {@link PluginResourceProvider}, used by WindowBuilder at
      * design time.
      */
-    private static PluginResourceProvider m_designTimePluginResourceProvider = null;
+    private static PluginResourceProvider m_designTimePluginResourceProvider;
 
     /**
      * Returns an {@link Image} based on a plugin and file path.
@@ -258,9 +247,9 @@ public class ResourceManager extends SWTResourceManager {
     @Deprecated
     public static Image getPluginImage(final Object plugin, final String name) {
         try {
-            final URL url = getPluginImageURL(plugin, name);
+            final URL url = ResourceManager.getPluginImageURL(plugin, name);
             if (url != null) {
-                return getPluginImageFromUrl(url);
+                return ResourceManager.getPluginImageFromUrl(url);
             }
         } catch (final Exception e) {
             // Ignore any exceptions
@@ -280,9 +269,9 @@ public class ResourceManager extends SWTResourceManager {
      */
     public static Image getPluginImage(final String symbolicName, final String path) {
         try {
-            final URL url = getPluginImageURL(symbolicName, path);
+            final URL url = ResourceManager.getPluginImageURL(symbolicName, path);
             if (url != null) {
-                return getPluginImageFromUrl(url);
+                return ResourceManager.getPluginImageFromUrl(url);
             }
         } catch (final Exception e) {
             // Ignore any exceptions
@@ -296,11 +285,11 @@ public class ResourceManager extends SWTResourceManager {
     private static Image getPluginImageFromUrl(final URL url) {
         try {
             final String key = url.toExternalForm();
-            Image image = m_URLImageMap.get(key);
+            Image image = ResourceManager.m_URLImageMap.get(key);
             if (image == null) {
-                try (final InputStream stream = url.openStream();){
-                    image = getImage(stream);
-                    m_URLImageMap.put(key, image);
+                try (final InputStream stream = url.openStream()){
+                    image = SWTResourceManager.getImage(stream);
+                    ResourceManager.m_URLImageMap.put(key, image);
                 }
             }
             return image;
@@ -328,7 +317,7 @@ public class ResourceManager extends SWTResourceManager {
             final String name) {
         try {
             try {
-                final URL url = getPluginImageURL(plugin, name);
+                final URL url = ResourceManager.getPluginImageURL(plugin, name);
                 return ImageDescriptor.createFromURL(url);
             } catch (final Throwable e) {
                 // Ignore any exceptions
@@ -353,7 +342,7 @@ public class ResourceManager extends SWTResourceManager {
     public static ImageDescriptor getPluginImageDescriptor(final String symbolicName,
             final String path) {
         try {
-            final URL url = getPluginImageURL(symbolicName, path);
+            final URL url = ResourceManager.getPluginImageURL(symbolicName, path);
             if (url != null) {
                 return ImageDescriptor.createFromURL(url);
             }
@@ -375,8 +364,8 @@ public class ResourceManager extends SWTResourceManager {
             }
         }
         // try design time provider
-        if (m_designTimePluginResourceProvider != null) {
-            return m_designTimePluginResourceProvider.getEntry(symbolicName, path);
+        if (ResourceManager.m_designTimePluginResourceProvider != null) {
+            return ResourceManager.m_designTimePluginResourceProvider.getEntry(symbolicName, path);
         }
         // no such resource
         return null;
@@ -451,8 +440,8 @@ public class ResourceManager extends SWTResourceManager {
      * application shutdown).
      */
     public static void dispose() {
-        disposeColors();
-        disposeFonts();
-        disposeImages();
+        SWTResourceManager.disposeColors();
+        SWTResourceManager.disposeFonts();
+        ResourceManager.disposeImages();
     }
 }

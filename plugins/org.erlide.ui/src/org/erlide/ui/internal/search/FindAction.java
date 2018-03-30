@@ -229,9 +229,9 @@ public abstract class FindAction extends SelectionDispatchAction {
 
     abstract LimitTo getLimitTo();
 
-    abstract protected ErlSearchScope getScope() throws ErlModelException, CoreException;
+    protected abstract ErlSearchScope getScope() throws ErlModelException, CoreException;
 
-    abstract protected String getScopeDescription();
+    protected abstract String getScopeDescription();
 
     /*
      * Method declared on SelectionChangedAction.

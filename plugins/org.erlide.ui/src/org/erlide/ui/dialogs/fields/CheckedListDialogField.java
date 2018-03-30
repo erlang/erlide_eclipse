@@ -120,7 +120,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
         if (isOkToUse(fTableControl)) {
             // workaround for bug 53853
             final Object[] checked = ((CheckboxTableViewer) fTable).getCheckedElements();
-            final ArrayList<Object> res = new ArrayList<>(checked.length);
+            final List<Object> res = new ArrayList<>(checked.length);
             for (final Object element : checked) {
                 res.add(element);
             }

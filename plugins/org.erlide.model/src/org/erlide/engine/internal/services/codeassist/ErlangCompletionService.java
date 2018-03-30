@@ -2,7 +2,6 @@ package org.erlide.engine.internal.services.codeassist;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -155,9 +154,9 @@ public class ErlangCompletionService implements CompletionService {
                     }
                     break;
                 case ATTRIBUTE:
-                    if (element.getName().equals("include")) {
+                    if ("include".equals(element.getName())) {
                         flags = EnumSet.of(CompletionFlag.INCLUDES);
-                    } else if (element.getName().equals("include_lib")) {
+                    } else if ("include_lib".equals(element.getName())) {
                         flags = EnumSet.of(CompletionFlag.INCLUDE_LIBS);
                     }
                     break;
@@ -234,7 +233,7 @@ public class ErlangCompletionService implements CompletionService {
     String getPrefix(final String before) {
         for (int n = before.length() - 1; n >= 0; --n) {
             final char c = before.charAt(n);
-            if (!isErlangIdentifierChar(c) && c != '?' && c != '\'') {
+            if (!ErlangCompletionService.isErlangIdentifierChar(c) && c != '?' && c != '\'') {
                 return before.substring(n + 1);
             }
         }
@@ -284,11 +283,11 @@ public class ErlangCompletionService implements CompletionService {
     List<CompletionData> getMacroOrRecordCompletions(final int offset,
             final String prefix, final ErlElementKind kind) {
         if (module == null) {
-            return EMPTY_COMPLETIONS;
+            return ErlangCompletionService.EMPTY_COMPLETIONS;
         }
         final List<CompletionData> result = new ArrayList<>();
         try {
-            final List<IErlPreprocessorDef> defs = getAllPreprocessorDefs(module, kind);
+            final List<IErlPreprocessorDef> defs = ErlangCompletionService.getAllPreprocessorDefs(module, kind);
             for (final IErlPreprocessorDef pd : defs) {
                 final String name = pd.getDefinedName();
                 addIfMatches(name, prefix, offset, result);
@@ -346,14 +345,14 @@ public class ErlangCompletionService implements CompletionService {
             final int offset, final String prefix, final int hashMarkPos,
             final List<String> fieldsSoFar) {
         if (module == null) {
-            return EMPTY_COMPLETIONS;
+            return ErlangCompletionService.EMPTY_COMPLETIONS;
         }
         IErlPreprocessorDef pd;
         try {
             pd = ErlangEngine.getInstance().getModelFindService()
                     .findPreprocessorDef(module, recordName, ErlElementKind.RECORD_DEF);
         } catch (final CoreException e) {
-            return EMPTY_COMPLETIONS;
+            return ErlangCompletionService.EMPTY_COMPLETIONS;
         }
         if (pd instanceof IErlRecordDef) {
             final List<CompletionData> result = new ArrayList<>();
@@ -369,7 +368,7 @@ public class ErlangCompletionService implements CompletionService {
             }
             return result;
         }
-        return EMPTY_COMPLETIONS;
+        return ErlangCompletionService.EMPTY_COMPLETIONS;
     }
 
     List<CompletionData> addCompletions(final IOtpRpc backend,
@@ -443,7 +442,7 @@ public class ErlangCompletionService implements CompletionService {
             final List<CompletionData> completions) {
         final CompletionNameComparer completionNameComparer = new CompletionNameComparer(
                 prefix);
-        Collections.sort(completions, completionNameComparer);
+        completions.sort(completionNameComparer);
         result.addAll(completions);
     }
 
@@ -480,7 +479,7 @@ public class ErlangCompletionService implements CompletionService {
                 final OtpErlangTuple f = (OtpErlangTuple) i;
                 final String funWithArity = ((OtpErlangString) f.elementAt(0))
                         .stringValue();
-                if (!filterImported(erlImport, funWithArity)) {
+                if (!ErlangCompletionService.filterImported(erlImport, funWithArity)) {
                     continue;
                 }
                 String funWithParameters = arityOnly ? funWithArity
@@ -550,7 +549,7 @@ public class ErlangCompletionService implements CompletionService {
             final List<String> result) {
         final int n = Math.min(parameters.size(), result.size());
         for (int i = 0; i < n; ++i) {
-            if (result.get(i).equals("_")) {
+            if ("_".equals(result.get(i))) {
                 final String var = parameters.get(i).trim();
                 if (looksLikeParameter(var)) {
                     result.set(i, fixVarName(var));
@@ -579,7 +578,7 @@ public class ErlangCompletionService implements CompletionService {
      * @return true iff parameter is like Par, _Par or _par
      */
     private boolean looksLikeParameter(final String parameter) {
-        if (parameter == null || parameter.length() == 0) {
+        if (parameter == null || parameter.isEmpty()) {
             return false;
         }
         final char c = parameter.charAt(0);

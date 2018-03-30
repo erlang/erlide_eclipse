@@ -70,11 +70,11 @@ public class ListDialogField<Element> extends DialogField {
         }
 
         public ColumnsDescription(final String[] headers, final boolean drawLines) {
-            this(createColumnWeightData(headers.length), headers, drawLines);
+            this(ColumnsDescription.createColumnWeightData(headers.length), headers, drawLines);
         }
 
         public ColumnsDescription(final int nColumns, final boolean drawLines) {
-            this(createColumnWeightData(nColumns), null, drawLines);
+            this(ColumnsDescription.createColumnWeightData(nColumns), null, drawLines);
         }
 
         private static ColumnLayoutData[] createColumnWeightData(final int nColumns) {
@@ -249,7 +249,7 @@ public class ListDialogField<Element> extends DialogField {
         assertEnoughColumns(nColumns);
 
         final Label label = getLabelControl(parent);
-        GridData gd = gridDataForLabel(1);
+        GridData gd = DialogField.gridDataForLabel(1);
         gd.verticalAlignment = GridData.BEGINNING;
         label.setLayoutData(gd);
 
@@ -653,8 +653,7 @@ public class ListDialogField<Element> extends DialogField {
             // filter duplicated
             final ArrayList<Element> elementsToAdd = new ArrayList<>(nElements);
 
-            for (int i = 0; i < nElements; i++) {
-                final Element elem = elements.get(i);
+            for (final Element elem : elements) {
                 if (!fElements.contains(elem)) {
                     elementsToAdd.add(elem);
                 }
@@ -773,8 +772,7 @@ public class ListDialogField<Element> extends DialogField {
         final List<Element> res = new ArrayList<>(nElements);
         @Nullable
         Element floating = null;
-        for (int i = 0; i < nElements; i++) {
-            final Element curr = elements.get(i);
+        for (final Element curr : elements) {
             if (move.contains(curr)) {
                 res.add(curr);
             } else {

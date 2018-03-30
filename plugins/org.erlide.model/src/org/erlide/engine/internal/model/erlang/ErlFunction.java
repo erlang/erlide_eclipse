@@ -38,7 +38,7 @@ public class ErlFunction extends ErlMember implements IErlFunction {
     private int arity;
     private final String head;
     private final List<String> parameters;
-    private Collection<IErlComment> fComments = NO_COMMENTS;
+    private Collection<IErlComment> fComments = ErlFunction.NO_COMMENTS;
     private IErlTypespec typespec;
 
     /**
@@ -59,7 +59,7 @@ public class ErlFunction extends ErlMember implements IErlFunction {
 
     @Override
     public List<IErlFunctionClause> getClauses() {
-        final ArrayList<IErlFunctionClause> fc = new ArrayList<>();
+        final List<IErlFunctionClause> fc = new ArrayList<>();
         synchronized (getModelLock()) {
             for (final IErlElement el : internalGetChildren()) {
                 if (el instanceof IErlFunctionClause) {
@@ -93,7 +93,7 @@ public class ErlFunction extends ErlMember implements IErlFunction {
     @Override
     public String toString() {
         final StringBuilder b = getNameWithArityBuilder();
-        if (head != null && head.length() != 0) {
+        if (head != null && !head.isEmpty()) {
             b.append("  ").append(head);
         }
         return b.toString();

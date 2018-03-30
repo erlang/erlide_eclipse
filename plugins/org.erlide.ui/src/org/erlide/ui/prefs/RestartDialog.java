@@ -21,10 +21,10 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class RestartDialog extends MessageDialog {
     private static final int CONTINUE = 2;
-    private final static String[] yesNo = new String[] { IDialogConstants.YES_LABEL,
+    private static final String[] yesNo = { IDialogConstants.YES_LABEL,
             IDialogConstants.NO_LABEL };
 
-    private int buttonId = 0;
+    private int buttonId;
 
     /**
      * Creates a new dialog
@@ -35,7 +35,7 @@ public class RestartDialog extends MessageDialog {
      */
     public RestartDialog(final Shell parent, final String title, final String message) {
         super(parent, title, null, // accept the default window icon
-                message, QUESTION, yesNo, 0); // yes
+                message, QUESTION, RestartDialog.yesNo, 0); // yes
         // is
         // the
         // default
@@ -67,7 +67,7 @@ public class RestartDialog extends MessageDialog {
     @Override
     protected void buttonPressed(final int id) {
         if (id == 2) {
-            buttonId = CONTINUE;
+            buttonId = RestartDialog.CONTINUE;
         }
 
         super.buttonPressed(id);

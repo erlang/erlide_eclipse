@@ -23,7 +23,7 @@ package com.ericsson.otp.erlang;
 class Link {
     private final OtpErlangPid local;
     private final OtpErlangPid remote;
-    private int hashCodeValue = 0;
+    private int hashCodeValue;
 
     public Link(final OtpErlangPid local, final OtpErlangPid remote) {
         this.local = local;

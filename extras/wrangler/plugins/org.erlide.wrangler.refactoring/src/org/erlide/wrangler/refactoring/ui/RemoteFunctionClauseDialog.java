@@ -69,7 +69,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
         super(parentShell, title);
     }
 
-    private IErlFunctionClause functionClause = null;
+    private IErlFunctionClause functionClause;
 
     @Override
     protected Control createDialogArea(final Composite parent) {
@@ -168,7 +168,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 
     protected List<IErlFunctionClause> filterClauses(
             final Collection<IErlElement> children) {
-        final ArrayList<IErlFunctionClause> clauses = new ArrayList<>();
+        final List<IErlFunctionClause> clauses = new ArrayList<>();
         for (final IErlElement e : children) {
             if (e instanceof IErlFunctionClause) {
                 clauses.add((IErlFunctionClause) e);
@@ -178,7 +178,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
     }
 
     protected List<IErlFunction> filterFunctions(final Collection<IErlElement> elements) {
-        final ArrayList<IErlFunction> functions = new ArrayList<>();
+        final List<IErlFunction> functions = new ArrayList<>();
         for (final IErlElement e : elements) {
             if (e instanceof IErlFunction) {
                 functions.add((IErlFunction) e);

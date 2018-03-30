@@ -45,9 +45,9 @@ public class StringDialogField extends DialogField {
         assertEnoughColumns(nColumns);
 
         final Label label = getLabelControl(parent);
-        label.setLayoutData(gridDataForLabel(1));
+        label.setLayoutData(DialogField.gridDataForLabel(1));
         final Text text = getTextControl(parent);
-        text.setLayoutData(gridDataForText(nColumns - 1));
+        text.setLayoutData(StringDialogField.gridDataForText(nColumns - 1));
 
         return new Control[] { label, text };
     }

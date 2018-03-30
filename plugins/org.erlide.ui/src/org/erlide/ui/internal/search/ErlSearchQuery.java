@@ -34,7 +34,7 @@ public class ErlSearchQuery implements ISearchQuery {
     private ErlangSearchResult fSearchResult;
 
     private final String scopeDescription;
-    private boolean stopped = false;
+    private boolean stopped;
 
     public ErlSearchQuery(final ErlangSearchPattern pattern, final ErlSearchScope scope,
             final String scopeDescription) {

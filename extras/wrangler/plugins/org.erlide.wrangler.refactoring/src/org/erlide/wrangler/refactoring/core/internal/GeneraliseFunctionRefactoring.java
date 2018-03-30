@@ -11,6 +11,7 @@
 package org.erlide.wrangler.refactoring.core.internal;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -54,7 +55,7 @@ public class GeneraliseFunctionRefactoring
      * @version %I%, %G%
      */
     public enum State {
-        ok, error, multi_instance, unknown_side_effect, more_than_one_clause;
+        ok, error, multi_instance, unknown_side_effect, more_than_one_clause
     }
 
     private final State state;
@@ -199,10 +200,15 @@ public class GeneraliseFunctionRefactoring
         } else if (state == State.error) {
             return null;
         } else {
-            final HashMap<GenFunReturnParameterName, OtpErlangObject> p = message
+            final Map<GenFunReturnParameterName, OtpErlangObject> p = message
                     .getParameters();
-            OtpErlangObject sideEffectPar, parName, funName, arity, funDefPos, exp,
-                    logCmd;
+            OtpErlangObject sideEffectPar;
+            OtpErlangObject parName;
+            OtpErlangObject funName;
+            OtpErlangObject arity;
+            OtpErlangObject funDefPos;
+            OtpErlangObject exp;
+            OtpErlangObject logCmd;
             sideEffectPar = p.get(GenFunReturnParameterName.sideEffect);
             parName = p.get(GenFunReturnParameterName.parName);
             funName = p.get(GenFunReturnParameterName.funName);

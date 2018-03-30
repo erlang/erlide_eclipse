@@ -47,10 +47,10 @@ public class CoverLaunchSettings {
 
             // new
             config.setProject(data.getProject());
-            if (data.getProject() == null || data.getProject().length() == 0) {
+            if (data.getProject() == null || data.getProject().isEmpty()) {
                 throw new CoverException("No project name set");
             }
-            if (data.getModule() == null || data.getModule().length() == 0) {
+            if (data.getModule() == null || data.getModule().isEmpty()) {
                 throw new CoverException("No module name set");
             }
             try {
@@ -62,7 +62,7 @@ public class CoverLaunchSettings {
             break;
         case ALL:
             // new
-            if (data.getProjectAll() == null || data.getProjectAll().length() == 0) {
+            if (data.getProjectAll() == null || data.getProjectAll().isEmpty()) {
                 throw new CoverException("No project name set");
             }
             config.setProject(data.getProjectAll());

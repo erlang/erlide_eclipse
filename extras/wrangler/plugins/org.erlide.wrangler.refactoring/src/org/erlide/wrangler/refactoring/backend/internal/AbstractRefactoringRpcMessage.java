@@ -11,6 +11,7 @@
 package org.erlide.wrangler.refactoring.backend.internal;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.erlide.util.erlang.OtpErlang;
 import org.erlide.wrangler.refactoring.backend.ChangedFile;
@@ -29,13 +30,13 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public abstract class AbstractRefactoringRpcMessage extends AbstractRpcMessage
         implements IRefactoringRpcMessage {
 
-    protected ArrayList<ChangedFile> changedFiles = null;
+    protected ArrayList<ChangedFile> changedFiles;
 
     /**
      * Returns with those files, which are changed during the refactoring.
      */
     @Override
-    public ArrayList<ChangedFile> getRefactoringChangeset() {
+    public List<ChangedFile> getRefactoringChangeset() {
         return changedFiles;
     }
 
@@ -43,7 +44,8 @@ public abstract class AbstractRefactoringRpcMessage extends AbstractRpcMessage
         final ArrayList<ChangedFile> ret = new ArrayList<>();
 
         OtpErlangTuple e;
-        OtpErlangString oldPath, newPath;
+        OtpErlangString oldPath;
+        OtpErlangString newPath;
         for (int i = 0; i < fileList.arity(); ++i) {
             e = (OtpErlangTuple) fileList.elementAt(i);
             oldPath = (OtpErlangString) e.elementAt(0);

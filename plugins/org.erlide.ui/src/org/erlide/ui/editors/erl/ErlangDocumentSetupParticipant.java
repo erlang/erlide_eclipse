@@ -17,7 +17,7 @@ public class ErlangDocumentSetupParticipant implements IDocumentSetupParticipant
 
     public void setupErlangDocumentPartitioner(final IDocument document,
             final String partitioning) {
-        final IDocumentPartitioner partitioner = createDocumentPartitioner();
+        final IDocumentPartitioner partitioner = ErlangDocumentSetupParticipant.createDocumentPartitioner();
         if (document instanceof IDocumentExtension3) {
             final IDocumentExtension3 extension3 = (IDocumentExtension3) document;
             extension3.setDocumentPartitioner(partitioning, partitioner);

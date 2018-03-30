@@ -34,7 +34,7 @@ public class CoverTabGroup extends AbstractLaunchConfigurationTabGroup {
     private Collection<ILaunchConfigurationTab> createMyTabs(
             final ILaunchConfigurationDialog dialog, final String mode) {
         ILaunchConfigurationTab[] tabs;
-        if (mode.equals("debug")) {
+        if ("debug".equals(mode)) {
             tabs = new ILaunchConfigurationTab[] { new CoverMainTab(), new DebugTab(),
                     new CodepathTab() };
         } else {
