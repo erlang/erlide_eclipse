@@ -25,6 +25,7 @@
             default-charset="UTF-8"
             describer="org.erlide.engine.model.root.ErlangContentDescriber"
             file-extensions="erl,hrl,yrl,escript"
+            file-names="rebar.config,rebar.config.script"
             id="org.erlide.core.content.erlang"
             name="Erlang source file"
             priority="normal">
@@ -32,5 +33,9 @@
                class="org.erlide.engine.model.root.ErlangContentDescriber">
          </describer>
       </content-type>
+      <file-association
+            content-type="org.erlide.core.content.erlang"
+            file-extensions="src">
+      </file-association>
    </extension>
 </plugin>
