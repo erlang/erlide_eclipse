@@ -62,7 +62,7 @@ def checkout() {
 	checkout([
 			$class: 'GitSCM',
 			branches: scm.branches,
-			extensions: scm.extensions + [[$class: 'CleanCheckout'], [$class: 'CloneOption', depth: 100, noTags: true, reference: '', shallow: true]],
+			extensions: scm.extensions + [[$class: 'CleanCheckout'], [$class: 'CloneOption', depth: 100, noTags: true, reference: '', shallow: false]],
 			userRemoteConfigs: scm.userRemoteConfigs
 			])
 
