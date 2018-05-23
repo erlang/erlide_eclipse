@@ -187,7 +187,7 @@ class HostnameChecker {
         loaded && (canUseLongNames || canUseShortNames)
     }
 
-    def public Properties readErlideHosts() {
+    def Properties readErlideHosts() {
         val Properties props = new Properties()
         var loaded = false
         try {
@@ -204,7 +204,7 @@ class HostnameChecker {
         props
     }
 
-    def public void saveErlideHosts(String longName, String shortName) {
+    def void saveErlideHosts(String longName, String shortName) {
         try {
             val Properties props = new Properties()
             props.put("long", longName)
