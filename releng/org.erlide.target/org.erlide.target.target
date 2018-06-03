@@ -17,10 +17,6 @@
       <repository location="http://download.eclipse.org/eclipse/updates/4.6/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
-      <unit id="org.eclipse.handly.feature.group" version="0.6.0.v20161109-0701"/>
-      <repository location="http://download.eclipse.org/handly/releases/0.6/repository"/>
-    </location>
-    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.eclipse.xtend.lib" version="0.0.0"/>
       <unit id="org.eclipse.xtend.lib.macro" version="0.0.0"/>
       <unit id="org.eclipse.xtext.xbase.lib" version="0.0.0"/>
@@ -28,7 +24,7 @@
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.eclipse.lsp4j.sdk.feature.group" version="0.0.0"/>
-      <repository location="http://download.eclipse.org/lsp4j/updates/releases/0.3.0/"/>
+      <repository location="http://download.eclipse.org/lsp4j/updates/releases/0.4.0/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.erlide.kernel.feature.feature.group" version="0.0.0"/>

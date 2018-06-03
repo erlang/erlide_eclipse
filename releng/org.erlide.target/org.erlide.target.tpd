@@ -18,17 +18,13 @@ location "http://download.eclipse.org/eclipse/updates/4.6/" {
 	
 }
 
-location "http://download.eclipse.org/handly/releases/0.6/repository"{
-	org.eclipse.handly.feature.group [0.6.0, 0.7.0)
-}
-
 location "http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.14.0/"{
 	org.eclipse.xtend.lib lazy
 	org.eclipse.xtend.lib.macro lazy
 	org.eclipse.xtext.xbase.lib lazy
 }
 
-location "http://download.eclipse.org/lsp4j/updates/releases/0.3.0/"{
+location "http://download.eclipse.org/lsp4j/updates/releases/0.4.0/"{
 	org.eclipse.lsp4j.sdk.feature.group lazy
 }
 
