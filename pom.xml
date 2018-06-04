@@ -74,7 +74,7 @@
 		<module>plugins/org.erlide.branding</module>
 		<module>plugins/org.erlide.core</module>
 		<module>plugins/org.erlide.help</module>
-		<module>plugins/org.erlide.server</module>
+		
 		<module>plugins/org.erlide.model</module>
 		<module>plugins/org.erlide.model.api</module>
 		<module>plugins/org.erlide.runtime</module>
