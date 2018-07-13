@@ -109,7 +109,7 @@ public class Backend implements IStreamListener, IBackend {
             case IDE:
                 site.call("erlide_builder_app", "init", "i",
                         sysconf.getMaxParallelBuilds());
-                //site.call("erlide_ide_app", "init", "");
+                // site.call("erlide_ide_app", "init", "");
                 break;
             default:
             }
@@ -178,21 +178,11 @@ public class Backend implements IStreamListener, IBackend {
         final IStreamsProxy proxy = getStreamsProxy();
         if (proxy != null) {
             final IStreamMonitor errorStreamMonitor = proxy.getErrorStreamMonitor();
-            errorStreamMonitor.addListener(new IStreamListener() {
-                @Override
-                public void streamAppended(final String text,
-                        final IStreamMonitor monitor) {
-                    shell.add(text, IoRequestKind.STDERR);
-                }
-            });
+            errorStreamMonitor.addListener(
+                    (text, monitor) -> shell.add(text, IoRequestKind.STDERR));
             final IStreamMonitor outputStreamMonitor = proxy.getOutputStreamMonitor();
-            outputStreamMonitor.addListener(new IStreamListener() {
-                @Override
-                public void streamAppended(final String text,
-                        final IStreamMonitor monitor) {
-                    shell.add(text, IoRequestKind.STDOUT);
-                }
-            });
+            outputStreamMonitor.addListener(
+                    (text, monitor) -> shell.add(text, IoRequestKind.STDOUT));
         }
         return shell;
     }
