@@ -105,7 +105,7 @@ public final class BackendData extends RuntimeData {
         projects = Lists.newArrayList();
     }
 
-    private static String getDefaultWorkingDir() {
+    public static String getDefaultWorkingDir() {
         final IWorkspaceRoot wroot = ResourcesPlugin.getWorkspace().getRoot();
         return wroot.getLocation().toPortableString();
     }

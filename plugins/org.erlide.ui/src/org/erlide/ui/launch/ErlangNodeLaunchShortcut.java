@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -31,6 +33,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.ErlRuntimeAttributes;
 import org.erlide.backend.launch.IErlangLaunchDelegateConstants;
 import org.erlide.engine.ErlangEngine;
@@ -167,8 +170,8 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
                         IErlangLaunchDelegateConstants.CONFIGURATION_TYPE);
         ILaunchConfigurationWorkingCopy wc = null;
         wc = launchConfigurationType.newInstance(null, name);
-        wc.setAttribute(ErlRuntimeAttributes.PROJECTS,
-                ListsUtils.packList(projectNames, ErlangNodeLaunchShortcut.PROJECT_NAME_SEPARATOR));
+        wc.setAttribute(ErlRuntimeAttributes.PROJECTS, ListsUtils.packList(projectNames,
+                ErlangNodeLaunchShortcut.PROJECT_NAME_SEPARATOR));
         wc.setAttribute(ErlRuntimeAttributes.RUNTIME_NAME,
                 projects.iterator().next().getRuntimeInfo().getName());
         wc.setAttribute(ErlRuntimeAttributes.NODE_NAME, name);
@@ -178,6 +181,8 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         wc.setAttribute(ErlRuntimeAttributes.INTERNAL, false);
         wc.setAttribute(ErlRuntimeAttributes.LOAD_ALL_NODES, false);
         wc.setAttribute(ErlRuntimeAttributes.COOKIE, "erlide");
+        wc.setAttribute(ErlRuntimeAttributes.WORKING_DIR, getWorkingDir(projectNames));
+
         final Map<String, String> map = Maps.newHashMap();
         wc.setAttribute("org.eclipse.debug.core.environmentVariables", map);
         if ("debug".equals(mode)) {
@@ -186,6 +191,22 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         }
         wc.setMappedResources(getProjectResources(projects));
         return wc.doSave();
+    }
+
+    /*
+     * If only one project, use its location. Otherwise, use the workspace's root.
+     */
+    private String getWorkingDir(final List<String> projectNames) {
+        if (projectNames.size() != 1) {
+            return BackendData.getDefaultWorkingDir();
+        }
+        final String pn = projectNames.get(0);
+        final IWorkspaceRoot wroot = ResourcesPlugin.getWorkspace().getRoot();
+        final IResource prj = wroot.findMember(pn);
+        if (prj == null) {
+            return BackendData.getDefaultWorkingDir();
+        }
+        return prj.getLocation().toPortableString();
     }
 
     private IResource[] getProjectResources(final Collection<IErlProject> projects) {
