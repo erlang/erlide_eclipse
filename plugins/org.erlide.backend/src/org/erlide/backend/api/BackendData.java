@@ -179,6 +179,7 @@ public final class BackendData extends RuntimeData {
             // !options.contains(BackendOptions.NO_CONSOLE));
             workingCopy.setAttribute(ErlRuntimeAttributes.USE_LONG_NAME, hasLongName());
             workingCopy.setAttribute(ErlRuntimeAttributes.INTERNAL, isInternal());
+            workingCopy.setAttribute(ErlRuntimeAttributes.WORKING_DIR, getWorkingDir());
 
             return workingCopy;
         } catch (final CoreException e) {

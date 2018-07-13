@@ -33,7 +33,6 @@ class RpcCall implements Callable<OtpErlangObject> {
     }
 
     override call() throws Exception {
-        // TODO
         rpc.call(module, function, signature, args)
     }
 

@@ -140,28 +140,24 @@ public class RestartableService implements Service {
 	@Deprecated
 	@Override
 	public ListenableFuture<State> start() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Deprecated
 	@Override
 	public State startAndWait() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Deprecated
 	@Override
 	public ListenableFuture<State> stop() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Deprecated
 	@Override
 	public State stopAndWait() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -425,8 +425,8 @@ public class OtpNodeProxy implements IOtpNodeProxy {
 			try {
                 ErlLogger.debug("START node :> " + Arrays.toString(cmds) + " *** "
                         + workingDirectory.getCanonicalPath());
-			} catch (final IOException e1) {
-				ErlLogger.error("START ERROR node :> " + e1.getMessage());
+			} catch (final IOException e) {
+				ErlLogger.error("START ERROR node :> " + e.getMessage());
 			}
 
 			final ProcessBuilder builder = new ProcessBuilder(cmds);
