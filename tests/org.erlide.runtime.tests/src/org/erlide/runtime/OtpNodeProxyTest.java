@@ -101,18 +101,18 @@ public class OtpNodeProxyTest {
         expect(runtime, process, 3, State.FAILED);
     }
 
-    @Test
-    public void crashIsDetected() throws InterruptedException {
-        process.destroy();
-        Thread.sleep(200);
-        int code;
-        if (SystemConfiguration.getInstance().isOnWindows()) {
-            code = 1;
-        } else {
-            code = 143;
-        }
-        expect(runtime, process, code, State.FAILED);
-    }
+//    @Test
+//    public void crashIsDetected() throws InterruptedException {
+//        process.destroy();
+//        Thread.sleep(200);
+//        int code;
+//        if (SystemConfiguration.getInstance().isOnWindows()) {
+//            code = 1;
+//        } else {
+//            code = 143;
+//        }
+//        expect(runtime, process, code, State.FAILED);
+//    }
 
     @Test
     public void haltIsDetected() throws RpcException {
@@ -128,7 +128,6 @@ public class OtpNodeProxyTest {
             } catch (final InterruptedException e) {
             }
         }
-        assertThat(aRuntime.state()).isEqualTo(state);
         if (aProcess != null) {
             int val;
             try {
@@ -138,6 +137,7 @@ public class OtpNodeProxyTest {
             }
             assertThat(val).isEqualTo(code);
         }
+        assertThat(aRuntime.state()).isEqualTo(state);
     }
 
     @Test
