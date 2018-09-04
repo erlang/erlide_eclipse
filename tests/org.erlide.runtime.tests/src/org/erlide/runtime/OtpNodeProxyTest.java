@@ -10,7 +10,6 @@ import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameChecker;
-import org.erlide.util.SystemConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

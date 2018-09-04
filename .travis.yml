@@ -1,0 +1,27 @@
+sudo: false
+
+language: java
+
+jdk:
+  - oraclejdk8
+
+cache:
+  directories:
+    - $HOME/.m2
+
+install: true
+
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
+  - bundler config
+  - ls -al $HOME
+
+script:
+  - ./mvnw -B -U clean verify -P help -Dmaven.test.failure.ignore=true -DskipTests=true -Dmaven.test.skip=true
+  - ls -al $HOME
+
+after_failure:
+  - cat /home/travis/build/vladdu/erlide_eclipse/tests/org.erlide.backend.tests/target/work/data/.metadata/.log
+
