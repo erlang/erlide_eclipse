@@ -270,7 +270,7 @@ public class ErlElementDelta implements IErlElementDelta {
             return null;
         }
         final ArrayList<IParent> parents = Lists.newArrayList();
-        while (!parent.equals(fElement)) {
+        while (parent != fElement) {
             parents.add(parent);
             if (parent instanceof IErlElement) {
                 element = (IErlElement) parent;

@@ -560,7 +560,7 @@ public class DebuggerTraceView extends AbstractDebugView
                 gc.setFont(tree.getFont());
                 final FontMetrics fontMetrics = gc.getFontMetrics();
                 gc.dispose();
-                columnWidth = Math.max(100, fontMetrics.getAverageCharWidth() * 20);
+                columnWidth = (int) Math.max(100, fontMetrics.getAverageCharacterWidth() * 20);
             }
 
             // if (columnWidths != null) {

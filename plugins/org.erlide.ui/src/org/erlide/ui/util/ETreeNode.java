@@ -1,5 +1,7 @@
 package org.erlide.ui.util;
 
+import java.util.Objects;
+
 /*******************************************************************************
  * Copyright (c) 2005, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -60,7 +62,7 @@ public class ETreeNode {
     @Override
     public boolean equals(final Object object) {
         if (object instanceof ETreeNode) {
-            return Util.equals(value, ((ETreeNode) object).value);
+            return Objects.equals(value, ((ETreeNode) object).value);
         }
 
         return false;

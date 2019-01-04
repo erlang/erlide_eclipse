@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
-<!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Erlide target" sequenceNumber="1526569742">
+<!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
+<target name="Erlide target" sequenceNumber="1546600171">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.eclipse.e4.rcp.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.jdt.annotation" version="0.0.0"/>
       <unit id="org.eclipse.sdk.ide" version="0.0.0"/>
-      <repository location="http://download.eclipse.org/releases/neon/"/>
+      <repository location="http://download.eclipse.org/releases/photon/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="com.abstratt.eclipsegraphviz.feature.feature.group" version="0.0.0"/>

@@ -4,7 +4,7 @@ with source configurePhase requirements
 
 environment JavaSE-1.8
 
-location "http://download.eclipse.org/releases/neon/" {
+location "http://download.eclipse.org/releases/photon/" {
 	org.eclipse.e4.rcp.feature.group lazy
 	org.eclipse.jdt.annotation lazy 
 	org.eclipse.sdk.ide lazy
@@ -13,9 +13,7 @@ location "http://download.erlide.org/update/libs" {
 	com.abstratt.eclipsegraphviz.feature.feature.group lazy //[2.2.0, 3.0.0)
 }
 
-
 location "http://download.eclipse.org/eclipse/updates/4.6/" {
-	
 }
 
 location "http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.14.0/"{
