@@ -20,7 +20,9 @@ before_script:
 
 script:
   - ./mvnw -B -U clean verify -P help -Dmaven.test.failure.ignore=true -DskipTests=true -Dmaven.test.skip=true
-  - ls -al $HOME
+  - pwd
+  - ls -al .
+# publish update site
 
 after_failure:
   - cat /home/travis/build/vladdu/erlide_eclipse/tests/org.erlide.backend.tests/target/work/data/.metadata/.log
