@@ -23,9 +23,9 @@
    </url>
 
    <requires>
-      <import feature="org.erlide" version="0.52.1.qualifier" match="compatible"/>
-      <import feature="org.eclipse.platform" version="4.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.sdk" version="4.5.0"/>
+      <import feature="org.erlide" version="0.56.0.qualifier" match="compatible"/>
+      <import feature="org.eclipse.platform" version="4.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.sdk" version="4.8.0"/>
    </requires>
 
 </feature>
