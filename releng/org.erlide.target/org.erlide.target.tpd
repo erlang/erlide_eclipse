@@ -26,7 +26,7 @@ location "http://download.eclipse.org/lsp4j/updates/releases/0.4.0/"{
 	org.eclipse.lsp4j.sdk.feature.group lazy
 }
 
-location "http://download.erlide.org/update/kernel/0.115.1" {
+location "http://download.erlide.org/update/kernel/0.115.3" {
 	org.erlide.kernel.feature.feature.group lazy
 }
 
