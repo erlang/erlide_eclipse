@@ -55,7 +55,7 @@
 		<repository>
 			<id>kernel</id>
 			<layout>p2</layout>
-			<url>http://download.erlide.org/update/kernel/0.115.1</url>
+			<url>http://download.erlide.org/update/kernel/0.115.3</url>
 		</repository>
 	</repositories>
 
