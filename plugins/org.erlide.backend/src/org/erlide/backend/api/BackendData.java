@@ -105,7 +105,7 @@ public final class BackendData extends RuntimeData {
         projects = Lists.newArrayList();
     }
 
-    private static String getDefaultWorkingDir() {
+    public static String getDefaultWorkingDir() {
         final IWorkspaceRoot wroot = ResourcesPlugin.getWorkspace().getRoot();
         return wroot.getLocation().toPortableString();
     }
@@ -179,6 +179,7 @@ public final class BackendData extends RuntimeData {
             // !options.contains(BackendOptions.NO_CONSOLE));
             workingCopy.setAttribute(ErlRuntimeAttributes.USE_LONG_NAME, hasLongName());
             workingCopy.setAttribute(ErlRuntimeAttributes.INTERNAL, isInternal());
+            workingCopy.setAttribute(ErlRuntimeAttributes.WORKING_DIR, getWorkingDir());
 
             return workingCopy;
         } catch (final CoreException e) {

@@ -8,6 +8,7 @@ import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.root.IErlElementDelta;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 public class ErlElementDelta implements IErlElementDelta {
@@ -269,7 +270,7 @@ public class ErlElementDelta implements IErlElementDelta {
             return null;
         }
         final ArrayList<IParent> parents = Lists.newArrayList();
-        while (!parent.equals(fElement)) {
+        while (parent != fElement) {
             parents.add(parent);
             if (parent instanceof IErlElement) {
                 element = (IErlElement) parent;
@@ -289,8 +290,7 @@ public class ErlElementDelta implements IErlElementDelta {
      * Returns whether the two elements are equals and have the same parent.
      */
     protected boolean equalsAndSameParent(final IErlElement e1, final IErlElement e2) {
-        final IErlElement parent1 = (IErlElement) e1.getParent();
-        return e1.equals(e2) && parent1 != null && parent1.equals(e2.getParent());
+        return Objects.equal(e1, e2) && Objects.equal(e1.getParent(), e2.getParent());
     }
 
     /**

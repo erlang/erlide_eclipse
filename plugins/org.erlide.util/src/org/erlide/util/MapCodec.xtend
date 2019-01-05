@@ -3,7 +3,7 @@ package org.erlide.util
 import com.google.common.base.Splitter
 import java.util.Map
 
-public class MapCodec {
+class MapCodec {
 
     def static Map<String, String> decode(String string) {
         val result = newHashMap()

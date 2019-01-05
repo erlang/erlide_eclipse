@@ -10,7 +10,7 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho.version>1.1.0</tycho.version>
+		<tycho.version>1.2.0</tycho.version>
 		<tycho-extras-version>${tycho.version}</tycho-extras-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jacoco-maven-version>0.8.0</jacoco-maven-version>
@@ -20,12 +20,12 @@
 		<repository>
 			<id>neon</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/neon/</url>
+			<url>http://download.eclipse.org/releases/photon/</url>
 		</repository>
 		<repository>
 			<id>neon updates</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/eclipse/updates/4.6/</url>
+			<url>http://download.eclipse.org/eclipse/updates/4.8/</url>
 		</repository>
 		<repository>
 			<id>erlide libs</id>
@@ -40,7 +40,7 @@
 		<repository>
 			<id>xtend</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.12.0</url>
+			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.14.0</url>
 		</repository>
 		<repository>
 			<id>lsp4j</id>
@@ -55,7 +55,7 @@
 		<repository>
 			<id>kernel</id>
 			<layout>p2</layout>
-			<url>http://download.erlide.org/update/kernel/0.115.1</url>
+			<url>http://download.erlide.org/update/kernel/0.115.3</url>
 		</repository>
 	</repositories>
 
@@ -74,7 +74,7 @@
 		<module>plugins/org.erlide.branding</module>
 		<module>plugins/org.erlide.core</module>
 		<module>plugins/org.erlide.help</module>
-		<module>plugins/org.erlide.server</module>
+		
 		<module>plugins/org.erlide.model</module>
 		<module>plugins/org.erlide.model.api</module>
 		<module>plugins/org.erlide.runtime</module>
@@ -279,7 +279,7 @@
 				<plugin>
 					<groupId>org.eclipse.xtend</groupId>
 					<artifactId>xtend-maven-plugin</artifactId>
-					<version>2.11.0</version>
+					<version>2.16.0</version>
 					<executions>
 						<execution>
 							<goals>

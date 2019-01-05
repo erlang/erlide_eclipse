@@ -15,7 +15,7 @@ import org.osgi.framework.BundleContext
 
 class ModelApiActivator implements BundleActivator {
 
-    static private IErlangEngine engine
+    static IErlangEngine engine
 
     override void start(BundleContext context) throws Exception {
         ErlLogger.debug("Starting Erlang model api")

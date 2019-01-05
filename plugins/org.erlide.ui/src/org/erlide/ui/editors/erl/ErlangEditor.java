@@ -387,9 +387,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 			return;
 		}
 
-		// #26314
 		final int sourceCaretOffset = selection.getOffset() + selection.getLength();
-		// TODO fix me!
 		// if (isSurroundedByBrackets(document, sourceCaretOffset))
 		// sourceCaretOffset -= selection.getLength();
 

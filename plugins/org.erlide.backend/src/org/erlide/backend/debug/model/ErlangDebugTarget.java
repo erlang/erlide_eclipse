@@ -109,8 +109,8 @@ public class ErlangDebugTarget extends ErlangDebugElement
         // interpret everything we can
         final EnumSet<ErlDebugFlags> debugFlags = backend.getData().getDebugFlags();
         final boolean distributed = debugFlags.contains(ErlDebugFlags.DISTRIBUTED_DEBUG);
+        distributeDebuggerCode();
         if (distributed) {
-            distributeDebuggerCode();
             addNodesAsDebugTargets(launch);
         }
 
@@ -493,7 +493,7 @@ public class ErlangDebugTarget extends ErlangDebugElement
         final String ver = backend.getRuntime().getVersion().asMajor().toString()
                 .toLowerCase();
         for (final String module : debuggerModules) {
-            final OtpErlangBinary b = getDebuggerBeam(module, "org.erlide.kernel");
+            final OtpErlangBinary b = getDebuggerBeam(module, "org.erlide.kernel.debugger");
             if (b != null) {
                 final OtpErlangString filename = new OtpErlangString(module + ".erl");
                 final OtpErlangTuple t = OtpErlang.mkTuple(new OtpErlangAtom(module),
@@ -568,7 +568,7 @@ public class ErlangDebugTarget extends ErlangDebugElement
     }
 
     private List<String> getDebuggerModules() {
-        final Bundle debugger = Platform.getBundle("org.erlide.kernel");
+        final Bundle debugger = Platform.getBundle("org.erlide.kernel.debugger");
         if (debugger == null) {
             ErlLogger.warn("engine bundle was not found...");
             return new ArrayList<>();
@@ -585,7 +585,7 @@ public class ErlangDebugTarget extends ErlangDebugElement
 
     private List<String> getModulesFromBundle(final Bundle bundle, final String ver) {
         final List<String> modules = Lists.newArrayList();
-        final String path = ver == null ? "/debugger" : "/debugger/" + ver;
+        final String path = ver == null ? "/ebin" : "/ebin/" + ver;
         @SuppressWarnings("rawtypes")
         final Enumeration beams = bundle.findEntries(path, "*.beam", false);
         if (beams == null) {

@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>org.erlide.branding</artifactId>
-  <version>0.54.0-SNAPSHOT</version>
+  <version>0.55.0-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 
     <build>

@@ -2,7 +2,7 @@
 <feature
       id="org.erlide"
       label="Erlang language tools IDE"
-      version="0.54.0.qualifier"
+      version="0.55.0.qualifier"
       provider-name="%vendorName"
       plugin="org.erlide.branding"
       image="erlang-64.gif"
@@ -33,7 +33,6 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <url>
       <update label="Erlide main update site" url="http://download.erlide.org/update/"/>
-      <discovery label="Handly" url="https://hudson.eclipse.org/handly/job/0.3.x/lastSuccessfulBuild/artifact/build/repository/"/>
    </url>
 
    <includes
@@ -154,13 +153,6 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="com.ericsson.otp.jinterface"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.erlide.server"
          download-size="0"
          install-size="0"
          version="0.0.0"

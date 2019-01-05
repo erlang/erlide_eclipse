@@ -30,8 +30,6 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
 
     Combo runtimeCombo
 
-    Composite builderComposite
-
     protected new(String pageName, NewProjectData info) {
         super(pageName)
         this.info = info;
@@ -57,7 +55,7 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
                 layoutData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1)
                 text = 'Build system to be used (disabled options will be implemented soon): '
             ]
-            builderComposite = newControl(Composite, SWT.NONE) [
+            newControl(Composite, SWT.NONE) [
                 layoutData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1)
                 layout = new GridLayout(3, false)
                 val builderListener = new BuilderSelectionListener(info, this)

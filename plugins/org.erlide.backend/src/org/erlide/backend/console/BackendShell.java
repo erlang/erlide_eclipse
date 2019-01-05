@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2006 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2006 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.backend.console;
 
@@ -33,6 +31,8 @@ import com.google.common.collect.Lists;
 
 public class BackendShell implements IBackendShell {
 
+    private static final OtpErlangAtom INPUT = new OtpErlangAtom("input");
+    private static final OtpErlangAtom STOP = new OtpErlangAtom("stop");
     private final IBackend backend;
     private OtpErlangPid server;
     private final String fId;
@@ -54,8 +54,8 @@ public class BackendShell implements IBackendShell {
 
     @Override
     public void close() {
-        if (server != null && backend.getOtpRpc() != null) {
-            backend.getOtpRpc().send(server, new OtpErlangAtom("stop"));
+        if (server != null && backend!=null && backend.getOtpRpc() != null) {
+            backend.getOtpRpc().send(server, STOP);
         }
         server = null;
     }
@@ -63,8 +63,8 @@ public class BackendShell implements IBackendShell {
     @Override
     public void send(final String string) {
         if (server != null) {
-            backend.getOtpRpc().send(server, OtpErlang.mkTuple(new OtpErlangAtom("input"),
-                    new OtpErlangString(string)));
+            backend.getOtpRpc().send(server,
+                    OtpErlang.mkTuple(INPUT, new OtpErlangString(string)));
         } else {
             try {
                 backend.input(string);
