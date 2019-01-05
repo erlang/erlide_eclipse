@@ -16,7 +16,7 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
   - bundler config
-  - ls -al $HOME
+  - ls -al .
 
 script:
   - ./mvnw -B -U clean verify -P help -Dmaven.test.failure.ignore=true -DskipTests=true -Dmaven.test.skip=true
