@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="Erlide target" sequenceNumber="1546701821">
+<target name="Erlide target" sequenceNumber="1551786660">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.eclipse.e4.rcp.feature.group" version="0.0.0"/>
@@ -32,7 +32,7 @@
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="com.google.gson" version="2.7.0.v20170129-0911"/>
-      <unit id="com.google.guava" version="15.0.0.v201403281430"/>
+      <unit id="com.google.guava" version="18.0.0.v20161115-1643"/>
       <repository location="http://download.eclipse.org/tools/orbit/R-builds/R20170307180635/repository"/>
     </location>
   </locations>

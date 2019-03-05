@@ -32,5 +32,5 @@ location "http://download.erlide.org/update/kernel/0.115.3" {
 
 location "http://download.eclipse.org/tools/orbit/R-builds/R20170307180635/repository"{
 	com.google.gson [2.7.0, 3.0.0)
-	com.google.guava [15.0.0, 16.0.0)
+	com.google.guava [15.0.0, 21.0.0)
 }

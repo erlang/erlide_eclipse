@@ -87,7 +87,6 @@
 		<module>plugins/org.erlide.tracing.core</module>
 
 		<module>libs</module>
-		<module>extras/org.erlide.jvmcheck</module>
 
 		<module>releng/org.erlide.site</module>
 

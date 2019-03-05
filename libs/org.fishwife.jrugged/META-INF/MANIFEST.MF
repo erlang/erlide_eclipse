@@ -13,6 +13,6 @@ Export-Package: org.fishwife.jrugged,
  org.fishwife.jrugged.clocks,
  org.fishwife.jrugged.control,
  org.fishwife.jrugged.interval
-Require-Bundle: com.google.guava;bundle-version="[15.0.0,16.0.0)",
+Require-Bundle: com.google.guava;bundle-version="[15.0.0,21.0.0)",
  javax.inject;bundle-version="1.0.0"
 Automatic-Module-Name: org.fishwife.jrugged

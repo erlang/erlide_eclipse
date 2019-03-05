@@ -137,28 +137,4 @@ public class RestartableService implements Service {
         }
     }
 
-	@Deprecated
-	@Override
-	public ListenableFuture<State> start() {
-		return null;
-	}
-
-	@Deprecated
-	@Override
-	public State startAndWait() {
-		return null;
-	}
-
-	@Deprecated
-	@Override
-	public ListenableFuture<State> stop() {
-		return null;
-	}
-
-	@Deprecated
-	@Override
-	public State stopAndWait() {
-		return null;
-	}
-
 }
