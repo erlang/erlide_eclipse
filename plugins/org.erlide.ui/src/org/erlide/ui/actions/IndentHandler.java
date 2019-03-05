@@ -35,8 +35,8 @@ public class IndentHandler extends ErlangAbstractHandler {
     protected void doAction(final ISelection sel, final ITextEditor textEditor) {
         final IDocument document = textEditor.getDocumentProvider()
                 .getDocument(textEditor.getEditorInput());
-        final ITextSelection selection = ErlangAbstractHandler.extendSelectionToWholeLines(document,
-                (ITextSelection) sel);
+        final ITextSelection selection = ErlangAbstractHandler
+                .extendSelectionToWholeLines(document, (ITextSelection) sel);
         final ITextSelection getSelection = getTextSelection(document, selection,
                 textEditor);
         String text;
@@ -65,8 +65,7 @@ public class IndentHandler extends ErlangAbstractHandler {
         display.syncExec(new Runnable() {
             @Override
             public void run() {
-                final IRewriteTarget target = textEditor
-                        .getAdapter(IRewriteTarget.class);
+                final IRewriteTarget target = textEditor.getAdapter(IRewriteTarget.class);
                 if (target != null) {
                     target.beginCompoundChange();
                     target.setRedraw(false);
@@ -90,7 +89,8 @@ public class IndentHandler extends ErlangAbstractHandler {
 
     private OtpErlangObject callErlang(final int offset, final int length,
             final String text) throws RpcException {
-        final OtpErlangObject r1 = IndentHandler.doIndentLines(offset, length, text, false, "");
+        final OtpErlangObject r1 = IndentHandler.doIndentLines(offset, length, text,
+                false, "");
         return r1;
     }
 
@@ -120,7 +120,8 @@ public class IndentHandler extends ErlangAbstractHandler {
     public static String indentLines(final int offset, final int length,
             final String text, final boolean template, final String prefix)
             throws RpcException {
-        return Util.stringValue(IndentHandler.doIndentLines(offset, length, text, template, prefix));
+        return Util.stringValue(
+                IndentHandler.doIndentLines(offset, length, text, template, prefix));
     }
 
 }

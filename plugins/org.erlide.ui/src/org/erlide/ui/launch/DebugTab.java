@@ -1,13 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2005 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
- *     Jakob C
+ * Contributors: Vlad Dumitrescu Jakob C
  *******************************************************************************/
 package org.erlide.ui.launch;
 
@@ -55,10 +52,9 @@ import org.erlide.ui.util.SWTUtil;
 import com.google.common.collect.Lists;
 
 /**
- * A tab in the Launch Config with erlang debugger parameters: the debug flags
- * for attaching and distruibuted debugging a checkbox tree of modules to
- * interpret upon launching. The checkbox tree classes are reused by
- * InterpretedModulesView
+ * A tab in the Launch Config with erlang debugger parameters: the debug flags for
+ * attaching and distruibuted debugging a checkbox tree of modules to interpret upon
+ * launching. The checkbox tree classes are reused by InterpretedModulesView
  *
  */
 public class DebugTab extends AbstractLaunchConfigurationTab {
@@ -167,8 +163,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         addButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                final List<IErlModule> result = DebugTab.getModulesFromAddModulesDialog(
-                        getShell());
+                final List<IErlModule> result = DebugTab
+                        .getModulesFromAddModulesDialog(getShell());
                 contentProvider.addModules(result);
                 listViewer.refresh();
                 updateLaunchConfigurationDialog();

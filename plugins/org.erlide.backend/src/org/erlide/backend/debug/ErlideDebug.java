@@ -65,9 +65,8 @@ public class ErlideDebug {
     }
 
     /**
-     * Sent upon attach of process (should we move this to erlang, erlide_debug?
-     * maybe we should have an erlang process subscribing, and even filtering
-     * events to us)
+     * Sent upon attach of process (should we move this to erlang, erlide_debug? maybe we
+     * should have an erlang process subscribing, and even filtering events to us)
      *
      * @param backend
      *            backend
@@ -97,8 +96,8 @@ public class ErlideDebug {
     public static OtpErlangObject getProcessInfo(final IOtpRpc backend,
             final OtpErlangPid pid, final String item) {
         try {
-            final OtpErlangObject res = backend.call(ErlideDebug.ERLIDE_DEBUG, "process_info", "pa",
-                    pid, item);
+            final OtpErlangObject res = backend.call(ErlideDebug.ERLIDE_DEBUG,
+                    "process_info", "pa", pid, item);
             if (res instanceof OtpErlangTuple) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 return t.elementAt(1);
@@ -112,8 +111,8 @@ public class ErlideDebug {
     public static boolean isErlideProcess(final IOtpRpc backend, final OtpErlangPid pid) {
         boolean res = false;
         try {
-            final OtpErlangAtom eres = (OtpErlangAtom) backend.call(ErlideDebug.ERLIDE_DEBUG,
-                    "is_erlide_process", "p", pid);
+            final OtpErlangAtom eres = (OtpErlangAtom) backend
+                    .call(ErlideDebug.ERLIDE_DEBUG, "is_erlide_process", "p", pid);
             res = Boolean.parseBoolean(eres.atomValue());
         } catch (final Exception e) {
         }
@@ -125,8 +124,8 @@ public class ErlideDebug {
             final OtpErlangList options, final boolean distributed,
             final boolean interpret) {
         try {
-            final OtpErlangObject res = backend.call(ErlideDebug.ERLIDE_DEBUG, "interpret", "alxoo",
-                    moduleName, options, distributed, interpret);
+            final OtpErlangObject res = backend.call(ErlideDebug.ERLIDE_DEBUG,
+                    "interpret", "alxoo", moduleName, options, distributed, interpret);
             if (res instanceof OtpErlangTuple) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 final OtpErlangObject o = t.elementAt(0);
@@ -148,8 +147,8 @@ public class ErlideDebug {
         try {
             final String a = action == ErlDebugConstants.REQUEST_INSTALL ? "add"
                     : "delete";
-            backend.getOtpRpc().call(ErlideDebug.ERLIDE_DEBUG, "line_breakpoint", "sia", module, line,
-                    a);
+            backend.getOtpRpc().call(ErlideDebug.ERLIDE_DEBUG, "line_breakpoint", "sia",
+                    module, line, a);
         } catch (final RpcTimeoutException e) {
             if (backend.isRunning()) {
                 ErlLogger.warn(e);
@@ -198,8 +197,8 @@ public class ErlideDebug {
     public static OtpErlangList getBindings(final IBackend backend,
             final OtpErlangPid meta) {
         try {
-            final OtpErlangObject res = backend.getOtpRpc().call(ErlideDebug.ERLIDE_DEBUG, "bindings",
-                    "x", meta);
+            final OtpErlangObject res = backend.getOtpRpc().call(ErlideDebug.ERLIDE_DEBUG,
+                    "bindings", "x", meta);
             return (OtpErlangList) res;
         } catch (final RpcTimeoutException e) {
             if (backend.isRunning()) {
@@ -250,8 +249,8 @@ public class ErlideDebug {
     public static OtpErlangTuple getAllStackframes(final IOtpRpc backend,
             final OtpErlangPid meta) {
         try {
-            final OtpErlangObject res = backend.call(ErlideDebug.ERLIDE_DEBUG, "all_stack_frames",
-                    "x", meta);
+            final OtpErlangObject res = backend.call(ErlideDebug.ERLIDE_DEBUG,
+                    "all_stack_frames", "x", meta);
             if (res instanceof OtpErlangTuple) {
                 return (OtpErlangTuple) res;
             }
@@ -264,8 +263,8 @@ public class ErlideDebug {
     public static List<String> getAllModulesOnStack(final IOtpRpc backend,
             final OtpErlangPid meta) {
         try {
-            final OtpErlangObject res = backend.call(ErlideDebug.ERLIDE_DEBUG, "all_modules_on_stack",
-                    "x", meta);
+            final OtpErlangObject res = backend.call(ErlideDebug.ERLIDE_DEBUG,
+                    "all_modules_on_stack", "x", meta);
             if (res instanceof OtpErlangList) {
                 final OtpErlangList modules = (OtpErlangList) res;
                 final List<String> result = new ArrayList<>(modules.arity());
@@ -286,8 +285,8 @@ public class ErlideDebug {
     public static OtpErlangTuple tracing(final IOtpRpc backend, final boolean trace,
             final OtpErlangPid meta) {
         try {
-            final OtpErlangObject res = backend.call(ErlideDebug.ERLIDE_DEBUG, "tracing", "ox", trace,
-                    meta);
+            final OtpErlangObject res = backend.call(ErlideDebug.ERLIDE_DEBUG, "tracing",
+                    "ox", trace, meta);
             if (res instanceof OtpErlangTuple) {
                 return (OtpErlangTuple) res;
             }
@@ -300,8 +299,8 @@ public class ErlideDebug {
     public static OtpErlangObject eval(final IOtpRpc backend, final String expression,
             final OtpErlangPid meta) {
         try {
-            final OtpErlangObject res = backend.call(ErlideDebug.ERLIDE_DEBUG, "eval", "sx",
-                    expression, meta);
+            final OtpErlangObject res = backend.call(ErlideDebug.ERLIDE_DEBUG, "eval",
+                    "sx", expression, meta);
             if (res instanceof OtpErlangTuple) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 if (Util.isOk(t)) {
@@ -320,8 +319,8 @@ public class ErlideDebug {
     public static String setVariableValue(final IOtpRpc backend, final String name,
             final String value, final int stackFrameNo, final OtpErlangPid meta) {
         try {
-            final OtpErlangObject res = backend.call(ErlideDebug.ERLIDE_DEBUG, "set_variable_value",
-                    "ssix", name, value, stackFrameNo + 1, meta);
+            final OtpErlangObject res = backend.call(ErlideDebug.ERLIDE_DEBUG,
+                    "set_variable_value", "ssix", name, value, stackFrameNo + 1, meta);
             try {
                 final OtpBindings bind = OtpErlang.match("{eval_rsp, {'EXIT', Val}}",
                         res);
@@ -379,8 +378,8 @@ public class ErlideDebug {
     public static boolean dropToFrame(final IOtpRpc backend, final OtpErlangPid metaPid,
             final int stackFrameNo) {
         try {
-            final OtpErlangObject o = backend.call(ErlideDebug.ERLIDE_DEBUG, "drop_to_frame", "xi",
-                    metaPid, stackFrameNo);
+            final OtpErlangObject o = backend.call(ErlideDebug.ERLIDE_DEBUG,
+                    "drop_to_frame", "xi", metaPid, stackFrameNo);
             return Util.isOk(o);
         } catch (final RpcException e) {
         }
@@ -389,7 +388,8 @@ public class ErlideDebug {
 
     public static boolean isRunning(final IOtpRpc backend) {
         try {
-            final OtpErlangObject o = backend.call(ErlideDebug.ERLIDE_DEBUG, "is_running", "");
+            final OtpErlangObject o = backend.call(ErlideDebug.ERLIDE_DEBUG, "is_running",
+                    "");
             if (o instanceof OtpErlangAtom) {
                 final OtpErlangAtom atom = (OtpErlangAtom) o;
                 return atom.booleanValue();

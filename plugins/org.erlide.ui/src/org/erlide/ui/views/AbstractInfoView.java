@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2005 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.views;
 
@@ -140,7 +138,7 @@ public abstract class AbstractInfoView extends ViewPart
     abstract Control getControl();
 
     protected abstract Object getInfoForSelection(IWorkbenchPart part,
-                                                  ISelection selection);
+            ISelection selection);
 
     /**
      * Returns the context ID for the Help system
@@ -229,8 +227,7 @@ public abstract class AbstractInfoView extends ViewPart
     }
 
     /**
-     * Sets the foreground and background color to the corresponding SWT info
-     * color.
+     * Sets the foreground and background color to the corresponding SWT info color.
      */
     private void setInfoColor() {
         if (getSite().getShell().isDisposed()) {
@@ -276,8 +273,7 @@ public abstract class AbstractInfoView extends ViewPart
     }
 
     /**
-     * Tells whether the new input should be ignored if the current input is the
-     * same.
+     * Tells whether the new input should be ignored if the current input is the same.
      *
      * @return <code>true</code> if the new input should be ignored
      */
@@ -389,8 +385,8 @@ public abstract class AbstractInfoView extends ViewPart
     }
 
     /**
-     * Determines all necessary details and delegates the computation into a
-     * background thread.
+     * Determines all necessary details and delegates the computation into a background
+     * thread.
      *
      * @param part
      *            the workbench part
@@ -422,7 +418,8 @@ public abstract class AbstractInfoView extends ViewPart
                 final Object info = getInfoForSelection(part, selection);
 
                 if (info == null || info instanceof ErlangBrowserInformationControlInput
-                        && ((ErlangBrowserInformationControlInput) info).getHtml().isEmpty()) {
+                        && ((ErlangBrowserInformationControlInput) info).getHtml()
+                                .isEmpty()) {
                     return;
                 }
                 final Shell shell = getSite().getShell();

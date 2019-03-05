@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.engine.internal.model.root;
 
@@ -496,7 +494,7 @@ public abstract class ErlElement extends PlatformObject
     @Override
     public final void accept(final IErlElementVisitor visitor,
             final Set<AcceptFlags> flags, final ErlElementKind leafKind)
-                    throws ErlModelException {
+            throws ErlModelException {
         synchronized (getModelLock()) {
             internalAccept(visitor, flags, leafKind);
         }
@@ -504,7 +502,7 @@ public abstract class ErlElement extends PlatformObject
 
     private final void internalAccept(final IErlElementVisitor visitor,
             final Set<AcceptFlags> flags, final ErlElementKind leafKind)
-                    throws ErlModelException {
+            throws ErlModelException {
         if (getKind() == leafKind) {
             visitor.visit(this);
         } else {

@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
@@ -55,16 +53,16 @@ public interface IErlangAnnotation {
     IErlangAnnotation getOverlay();
 
     /**
-     * Returns an iterator for iterating over the annotation which are overlaid
-     * by this annotation.
+     * Returns an iterator for iterating over the annotation which are overlaid by this
+     * annotation.
      *
      * @return an iterator over the overlaid annotations
      */
     Iterator<IErlangAnnotation> getOverlaidIterator();
 
     /**
-     * Adds the given annotation to the list of annotations which are overlaid
-     * by this annotations.
+     * Adds the given annotation to the list of annotations which are overlaid by this
+     * annotations.
      *
      * @param annotation
      *            the problem annotation
@@ -72,8 +70,8 @@ public interface IErlangAnnotation {
     void addOverlaid(IErlangAnnotation annotation);
 
     /**
-     * Removes the given annotation from the list of annotations which are
-     * overlaid by this annotation.
+     * Removes the given annotation from the list of annotations which are overlaid by
+     * this annotation.
      *
      * @param annotation
      *            the problem annotation

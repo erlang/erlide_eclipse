@@ -76,8 +76,8 @@ public class ProjectCreatorTest {
     public void createExistingProjectShouldCrash() throws CoreException {
         final NewProjectData info = new NewProjectData();
         info.copyFrom(ErlangProjectProperties.DEFAULT);
-        creator = new ProjectCreator(ProjectCreatorTest.name, ProjectCreatorTest.location, new IProject[] {}, info, ProjectCreatorTest.context,
-                null);
+        creator = new ProjectCreator(ProjectCreatorTest.name, ProjectCreatorTest.location,
+                new IProject[] {}, info, ProjectCreatorTest.context, null);
         prj = creator.createProject();
         prj = creator.createProject();
     }

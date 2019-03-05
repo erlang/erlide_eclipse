@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2008 IBM Corporation and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.editors.erl.outline;
 
@@ -23,8 +21,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
- * Helper for opening editors on the viewer's selection and link the selection
- * with the editor.
+ * Helper for opening editors on the viewer's selection and link the selection with the
+ * editor.
  */
 public class OpenAndLinkWithEditorHelper {
 
@@ -87,8 +85,8 @@ public class OpenAndLinkWithEditorHelper {
     }
 
     /**
-     * Sets whether editor that corresponds to the viewer's selection should be
-     * brought to front.
+     * Sets whether editor that corresponds to the viewer's selection should be brought to
+     * front.
      *
      * @param enabled
      *            <code>true</code> to enable, <code>false</code> to disable
@@ -100,8 +98,8 @@ public class OpenAndLinkWithEditorHelper {
     /**
      * Disposes this helper.
      * <p>
-     * Clients only need to call this method if their viewer has a longer
-     * life-cycle than this helper.
+     * Clients only need to call this method if their viewer has a longer life-cycle than
+     * this helper.
      * </p>
      */
     public void dispose() {

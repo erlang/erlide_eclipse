@@ -59,17 +59,15 @@ public class MarkOccurencesSupport implements IDisposable {
 
     private final ErlangEditor editor;
     /**
-     * Tells whether the occurrence annotations are sticky i.e. whether they
-     * stay even if there's no valid erlang element at the current caret
-     * position. Only valid if {@link #markOccurencesHandler.fMarkOccurrenceAnnotations}
-     * is
-     * <code>true</code>.
+     * Tells whether the occurrence annotations are sticky i.e. whether they stay even if
+     * there's no valid erlang element at the current caret position. Only valid if
+     * {@link #markOccurencesHandler.fMarkOccurrenceAnnotations} is <code>true</code>.
      */
     public boolean fStickyOccurrenceAnnotations;
     public Annotation[] fOccurrenceAnnotations;
     /**
-     * Tells whether all occurrences of the element at the current caret
-     * location are automatically marked in this editor.
+     * Tells whether all occurrences of the element at the current caret location are
+     * automatically marked in this editor.
      */
     public boolean fMarkOccurrenceAnnotations;
     /**
@@ -364,9 +362,9 @@ public class MarkOccurencesSupport implements IDisposable {
 
         private boolean isCanceled(final IProgressMonitor progressMonitor) {
             return fCanceled || progressMonitor.isCanceled()
-                    || fPostSelectionValidator != null
-                            && !(fPostSelectionValidator.isValid(selection)
-                                    || editor.markOccurencesHandler.fForcedMarkOccurrencesSelection == selection)
+                    || fPostSelectionValidator != null && !(fPostSelectionValidator
+                            .isValid(selection)
+                            || editor.markOccurencesHandler.fForcedMarkOccurrencesSelection == selection)
                     || LinkedModeModel.hasInstalledModel(fDocument);
         }
 

@@ -64,8 +64,8 @@ public class TraceBackend {
     private boolean loading;
 
     /**
-     * <code>true</code> when loading only information about file that contains
-     * tracing results, <code>false</code> when loading traces from file
+     * <code>true</code> when loading only information about file that contains tracing
+     * results, <code>false</code> when loading traces from file
      */
     private boolean loadingFileInfo;
     private TraceEventHandler handler;
@@ -132,8 +132,7 @@ public class TraceBackend {
     /**
      * Checks if trace results are being loaded (i.e. backend receives results).
      *
-     * @return <code>true</code> if loading in progress, <code>false</code>
-     *         otherwise
+     * @return <code>true</code> if loading in progress, <code>false</code> otherwise
      */
     public boolean isLoading() {
         return loading;
@@ -180,8 +179,8 @@ public class TraceBackend {
                         final OtpErlangInt netTickTime = new OtpErlangInt(tickTimeValue);
 
                         final OtpErlangObject callResult = tracerBackend.getOtpRpc().call(
-                                Constants.ERLANG_HELPER_MODULE, TraceBackend.FUN_START, "xsi", nodes,
-                                Constants.OUTPUT_FILE, netTickTime);
+                                Constants.ERLANG_HELPER_MODULE, TraceBackend.FUN_START,
+                                "xsi", nodes, Constants.OUTPUT_FILE, netTickTime);
                         status = processResult(callResult);
 
                         if (TracingStatus.OK.equals(status)
@@ -235,7 +234,8 @@ public class TraceBackend {
     private void setFunctionTracePatterns() {
         for (final TracePattern tracePattern : tracePatterns) {
             if (tracePattern.isEnabled()) {
-                final String function = tracePattern.isLocal() ? TraceBackend.FUN_TPL : TraceBackend.FUN_TP;
+                final String function = tracePattern.isLocal() ? TraceBackend.FUN_TPL
+                        : TraceBackend.FUN_TP;
                 try {
                     OtpErlangObject matchSpec = null;
                     if (tracePattern.getMatchSpec().getMsObject() != null) {
@@ -266,8 +266,8 @@ public class TraceBackend {
             if (processes != null) {
                 for (final TracedProcess process : processes) {
                     if (process.isSelected()) {
-                        tracerBackend.getOtpRpc().call(Constants.TTB_MODULE, TraceBackend.FUN_P, "xx",
-                                process.getPid(),
+                        tracerBackend.getOtpRpc().call(Constants.TTB_MODULE,
+                                TraceBackend.FUN_P, "xx", process.getPid(),
                                 createProcessFlagsArray(process.getFlags()));
                     }
                 }
@@ -317,7 +317,8 @@ public class TraceBackend {
                         getBackend(true);
                         tracerBackend.getRuntime().registerEventListener(handler);
                         tracerBackend.getOtpRpc().call(Constants.ERLANG_HELPER_MODULE,
-                                TraceBackend.FUN_FILE_INFO, "s", new OtpErlangString(path));
+                                TraceBackend.FUN_FILE_INFO, "s",
+                                new OtpErlangString(path));
                     } catch (final RpcException e) {
                         ErlLogger.error(e);
                         errorObject = e;
@@ -330,8 +331,8 @@ public class TraceBackend {
 
     /**
      * Loads traces from active result set (
-     * {@link #setActiveResultSet(TracingResultsNode)}). Index of last trace
-     * which will be loaded is <code>max(number_of_traces, endIndex)</code>.
+     * {@link #setActiveResultSet(TracingResultsNode)}). Index of last trace which will be
+     * loaded is <code>max(number_of_traces, endIndex)</code>.
      *
      * @param theStartIndex
      *            number of first trace
@@ -352,11 +353,10 @@ public class TraceBackend {
                         tracerBackend.getRuntime().registerEventListener(handler);
                         final OtpErlangLong start = new OtpErlangLong(theStartIndex);
                         final OtpErlangLong stop = new OtpErlangLong(endIndex);
-                        tracerBackend.getOtpRpc()
-                                .call(Constants.ERLANG_HELPER_MODULE, TraceBackend.FUN_LOAD, "sii",
-                                        new OtpErlangString(
-                                                activeResultSet.getFileName()),
-                                        start, stop);
+                        tracerBackend.getOtpRpc().call(Constants.ERLANG_HELPER_MODULE,
+                                TraceBackend.FUN_LOAD, "sii",
+                                new OtpErlangString(activeResultSet.getFileName()), start,
+                                stop);
                     } catch (final RpcException e) {
                         ErlLogger.error(e);
                         errorObject = e;
@@ -403,8 +403,7 @@ public class TraceBackend {
     }
 
     /**
-     * Returns backend used for tracing. If this backend does not exist it can
-     * be created.
+     * Returns backend used for tracing. If this backend does not exist it can be created.
      *
      * @param create
      *            if backend should be created when it does not exist

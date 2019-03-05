@@ -21,7 +21,8 @@ public class HandleEdocLinksLocationListener implements LocationListener {
     private final ErlangBrowserInformationControl control;
     private final EdocView edocView;
 
-    public HandleEdocLinksLocationListener(final ErlangBrowserInformationControl control) {
+    public HandleEdocLinksLocationListener(
+            final ErlangBrowserInformationControl control) {
         this.control = control;
         edocView = null;
     }

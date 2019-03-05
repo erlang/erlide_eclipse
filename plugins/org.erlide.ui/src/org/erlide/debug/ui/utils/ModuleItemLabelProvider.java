@@ -12,9 +12,9 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.erlide.engine.model.IErlElement;
 
 /**
- * A label provider for ResourceDecorator objects. It creates labels with a
- * resource full path for duplicates. It uses the Platform UI label decorator
- * for providing extra resource info.
+ * A label provider for ResourceDecorator objects. It creates labels with a resource full
+ * path for duplicates. It uses the Platform UI label decorator for providing extra
+ * resource info.
  */
 public class ModuleItemLabelProvider extends LabelProvider
         implements ILabelProviderListener, IStyledLabelProvider {

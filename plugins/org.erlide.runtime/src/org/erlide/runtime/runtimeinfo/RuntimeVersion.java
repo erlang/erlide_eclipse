@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2009 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.runtime.runtimeinfo;
 
@@ -19,7 +17,8 @@ import com.google.common.base.Preconditions;
 public class RuntimeVersion implements Comparable<RuntimeVersion> {
 
     public static final int UNUSED = Integer.MIN_VALUE;
-    public static final RuntimeVersion NO_VERSION = new RuntimeVersion(RuntimeVersion.UNUSED);
+    public static final RuntimeVersion NO_VERSION = new RuntimeVersion(
+            RuntimeVersion.UNUSED);
 
     private final int major;
     private final int minor;
@@ -240,7 +239,8 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
     }
 
     public boolean isReleaseCompatible(final RuntimeVersion other) {
-        return major == RuntimeVersion.UNUSED || other.major == RuntimeVersion.UNUSED || isCompatible(other);
+        return major == RuntimeVersion.UNUSED || other.major == RuntimeVersion.UNUSED
+                || isCompatible(other);
     }
 
     public RuntimeVersion asMinor() {

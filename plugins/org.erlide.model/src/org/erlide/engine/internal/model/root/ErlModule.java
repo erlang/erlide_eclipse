@@ -140,8 +140,8 @@ public class ErlModule extends Openable implements IErlModule {
                     if (encoding != null) {
                         charset = encoding;
                     } else {
-                        charset = Charset.forName(modelUtilService.getProject(this).getWorkspaceProject()
-                                .getDefaultCharset());
+                        charset = Charset.forName(modelUtilService.getProject(this)
+                                .getWorkspaceProject().getDefaultCharset());
                     }
                     try (final FileInputStream is = new FileInputStream(new File(path))) {
                         initialText = Util.getInputStreamAsString(is, charset.name());

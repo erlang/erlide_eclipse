@@ -11,7 +11,8 @@ public class MacroPattern extends NamePattern {
     @Override
     public OtpErlangObject getSearchObject() {
         final String name = getName();
-        return makeSPatternObject(ErlangSearchPattern.MACRO_DEF_ATOM, ErlangSearchPattern.MACRO_REF_ATOM, name, "?" + name);
+        return makeSPatternObject(ErlangSearchPattern.MACRO_DEF_ATOM,
+                ErlangSearchPattern.MACRO_REF_ATOM, name, "?" + name);
     }
 
     @Override

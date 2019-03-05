@@ -9,16 +9,17 @@ import com.google.common.eventbus.Subscribe;
 
 public class ConsoleMessageReporter {
 
-	private final Plugin plugin;
+    private final Plugin plugin;
 
-	public ConsoleMessageReporter(Plugin plugin) {
-		this.plugin = plugin;
-	}
+    public ConsoleMessageReporter(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
-	@Subscribe
-	public void displayMessage(final ErlideMessage emsg) {
-		if (plugin.getBundle().getState() != Bundle.STOPPING) {
-			ErlLogger.info(emsg.getSeverity() + "::: " + emsg.getMessage() + "\n" + emsg.getDetails() + "\n------");
-		}
-	}
+    @Subscribe
+    public void displayMessage(final ErlideMessage emsg) {
+        if (plugin.getBundle().getState() != Bundle.STOPPING) {
+            ErlLogger.info(emsg.getSeverity() + "::: " + emsg.getMessage() + "\n"
+                    + emsg.getDetails() + "\n------");
+        }
+    }
 }

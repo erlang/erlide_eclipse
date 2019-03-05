@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2004 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.backend.debug.model;
 
@@ -52,8 +50,7 @@ public class ErlangStackFrame extends ErlangDebugElement
         fParent = parent;
         fModuleName = moduleName;
         this.stackFrameNo = stackFrameNo;
-        final List<ErlangVariable> framesReversed = new ArrayList<>(
-                bindings.arity());
+        final List<ErlangVariable> framesReversed = new ArrayList<>(bindings.arity());
         for (final OtpErlangObject o : bindings) {
             if (o instanceof OtpErlangTuple) {
                 final OtpErlangTuple t = (OtpErlangTuple) o;
@@ -63,8 +60,7 @@ public class ErlangStackFrame extends ErlangDebugElement
                         value, parent, moduleName, stackFrameNo));
             }
         }
-        final List<ErlangVariable> frames = new ArrayList<>(
-                framesReversed.size());
+        final List<ErlangVariable> frames = new ArrayList<>(framesReversed.size());
         for (int i = framesReversed.size() - 1; i >= 0; --i) {
             frames.add(framesReversed.get(i));
         }

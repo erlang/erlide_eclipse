@@ -1,13 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *     Vlad Dumitrescu
+ * Contributors: IBM Corporation - initial API and implementation Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.engine.model.root;
 
@@ -18,8 +15,8 @@ import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IParent;
 
 /**
- * An Erlang folder is a collection of colder with erlang files. It knows
- * whether it is on the compile path
+ * An Erlang folder is a collection of colder with erlang files. It knows whether it is on
+ * the compile path
  *
  * @see ErlangCore#createRoot(org.eclipse.core.resources.IFolder)
  * @noimplement This interface is not intended to be implemented by clients.

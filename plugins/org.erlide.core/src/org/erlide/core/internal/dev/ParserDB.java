@@ -132,8 +132,8 @@ public class ParserDB {
                 final IErlFunction function = (IErlFunction) form;
                 int numClauses = function.getChildCount();
                 numClauses = numClauses == 0 ? 1 : numClauses;
-                ParserDB.out.println(fix(function.getName()) + " " + function.getArity() + " "
-                        + numClauses);
+                ParserDB.out.println(fix(function.getName()) + " " + function.getArity()
+                        + " " + numClauses);
             } else {
                 ParserDB.out.println("?? " + form.getClass().getName());
             }

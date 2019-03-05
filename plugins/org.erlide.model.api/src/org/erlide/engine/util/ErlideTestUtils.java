@@ -69,7 +69,7 @@ public class ErlideTestUtils {
         }
 
         @Override
-        public IResourceDelta findMember(final IPath path) { 
+        public IResourceDelta findMember(final IPath path) {
             return null;
         }
 
@@ -153,7 +153,8 @@ public class ErlideTestUtils {
     public static IErlModule createModule(final IErlProject project,
             final String moduleName, final String moduleContents) throws CoreException {
         final IFolder folder = project.getWorkspaceProject().getFolder("src");
-        final IErlModule module = ErlideTestUtils.createModule(moduleName, moduleContents, folder);
+        final IErlModule module = ErlideTestUtils.createModule(moduleName, moduleContents,
+                folder);
         ErlideTestUtils.modulesAndIncludes.add(module);
         return module;
     }
@@ -161,7 +162,8 @@ public class ErlideTestUtils {
     public static IErlModule createInclude(final IErlProject project,
             final String moduleName, final String moduleContents) throws CoreException {
         final IFolder folder = project.getWorkspaceProject().getFolder("include");
-        final IErlModule module = ErlideTestUtils.createModule(moduleName, moduleContents, folder);
+        final IErlModule module = ErlideTestUtils.createModule(moduleName, moduleContents,
+                folder);
         ErlideTestUtils.modulesAndIncludes.add(module);
         return module;
     }
@@ -376,7 +378,8 @@ public class ErlideTestUtils {
             new File(location.toPortableString()).delete();
         }
         if (ErlideTestUtils.modulesAndIncludes != null) {
-            final List<IErlModule> list = Lists.newArrayList(ErlideTestUtils.modulesAndIncludes);
+            final List<IErlModule> list = Lists
+                    .newArrayList(ErlideTestUtils.modulesAndIncludes);
             for (final IErlModule module : list) {
                 if (ErlangEngine.getInstance().getModelUtilService()
                         .getProject(module) == erlProject) {
@@ -386,7 +389,8 @@ public class ErlideTestUtils {
         }
         erlProject.dispose();
         if (ErlideTestUtils.projects != null) {
-            ErlideTestUtils.projects.remove(ErlangEngine.getInstance().getModel().findProject(project));
+            ErlideTestUtils.projects
+                    .remove(ErlangEngine.getInstance().getModel().findProject(project));
         }
         final IErlModel model = ErlangEngine.getInstance().getModel();
         model.resourceChanged(null);
@@ -400,7 +404,8 @@ public class ErlideTestUtils {
     }
 
     public static void deleteModules() throws CoreException {
-        final List<IErlModule> list = Lists.newArrayList(ErlideTestUtils.modulesAndIncludes);
+        final List<IErlModule> list = Lists
+                .newArrayList(ErlideTestUtils.modulesAndIncludes);
         for (final IErlModule module : list) {
             ErlideTestUtils.deleteModule(module);
         }

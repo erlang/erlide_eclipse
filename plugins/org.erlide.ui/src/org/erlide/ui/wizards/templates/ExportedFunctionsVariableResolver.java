@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Lukas Larsson and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Lukas Larsson and others. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Lukas Larsson
+ * Contributors: Lukas Larsson
  *******************************************************************************/
 
 package org.erlide.ui.wizards.templates;
@@ -22,9 +21,11 @@ public class ExportedFunctionsVariableResolver extends FunctionVariableResolver 
 
     public static ExportedFunctionsVariableResolver getDefault() {
         if (ExportedFunctionsVariableResolver.fInstances.isEmpty()) {
-            ExportedFunctionsVariableResolver.fInstances.add(new ExportedFunctionsVariableResolver());
+            ExportedFunctionsVariableResolver.fInstances
+                    .add(new ExportedFunctionsVariableResolver());
         }
-        return (ExportedFunctionsVariableResolver) ExportedFunctionsVariableResolver.fInstances.get(0);
+        return (ExportedFunctionsVariableResolver) ExportedFunctionsVariableResolver.fInstances
+                .get(0);
     }
 
     public void addFunction(final String name, final int arity) {

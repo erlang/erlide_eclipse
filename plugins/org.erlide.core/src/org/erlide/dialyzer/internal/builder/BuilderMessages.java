@@ -4,15 +4,15 @@ import org.eclipse.osgi.util.NLS;
 
 public final class BuilderMessages extends NLS {
 
-	private static final String BUNDLE_NAME = "org.erlide.core.builder.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.erlide.core.builder.messages"; //$NON-NLS-1$
 
-	private BuilderMessages() {
-	}
+    private BuilderMessages() {
+    }
 
-	public static String build_dialyzerProblem;
+    public static String build_dialyzerProblem;
 
-	static {
-		NLS.initializeMessages(BuilderMessages.BUNDLE_NAME, BuilderMessages.class);
-	}
+    static {
+        NLS.initializeMessages(BuilderMessages.BUNDLE_NAME, BuilderMessages.class);
+    }
 
 }

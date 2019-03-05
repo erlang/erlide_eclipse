@@ -233,7 +233,8 @@ public class ErlangCompletionService implements CompletionService {
     String getPrefix(final String before) {
         for (int n = before.length() - 1; n >= 0; --n) {
             final char c = before.charAt(n);
-            if (!ErlangCompletionService.isErlangIdentifierChar(c) && c != '?' && c != '\'') {
+            if (!ErlangCompletionService.isErlangIdentifierChar(c) && c != '?'
+                    && c != '\'') {
                 return before.substring(n + 1);
             }
         }
@@ -287,7 +288,8 @@ public class ErlangCompletionService implements CompletionService {
         }
         final List<CompletionData> result = new ArrayList<>();
         try {
-            final List<IErlPreprocessorDef> defs = ErlangCompletionService.getAllPreprocessorDefs(module, kind);
+            final List<IErlPreprocessorDef> defs = ErlangCompletionService
+                    .getAllPreprocessorDefs(module, kind);
             for (final IErlPreprocessorDef pd : defs) {
                 final String name = pd.getDefinedName();
                 addIfMatches(name, prefix, offset, result);

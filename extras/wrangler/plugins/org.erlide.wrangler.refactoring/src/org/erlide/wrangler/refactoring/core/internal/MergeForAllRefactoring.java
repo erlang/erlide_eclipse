@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.core.internal;
 
@@ -71,8 +69,8 @@ public class MergeForAllRefactoring
         final IErlSelection selection = GlobalParameters.getWranglerSelection();
 
         /*
-         * if (!((selection instanceof IErlMemberSelection) && (selection
-         * .getKind() == SelectionKind.FUNCTION || selection.getKind() ==
+         * if (!((selection instanceof IErlMemberSelection) && (selection .getKind() ==
+         * SelectionKind.FUNCTION || selection.getKind() ==
          * SelectionKind.FUNCTION_CLAUSE))) return RefactoringStatus
          * .createFatalErrorStatus("Please select an expression!");
          */

@@ -21,8 +21,7 @@ public final class FoldingPreferencePage
     }
 
     /*
-     * @see
-     * org.eclipse.ui.internal.editors.text.AbstractConfigurationBlockPreferencePage
+     * @see org.eclipse.ui.internal.editors.text.AbstractConfigurationBlockPreferencePage
      * #setDescription()
      */
     @Override
@@ -46,8 +45,7 @@ public final class FoldingPreferencePage
     }
 
     /*
-     * @seeorg.eclipse.ui.internal.editors.text.
-     * AbstractConfigureationBlockPreferencePage
+     * @seeorg.eclipse.ui.internal.editors.text. AbstractConfigureationBlockPreferencePage
      * #createConfigurationBlock(org.eclipse
      * .ui.internal.editors.text.OverlayPreferenceStore)
      */

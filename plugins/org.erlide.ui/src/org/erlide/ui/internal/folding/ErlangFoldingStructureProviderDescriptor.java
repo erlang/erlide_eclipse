@@ -32,8 +32,7 @@ public final class ErlangFoldingStructureProviderDescriptor {
     private String fName;
 
     /**
-     * The class name of the provided
-     * <code>IErlangFoldingStructureProvider</code> .
+     * The class name of the provided <code>IErlangFoldingStructureProvider</code> .
      */
     private final String fClass;
 
@@ -65,7 +64,8 @@ public final class ErlangFoldingStructureProviderDescriptor {
         fClass = element.getAttribute(ErlangFoldingStructureProviderDescriptor.CLASS);
         Assert.isLegal(fClass != null);
 
-        if (element.getAttribute(ErlangFoldingStructureProviderDescriptor.PREFERENCES_CLASS) == null) {
+        if (element.getAttribute(
+                ErlangFoldingStructureProviderDescriptor.PREFERENCES_CLASS) == null) {
             fHasPreferences = false;
         } else {
             fHasPreferences = true;
@@ -75,29 +75,29 @@ public final class ErlangFoldingStructureProviderDescriptor {
     /**
      * Creates a folding provider as described in the extension's xml.
      *
-     * @return a new instance of the folding provider described by this
-     *         descriptor
+     * @return a new instance of the folding provider described by this descriptor
      * @throws CoreException
      *             if creation fails
      */
     public IErlangFoldingStructureProvider createProvider() throws CoreException {
         final IErlangFoldingStructureProvider prov = (IErlangFoldingStructureProvider) fElement
-                .createExecutableExtension(ErlangFoldingStructureProviderDescriptor.CLASS);
+                .createExecutableExtension(
+                        ErlangFoldingStructureProviderDescriptor.CLASS);
         return prov;
     }
 
     /**
      * Creates a preferences object as described in the extension's xml.
      *
-     * @return a new instance of the reference provider described by this
-     *         descriptor
+     * @return a new instance of the reference provider described by this descriptor
      * @throws CoreException
      *             if creation fails
      */
     public IErlangFoldingPreferenceBlock createPreferences() throws CoreException {
         if (fHasPreferences) {
             final IErlangFoldingPreferenceBlock prefs = (IErlangFoldingPreferenceBlock) fElement
-                    .createExecutableExtension(ErlangFoldingStructureProviderDescriptor.PREFERENCES_CLASS);
+                    .createExecutableExtension(
+                            ErlangFoldingStructureProviderDescriptor.PREFERENCES_CLASS);
             return prefs;
         }
         return new EmptyErlangFoldingPreferenceBlock();

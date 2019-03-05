@@ -84,7 +84,8 @@ public class ModelUtilsTest {
     public void getImportsAsListTest() throws Exception {
         // given
         // an Erlang module with imports
-        final IErlModule moduleA = ErlideTestUtils.createModule(ModelUtilsTest.projects[0], "ax.erl",
+        final IErlModule moduleA = ErlideTestUtils.createModule(
+                ModelUtilsTest.projects[0], "ax.erl",
                 "-module(ax).\n-import(lists, [reverse/1, foldl/3].\n");
         moduleA.open(null);
         // when
@@ -109,7 +110,8 @@ public class ModelUtilsTest {
     public void findExternalTypeTest() throws Exception {
         // given
         // an Erlang module with typedef
-        final IErlModule moduleB = ErlideTestUtils.createModule(ModelUtilsTest.projects[0], "bx.erl",
+        final IErlModule moduleB = ErlideTestUtils.createModule(
+                ModelUtilsTest.projects[0], "bx.erl",
                 "-module(bx).\n-type concat_thing() :: atom() | integer() | float() | string().\n");
         // final IErlModule moduleC =
         // ErlideTestUtils.createErlModule(projects[1],
@@ -124,23 +126,23 @@ public class ModelUtilsTest {
             // within project
             final IErlElementLocator model = ErlangEngine.getInstance().getModel();
 
-            final IErlElement element1 = modelFindService.findTypeDef(model, ModelUtilsTest.projects[0],
-                    moduleB, "bx", "concat_thing",
+            final IErlElement element1 = modelFindService.findTypeDef(model,
+                    ModelUtilsTest.projects[0], moduleB, "bx", "concat_thing",
                     moduleB.getResource().getLocation().toPortableString(),
                     IErlElementLocator.Scope.PROJECT_ONLY);
             // in other project but path given
-            final IErlElement element2 = modelFindService.findTypeDef(model, ModelUtilsTest.projects[1],
-                    moduleB, "bx", "concat_thing",
+            final IErlElement element2 = modelFindService.findTypeDef(model,
+                    ModelUtilsTest.projects[1], moduleB, "bx", "concat_thing",
                     moduleB.getResource().getLocation().toPortableString(),
                     IErlElementLocator.Scope.PROJECT_ONLY);
             // in other project no path given, search all projects true
-            final IErlElement element3 = modelFindService.findTypeDef(model, ModelUtilsTest.projects[1],
-                    moduleB, "bx", "concat_thing", null,
+            final IErlElement element3 = modelFindService.findTypeDef(model,
+                    ModelUtilsTest.projects[1], moduleB, "bx", "concat_thing", null,
                     IErlElementLocator.Scope.ALL_PROJECTS);
             // in other project no path given, search all projects false, ->
             // null
-            final IErlElement element4 = modelFindService.findTypeDef(model, ModelUtilsTest.projects[1],
-                    moduleB, "bx", "concat_thing", null,
+            final IErlElement element4 = modelFindService.findTypeDef(model,
+                    ModelUtilsTest.projects[1], moduleB, "bx", "concat_thing", null,
                     IErlElementLocator.Scope.PROJECT_ONLY);
 
             // then
@@ -158,15 +160,16 @@ public class ModelUtilsTest {
     public void findExternalFunctionModuleTest() throws Exception {
         // given
         // a module with functions and functions
-        final IErlModule moduleD = ErlideTestUtils.createModule(ModelUtilsTest.projects[0], "d.erl",
+        final IErlModule moduleD = ErlideTestUtils.createModule(
+                ModelUtilsTest.projects[0], "d.erl",
                 "-module(d).\n-export([f/0]).\nf() ->\n    ok.\ng() ->\n    ?MODULE:f().\n");
         moduleD.open(null);
         // when
         // looking for it with ?MODULE
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final IErlElement element1 = modelFindService.findFunction(model, ModelUtilsTest.projects[0],
-                moduleD, "?MODULE", null, new ErlangFunction("f", 0),
-                IErlElementLocator.Scope.PROJECT_ONLY);
+        final IErlElement element1 = modelFindService.findFunction(model,
+                ModelUtilsTest.projects[0], moduleD, "?MODULE", null,
+                new ErlangFunction("f", 0), IErlElementLocator.Scope.PROJECT_ONLY);
         // then
         // it should be found
         assertTrue(element1 instanceof IErlFunction);
@@ -189,7 +192,8 @@ public class ModelUtilsTest {
         final IErlPreprocessorDef preprocessorDef2 = modelFindService
                 .findPreprocessorDef(include, "rec1", ErlElementKind.RECORD_DEF);
         final IErlPreprocessorDef preprocessorDef3 = modelFindService.findPreprocessorDef(
-                Arrays.asList(ModelUtilsTest.projects), "f.erl", "rec2", ErlElementKind.RECORD_DEF);
+                Arrays.asList(ModelUtilsTest.projects), "f.erl", "rec2",
+                ErlElementKind.RECORD_DEF);
         // then
         // the record should be returned
         assertNotNull(module);
@@ -372,11 +376,11 @@ public class ModelUtilsTest {
         // an erlang module
         final IProject project = ModelUtilsTest.projects[0].getWorkspaceProject();
         final IProjectDescription description = project.getDescription();
-        final IProject[] refs = {ModelUtilsTest.projects[1].getWorkspaceProject() };
+        final IProject[] refs = { ModelUtilsTest.projects[1].getWorkspaceProject() };
         description.setReferencedProjects(refs);
         project.setDescription(description, null);
-        final IErlModule module = ErlideTestUtils.createModule(ModelUtilsTest.projects[1], "abc.erl",
-                "-module(abc).\n-export(f/0)\nf() ->\n   {abc, ok}.\n");
+        final IErlModule module = ErlideTestUtils.createModule(ModelUtilsTest.projects[1],
+                "abc.erl", "-module(abc).\n-export(f/0)\nf() ->\n   {abc, ok}.\n");
         ErlideTestUtils.createModule(ModelUtilsTest.projects[0], "bbc.erl",
                 "-module(bbc).\n-export(f/0)\nf() ->\n   {abc, ok}.\n");
         // when

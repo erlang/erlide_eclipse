@@ -22,8 +22,8 @@ import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.util.ResourceUtil;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 
-public class SearchResultLabelProvider extends LabelProvider implements
-        IStyledLabelProvider {
+public class SearchResultLabelProvider extends LabelProvider
+        implements IStyledLabelProvider {
 
     public static final int SHOW_LABEL = 1;
     public static final int SHOW_LABEL_PATH = 2;
@@ -123,8 +123,7 @@ public class SearchResultLabelProvider extends LabelProvider implements
             matchCount = fPage.getDisplayedMatchCount(element);
         }
         if (matchCount > 1) {
-            final String countInfo = MessageFormat.format("({0} matches)",
-                    matchCount);
+            final String countInfo = MessageFormat.format("({0} matches)", matchCount);
             return new StyledString(countInfo, StyledString.COUNTER_STYLER);
         }
         return new StyledString();
@@ -148,8 +147,8 @@ public class SearchResultLabelProvider extends LabelProvider implements
                     module.open(null);
                 } catch (final ErlModelException e) {
                 }
-                final IErlFunction function = module.findFunction(new ErlangFunction(ese
-                        .getName(), ese.getArity()));
+                final IErlFunction function = module
+                        .findFunction(new ErlangFunction(ese.getName(), ese.getArity()));
                 if (function != null && function.isExported()) {
                     kind = ErlElementKind.EXPORTFUNCTION;
                 }
@@ -157,8 +156,8 @@ public class SearchResultLabelProvider extends LabelProvider implements
         } else if (element instanceof ErlangFunction) {
             kind = ErlElementKind.FUNCTION;
         }
-        return fImageProvider.getImageLabel(ErlangElementImageProvider
-                .getImageDescriptionFromKind(kind));
+        return fImageProvider.getImageLabel(
+                ErlangElementImageProvider.getImageDescriptionFromKind(kind));
     }
 
     @Override
@@ -187,7 +186,8 @@ public class SearchResultLabelProvider extends LabelProvider implements
     @Override
     public StyledString getStyledText(final Object element) {
         final StyledString result = new StyledString();
-        if (fOrder == SearchResultLabelProvider.SHOW_LABEL_PATH || element instanceof String && isInTree()) {
+        if (fOrder == SearchResultLabelProvider.SHOW_LABEL_PATH
+                || element instanceof String && isInTree()) {
             result.append(getElementText(element));
             result.append(' ');
             result.append(getMatchCountText(element));

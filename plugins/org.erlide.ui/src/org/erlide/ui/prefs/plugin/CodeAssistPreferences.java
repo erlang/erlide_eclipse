@@ -20,7 +20,8 @@ public class CodeAssistPreferences {
 
     public static IEclipsePreferences getNode() {
         final IScopeContext context = InstanceScope.INSTANCE;
-        final IEclipsePreferences eclipsePreferences = context.getNode(CodeAssistPreferences.QUALIFIER);
+        final IEclipsePreferences eclipsePreferences = context
+                .getNode(CodeAssistPreferences.QUALIFIER);
         return eclipsePreferences;
     }
 

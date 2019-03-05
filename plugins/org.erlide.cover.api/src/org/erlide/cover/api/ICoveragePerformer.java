@@ -15,8 +15,7 @@ public interface ICoveragePerformer {
      *
      * if cover is already started on the given nodes nothing happen
      *
-     * if cover is already started and the node list changed, it is started once
-     * again
+     * if cover is already started and the node list changed, it is started once again
      *
      * @param nodes
      */

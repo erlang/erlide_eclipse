@@ -30,16 +30,16 @@ public class ErlideDialyze {
         for (final IPath p : includeDirs) {
             incs.add(p.toString());
         }
-        return backend.async_call(ErlideDialyze.ERLIDE_DIALYZE, "dialyze", "lslslsoo", files, pltPaths,
-                incs, fromSource, noCheckPLT);
+        return backend.async_call(ErlideDialyze.ERLIDE_DIALYZE, "dialyze", "lslslsoo",
+                files, pltPaths, incs, fromSource, noCheckPLT);
     }
 
     public static List<String> formatWarnings(final IOtpRpc backend,
             final OtpErlangList warnings) {
         final List<String> result = Lists.newArrayList();
         try {
-            final OtpErlangList l = (OtpErlangList) backend.call(ErlideDialyze.ERLIDE_DIALYZE,
-                    "format_warnings", "x", warnings);
+            final OtpErlangList l = (OtpErlangList) backend
+                    .call(ErlideDialyze.ERLIDE_DIALYZE, "format_warnings", "x", warnings);
             for (final OtpErlangObject o : l) {
                 result.add(Util.stringValue(o).trim());
             }
@@ -52,7 +52,8 @@ public class ErlideDialyze {
     public static OtpErlangObject checkPlt(final IOtpRpc backend, final String plt,
             final List<String> ebinDirs) throws RpcException {
         if (ebinDirs == null) {
-            return backend.call(ErlideDialyze.UPDATE_TIMEOUT, ErlideDialyze.ERLIDE_DIALYZE, "check_plt", "s", plt);
+            return backend.call(ErlideDialyze.UPDATE_TIMEOUT,
+                    ErlideDialyze.ERLIDE_DIALYZE, "check_plt", "s", plt);
         }
         return backend.call(ErlideDialyze.UPDATE_TIMEOUT, ErlideDialyze.ERLIDE_DIALYZE,
                 "update_plt_with_additional_paths", "sls", plt, ebinDirs);

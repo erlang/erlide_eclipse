@@ -203,7 +203,8 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
         return new IInformationControlCreator() {
             @Override
             public IInformationControl createInformationControl(final Shell parent) {
-                final String affordance = ErlangSourceViewerConfiguration.getAdditionalInfoAffordanceString();
+                final String affordance = ErlangSourceViewerConfiguration
+                        .getAdditionalInfoAffordanceString();
                 return new DefaultInformationControl(parent, affordance);
             }
         };

@@ -154,8 +154,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     }
 
     /**
-     * This is a callback that will allow us to create the viewer and initialize
-     * it.
+     * This is a callback that will allow us to create the viewer and initialize it.
      */
     @Override
     public void createPartControl(final Composite parent) {

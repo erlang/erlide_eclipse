@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2006 IBM Corporation and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package org.erlide.ui.editors.erl.outline;
@@ -335,17 +333,15 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
     @Override
     public void setLocation(final Point location) {
         /*
-         * If the location is persisted, it gets managed by PopupDialog - fine.
-         * Otherwise, the location is computed in Window#getInitialLocation,
-         * which will center it in the parent shell / main monitor, which is
-         * wrong for two reasons: - we want to center over the editor / subject
-         * control, not the parent shell - the center is computed via the
-         * initalSize, which may be also wrong since the size may have been
-         * updated since via min/max sizing of
-         * AbstractInformationControlManager. In that case, override the
-         * location with the one computed by the manager. Note that the call to
-         * constrainShellSize in PopupDialog.open will still ensure that the
-         * shell is entirely visible.
+         * If the location is persisted, it gets managed by PopupDialog - fine. Otherwise,
+         * the location is computed in Window#getInitialLocation, which will center it in
+         * the parent shell / main monitor, which is wrong for two reasons: - we want to
+         * center over the editor / subject control, not the parent shell - the center is
+         * computed via the initalSize, which may be also wrong since the size may have
+         * been updated since via min/max sizing of AbstractInformationControlManager. In
+         * that case, override the location with the one computed by the manager. Note
+         * that the call to constrainShellSize in PopupDialog.open will still ensure that
+         * the shell is entirely visible.
          */
         if (!getPersistLocation() || !getPersistSize() || getDialogSettings() == null) {
             getShell().setLocation(location);
@@ -498,8 +494,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
     /**
      * Sets the patterns to filter out for the receiver.
      * <p>
-     * The following characters have special meaning: ? => any character * =>
-     * any string
+     * The following characters have special meaning: ? => any character * => any string
      * </p>
      *
      * @param pattern
@@ -522,8 +517,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
     }
 
     /**
-     * The string matcher has been modified. The default implementation
-     * refreshes the view and selects the first matched element
+     * The string matcher has been modified. The default implementation refreshes the view
+     * and selects the first matched element
      */
     private void stringMatcherUpdated() {
         // Refresh the tree viewer to re-filter
@@ -535,8 +530,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
     }
 
     /**
-     * Selects the first element in the tree which matches the current filter
-     * pattern.
+     * Selects the first element in the tree which matches the current filter pattern.
      */
     private void selectFirstMatch() {
         final Tree tree = fTreeViewer.getTree();

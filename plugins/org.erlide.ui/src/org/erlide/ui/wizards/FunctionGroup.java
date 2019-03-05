@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Lukas Larsson and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Lukas Larsson and others. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Lukas Larsson
+ * Contributors: Lukas Larsson
  *******************************************************************************/
 
 package org.erlide.ui.wizards;
@@ -117,9 +116,8 @@ public class FunctionGroup implements SelectionListener {
         editFunctionBtn.addSelectionListener(this);
 
         /*
-         * addState = new Button(container,SWT.PUSH); addState.setText(" Toggle
-         * State "); // addState.setLayoutData(new
-         * GridData(SWT.FILL,SWT.CENTER,true,false));
+         * addState = new Button(container,SWT.PUSH); addState.setText(" Toggle State ");
+         * // addState.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
          * addState.addSelectionListener(this);
          */
     }

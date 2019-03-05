@@ -37,7 +37,8 @@ public class ErlangSearchTableContentProvider extends ErlangSearchContentProvide
                 if (viewer.testFindItem(updatedElement) != null) {
                     viewer.update(updatedElement, null);
                 } else {
-                    if (!tableLimited || viewer.getTable().getItemCount() < elementLimit) {
+                    if (!tableLimited
+                            || viewer.getTable().getItemCount() < elementLimit) {
                         viewer.add(updatedElement);
                     }
                 }

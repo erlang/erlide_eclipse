@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2008 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.dialogs;
 
@@ -83,8 +81,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
- * Shows a list of resources to the user with a text entry field for a string
- * pattern used to filter the list of resources.
+ * Shows a list of resources to the user with a text entry field for a string pattern used
+ * to filter the list of resources.
  *
  */
 public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog {
@@ -183,7 +181,8 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
         final StringWriter writer = new StringWriter();
         try {
             memento.save(writer);
-            settings.put(FilteredModulesSelectionDialog.WORKINGS_SET_SETTINGS, writer.getBuffer().toString());
+            settings.put(FilteredModulesSelectionDialog.WORKINGS_SET_SETTINGS,
+                    writer.getBuffer().toString());
         } catch (final IOException e) {
             StatusManager.getManager().handle(new Status(IStatus.ERROR,
                     ErlideUIPlugin.PLUGIN_ID, IStatus.ERROR, "", e)); //$NON-NLS-1$
@@ -195,7 +194,8 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
     protected void restoreDialog(final IDialogSettings settings) {
         super.restoreDialog(settings);
 
-        final String setting = settings.get(FilteredModulesSelectionDialog.WORKINGS_SET_SETTINGS);
+        final String setting = settings
+                .get(FilteredModulesSelectionDialog.WORKINGS_SET_SETTINGS);
         if (setting != null) {
             try {
                 final IMemento memento = XMLMemento
@@ -450,9 +450,9 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
     }
 
     /**
-     * ResourceProxyVisitor to visit resource tree and get matched resources.
-     * During visit resources it updates progress monitor and adds matched
-     * resources to ContentProvider instance.
+     * ResourceProxyVisitor to visit resource tree and get matched resources. During visit
+     * resources it updates progress monitor and adds matched resources to ContentProvider
+     * instance.
      */
     private class ModuleProxyVisitor implements IResourceProxyVisitor {
 
@@ -542,7 +542,8 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
             if (erlProject != null) {
                 final ErlangProjectProperties properties = erlProject.getProperties();
                 final String extMods = properties.getExternalModules();
-                final List<String> files = new ArrayList<>(PreferencesUtils.unpackList(extMods));
+                final List<String> files = new ArrayList<>(
+                        PreferencesUtils.unpackList(extMods));
                 final String extIncs = properties.getExternalIncludes();
                 files.addAll(PreferencesUtils.unpackList(extIncs));
 
@@ -633,8 +634,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
     }
 
     /**
-     * Filters resources using pattern and showDerived flag. It overrides
-     * ItemsFilter.
+     * Filters resources using pattern and showDerived flag. It overrides ItemsFilter.
      */
     protected class ModuleFilter extends ItemsFilter {
 
@@ -671,8 +671,8 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
         /**
          * @param item
-         *            Must be instance of IResource, otherwise
-         *            <code>false</code> will be returned.
+         *            Must be instance of IResource, otherwise <code>false</code> will be
+         *            returned.
          * @see org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.ItemsFilter#isConsistentItem(java.lang.Object)
          */
         @Override
@@ -692,8 +692,8 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
         /**
          * @param item
-         *            Must be instance of IResource, otherwise
-         *            <code>false</code> will be returned.
+         *            Must be instance of IResource, otherwise <code>false</code> will be
+         *            returned.
          * @see org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.ItemsFilter#matchItem(java.lang.Object)
          */
         @Override
@@ -786,8 +786,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
         }
 
         /**
-         * Stores contents of the local history into persistent history
-         * container.
+         * Stores contents of the local history into persistent history container.
          */
         private synchronized void persistHistory() {
             // if (getReturnCode() == OK) {

@@ -1,8 +1,8 @@
 package org.erlide.tracing.core;
 
 /**
- * Interface which should be implemented by every class which wants to be
- * notified about tracing or loading.
+ * Interface which should be implemented by every class which wants to be notified about
+ * tracing or loading.
  *
  * @author Piotr Dorobisz
  *
@@ -31,8 +31,7 @@ public interface ITraceNodeObserver {
     public void finishLoadingTraces(TracingStatus status);
 
     /**
-     * This method is invoked after removing file containing tracing results
-     * from list.
+     * This method is invoked after removing file containing tracing results from list.
      */
     public void removeFile();
 

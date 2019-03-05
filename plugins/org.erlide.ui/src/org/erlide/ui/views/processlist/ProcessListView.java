@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.views.processlist;
 
@@ -74,11 +73,10 @@ public class ProcessListView extends ViewPart {
     Action doubleClickAction;
 
     /*
-     * The content provider class is responsible for providing objects to the
-     * view. It can wrap existing objects in adapters or simply return objects
-     * as-is. These objects may be sensitive to the current input of the view,
-     * or ignore it and always show the same content (like Task List, for
-     * example).
+     * The content provider class is responsible for providing objects to the view. It can
+     * wrap existing objects in adapters or simply return objects as-is. These objects may
+     * be sensitive to the current input of the view, or ignore it and always show the
+     * same content (like Task List, for example).
      */
     class ViewContentProvider implements IStructuredContentProvider {
 
@@ -176,8 +174,7 @@ public class ProcessListView extends ViewPart {
     }
 
     /**
-     * This is a callback that will allow us to create the viewer and initialize
-     * it.
+     * This is a callback that will allow us to create the viewer and initialize it.
      */
     @Override
     public void createPartControl(final Composite parent) {

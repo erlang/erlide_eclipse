@@ -163,7 +163,8 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
         });
         final IDialogSettings dialogSettings = ErlideUIPlugin.getDefault()
                 .getDialogSettingsSection(ProjectSelectionDialog.DIALOG_SETTINGS);
-        final boolean doFilter = !dialogSettings.getBoolean(ProjectSelectionDialog.DIALOG_SETTINGS_SHOW_ALL)
+        final boolean doFilter = !dialogSettings
+                .getBoolean(ProjectSelectionDialog.DIALOG_SETTINGS_SHOW_ALL)
                 && !fProjectsWithSpecifics.isEmpty();
         checkbox.setSelection(doFilter);
         updateFilter(doFilter);

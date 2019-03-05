@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 IBM Corporation and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation
- *     Vlad Dumitrescu
+ * Contributors: IBM Corporation Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.util;
 
@@ -27,18 +25,17 @@ public class ColorManager implements IColorManager {
 
     protected Map<String, RGB> fKeyTable = new HashMap<>(10);
 
-    protected Map<Display, Map<RGB, Color>> fDisplayTable = new HashMap<>(
-            2);
+    protected Map<Display, Map<RGB, Color>> fDisplayTable = new HashMap<>(2);
 
     /**
-     * Flag which tells if the colors are automatically disposed when the
-     * current display gets disposed.
+     * Flag which tells if the colors are automatically disposed when the current display
+     * gets disposed.
      */
     private final boolean fAutoDisposeOnDisplayDispose;
 
     /**
-     * Creates a new Erlang color manager which automatically disposes the
-     * allocated colors when the current display gets disposed.
+     * Creates a new Erlang color manager which automatically disposes the allocated
+     * colors when the current display gets disposed.
      */
     public ColorManager() {
         this(true);
@@ -48,11 +45,10 @@ public class ColorManager implements IColorManager {
      * Creates a new Erlang color manager.
      *
      * @param autoDisposeOnDisplayDispose
-     *            if <code>true</code> the color manager automatically disposes
-     *            all managed colors when the current display gets disposed and
-     *            all calls to
-     *            {@link org.eclipse.jface.text.source.ISharedTextColors#dispose()}
-     *            are ignored.
+     *            if <code>true</code> the color manager automatically disposes all
+     *            managed colors when the current display gets disposed and all calls to
+     *            {@link org.eclipse.jface.text.source.ISharedTextColors#dispose()} are
+     *            ignored.
      *
      */
     public ColorManager(final boolean autoDisposeOnDisplayDispose) {
@@ -96,7 +92,8 @@ public class ColorManager implements IColorManager {
             }
         }
 
-        Color color = colorTable.computeIfAbsent(rgb, r -> new Color(Display.getCurrent(), r));
+        Color color = colorTable.computeIfAbsent(rgb,
+                r -> new Color(Display.getCurrent(), r));
 
         return color;
     }

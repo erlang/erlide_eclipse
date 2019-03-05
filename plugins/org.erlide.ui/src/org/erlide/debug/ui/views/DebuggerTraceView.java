@@ -511,7 +511,7 @@ public class DebuggerTraceView extends AbstractDebugView
         TreeViewerColumn column;
         final String[] names = { "Kind", "Function", //$NON-NLS-1$ //$NON-NLS-2$
                 org.erlide.debug.ui.views.ActionMessages
-                        .getString("DebuggerTraceView.5") };  //$NON-NLS-1$
+                        .getString("DebuggerTraceView.5") }; //$NON-NLS-1$
         for (final String name : names) {
             column = new TreeViewerColumn(viewer, SWT.NONE);
             final TreeColumn treeColumn = column.getColumn();
@@ -560,7 +560,8 @@ public class DebuggerTraceView extends AbstractDebugView
                 gc.setFont(tree.getFont());
                 final FontMetrics fontMetrics = gc.getFontMetrics();
                 gc.dispose();
-                columnWidth = (int) Math.max(100, fontMetrics.getAverageCharacterWidth() * 20);
+                columnWidth = (int) Math.max(100,
+                        fontMetrics.getAverageCharacterWidth() * 20);
             }
 
             // if (columnWidths != null) {
@@ -640,14 +641,16 @@ public class DebuggerTraceView extends AbstractDebugView
                         viewer.add(viewer.getInput(), launch);
                         parentMap.put(launch, viewer.getInput());
                     }
-                    List<IDebugTarget> nodes = nodeMap.computeIfAbsent(launch, k -> new ArrayList<>(1));
+                    List<IDebugTarget> nodes = nodeMap.computeIfAbsent(launch,
+                            k -> new ArrayList<>(1));
                     final IDebugTarget node = data.getNode();
                     if (!nodes.contains(node)) {
                         nodes.add(node);
                         viewer.add(launch, node);
                         parentMap.put(node, launch);
                     }
-                    List<DebugTraceEvent> events = eventMap.computeIfAbsent(node, k -> new ArrayList<>(data.getEvents().length));
+                    List<DebugTraceEvent> events = eventMap.computeIfAbsent(node,
+                            k -> new ArrayList<>(data.getEvents().length));
                     final OtpErlangPid pid = data.getPid();
                     for (final OtpErlangTuple t : data.getEvents()) {
                         events.add(new DebugTraceEvent(pid, t));

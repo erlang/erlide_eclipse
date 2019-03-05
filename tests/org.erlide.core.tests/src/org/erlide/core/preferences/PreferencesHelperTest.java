@@ -15,8 +15,8 @@ import org.osgi.service.prefs.BackingStoreException;
 
 public class PreferencesHelperTest {
 
-    private static final IScopeContext[] ALL_SCOPE_CONTEXTS = {
-            InstanceScope.INSTANCE, ConfigurationScope.INSTANCE, DefaultScope.INSTANCE };
+    private static final IScopeContext[] ALL_SCOPE_CONTEXTS = { InstanceScope.INSTANCE,
+            ConfigurationScope.INSTANCE, DefaultScope.INSTANCE };
     private static final String QUALIFIER = "org.erlide.testing";
     private static final String KEY = "key";
 
@@ -60,7 +60,8 @@ public class PreferencesHelperTest {
 
     @Test
     public void string_set() {
-        final PreferencesHelper helper = PreferencesHelper.getHelper(PreferencesHelperTest.QUALIFIER);
+        final PreferencesHelper helper = PreferencesHelper
+                .getHelper(PreferencesHelperTest.QUALIFIER);
         helper.putString(PreferencesHelperTest.KEY, "smurf");
         final String res = helper.getString(PreferencesHelperTest.KEY, "default");
         Assert.assertEquals("smurf", res);
@@ -68,58 +69,78 @@ public class PreferencesHelperTest {
 
     @Test
     public void default_0() {
-        final PreferencesHelper helper = PreferencesHelper.getHelper(PreferencesHelperTest.QUALIFIER);
+        final PreferencesHelper helper = PreferencesHelper
+                .getHelper(PreferencesHelperTest.QUALIFIER);
         helper.putString(PreferencesHelperTest.KEY, "balm");
-        String res = InstanceScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER).get(PreferencesHelperTest.KEY, null);
+        String res = InstanceScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER)
+                .get(PreferencesHelperTest.KEY, null);
         Assert.assertNotNull(res);
-        res = ConfigurationScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER).get(PreferencesHelperTest.KEY, null);
+        res = ConfigurationScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER)
+                .get(PreferencesHelperTest.KEY, null);
         Assert.assertNull(res);
-        res = DefaultScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER).get(PreferencesHelperTest.KEY, null);
+        res = DefaultScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER)
+                .get(PreferencesHelperTest.KEY, null);
         Assert.assertNull(res);
     }
 
     @Test
     public void default_1() {
-        final PreferencesHelper helper = PreferencesHelper.getHelper(PreferencesHelperTest.QUALIFIER);
-        DefaultScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER).put(PreferencesHelperTest.KEY, "balm");
+        final PreferencesHelper helper = PreferencesHelper
+                .getHelper(PreferencesHelperTest.QUALIFIER);
+        DefaultScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER)
+                .put(PreferencesHelperTest.KEY, "balm");
         helper.putString(PreferencesHelperTest.KEY, "balm");
-        String res = InstanceScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER).get(PreferencesHelperTest.KEY, null);
+        String res = InstanceScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER)
+                .get(PreferencesHelperTest.KEY, null);
         Assert.assertNull(res);
-        res = ConfigurationScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER).get(PreferencesHelperTest.KEY, null);
+        res = ConfigurationScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER)
+                .get(PreferencesHelperTest.KEY, null);
         Assert.assertNull(res);
-        res = DefaultScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER).get(PreferencesHelperTest.KEY, null);
+        res = DefaultScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER)
+                .get(PreferencesHelperTest.KEY, null);
         Assert.assertNotNull(res);
     }
 
     @Test
     public void default_2() {
-        final PreferencesHelper helper = PreferencesHelper.getHelper(PreferencesHelperTest.QUALIFIER);
-        ConfigurationScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER).put(PreferencesHelperTest.KEY, "balm");
+        final PreferencesHelper helper = PreferencesHelper
+                .getHelper(PreferencesHelperTest.QUALIFIER);
+        ConfigurationScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER)
+                .put(PreferencesHelperTest.KEY, "balm");
         helper.putString(PreferencesHelperTest.KEY, "balm");
-        String res = InstanceScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER).get(PreferencesHelperTest.KEY, null);
+        String res = InstanceScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER)
+                .get(PreferencesHelperTest.KEY, null);
         Assert.assertNull(res);
-        res = ConfigurationScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER).get(PreferencesHelperTest.KEY, null);
+        res = ConfigurationScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER)
+                .get(PreferencesHelperTest.KEY, null);
         Assert.assertNotNull(res);
-        res = DefaultScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER).get(PreferencesHelperTest.KEY, null);
+        res = DefaultScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER)
+                .get(PreferencesHelperTest.KEY, null);
         Assert.assertNull(res);
     }
 
     @Test
     public void default_3() {
-        final PreferencesHelper helper = PreferencesHelper.getHelper(PreferencesHelperTest.QUALIFIER);
-        ConfigurationScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER).put(PreferencesHelperTest.KEY, "balm");
+        final PreferencesHelper helper = PreferencesHelper
+                .getHelper(PreferencesHelperTest.QUALIFIER);
+        ConfigurationScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER)
+                .put(PreferencesHelperTest.KEY, "balm");
         helper.putString(PreferencesHelperTest.KEY, "smurf");
-        String res = InstanceScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER).get(PreferencesHelperTest.KEY, null);
+        String res = InstanceScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER)
+                .get(PreferencesHelperTest.KEY, null);
         Assert.assertNotNull(res);
-        res = ConfigurationScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER).get(PreferencesHelperTest.KEY, null);
+        res = ConfigurationScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER)
+                .get(PreferencesHelperTest.KEY, null);
         Assert.assertNotNull(res);
-        res = DefaultScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER).get(PreferencesHelperTest.KEY, null);
+        res = DefaultScope.INSTANCE.getNode(PreferencesHelperTest.QUALIFIER)
+                .get(PreferencesHelperTest.KEY, null);
         Assert.assertNull(res);
     }
 
     @Test
     public void byteArray_set() {
-        final PreferencesHelper helper = PreferencesHelper.getHelper(PreferencesHelperTest.QUALIFIER);
+        final PreferencesHelper helper = PreferencesHelper
+                .getHelper(PreferencesHelperTest.QUALIFIER);
         final byte[] val = { 1, 3, 5, 7 };
         helper.putByteArray(PreferencesHelperTest.KEY, val);
         final byte[] res = helper.getByteArray(PreferencesHelperTest.KEY, null);
@@ -128,7 +149,8 @@ public class PreferencesHelperTest {
 
     @Test
     public void double_set() {
-        final PreferencesHelper helper = PreferencesHelper.getHelper(PreferencesHelperTest.QUALIFIER);
+        final PreferencesHelper helper = PreferencesHelper
+                .getHelper(PreferencesHelperTest.QUALIFIER);
         final double val = 3.1415926d;
         helper.putDouble(PreferencesHelperTest.KEY, val);
         final double res = helper.getDouble(PreferencesHelperTest.KEY, Double.NaN);
@@ -137,7 +159,8 @@ public class PreferencesHelperTest {
 
     @Test
     public void float_set() {
-        final PreferencesHelper helper = PreferencesHelper.getHelper(PreferencesHelperTest.QUALIFIER);
+        final PreferencesHelper helper = PreferencesHelper
+                .getHelper(PreferencesHelperTest.QUALIFIER);
         final float val = 3.1415926f;
         helper.putFloat(PreferencesHelperTest.KEY, val);
         final float res = helper.getFloat(PreferencesHelperTest.KEY, Float.NaN);
@@ -146,7 +169,8 @@ public class PreferencesHelperTest {
 
     @Test
     public void long_set() {
-        final PreferencesHelper helper = PreferencesHelper.getHelper(PreferencesHelperTest.QUALIFIER);
+        final PreferencesHelper helper = PreferencesHelper
+                .getHelper(PreferencesHelperTest.QUALIFIER);
         final long val = 314159260;
         helper.putLong(PreferencesHelperTest.KEY, val);
         final long res = helper.getLong(PreferencesHelperTest.KEY, Long.MIN_VALUE);
@@ -155,7 +179,8 @@ public class PreferencesHelperTest {
 
     @Test
     public void int_set() {
-        final PreferencesHelper helper = PreferencesHelper.getHelper(PreferencesHelperTest.QUALIFIER);
+        final PreferencesHelper helper = PreferencesHelper
+                .getHelper(PreferencesHelperTest.QUALIFIER);
         final int val = 314159;
         helper.putInt(PreferencesHelperTest.KEY, val);
         final int res = helper.getInt(PreferencesHelperTest.KEY, Integer.MIN_VALUE);
@@ -164,7 +189,8 @@ public class PreferencesHelperTest {
 
     @Test
     public void removeLowestLevel() {
-        final PreferencesHelper helper = PreferencesHelper.getHelper(PreferencesHelperTest.QUALIFIER);
+        final PreferencesHelper helper = PreferencesHelper
+                .getHelper(PreferencesHelperTest.QUALIFIER);
         final String val = "value";
         final String defaultValue = "defdef";
         helper.putString(PreferencesHelperTest.KEY, val);
@@ -178,14 +204,16 @@ public class PreferencesHelperTest {
 
     @Test
     public void hasAnyLowestLevel_no1() {
-        final PreferencesHelper helper = PreferencesHelper.getHelper(PreferencesHelperTest.QUALIFIER);
+        final PreferencesHelper helper = PreferencesHelper
+                .getHelper(PreferencesHelperTest.QUALIFIER);
         final boolean has = helper.hasAnyAtLowestScope();
         Assert.assertEquals(false, has);
     }
 
     @Test
     public void hasAnyLowestLevel_yes() {
-        final PreferencesHelper helper = PreferencesHelper.getHelper(PreferencesHelperTest.QUALIFIER);
+        final PreferencesHelper helper = PreferencesHelper
+                .getHelper(PreferencesHelperTest.QUALIFIER);
         helper.putString(PreferencesHelperTest.KEY, "gaga");
         final boolean has = helper.hasAnyAtLowestScope();
         Assert.assertEquals(true, has);
@@ -193,7 +221,8 @@ public class PreferencesHelperTest {
 
     @Test
     public void hasAnyLowestLevel_no2() {
-        final PreferencesHelper helper = PreferencesHelper.getHelper(PreferencesHelperTest.QUALIFIER);
+        final PreferencesHelper helper = PreferencesHelper
+                .getHelper(PreferencesHelperTest.QUALIFIER);
         helper.putString(PreferencesHelperTest.KEY, "gaga");
         helper.removeAllAtLowestScope();
         final boolean has = helper.hasAnyAtLowestScope();

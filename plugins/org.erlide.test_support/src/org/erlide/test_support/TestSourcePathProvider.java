@@ -106,7 +106,8 @@ public class TestSourcePathProvider
                     final IPath location = container.getLocation();
                     final Set<IPath> paths = getProjectPaths(resource.getProject());
                     if (theDelta.getKind() == IResourceDelta.ADDED
-                            && !paths.contains(location) && TestSourcePathProvider.isTestDir(container)) {
+                            && !paths.contains(location)
+                            && TestSourcePathProvider.isTestDir(container)) {
                         paths.add(location);
                     }
                     if (theDelta.getKind() == IResourceDelta.REMOVED

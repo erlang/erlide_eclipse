@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Eric Merritt and others. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Eric Merritt
- *     Vlad Dumitrescu
+ * Contributors: Eric Merritt Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.prefs.plugin;
 
@@ -399,8 +397,8 @@ public class ColoringPreferencePage extends PreferencePage
         gd.horizontalSpan = 2;
         fUnderlineCheckBox.setLayoutData(gd);
 
-        final String content = ColoringPreferencePage.loadPreviewContentFromFile(getClass(),
-                "ColorSettingPreviewCode.txt"); //$NON-NLS-1$
+        final String content = ColoringPreferencePage
+                .loadPreviewContentFromFile(getClass(), "ColorSettingPreviewCode.txt"); //$NON-NLS-1$
         fPreviewViewer = ErlangSourceViewer.createErlangPreviewer(colorComposite,
                 fColorManager, fOverlayStore, fColors, content);
 

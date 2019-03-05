@@ -416,8 +416,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     public static void log(final Exception e) {
-        log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, ErlangStatus.INTERNAL_ERROR.getValue(),
-                e.getMessage(), null));
+        log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
+                ErlangStatus.INTERNAL_ERROR.getValue(), e.getMessage(), null));
     }
 
     public static void log(final IStatus status) {
@@ -425,8 +425,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     public static void logErrorMessage(final String message) {
-        log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, ErlangStatus.INTERNAL_ERROR.getValue(),
-                message, null));
+        log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
+                ErlangStatus.INTERNAL_ERROR.getValue(), message, null));
     }
 
     public static void logErrorStatus(final String message, final IStatus status) {
@@ -441,8 +441,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     public static void log(final Throwable e) {
-        log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, ErlangStatus.INTERNAL_ERROR.getValue(),
-                "Erlide internal error", e));
+        log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
+                ErlangStatus.INTERNAL_ERROR.getValue(), "Erlide internal error", e));
     }
 
     public static ImageDescriptorRegistry getImageDescriptorRegistry() {
@@ -520,7 +520,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             try {
                 fStore.load();
             } catch (final IOException e) {
-                getLog().log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, IStatus.OK, "", e)); //$NON-NLS-1$
+                getLog().log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
+                        IStatus.OK, "", e)); //$NON-NLS-1$
             }
             ErlangSourceContextTypeModule.getDefault().addElementResolvers();
         }

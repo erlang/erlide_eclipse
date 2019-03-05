@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.ui;
 
@@ -37,8 +35,7 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 /**
- * Input dialog which shows up all the function clauses in all modules in the
- * project
+ * Input dialog which shows up all the function clauses in all modules in the project
  *
  * @author Gyorgy Orosz
  * @version %I%, %G%

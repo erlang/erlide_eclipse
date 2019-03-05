@@ -137,7 +137,8 @@ public final class ExtensionUtils {
     @SuppressWarnings("unchecked")
     public static Object getParticipant(final String type) {
         // only one participant may be used for this
-        final List<Object> participants = (List<Object>) ExtensionUtils.getParticipants(type);
+        final List<Object> participants = (List<Object>) ExtensionUtils
+                .getParticipants(type);
         if (participants.size() == 1) {
             return participants.get(0);
         }

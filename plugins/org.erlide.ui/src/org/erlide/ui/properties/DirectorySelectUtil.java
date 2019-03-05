@@ -31,8 +31,7 @@ public class DirectorySelectUtil {
         final IWorkspaceRoot root = project2.getWorkspace().getRoot();
         final Class<?>[] acceptedClasses = new Class[] { IProject.class, IFolder.class };
         final IProject[] allProjects = root.getProjects();
-        final List<IProject> rejectedElements = new ArrayList<>(
-                allProjects.length);
+        final List<IProject> rejectedElements = new ArrayList<>(allProjects.length);
         for (IProject allProject : allProjects) {
             if (!allProject.equals(project2)) {
                 rejectedElements.add(allProject);

@@ -33,7 +33,7 @@ import com.google.common.collect.Sets;
 public class SearchCoreUtil {
 
     public static ErlSearchScope getProjectsScope(final Collection<IProject> projects,
-                                                  final boolean addExternals, final boolean addOtp) throws CoreException {
+            final boolean addExternals, final boolean addOtp) throws CoreException {
         final ErlSearchScope result = new ErlSearchScope();
         final Set<String> externalModulePaths = new HashSet<>();
         final IErlModel model = ErlangEngine.getInstance().getModel();
@@ -41,8 +41,8 @@ public class SearchCoreUtil {
             SearchCoreUtil.addProjectToScope(project, result);
             if (NatureUtil.hasErlangNature(project)) {
                 final IErlProject erlProject = model.getErlangProject(project);
-                SearchCoreUtil.addExternalModules(erlProject, result, externalModulePaths, addExternals,
-                        addOtp);
+                SearchCoreUtil.addExternalModules(erlProject, result, externalModulePaths,
+                        addExternals, addOtp);
             }
         }
         return result;
@@ -150,8 +150,8 @@ public class SearchCoreUtil {
         }
         final Set<String> externalModulePaths = new HashSet<>();
         for (final IErlProject project : erlangProjects) {
-            SearchCoreUtil.addExternalModules(project, result, externalModulePaths, addExternals,
-                    addOtp);
+            SearchCoreUtil.addExternalModules(project, result, externalModulePaths,
+                    addExternals, addOtp);
         }
         return result;
     }

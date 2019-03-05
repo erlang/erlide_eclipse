@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2004 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.engine.internal.services.parsing;
 
@@ -56,8 +54,7 @@ import com.google.common.collect.Lists;
  */
 public final class ErlParser {
 
-    static final class SourceOffsetComparator
-            implements Comparator<ISourceReference> {
+    static final class SourceOffsetComparator implements Comparator<ISourceReference> {
         @Override
         public int compare(final ISourceReference o1, final ISourceReference o2) {
             final int offset1 = o1.getSourceRange().getOffset();
@@ -209,14 +206,14 @@ public final class ErlParser {
     }
 
     private int considerPrevious(final int i, final List<IErlMember> all,
-                                 final Deque<IErlComment> comments, final IErlFunction function) {
+            final Deque<IErlComment> comments, final IErlFunction function) {
         final int j = i - 1;
         if (j > 0) {
             final IErlMember member = all.get(i);
             final IErlMember prevMember = all.get(j);
             if (prevMember instanceof IErlComment) {
-                if (prevMember.getLineEnd() + ErlParser.FUNCTION_COMMENT_THRESHOLD >= member
-                        .getLineStart()) {
+                if (prevMember.getLineEnd()
+                        + ErlParser.FUNCTION_COMMENT_THRESHOLD >= member.getLineStart()) {
                     comments.addFirst((IErlComment) prevMember);
                 }
             } else if (prevMember instanceof IErlTypespec) {
@@ -224,8 +221,9 @@ public final class ErlParser {
 
                 if (spec.getName().equals(function.getName())
                         && spec.getArity() == function.getArity()
-                        && prevMember.getLineEnd() + ErlParser.FUNCTION_COMMENT_THRESHOLD >= member
-                                .getLineStart()) {
+                        && prevMember.getLineEnd()
+                                + ErlParser.FUNCTION_COMMENT_THRESHOLD >= member
+                                        .getLineStart()) {
                     function.setTypespec(spec);
                 }
             } else {
@@ -270,7 +268,8 @@ public final class ErlParser {
         lastLine = line;
         try {
             if (c.elementAt(ErlParser.LAST_LINE) instanceof OtpErlangLong) {
-                final OtpErlangLong lastLineL = (OtpErlangLong) c.elementAt(ErlParser.LAST_LINE);
+                final OtpErlangLong lastLineL = (OtpErlangLong) c
+                        .elementAt(ErlParser.LAST_LINE);
                 lastLine = lastLineL.intValue();
             }
         } catch (final OtpErlangRangeException e1) {
@@ -509,7 +508,8 @@ public final class ErlParser {
             final OtpErlangTuple recordTuple = (OtpErlangTuple) val;
             if (recordTuple.elementAt(0) instanceof OtpErlangAtom) {
                 final String s = extra instanceof OtpErlangString
-                        ? ((OtpErlangString) extra).stringValue() : null;
+                        ? ((OtpErlangString) extra).stringValue()
+                        : null;
                 final OtpErlangList fields = (OtpErlangList) recordTuple.elementAt(1);
                 final ErlRecordDef r = new ErlRecordDef(module, null, s);
                 setPos(r, pos);
@@ -545,7 +545,8 @@ public final class ErlParser {
         }
         if (val instanceof OtpErlangAtom) {
             final String s = extra instanceof OtpErlangString
-                    ? ((OtpErlangString) extra).stringValue() : null;
+                    ? ((OtpErlangString) extra).stringValue()
+                    : null;
             final ErlRecordDef r = new ErlRecordDef(module, null, s);
             setPos(r, pos);
             return r;

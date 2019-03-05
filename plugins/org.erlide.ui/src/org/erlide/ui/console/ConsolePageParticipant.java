@@ -232,7 +232,8 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
         if (handlerService == null || contextService == null) {
             return;
         }
-        fActivatedContext = contextService.activateContext(ConsolePageParticipant.fContextId);
+        fActivatedContext = contextService
+                .activateContext(ConsolePageParticipant.fContextId);
         fActivatedHandler = handlerService
                 .activateHandler("org.eclipse.debug.ui.commands.eof", fEOFHandler); //$NON-NLS-1$
     }

@@ -24,7 +24,8 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
 
     @Deprecated
     public static IEclipsePreferences getInstanceOldRootNode() {
-        return InstanceScope.INSTANCE.getNode(RuntimeInfoPreferencesSerializer.rootKeyOld);
+        return InstanceScope.INSTANCE
+                .getNode(RuntimeInfoPreferencesSerializer.rootKeyOld);
     }
 
     @Deprecated
@@ -50,7 +51,8 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
     }
 
     public RuntimeInfoPreferencesSerializer() {
-        this(RuntimeInfoPreferencesSerializer.getInstanceRootNode(), RuntimeInfoPreferencesSerializer.getDefaultRootNode());
+        this(RuntimeInfoPreferencesSerializer.getInstanceRootNode(),
+                RuntimeInfoPreferencesSerializer.getDefaultRootNode());
     }
 
     @Override
@@ -65,10 +67,12 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
                 RuntimeInfoLoader.store(rt, instanceRootNode);
             }
             if (data.defaultRuntimeName != null) {
-                instanceRootNode.put(RuntimeInfoPreferencesSerializer.DEFAULT_KEY, data.defaultRuntimeName);
+                instanceRootNode.put(RuntimeInfoPreferencesSerializer.DEFAULT_KEY,
+                        data.defaultRuntimeName);
             }
             if (data.erlideRuntimeName != null) {
-                instanceRootNode.put(RuntimeInfoPreferencesSerializer.ERLIDE_KEY, data.erlideRuntimeName);
+                instanceRootNode.put(RuntimeInfoPreferencesSerializer.ERLIDE_KEY,
+                        data.erlideRuntimeName);
             }
             instanceRootNode.flush();
         } catch (final Exception e) {
@@ -97,8 +101,7 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
     private RuntimeInfoCatalogData loadPrefs(final RuntimeInfoCatalogData data,
             final IEclipsePreferences root) {
         String[] children;
-        final Collection<RuntimeInfo> runtimes = new ArrayList<>(
-                data.runtimes);
+        final Collection<RuntimeInfo> runtimes = new ArrayList<>(data.runtimes);
         try {
             children = root.childrenNames();
             for (final String name : children) {
@@ -109,8 +112,10 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
             ErlLogger.warn(e);
         }
 
-        final String defaultRuntimeName = root.get(RuntimeInfoPreferencesSerializer.DEFAULT_KEY, data.defaultRuntimeName);
-        final String ideRuntimeName = root.get(RuntimeInfoPreferencesSerializer.ERLIDE_KEY, data.erlideRuntimeName);
+        final String defaultRuntimeName = root.get(
+                RuntimeInfoPreferencesSerializer.DEFAULT_KEY, data.defaultRuntimeName);
+        final String ideRuntimeName = root
+                .get(RuntimeInfoPreferencesSerializer.ERLIDE_KEY, data.erlideRuntimeName);
         return new RuntimeInfoCatalogData(runtimes, defaultRuntimeName, ideRuntimeName);
     }
 }

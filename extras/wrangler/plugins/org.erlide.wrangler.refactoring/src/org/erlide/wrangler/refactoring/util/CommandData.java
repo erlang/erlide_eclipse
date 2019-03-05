@@ -12,8 +12,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
- * A class(structure) to aggregate data about each command in the composite
- * refactoring
+ * A class(structure) to aggregate data about each command in the composite refactoring
  *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%

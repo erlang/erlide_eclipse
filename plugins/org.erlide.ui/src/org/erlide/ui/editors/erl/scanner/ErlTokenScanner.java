@@ -44,8 +44,10 @@ public abstract class ErlTokenScanner extends BufferedRuleBasedScanner {
             return;
         }
         ErlTokenScanner.t_string = new Token(getTextAttribute(TokenHighlight.STRING));
-        ErlTokenScanner.t_tildeTag = new Token(getTextAttribute(TokenHighlight.TILDE_TAG));
-        ErlTokenScanner.t_escapeTag = new Token(getTextAttribute(TokenHighlight.ESCAPE_TAG));
+        ErlTokenScanner.t_tildeTag = new Token(
+                getTextAttribute(TokenHighlight.TILDE_TAG));
+        ErlTokenScanner.t_escapeTag = new Token(
+                getTextAttribute(TokenHighlight.ESCAPE_TAG));
         ErlTokenScanner.t_keyword = new Token(getTextAttribute(TokenHighlight.KEYWORD));
         ErlTokenScanner.t_var = new Token(getTextAttribute(TokenHighlight.VARIABLE));
         ErlTokenScanner.t_default = new Token(getTextAttribute(TokenHighlight.DEFAULT));

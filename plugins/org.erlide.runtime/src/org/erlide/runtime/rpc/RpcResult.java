@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2006 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2006 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.runtime.rpc;
 
@@ -32,9 +30,8 @@ public class RpcResult {
     public RpcResult(final OtpErlangObject res) {
         if (res instanceof OtpErlangTuple
                 && ((OtpErlangTuple) res).elementAt(0) instanceof OtpErlangAtom
-                && ("badrpc"
-                        .equals(((OtpErlangAtom) ((OtpErlangTuple) res).elementAt(0))
-                                .atomValue())
+                && ("badrpc".equals(
+                        ((OtpErlangAtom) ((OtpErlangTuple) res).elementAt(0)).atomValue())
                         || "EXIT".equals(
                                 ((OtpErlangAtom) ((OtpErlangTuple) res).elementAt(0))
                                         .atomValue()))) {

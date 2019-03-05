@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2006 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.debug.ui.model;
 
@@ -25,8 +23,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.erlide.util.ErlLogger;
 
 /**
- * An error dialog reporting a problem with a debug target which gives the user
- * the option to continue or terminate/disconnect or restart the target.
+ * An error dialog reporting a problem with a debug target which gives the user the option
+ * to continue or terminate/disconnect or restart the target.
  */
 public class HotCodeReplaceErrorDialog extends ErrorDialog {
 
@@ -40,13 +38,13 @@ public class HotCodeReplaceErrorDialog extends ErrorDialog {
     protected int RESTART_ID = TERMINATE_ID + 2;
 
     /**
-     * Creates a new dialog which can terminate, disconnect or restart the given
-     * debug target.
+     * Creates a new dialog which can terminate, disconnect or restart the given debug
+     * target.
      *
      * @param target
      *            the debug target
-     * @see ErrorDialogWithToggle#ErrorDialogWithToggle(Shell, String, String,
-     *      IStatus, String, String, IPreferenceStore)
+     * @see ErrorDialogWithToggle#ErrorDialogWithToggle(Shell, String, String, IStatus,
+     *      String, String, IPreferenceStore)
      */
     public HotCodeReplaceErrorDialog(final Shell parentShell, final String dialogTitle,
             final String message, final IStatus status, final IDebugTarget target) {

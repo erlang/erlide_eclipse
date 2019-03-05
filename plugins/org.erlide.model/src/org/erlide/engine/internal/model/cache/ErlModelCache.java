@@ -42,7 +42,9 @@ public class ErlModelCache implements IDisposable {
 
     public static ErlModelCache getDefault() {
         if (ErlModelCache.fgInstance == null) {
-            ErlModelCache.fgInstance = ErlModelCache.disabled ? new DisabledErlModelCache() : new ErlModelCache();
+            ErlModelCache.fgInstance = ErlModelCache.disabled
+                    ? new DisabledErlModelCache()
+                    : new ErlModelCache();
         }
         return ErlModelCache.fgInstance;
     }
@@ -61,7 +63,8 @@ public class ErlModelCache implements IDisposable {
     }
 
     private static <K, V> Cache<K, V> newCache() {
-        final Cache<K, V> cache = CacheBuilder.newBuilder().maximumSize(ErlModelCache.CACHE_SIZE)
+        final Cache<K, V> cache = CacheBuilder.newBuilder()
+                .maximumSize(ErlModelCache.CACHE_SIZE)
                 .expireAfterAccess(ErlModelCache.CACHE_TIME_MINUTES, TimeUnit.MINUTES)
                 .initialCapacity(16).build();
         return cache;

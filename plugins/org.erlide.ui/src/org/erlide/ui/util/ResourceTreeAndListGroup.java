@@ -38,9 +38,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Tree;
 
 /**
- * Workbench-level composite that combines a CheckboxTreeViewer and
- * CheckboxListViewer. All viewer selection-driven interactions are handled
- * within this object
+ * Workbench-level composite that combines a CheckboxTreeViewer and CheckboxListViewer.
+ * All viewer selection-driven interactions are handled within this object
  */
 public class ResourceTreeAndListGroup extends EventManager
         implements ICheckStateListener, ISelectionChangedListener, ITreeViewerListener {
@@ -64,9 +63,9 @@ public class ResourceTreeAndListGroup extends EventManager
     private static int PREFERRED_HEIGHT = 150;
 
     /**
-     * Create an instance of this class. Use this constructor if you wish to
-     * specify the width and/or height of the combined widget (to only hardcode
-     * one of the sizing dimensions, specify the other dimension's value as -1)
+     * Create an instance of this class. Use this constructor if you wish to specify the
+     * width and/or height of the combined widget (to only hardcode one of the sizing
+     * dimensions, specify the other dimension's value as -1)
      *
      * @param parent
      * @param rootObject
@@ -113,8 +112,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Add the passed listener to self's collection of clients that listen for
-     * changes to element checked states
+     * Add the passed listener to self's collection of clients that listen for changes to
+     * element checked states
      *
      * @param listener
      *            ICheckStateListener
@@ -124,8 +123,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Return a boolean indicating whether all children of the passed tree
-     * element are currently white-checked
+     * Return a boolean indicating whether all children of the passed tree element are
+     * currently white-checked
      *
      * @return boolean
      * @param treeElement
@@ -143,8 +142,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Return a boolean indicating whether all list elements associated with the
-     * passed tree element are currently checked
+     * Return a boolean indicating whether all list elements associated with the passed
+     * tree element are currently checked
      *
      * @return boolean
      * @param treeElement
@@ -160,8 +159,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Iterate through the passed elements which are being realized for the
-     * first time and check each one in the tree viewer as appropriate
+     * Iterate through the passed elements which are being realized for the first time and
+     * check each one in the tree viewer as appropriate
      */
     protected void checkNewTreeElements(final Object[] elements) {
         for (final Object currentElement : elements) {
@@ -173,8 +172,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * An item was checked in one of self's two views. Determine which view this
-     * occurred in and delegate appropriately
+     * An item was checked in one of self's two views. Determine which view this occurred
+     * in and delegate appropriately
      *
      * @param event
      *            CheckStateChangedEvent
@@ -263,12 +262,11 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Returns a boolean indicating whether the passed tree element should be at
-     * LEAST gray-checked. Note that this method does not consider whether it
-     * should be white-checked, so a specified tree item which should be
-     * white-checked will result in a <code>true</code> answer from this method.
-     * To determine whether a tree item should be white-checked use method
-     * #determineShouldBeWhiteChecked(Object).
+     * Returns a boolean indicating whether the passed tree element should be at LEAST
+     * gray-checked. Note that this method does not consider whether it should be
+     * white-checked, so a specified tree item which should be white-checked will result
+     * in a <code>true</code> answer from this method. To determine whether a tree item
+     * should be white-checked use method #determineShouldBeWhiteChecked(Object).
      *
      * @param treeElement
      *            java.lang.Object
@@ -299,8 +297,7 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Returns a boolean indicating whether the passed tree item should be
-     * white-checked.
+     * Returns a boolean indicating whether the passed tree item should be white-checked.
      *
      * @return boolean
      * @param treeElement
@@ -312,8 +309,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Recursively add appropriate tree elements to the collection of known
-     * white-checked tree elements.
+     * Recursively add appropriate tree elements to the collection of known white-checked
+     * tree elements.
      *
      * @param treeElement
      *            java.lang.Object
@@ -379,14 +376,13 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Add all of the selected children of nextEntry to result recursively. This
-     * does not set any values in the checked state.
+     * Add all of the selected children of nextEntry to result recursively. This does not
+     * set any values in the checked state.
      *
      * @param The
      *            treeElement being queried
      * @param addAll
-     *            a boolean to indicate if the checked state store needs to be
-     *            queried
+     *            a boolean to indicate if the checked state store needs to be queried
      * @param filter
      *            IElementFilter - the filter being used on the data
      * @param monitor
@@ -428,9 +424,9 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Find all of the white checked children of the treeElement and add them to
-     * the collection. If the element itself is white select add it. If not then
-     * add any selected list elements and recurse down to the children.
+     * Find all of the white checked children of the treeElement and add them to the
+     * collection. If the element itself is white select add it. If not then add any
+     * selected list elements and recurse down to the children.
      *
      * @param treeElement
      *            java.lang.Object
@@ -458,9 +454,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Returns a flat list of all of the leaf elements which are checked. Filter
-     * then based on the supplied ElementFilter. If monitor is cancelled then
-     * return null
+     * Returns a flat list of all of the leaf elements which are checked. Filter then
+     * based on the supplied ElementFilter. If monitor is cancelled then return null
      *
      * @param filter
      *            - the filter for the data
@@ -484,8 +479,8 @@ public class ResourceTreeAndListGroup extends EventManager
     /**
      * Returns a flat list of all of the leaf elements which are checked.
      *
-     * @return all of the leaf elements which are checked. This API does not
-     *         return null in order to keep backwards compatibility.
+     * @return all of the leaf elements which are checked. This API does not return null
+     *         in order to keep backwards compatibility.
      */
     public List<Object> getAllCheckedListItems() {
 
@@ -518,9 +513,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Returns a list of all of the items that are white checked. Any folders
-     * that are white checked are added and then any files from white checked
-     * folders are added.
+     * Returns a list of all of the items that are white checked. Any folders that are
+     * white checked are added and then any files from white checked folders are added.
      *
      * @return the list of all of the items that are white checked
      */
@@ -571,8 +565,7 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Return a count of the number of list items associated with a given tree
-     * item.
+     * Return a count of the number of list items associated with a given tree item.
      *
      * @return int
      * @param treeElement
@@ -593,8 +586,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Logically gray-check all ancestors of treeItem by ensuring that they
-     * appear in the checked table
+     * Logically gray-check all ancestors of treeItem by ensuring that they appear in the
+     * checked table
      */
     protected void grayCheckHierarchy(final Object treeElement) {
 
@@ -615,8 +608,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Set the checked state of self and all ancestors appropriately. Do not
-     * white check anyone - this is only done down a hierarchy.
+     * Set the checked state of self and all ancestors appropriately. Do not white check
+     * anyone - this is only done down a hierarchy.
      */
     private void grayUpdateHierarchy(final Object treeElement) {
 
@@ -653,8 +646,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Set the initial checked state of the passed element to true, as well as
-     * to all of its children and associated list elements
+     * Set the initial checked state of the passed element to true, as well as to all of
+     * its children and associated list elements
      *
      * @param element
      */
@@ -680,9 +673,9 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Call-back that's invoked when the checked status of an item in the list
-     * is changed by the user. Do not try and update the hierarchy if we are
-     * building the initial list.
+     * Call-back that's invoked when the checked status of an item in the list is changed
+     * by the user. Do not try and update the hierarchy if we are building the initial
+     * list.
      */
     protected void listItemChecked(final Object listElement, final boolean state,
             final boolean updatingFromSelection) {
@@ -720,8 +713,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Notify all checked state listeners that the passed element has had its
-     * checked state changed to the passed state
+     * Notify all checked state listeners that the passed element has had its checked
+     * state changed to the passed state
      */
     protected void notifyCheckStateChangeListeners(final CheckStateChangedEvent event) {
         final Object[] array = getListeners();
@@ -737,8 +730,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Set the contents of the list viewer based upon the specified selected
-     * tree element. This also includes checking the appropriate list items.
+     * Set the contents of the list viewer based upon the specified selected tree element.
+     * This also includes checking the appropriate list items.
      *
      * @param treeElement
      *            java.lang.Object
@@ -772,9 +765,9 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Logically gray-check all ancestors of treeItem by ensuring that they
-     * appear in the checked table. Add any elements to the selectedNodes so we
-     * can track that has been done.
+     * Logically gray-check all ancestors of treeItem by ensuring that they appear in the
+     * checked table. Add any elements to the selectedNodes so we can track that has been
+     * done.
      */
     private void primeHierarchyForSelection(final Object item,
             final Set<Object> selectedNodes) {
@@ -797,8 +790,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Remove the passed listener from self's collection of clients that listen
-     * for changes to element checked states
+     * Remove the passed listener from self's collection of clients that listen for
+     * changes to element checked states
      *
      * @param listener
      *            ICheckStateListener
@@ -833,8 +826,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Select or deselect all of the elements in the tree depending on the value
-     * of the selection boolean. Be sure to update the displayed files as well.
+     * Select or deselect all of the elements in the tree depending on the value of the
+     * selection boolean. Be sure to update the displayed files as well.
      *
      * @param selection
      */
@@ -856,8 +849,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * The treeElement has been white selected. Get the list for the element and
-     * set it in the checked state store.
+     * The treeElement has been white selected. Get the list for the element and set it in
+     * the checked state store.
      *
      * @param treeElement
      *            the element being updated
@@ -897,8 +890,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Set the root of the widget to be new Root. Regenerate all of the tables
-     * and lists from this value.
+     * Set the root of the widget to be new Root. Regenerate all of the tables and lists
+     * from this value.
      *
      * @param newRoot
      */
@@ -961,8 +954,7 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Adjust the collection of references to white-checked tree elements
-     * appropriately.
+     * Adjust the collection of references to white-checked tree elements appropriately.
      *
      * @param treeElement
      *            java.lang.Object
@@ -997,8 +989,8 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Callback that's invoked when the checked status of an item in the tree is
-     * changed by the user.
+     * Callback that's invoked when the checked status of an item in the tree is changed
+     * by the user.
      */
     protected void treeItemChecked(final Object treeElement, final boolean state) {
 
@@ -1060,15 +1052,15 @@ public class ResourceTreeAndListGroup extends EventManager
     }
 
     /**
-     * Update the selections of the tree elements in items to reflect the new
-     * selections provided.
+     * Update the selections of the tree elements in items to reflect the new selections
+     * provided.
      *
      * @param items
-     *            Map with keys of Object (the tree element) and values of List
-     *            (the selected list elements). NOTE: This method does not
-     *            special case keys with no values (i.e., a tree element with an
-     *            empty list). If a tree element does not have any selected
-     *            items, do not include the element in the Map.
+     *            Map with keys of Object (the tree element) and values of List (the
+     *            selected list elements). NOTE: This method does not special case keys
+     *            with no values (i.e., a tree element with an empty list). If a tree
+     *            element does not have any selected items, do not include the element in
+     *            the Map.
      */
     public void updateSelections(final Map<Object, List<Object>> items) {
         // We are replacing all selected items with the given selected items,

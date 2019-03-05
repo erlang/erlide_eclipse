@@ -30,8 +30,8 @@ public class TracedProcess {
     private final Set<ProcessFlag> flags = new HashSet<>();
 
     /**
-     * Creates process from tuple. List of tuples describing all processes is
-     * returned as a result of <code>erlide_proclist:process_list/0</code> call.
+     * Creates process from tuple. List of tuples describing all processes is returned as
+     * a result of <code>erlide_proclist:process_list/0</code> call.
      *
      * @param tuple
      *            tuple describing process

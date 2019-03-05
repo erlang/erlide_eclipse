@@ -54,7 +54,7 @@ public class BackendShell implements IBackendShell {
 
     @Override
     public void close() {
-        if (server != null && backend!=null && backend.getOtpRpc() != null) {
+        if (server != null && backend != null && backend.getOtpRpc() != null) {
             backend.getOtpRpc().send(server, STOP);
         }
         server = null;

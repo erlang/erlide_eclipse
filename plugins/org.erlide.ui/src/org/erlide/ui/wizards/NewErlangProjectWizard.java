@@ -212,7 +212,8 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
      * @see ISetSelectionTarget
      */
     protected void selectAndReveal(final IResource newResource) {
-        NewErlangProjectWizard.selectAndReveal(newResource, getWorkbench().getActiveWorkbenchWindow());
+        NewErlangProjectWizard.selectAndReveal(newResource,
+                getWorkbench().getActiveWorkbenchWindow());
     }
 
     /**

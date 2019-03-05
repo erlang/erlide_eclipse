@@ -89,10 +89,9 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
         @Override
         public String toString() {
             return "ErlangProjectionAnnotation:\n" + //$NON-NLS-1$
-                    "\telement: \t'"
-                    + fErlElement.toString()
-                    + "' " + fErlElement.getKind() + "/" + fErlElement.getParent().toString() + "\n" + //$NON-NLS-1$ //$NON-NLS-2$
-                    "\tcollapsed: \t" + isCollapsed() + "\n" + //$NON-NLS-1$ //$NON-NLS-2$
+                    "\telement: \t'" + fErlElement.toString() + "' " //$NON-NLS-2$
+                    + fErlElement.getKind() + "/" + fErlElement.getParent().toString() //$NON-NLS-1$
+                    + "\n" + "\tcollapsed: \t" + isCollapsed() + "\n" + //$NON-NLS-3$
                     "\tcomment: \t" + fIsComment + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
@@ -157,14 +156,14 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
     }
 
     /**
-     * Projection position that will return two foldable regions: one folding
-     * away the region from after the '/**' to the beginning of the content, the
-     * other from after the first content line until after the comment.
+     * Projection position that will return two foldable regions: one folding away the
+     * region from after the '/**' to the beginning of the content, the other from after
+     * the first content line until after the comment.
      *
      * @since 3.1
      */
-    private static final class CommentPosition extends Position implements
-            IProjectionPosition {
+    private static final class CommentPosition extends Position
+            implements IProjectionPosition {
 
         CommentPosition(final int off, final int len) {
             super(off, len);
@@ -184,8 +183,8 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
 
             final int firstLine = document.getLineOfOffset(offset + prefixEnd);
             final int captionLine = document.getLineOfOffset(offset + contentStart);
-            final int lastLine = document.getLineOfOffset(offset + length)-1;
-            
+            final int lastLine = document.getLineOfOffset(offset + length) - 1;
+
             Assert.isTrue(firstLine <= captionLine,
                     "first folded line is greater than the caption line"); //$NON-NLS-1$
             Assert.isTrue(captionLine <= lastLine,
@@ -205,7 +204,8 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
 
             if (captionLine < lastLine) {
                 final int postOffset = document.getLineOffset(captionLine + 1);
-                final IRegion postRegion = new Region(postOffset, document.getLineOffset(lastLine)-postOffset);
+                final IRegion postRegion = new Region(postOffset,
+                        document.getLineOffset(lastLine) - postOffset);
 
                 if (preRegion == null) {
                     return new IRegion[] { postRegion };
@@ -222,13 +222,13 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
         }
 
         /**
-         * Finds the offset of the first identifier part within
-         * <code>content</code>. Returns 0 if none is found.
+         * Finds the offset of the first identifier part within <code>content</code>.
+         * Returns 0 if none is found.
          *
          * @param content
          *            the content to search
-         * @return the first index of a unicode identifier part, or zero if none
-         *         can be found
+         * @return the first index of a unicode identifier part, or zero if none can be
+         *         found
          */
         private int findFirstContent(final CharSequence content, final int prefixEnd) {
             final int lenght = content.length();
@@ -287,18 +287,19 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
     }
 
     /**
-     * Projection position that will return two foldable regions: one folding
-     * away the lines before the one containing the simple name of the erlang
-     * element, one folding away any lines after the caption.
+     * Projection position that will return two foldable regions: one folding away the
+     * lines before the one containing the simple name of the erlang element, one folding
+     * away any lines after the caption.
      *
      * @since 3.1
      */
-    private static final class ErlangElementPosition extends Position implements
-            IProjectionPosition {
+    private static final class ErlangElementPosition extends Position
+            implements IProjectionPosition {
 
         private IErlMember fMember;
 
-        public ErlangElementPosition(final int off, final int len, final IErlMember member) {
+        public ErlangElementPosition(final int off, final int len,
+                final IErlMember member) {
             super(off, len);
             fMember = member;
         }
@@ -323,10 +324,10 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
                 throws BadLocationException {
             int nameStart = offset;
             /*
-             * The member's name range may not be correct. However, reconciling
-             * would trigger another element delta which would lead to reentrant
-             * situations. Therefore, we optimistically assume that the name
-             * range is correct, but double check the received lines below.
+             * The member's name range may not be correct. However, reconciling would
+             * trigger another element delta which would lead to reentrant situations.
+             * Therefore, we optimistically assume that the name range is correct, but
+             * double check the received lines below.
              */
             final ISourceRange nameRange = fMember.getNameRange();
             if (nameRange != null) {
@@ -338,9 +339,8 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
             final int lastLine = document.getLineOfOffset(offset + length);
 
             /*
-             * see comment above - adjust the caption line to be inside the
-             * entire folded region, and rely on later element deltas to correct
-             * the name range.
+             * see comment above - adjust the caption line to be inside the entire folded
+             * region, and rely on later element deltas to correct the name range.
              */
             if (captionLine < firstLine) {
                 captionLine = firstLine;
@@ -361,8 +361,8 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
 
             if (captionLine < lastLine) {
                 final int postOffset = document.getLineOffset(captionLine + 1);
-                final IRegion postRegion = new Region(postOffset, offset + length
-                        - postOffset);
+                final IRegion postRegion = new Region(postOffset,
+                        offset + length - postOffset);
 
                 if (preRegion == null) {
                     return new IRegion[] { postRegion };
@@ -530,9 +530,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
             } catch (final ErlModelException e1) {
             }
             if (structureKnown) {
-                final IErlElementDelta d = ErlangEngine
-                        .getInstance()
-                        .getModel()
+                final IErlElementDelta d = ErlangEngine.getInstance().getModel()
                         .createElementDelta(IErlElementDelta.CHANGED,
                                 IErlElementDelta.F_CONTENT, fModule);
                 processDelta(d);
@@ -611,7 +609,8 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
     }
 
     private void computeAdditions(final Collection<? extends IErlElement> elements,
-            final Map<ErlangProjectionAnnotation, Position> map) throws ErlModelException {
+            final Map<ErlangProjectionAnnotation, Position> map)
+            throws ErlModelException {
         if (elements == null) {
             return;
         }
@@ -658,9 +657,9 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
             if (region != null) {
                 final Position position = createProjectionPosition(region, element);
                 if (position != null) {
-                    map.put(new ErlangProjectionAnnotation(element, collapse
-                            && fFirstTimeInitialCollapse, element instanceof IErlComment),
-                            position);
+                    map.put(new ErlangProjectionAnnotation(element,
+                            collapse && fFirstTimeInitialCollapse,
+                            element instanceof IErlComment), position);
                 }
             }
         }
@@ -671,10 +670,9 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
     // }
 
     /**
-     * Computes the projection ranges for a given <code>IErlElement</code>. More
-     * than one range may be returned if the element has a leading comment which
-     * gets folded separately. If there are no foldable regions,
-     * <code>null</code> is returned.
+     * Computes the projection ranges for a given <code>IErlElement</code>. More than one
+     * range may be returned if the element has a leading comment which gets folded
+     * separately. If there are no foldable regions, <code>null</code> is returned.
      *
      * @param element
      *            the erlang element that can be folded
@@ -705,8 +703,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
                 rlength -= 1;
             }
             final int startLine = fCachedDocument.getLineOfOffset(roffset);
-            final int endLine = fCachedDocument
-                    .getLineOfOffset(roffset + rlength);
+            final int endLine = fCachedDocument.getLineOfOffset(roffset + rlength);
             if (startLine != endLine) {
                 final int offset = fCachedDocument.getLineOffset(startLine);
                 int endOffset;
@@ -739,7 +736,8 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
             return;
         }
 
-        if ((delta.getFlags() & (IErlElementDelta.F_CONTENT | IErlElementDelta.F_CHILDREN)) == 0) {
+        if ((delta.getFlags()
+                & (IErlElementDelta.F_CONTENT | IErlElementDelta.F_CHILDREN)) == 0) {
             return;
         }
 
@@ -840,11 +838,11 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
     }
 
     /**
-     * Matches deleted annotations to changed or added ones. A deleted
-     * annotation/position tuple that has a matching addition / change is
-     * updated and marked as changed. The matching tuple is not added (for
-     * additions) or marked as deletion instead (for changes). The result is
-     * that more annotations are changed and fewer get deleted/re-added.
+     * Matches deleted annotations to changed or added ones. A deleted annotation/position
+     * tuple that has a matching addition / change is updated and marked as changed. The
+     * matching tuple is not added (for additions) or marked as deletion instead (for
+     * changes). The result is that more annotations are changed and fewer get
+     * deleted/re-added.
      */
     private void match(final List<ErlangProjectionAnnotation> deletions,
             final Map<ErlangProjectionAnnotation, Position> additions,
@@ -898,18 +896,16 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
     }
 
     /**
-     * Finds a match for <code>tuple</code> in a collection of annotations. The
-     * positions for the <code>ErlangProjectionAnnotation</code> instances in
-     * <code>annotations</code> can be found in the passed
-     * <code>positionMap</code> or <code>fCachedModel</code> if
-     * <code>positionMap</code> is <code>null</code>.
+     * Finds a match for <code>tuple</code> in a collection of annotations. The positions
+     * for the <code>ErlangProjectionAnnotation</code> instances in
+     * <code>annotations</code> can be found in the passed <code>positionMap</code> or
+     * <code>fCachedModel</code> if <code>positionMap</code> is <code>null</code>.
      * <p>
-     * A tuple is said to match another if their annotations have the same
-     * comment flag and their position offsets are equal.
+     * A tuple is said to match another if their annotations have the same comment flag
+     * and their position offsets are equal.
      * </p>
      * <p>
-     * If a match is found, the annotation gets removed from
-     * <code>annotations</code>.
+     * If a match is found, the annotation gets removed from <code>annotations</code>.
      * </p>
      *
      * @param tuple
@@ -917,8 +913,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
      * @param annotations
      *            collection of <code>ErlangProjectionAnnotation</code>
      * @param positionMap
-     *            a <code>Map&lt;Annotation, Position&gt;</code> or
-     *            <code>null</code>
+     *            a <code>Map&lt;Annotation, Position&gt;</code> or <code>null</code>
      * @return a matching tuple or <code>null</code> for no match
      */
     private Tuple findMatch(final Tuple tuple,
@@ -928,8 +923,9 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
         while (it.hasNext()) {
             final ErlangProjectionAnnotation annotation = it.next();
             if (tuple.annotation.isComment() == annotation.isComment()) {
-                final Position position = positionMap == null ? fCachedModel
-                        .getPosition(annotation) : positionMap.get(annotation);
+                final Position position = positionMap == null
+                        ? fCachedModel.getPosition(annotation)
+                        : positionMap.get(annotation);
                 if (position == null) {
                     continue;
                 }
@@ -952,7 +948,8 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
             if (annotation instanceof ErlangProjectionAnnotation) {
                 final ErlangProjectionAnnotation epa = (ErlangProjectionAnnotation) annotation;
                 final Position position = model.getPosition(epa);
-                List<Tuple> list = map.computeIfAbsent(epa.getElement(), k -> new ArrayList<>(2));
+                List<Tuple> list = map.computeIfAbsent(epa.getElement(),
+                        k -> new ArrayList<>(2));
                 list.add(new Tuple(epa, position));
             }
         }
@@ -1004,8 +1001,8 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
      * @param filter
      *            the filter to use to select which annotations to collapse
      * @param expand
-     *            <code>true</code> to expand the matched annotations,
-     *            <code>false</code> to collapse them
+     *            <code>true</code> to expand the matched annotations, <code>false</code>
+     *            to collapse them
      * @since 3.2
      */
     private void modifyFiltered(final Filter filter, final boolean expand) {
@@ -1072,9 +1069,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
             if (element instanceof IErlModule && element != fModule) {
                 return;
             }
-            final IErlElementDelta d = ErlangEngine
-                    .getInstance()
-                    .getModel()
+            final IErlElementDelta d = ErlangEngine.getInstance().getModel()
                     .createElementDelta(IErlElementDelta.CHANGED,
                             IErlElementDelta.F_CONTENT, fModule);
             processDelta(d);

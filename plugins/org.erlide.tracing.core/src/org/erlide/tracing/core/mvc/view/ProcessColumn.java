@@ -23,8 +23,8 @@ public enum ProcessColumn {
     }
 
     /**
-     * Returns enum value for given ordinal. If there is no enum with given
-     * ordinal it will return <code>null</code>.
+     * Returns enum value for given ordinal. If there is no enum with given ordinal it
+     * will return <code>null</code>.
      *
      * @param index
      * @return enum value

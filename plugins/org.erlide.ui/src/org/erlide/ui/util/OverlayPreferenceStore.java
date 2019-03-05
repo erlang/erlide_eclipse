@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.util;
 
@@ -83,8 +81,7 @@ public class OverlayPreferenceStore implements IPreferenceStore {
     }
 
     /**
-     * Tries to find and return the overlay key for the given preference key
-     * string.
+     * Tries to find and return the overlay key for the given preference key string.
      *
      * @param key
      *            the preference key string
@@ -100,8 +97,7 @@ public class OverlayPreferenceStore implements IPreferenceStore {
     }
 
     /**
-     * Tells whether the given preference key string is covered by this overlay
-     * store.
+     * Tells whether the given preference key string is covered by this overlay store.
      *
      * @param key
      *            the preference key string
@@ -112,8 +108,7 @@ public class OverlayPreferenceStore implements IPreferenceStore {
     }
 
     /**
-     * Propagates the given overlay key from the orgin to the target preference
-     * store.
+     * Propagates the given overlay key from the orgin to the target preference store.
      *
      * @param orgin
      *            the source preference store
@@ -204,8 +199,8 @@ public class OverlayPreferenceStore implements IPreferenceStore {
      * @param target
      *            the preference store to which the key is propagated
      * @param forceInitialization
-     *            if <code>true</code> the value in the target gets initialized
-     *            before loading
+     *            if <code>true</code> the value in the target gets initialized before
+     *            loading
      */
     private void loadProperty(final IPreferenceStore orgin, final OverlayKey key,
             final IPreferenceStore target, final boolean forceInitialization) {
@@ -319,8 +314,7 @@ public class OverlayPreferenceStore implements IPreferenceStore {
     }
 
     /*
-     * @see
-     * IPreferenceStore#removePropertyChangeListener(org.eclipse.jface.util.
+     * @see IPreferenceStore#removePropertyChangeListener(org.eclipse.jface.util.
      * IPropertyChangeListener)
      */
     @Override
@@ -329,8 +323,8 @@ public class OverlayPreferenceStore implements IPreferenceStore {
     }
 
     /*
-     * @see IPreferenceStore#firePropertyChangeEvent(java.lang.String,
-     * java.lang.Object, java.lang.Object)
+     * @see IPreferenceStore#firePropertyChangeEvent(java.lang.String, java.lang.Object,
+     * java.lang.Object)
      */
     @Override
     public void firePropertyChangeEvent(final String name, final Object oldValue,

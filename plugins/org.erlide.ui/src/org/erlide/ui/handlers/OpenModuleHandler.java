@@ -36,8 +36,8 @@ public final class OpenModuleHandler extends Action
     private static final String PARAM_ID_FILE_PATH = "filePath"; //$NON-NLS-1$
 
     /**
-     * A collection of objects listening to changes to this manager. This
-     * collection is <code>null</code> if there are no listeners.
+     * A collection of objects listening to changes to this manager. This collection is
+     * <code>null</code> if there are no listeners.
      */
     private transient ListenerList<IHandlerListener> listenerList;
 

@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.dialogs.fields;
 
@@ -44,16 +42,16 @@ public class SelectionButtonDialogField extends DialogField {
     }
 
     /**
-     * Attaches a field to the selection state of the selection button. The
-     * attached field will be disabled if the selection button is not selected.
+     * Attaches a field to the selection state of the selection button. The attached field
+     * will be disabled if the selection button is not selected.
      */
     public void attachDialogField(final DialogField dialogField) {
         attachDialogFields(new DialogField[] { dialogField });
     }
 
     /**
-     * Attaches fields to the selection state of the selection button. The
-     * attached fields will be disabled if the selection button is not selected.
+     * Attaches fields to the selection state of the selection button. The attached fields
+     * will be disabled if the selection button is not selected.
      */
     public void attachDialogFields(final DialogField[] dialogFields) {
         fAttachedDialogFields = dialogFields;
@@ -63,8 +61,7 @@ public class SelectionButtonDialogField extends DialogField {
     }
 
     /**
-     * Returns <code>true</code> is teh gived field is attached to the selection
-     * button.
+     * Returns <code>true</code> is teh gived field is attached to the selection button.
      */
     public boolean isAttached(final DialogField editor) {
         if (fAttachedDialogFields != null) {
@@ -111,12 +108,12 @@ public class SelectionButtonDialogField extends DialogField {
     // ------- ui creation
 
     /**
-     * Returns the selection button widget. When called the first time, the
-     * widget will be created.
+     * Returns the selection button widget. When called the first time, the widget will be
+     * created.
      *
      * @param group
-     *            The parent composite when called the first time, or
-     *            <code>null</code> after.
+     *            The parent composite when called the first time, or <code>null</code>
+     *            after.
      */
     public Button getSelectionButton(final Composite group) {
         if (fButton == null) {

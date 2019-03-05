@@ -65,8 +65,7 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
         }
 
         /*
-         * @see
-         * org.eclipse.jface.text.IPositionUpdater#update(org.eclipse.jface.
+         * @see org.eclipse.jface.text.IPositionUpdater#update(org.eclipse.jface.
          * text.DocumentEvent)
          */
         @Override
@@ -232,7 +231,8 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
             }
 
             final char character = event.character;
-            final char closingCharacter = ErlangBracketInserter.getPeerCharacter(character);
+            final char closingCharacter = ErlangBracketInserter
+                    .getPeerCharacter(character);
             updateDocument(document, offset, length, selStr, character, closingCharacter);
 
             event.doit = false;
@@ -275,7 +275,8 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
         level.fUI = new EditorLinkedModeUI(model, sourceViewer);
         level.fUI.setSimpleMode(true);
         level.fUI.setExitPolicy(new ExitPolicy(closingCharacter,
-                ErlangBracketInserter.getEscapeCharacter(closingCharacter), fBracketLevelStack));
+                ErlangBracketInserter.getEscapeCharacter(closingCharacter),
+                fBracketLevelStack));
         level.fUI.setExitPosition(sourceViewer, offset + 2 + selLength, 0,
                 Integer.MAX_VALUE);
         level.fUI.setCyclingMode(LinkedModeUI.CYCLE_NEVER);

@@ -227,7 +227,8 @@ public class TroubleshootingPreferencePage extends PreferencePage
                 Program.launch(link.getToolTipText());
             }
         });
-        // FIXME link.setToolTipText("https://github.com/erlang/erlide_eclipse/wiki/Troubleshooting");
+        // FIXME
+        // link.setToolTipText("https://github.com/erlang/erlide_eclipse/wiki/Troubleshooting");
         link.setText("<a>More detailed troubleshooting information</a>");
 
         updateHostNames();

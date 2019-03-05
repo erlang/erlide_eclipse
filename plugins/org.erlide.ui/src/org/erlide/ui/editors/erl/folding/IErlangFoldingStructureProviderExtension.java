@@ -30,8 +30,8 @@ public interface IErlangFoldingStructureProviderExtension {
      * Collapses the given elements.
      *
      * @param elements
-     *            the java elements to collapse (the array and its elements will
-     *            not be modified)
+     *            the java elements to collapse (the array and its elements will not be
+     *            modified)
      */
     void collapseElements(IErlElement[] elements);
 
@@ -39,8 +39,8 @@ public interface IErlangFoldingStructureProviderExtension {
      * Expands the given elements.
      *
      * @param elements
-     *            the java elements to expand (the array and its elements will
-     *            not be modified)
+     *            the java elements to expand (the array and its elements will not be
+     *            modified)
      */
     void expandElements(IErlElement[] elements);
 }

@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2008 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.dialyzer.ui.prefs;
 
@@ -226,8 +224,10 @@ public class DialyzerPreferencePage extends PropertyPage
 
     private void createDialyzeCheckbox(final Composite group) {
         Label lblNewLabel = new Label(prefsComposite, SWT.NONE);
-        lblNewLabel.setToolTipText("Only useful for small projects, the project is locked while running dialyzer");
-        lblNewLabel.setImage(SWTResourceManager.getImage(DialyzerPreferencePage.class, "/icons/full/obj16/dialyzer_warning.gif"));
+        lblNewLabel.setToolTipText(
+                "Only useful for small projects, the project is locked while running dialyzer");
+        lblNewLabel.setImage(SWTResourceManager.getImage(DialyzerPreferencePage.class,
+                "/icons/full/obj16/dialyzer_warning.gif"));
         final Composite comp = new Composite(group, SWT.NONE);
         comp.setLayout(new GridLayout(1, false));
         dialyzeCheckbox = new Button(comp, SWT.CHECK);
@@ -237,7 +237,8 @@ public class DialyzerPreferencePage extends PropertyPage
             }
         });
         dialyzeCheckbox.setText("Run dialyzer when compiling. Not recommended.");
-        dialyzeCheckbox.setToolTipText("Only useful for small projects, the project is locked while running dialyzer");
+        dialyzeCheckbox.setToolTipText(
+                "Only useful for small projects, the project is locked while running dialyzer");
         dialyzeCheckbox.setSelection(prefs.getDialyzeOnCompile());
     }
 
@@ -448,7 +449,8 @@ public class DialyzerPreferencePage extends PropertyPage
         fEditButton.setEnabled(selectionCount == 1);
         fRemoveButton.setEnabled(selectionCount > 0);
         fUpdatePLTButton.setEnabled(selectionCount > 0);
-        fAddButton.setEnabled(shownPLTFiles.size() < DialyzerPreferencePage.MAX_PLT_FILES);
+        fAddButton
+                .setEnabled(shownPLTFiles.size() < DialyzerPreferencePage.MAX_PLT_FILES);
     }
 
     private void openProjectProperties(final IProject project) {

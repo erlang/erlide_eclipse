@@ -73,9 +73,8 @@ public class NewErlangScratchPadWizard extends Wizard implements INewWizard {
     }
 
     /**
-     * The worker method. It will find the container, create the file if missing
-     * or just replace its contents, and open the editor on the newly created
-     * file.
+     * The worker method. It will find the container, create the file if missing or just
+     * replace its contents, and open the editor on the newly created file.
      */
     public void doFinish(final IPath containerFullPath, final String fileName,
             final IProgressMonitor monitor) throws CoreException {

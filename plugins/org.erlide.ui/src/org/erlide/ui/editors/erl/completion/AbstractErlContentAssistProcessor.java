@@ -190,12 +190,12 @@ public abstract class AbstractErlContentAssistProcessor
         if (data instanceof FunctionCompletionData) {
             final FunctionCompletionData fdata = (FunctionCompletionData) data;
             String info = fdata.getAdditionalProposalInfo();
-			StringBuffer buffer = new StringBuffer(info==null?"":info);
-			return new ErlCompletionProposal(fdata.getOffsetsAndLengths(),
+            StringBuffer buffer = new StringBuffer(info == null ? "" : info);
+            return new ErlCompletionProposal(fdata.getOffsetsAndLengths(),
                     fdata.getDisplayString(), fdata.getReplacementString(),
                     fdata.getReplacementOffset(), fdata.getReplacementLength(),
-                    fdata.getCursorPosition(), null, null,
-                    HoverUtil.getHTML(buffer), sourceViewer);
+                    fdata.getCursorPosition(), null, null, HoverUtil.getHTML(buffer),
+                    sourceViewer);
 
         }
         return new CompletionProposal(data.getReplacementString(),

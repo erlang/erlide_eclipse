@@ -52,8 +52,8 @@ public class IErlModelTest extends ErlModelTestBase {
     @After
     @Override
     public void tearDown() throws Exception {
-        ResourcesPlugin.getWorkspace().getPathVariableManager().setURIValue(IErlModelTest.PV,
-                (URI) null);
+        ResourcesPlugin.getWorkspace().getPathVariableManager()
+                .setURIValue(IErlModelTest.PV, (URI) null);
         super.tearDown();
     }
 
@@ -146,7 +146,8 @@ public class IErlModelTest extends ErlModelTestBase {
     // IErlModule findModule(String name) throws ErlModelException;
     @Test
     public void findModule_name() throws Exception {
-        ErlideTestUtils.createModule(ErlModelTestBase.projects[1], "zz.hrl", "-define(X, zz).\n");
+        ErlideTestUtils.createModule(ErlModelTestBase.projects[1], "zz.hrl",
+                "-define(X, zz).\n");
         final IErlModule findModule = model.findModule("xx");
         final IErlModule findModule2 = model.findModule("xx.erl");
         final IErlModule findModule3 = model.findModule("yy.hrl");
@@ -180,10 +181,10 @@ public class IErlModelTest extends ErlModelTestBase {
     // includePath)
     @Test
     public void findInclude() throws Exception {
-        final IErlModule module2 = ErlideTestUtils.createModule(ErlModelTestBase.projects[1], "zz.hrl",
-                "-define(X, zz).\n");
-        final IErlModule include = ErlideTestUtils.createInclude(ErlModelTestBase.projects[1], "xx.hrl",
-                "-define(X, xx).\n");
+        final IErlModule module2 = ErlideTestUtils.createModule(
+                ErlModelTestBase.projects[1], "zz.hrl", "-define(X, zz).\n");
+        final IErlModule include = ErlideTestUtils.createInclude(
+                ErlModelTestBase.projects[1], "xx.hrl", "-define(X, xx).\n");
         final IErlModule findInclude = model.findInclude("zz", null);
         final IErlModule findInclude2 = model.findInclude("xx", null);
         final String filePath = include.getFilePath();
@@ -358,7 +359,8 @@ public class IErlModelTest extends ErlModelTestBase {
             final String xxErl = "xx.erl";
             externalModuleFile = ErlideTestUtils.createTmpFile(xxErl, "-module(xx).\n");
             final String externalModulePath = externalModuleFile.getAbsolutePath();
-            externalsFile = ErlideTestUtils.createTmpFile(IErlModelTest.XX_ERLIDEX, externalModulePath);
+            externalsFile = ErlideTestUtils.createTmpFile(IErlModelTest.XX_ERLIDEX,
+                    externalModulePath);
             ((ErlProject) aProject)
                     .setExternalModulesFile(externalsFile.getAbsolutePath());
             final IErlModule aModule = ErlideTestUtils.createModule(aProject, "yy.erl",
@@ -458,7 +460,8 @@ public class IErlModelTest extends ErlModelTestBase {
             final String xxxContents = "-module(zz).\n";
             externalModuleFile = ErlideTestUtils.createTmpFile(zzErl, xxxContents);
             final String externalModulePath = externalModuleFile.getAbsolutePath();
-            externalsFile = ErlideTestUtils.createTmpFile(IErlModelTest.XX_ERLIDEX, externalModulePath);
+            externalsFile = ErlideTestUtils.createTmpFile(IErlModelTest.XX_ERLIDEX,
+                    externalModulePath);
             ((ErlProject) aProject)
                     .setExternalModulesFile(externalsFile.getAbsolutePath());
             final IErlProject project1 = ErlModelTestBase.projects[1];

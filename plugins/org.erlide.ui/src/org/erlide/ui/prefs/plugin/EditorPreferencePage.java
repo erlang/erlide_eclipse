@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.prefs.plugin;
 
@@ -57,10 +56,11 @@ public class EditorPreferencePage extends ErlidePreferencePage
 
     private void setToPreferences() {
         final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
-        final Integer i = node.getInt(indentWidthKey, EditorPreferencePage.DEFAULT_INDENT_WIDTH);
+        final Integer i = node.getInt(indentWidthKey,
+                EditorPreferencePage.DEFAULT_INDENT_WIDTH);
         indentWidthText.setText(i.toString());
-        enableHoverCheckBox
-                .setSelection(node.getBoolean(enableHoverKey, EditorPreferencePage.DEFAULT_ENABLE_HOVER));
+        enableHoverCheckBox.setSelection(node.getBoolean(enableHoverKey,
+                EditorPreferencePage.DEFAULT_ENABLE_HOVER));
     }
 
     @Override
@@ -72,7 +72,9 @@ public class EditorPreferencePage extends ErlidePreferencePage
 
     public static boolean getEnableHover() {
         final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
-        return node.getBoolean(EditorPreferencePage.EDITOR_KEY + "/" + ErlideUIConstants.EDITOR_ENABLE_HOVER,
+        return node.getBoolean(
+                EditorPreferencePage.EDITOR_KEY + "/"
+                        + ErlideUIConstants.EDITOR_ENABLE_HOVER,
                 EditorPreferencePage.DEFAULT_ENABLE_HOVER);
     }
 
@@ -141,7 +143,8 @@ public class EditorPreferencePage extends ErlidePreferencePage
     protected void performDefaults() {
 
         enableHoverCheckBox.setSelection(EditorPreferencePage.DEFAULT_ENABLE_HOVER);
-        indentWidthText.setText(Integer.toString(EditorPreferencePage.DEFAULT_INDENT_WIDTH));
+        indentWidthText
+                .setText(Integer.toString(EditorPreferencePage.DEFAULT_INDENT_WIDTH));
 
         super.performDefaults();
     }

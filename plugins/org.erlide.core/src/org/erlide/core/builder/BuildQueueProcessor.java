@@ -11,8 +11,7 @@ import com.google.common.collect.Queues;
 
 public class BuildQueueProcessor extends Job {
     private static BuildQueueProcessor instance;
-    private final Queue<BuildWorkerInfo> queue = Queues
-            .newConcurrentLinkedQueue();
+    private final Queue<BuildWorkerInfo> queue = Queues.newConcurrentLinkedQueue();
 
     public BuildQueueProcessor(final String name) {
         super(name);

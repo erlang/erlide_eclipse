@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009-2013 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available
- * at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009-2013 Vlad Dumitrescu and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.engine.internal.model.erlang;
 
@@ -91,8 +89,8 @@ public class ModelInternalUtils implements ModelUtilService {
     public IErlModule getModuleFromExternalModulePath(final IErlModel model,
             final String modulePath) throws ErlModelException {
         System.out.println(">> modulePath=" + modulePath);
-        final List<String> path = Lists
-                .newArrayList(Splitter.on(ModelInternalUtils.DELIMITER).split(modulePath));
+        final List<String> path = Lists.newArrayList(
+                Splitter.on(ModelInternalUtils.DELIMITER).split(modulePath));
         model.open(null);
         final IErlElement childNamed = model.getChildNamed(path.get(0));
         if (childNamed instanceof IParent) {
@@ -138,7 +136,8 @@ public class ModelInternalUtils implements ModelUtilService {
             }
             if (checkExternals) {
                 final Collection<IErlModule> externalUnits = includes
-                        ? project.getExternalIncludes() : project.getExternalModules();
+                        ? project.getExternalIncludes()
+                        : project.getExternalModules();
                 addUnitNamesWithPrefix(prefix, result, externalUnits, true, includes);
             }
         }
@@ -263,9 +262,9 @@ public class ModelInternalUtils implements ModelUtilService {
     }
 
     /**
-     * Helper method - returns the targeted item (IResource if internal or
-     * java.io.File if external), or null if unbound Internal items must be
-     * referred to using container relative paths.
+     * Helper method - returns the targeted item (IResource if internal or java.io.File if
+     * external), or null if unbound Internal items must be referred to using container
+     * relative paths.
      */
     @Override
     public Object getTarget(final IContainer container, final IPath path,

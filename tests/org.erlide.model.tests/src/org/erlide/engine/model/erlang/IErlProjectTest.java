@@ -33,9 +33,12 @@ public class IErlProjectTest extends ErlModelTestBase {
     // Collection<IErlModule> getModules() throws ErlModelException;
     @Test
     public void getModules() throws Exception {
-        ErlideTestUtils.createInclude(ErlModelTestBase.projects[0], "bb.erl", "-module(bb).\n");
-        ErlideTestUtils.createModule(ErlModelTestBase.projects[0], "cc.hrl", "-define(A, hej).\n");
-        ErlideTestUtils.createInclude(ErlModelTestBase.projects[0], "dd.hrl", "-define(B, du).\n");
+        ErlideTestUtils.createInclude(ErlModelTestBase.projects[0], "bb.erl",
+                "-module(bb).\n");
+        ErlideTestUtils.createModule(ErlModelTestBase.projects[0], "cc.hrl",
+                "-define(A, hej).\n");
+        ErlideTestUtils.createInclude(ErlModelTestBase.projects[0], "dd.hrl",
+                "-define(B, du).\n");
         final List<IErlModule> expected = Lists.newArrayList(module);
         final Collection<IErlModule> modules = ErlModelTestBase.projects[0].getModules();
         assertEquals(expected, modules);
@@ -46,25 +49,32 @@ public class IErlProjectTest extends ErlModelTestBase {
     // Collection<IErlModule> getIncludes() throws ErlModelException;
     @Test
     public void getIncludes() throws Exception {
-        ErlideTestUtils.createModule(ErlModelTestBase.projects[0], "aa.erl", "-module(aa).\n");
-        ErlideTestUtils.createInclude(ErlModelTestBase.projects[0], "bb.erl", "-module(bb).\n");
-        ErlideTestUtils.createModule(ErlModelTestBase.projects[0], "cc.hrl", "-define(A, hej).\n");
-        final IErlModule includeDD = ErlideTestUtils.createInclude(ErlModelTestBase.projects[0], "dd.hrl",
-                "-define(B, du).\n");
+        ErlideTestUtils.createModule(ErlModelTestBase.projects[0], "aa.erl",
+                "-module(aa).\n");
+        ErlideTestUtils.createInclude(ErlModelTestBase.projects[0], "bb.erl",
+                "-module(bb).\n");
+        ErlideTestUtils.createModule(ErlModelTestBase.projects[0], "cc.hrl",
+                "-define(A, hej).\n");
+        final IErlModule includeDD = ErlideTestUtils.createInclude(
+                ErlModelTestBase.projects[0], "dd.hrl", "-define(B, du).\n");
         final List<IErlModule> expected = Lists.newArrayList(includeDD);
-        final Collection<IErlModule> includes = ErlModelTestBase.projects[0].getIncludes();
+        final Collection<IErlModule> includes = ErlModelTestBase.projects[0]
+                .getIncludes();
         assertEquals(expected, includes);
     }
 
     // Collection<IErlModule> getModulesAndIncludes() throws ErlModelException;
     @Test
     public void getModulesAndIncludes() throws Exception {
-        ErlideTestUtils.createInclude(ErlModelTestBase.projects[0], "bb.erl", "-module(bb).\n");
-        ErlideTestUtils.createModule(ErlModelTestBase.projects[0], "cc.hrl", "-define(A, hej).\n");
-        final IErlModule includeD = ErlideTestUtils.createInclude(ErlModelTestBase.projects[0], "dd.hrl",
-                "-define(B, du).\n");
+        ErlideTestUtils.createInclude(ErlModelTestBase.projects[0], "bb.erl",
+                "-module(bb).\n");
+        ErlideTestUtils.createModule(ErlModelTestBase.projects[0], "cc.hrl",
+                "-define(A, hej).\n");
+        final IErlModule includeD = ErlideTestUtils.createInclude(
+                ErlModelTestBase.projects[0], "dd.hrl", "-define(B, du).\n");
         final List<IErlModule> expected = Lists.newArrayList(module, includeD);
-        final Collection<IErlModule> includes = ErlModelTestBase.projects[0].getModulesAndIncludes();
+        final Collection<IErlModule> includes = ErlModelTestBase.projects[0]
+                .getModulesAndIncludes();
         assertEquals(expected, includes);
     }
 
@@ -85,7 +95,8 @@ public class IErlProjectTest extends ErlModelTestBase {
             externalFile = ErlideTestUtils.createTmpFile(externalFileName,
                     "-module(external6).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
             final String absolutePath = externalFile.getAbsolutePath();
-            externalsFile = ErlideTestUtils.createTmpFile(IErlProjectTest.XX_ERLIDEX, absolutePath);
+            externalsFile = ErlideTestUtils.createTmpFile(IErlProjectTest.XX_ERLIDEX,
+                    absolutePath);
             aProject.open(null);
             final Collection<IErlModule> otpModules = aProject.getExternalModules();
             ((ErlProject) aProject)
@@ -311,7 +322,8 @@ public class IErlProjectTest extends ErlModelTestBase {
     // Collection<IPath> getSourceDirs();
     @Test
     public void getSourceDirs() throws Exception {
-        final Collection<IPath> sourceDirs = ErlModelTestBase.projects[0].getProperties().getSourceDirs();
+        final Collection<IPath> sourceDirs = ErlModelTestBase.projects[0].getProperties()
+                .getSourceDirs();
         assertEquals(1, sourceDirs.size());
         final IPath path = new Path("src");
         assertEquals(path, sourceDirs.iterator().next());
@@ -330,7 +342,8 @@ public class IErlProjectTest extends ErlModelTestBase {
     // IPath getOutputLocation();
     @Test
     public void getOutputLocation() throws Exception {
-        final IPath outputLocation = ErlModelTestBase.projects[0].getProperties().getOutputDir();
+        final IPath outputLocation = ErlModelTestBase.projects[0].getProperties()
+                .getOutputDir();
         assertEquals(new Path("ebin"), outputLocation);
     }
 
@@ -381,11 +394,12 @@ public class IErlProjectTest extends ErlModelTestBase {
     public void getReferencedProjects() throws Exception {
         final IProject aProject = ErlModelTestBase.projects[0].getWorkspaceProject();
         final IProjectDescription description = aProject.getDescription();
-        final IProject[] refs = {ErlModelTestBase.projects[1].getWorkspaceProject() };
+        final IProject[] refs = { ErlModelTestBase.projects[1].getWorkspaceProject() };
         try {
             description.setReferencedProjects(refs);
             aProject.setDescription(description, null);
-            final List<IErlProject> expected = Lists.newArrayList(ErlModelTestBase.projects[1]);
+            final List<IErlProject> expected = Lists
+                    .newArrayList(ErlModelTestBase.projects[1]);
             assertEquals(expected, ErlModelTestBase.projects[0].getReferencedProjects());
         } finally {
             description.setReferencedProjects(new IProject[0]);

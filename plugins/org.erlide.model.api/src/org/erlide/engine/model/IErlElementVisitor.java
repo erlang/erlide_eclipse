@@ -12,8 +12,8 @@ public interface IErlElementVisitor {
      *
      * @param element
      *            the element to visit
-     * @return <code>true</code> if the children should be visited
-     *         <code>false</code> if they should be skipped
+     * @return <code>true</code> if the children should be visited <code>false</code> if
+     *         they should be skipped
      * @throws ErlModelException
      */
     boolean visit(IErlElement element) throws ErlModelException;

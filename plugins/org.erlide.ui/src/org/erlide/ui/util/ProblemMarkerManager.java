@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2006 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.util;
 
@@ -31,16 +29,14 @@ import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
 import org.erlide.util.ErlLogger;
 
 /**
- * Listens to resource deltas and filters for marker changes of type
- * IMarker.PROBLEM Viewers showing error ticks should register as listener to
- * this type.
+ * Listens to resource deltas and filters for marker changes of type IMarker.PROBLEM
+ * Viewers showing error ticks should register as listener to this type.
  */
 public class ProblemMarkerManager implements IResourceChangeListener,
         IAnnotationModelListener, IAnnotationModelListenerExtension {
 
     /**
-     * Visitors used to look if the element change delta contains a marker
-     * change.
+     * Visitors used to look if the element change delta contains a marker change.
      */
     private static class ProjectErrorVisitor implements IResourceDeltaVisitor {
 
@@ -88,8 +84,8 @@ public class ProblemMarkerManager implements IResourceChangeListener,
                                 || kind == IResourceDelta.REMOVED) {
                             return true;
                         }
-                        final int severity = markerDelta
-                                .getAttribute(IMarker.SEVERITY, -1);
+                        final int severity = markerDelta.getAttribute(IMarker.SEVERITY,
+                                -1);
                         final int newSeverity = markerDelta.getMarker()
                                 .getAttribute(IMarker.SEVERITY, -1);
                         if (newSeverity != severity) {
@@ -141,8 +137,7 @@ public class ProblemMarkerManager implements IResourceChangeListener,
         if (event instanceof ErlangModuleAnnotationModelEvent) {
             final ErlangModuleAnnotationModelEvent emEvent = (ErlangModuleAnnotationModelEvent) event;
             if (emEvent.includesProblemMarkerAnnotationChanges()) {
-                final IResource[] changes = {
-                        emEvent.getUnderlyingResource() };
+                final IResource[] changes = { emEvent.getUnderlyingResource() };
                 fireChanges(changes, false);
             }
         }

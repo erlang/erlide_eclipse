@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2008 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.util.erlang;
 
@@ -40,8 +38,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Maps;
 
 /**
- * Helps converting Java values to Erlang terms, and back. The type information
- * is provided through a string signature, as below.
+ * Helps converting Java values to Erlang terms, and back. The type information is
+ * provided through a string signature, as below.
  *
  * <dl>
  * <dt>x</dt>
@@ -70,8 +68,8 @@ import com.google.common.collect.Maps;
  * <dt>o</dt>
  * <dd>boolean (the atoms true/false)</dd>
  * <dt>0-9</dt>
- * <dd>tuple, the number is the arity and the types of the elements follow in
- * order. Only arities between 0 and 9 are supported.</dd>
+ * <dd>tuple, the number is the arity and the types of the elements follow in order. Only
+ * arities between 0 and 9 are supported.</dd>
  * </dl>
  *
  */
@@ -198,8 +196,9 @@ public final class TypeConverter {
                         return res;
                     }
                 }
-                throw new SignatureException(TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName()
-                        + TypeConverter.CANT_CONVERT_TO + cls.getCanonicalName());
+                throw new SignatureException(
+                        TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName()
+                                + TypeConverter.CANT_CONVERT_TO + cls.getCanonicalName());
             }
             if (cls == boolean.class || cls == Boolean.class) {
                 if (obj instanceof OtpErlangAtom) {
@@ -211,8 +210,9 @@ public final class TypeConverter {
                         return false;
                     }
                 }
-                throw new SignatureException(TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName()
-                        + TypeConverter.CANT_CONVERT_TO + cls.getCanonicalName());
+                throw new SignatureException(
+                        TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName()
+                                + TypeConverter.CANT_CONVERT_TO + cls.getCanonicalName());
             }
             if (Map.class.isAssignableFrom(cls)) {
                 if (obj instanceof OtpErlangMap) {
@@ -225,8 +225,9 @@ public final class TypeConverter {
                     }
                     return result;
                 }
-                throw new SignatureException(TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName()
-                        + TypeConverter.CANT_CONVERT_TO + cls.getCanonicalName());
+                throw new SignatureException(
+                        TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName()
+                                + TypeConverter.CANT_CONVERT_TO + cls.getCanonicalName());
             }
             if (Collection.class.isAssignableFrom(cls)) {
                 if (obj instanceof OtpErlangList) {
@@ -237,12 +238,14 @@ public final class TypeConverter {
                     }
                     return Arrays.asList(olist);
                 }
-                throw new SignatureException(TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName()
-                        + TypeConverter.CANT_CONVERT_TO + cls.getCanonicalName());
+                throw new SignatureException(
+                        TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName()
+                                + TypeConverter.CANT_CONVERT_TO + cls.getCanonicalName());
             }
             if (obj instanceof OtpErlangRef) {
-                throw new SignatureException(TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName()
-                        + TypeConverter.CANT_CONVERT_TO + cls.getCanonicalName());
+                throw new SignatureException(
+                        TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName()
+                                + TypeConverter.CANT_CONVERT_TO + cls.getCanonicalName());
             }
             return obj;
         } catch (final SignatureException e) {
@@ -281,8 +284,8 @@ public final class TypeConverter {
             }
             return res.toString();
         }
-        throw new SignatureException(
-                TypeConverter.WRONG_ARG_TYPE + obj.getClass().getName() + TypeConverter.CANT_CONVERT_TO + "String");
+        throw new SignatureException(TypeConverter.WRONG_ARG_TYPE
+                + obj.getClass().getName() + TypeConverter.CANT_CONVERT_TO + "String");
     }
 
     private static Object cvtArray(final OtpErlangObject obj, final Class<?> cls)
@@ -297,7 +300,8 @@ public final class TypeConverter {
         if (els != null) {
             final Object arr = Array.newInstance(cls.getComponentType(), els.length);
             for (int i = 0; i < els.length; i++) {
-                Array.set(arr, i, TypeConverter.erlang2java(els[i], cls.getComponentType()));
+                Array.set(arr, i,
+                        TypeConverter.erlang2java(els[i], cls.getComponentType()));
             }
             return arr;
         }

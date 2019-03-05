@@ -35,8 +35,7 @@ public class ErlElementDelta implements IErlElementDelta {
      * @param element
      */
     public ErlElementDelta(final int kind, final int flags, final IErlElement element) {
-        this(kind, flags, element, new ArrayList<>(0),
-                new ArrayList<IResourceDelta>(0));
+        this(kind, flags, element, new ArrayList<>(0), new ArrayList<IResourceDelta>(0));
     }
 
     /**
@@ -236,7 +235,8 @@ public class ErlElementDelta implements IErlElementDelta {
 
                 // child was changed then changed -> it is changed
                 case IErlElementDelta.CHANGED:
-                    final IErlElementDelta[] children = child.getChildren(IErlElementDelta.ALL);
+                    final IErlElementDelta[] children = child
+                            .getChildren(IErlElementDelta.ALL);
                     for (final IErlElementDelta element : children) {
                         final ErlElementDelta childsChild = (ErlElementDelta) element;
                         ((ErlElementDelta) existingChild).addAffectedChild(childsChild);

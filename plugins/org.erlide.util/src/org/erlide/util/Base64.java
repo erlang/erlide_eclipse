@@ -1,18 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2005, 2006 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.util;
 
 /**
- * Base64 is a helper class for converting byte arrays to and from base 64
- * encoded Strings.
+ * Base64 is a helper class for converting byte arrays to and from base 64 encoded
+ * Strings.
  *
  */
 public final class Base64 {
@@ -29,9 +27,8 @@ public final class Base64 {
             '3', '4', '5', '6', '7', '8', '9', '+', '/' };
 
     /**
-     * This method decodes the byte array in base 64 encoding into a char array
-     * Base 64 encoding has to be according to the specification given by the
-     * RFC 1521 (5.2).
+     * This method decodes the byte array in base 64 encoding into a char array Base 64
+     * encoding has to be according to the specification given by the RFC 1521 (5.2).
      *
      * @param data
      *            the encoded byte array
@@ -146,8 +143,8 @@ public final class Base64 {
     }
 
     /**
-     * This method encodes the byte array into a char array in base 64 according
-     * to the specification given by the RFC 1521 (5.2).
+     * This method encodes the byte array into a char array in base 64 according to the
+     * specification given by the RFC 1521 (5.2).
      *
      * @param data
      *            the encoded char array

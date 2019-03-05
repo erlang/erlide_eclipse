@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.engine.internal.model.root;
 
@@ -41,13 +39,12 @@ public abstract class Openable extends ErlElement implements IOpenable {
     }
 
     /**
-     * Builds this element's structure and properties in the given info object,
-     * based on this element's current contents (reuse buffer contents if this
-     * element has an open buffer, or resource contents if this element does not
-     * have an open buffer). Children are placed in the given newElements table
-     * (note, this element has already been placed in the newElements table).
-     * Returns true if successful, or false if an error is encountered while
-     * determining the structure of this element.
+     * Builds this element's structure and properties in the given info object, based on
+     * this element's current contents (reuse buffer contents if this element has an open
+     * buffer, or resource contents if this element does not have an open buffer).
+     * Children are placed in the given newElements table (note, this element has already
+     * been placed in the newElements table). Returns true if successful, or false if an
+     * error is encountered while determining the structure of this element.
      *
      * @param dirtyRegion
      */
@@ -103,8 +100,8 @@ public abstract class Openable extends ErlElement implements IOpenable {
     }
 
     /**
-     * Returns true if this element may have an associated source buffer,
-     * otherwise false. Subclasses must override as required.
+     * Returns true if this element may have an associated source buffer, otherwise false.
+     * Subclasses must override as required.
      */
     protected boolean hasBuffer() {
         return false;

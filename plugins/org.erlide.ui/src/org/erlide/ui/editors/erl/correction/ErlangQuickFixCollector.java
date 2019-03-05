@@ -29,7 +29,7 @@ import org.erlide.util.ErlLogger;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
-//TODO make this an engine service?
+// TODO make this an engine service?
 
 public class ErlangQuickFixCollector {
 

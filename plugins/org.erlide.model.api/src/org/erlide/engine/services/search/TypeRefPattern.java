@@ -22,8 +22,8 @@ public class TypeRefPattern extends ErlangSearchPattern {
 
     @Override
     public OtpErlangObject getSearchObject() {
-        return makeSSPatternObject(ErlangSearchPattern.TYPE_DEF_ATOM, ErlangSearchPattern.TYPE_REF_ATOM,
-                module == null ? "_" : module, name);
+        return makeSSPatternObject(ErlangSearchPattern.TYPE_DEF_ATOM,
+                ErlangSearchPattern.TYPE_REF_ATOM, module == null ? "_" : module, name);
     }
 
     @Override

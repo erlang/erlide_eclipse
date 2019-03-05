@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.ui.wizardpages;
 
@@ -27,8 +25,8 @@ import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
 import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 
 /**
- * Input page which displays a combo input element, and offers to select on of
- * the listed elements
+ * Input page which displays a combo input element, and offers to select on of the listed
+ * elements
  *
  * @author Gyorgy Orosz
  * @version %I%, %G%

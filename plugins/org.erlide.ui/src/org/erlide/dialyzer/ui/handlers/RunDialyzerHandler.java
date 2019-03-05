@@ -68,17 +68,18 @@ public class RunDialyzerHandler extends AbstractHandler {
                     return Status.CANCEL_STATUS;
                 } catch (final DialyzerErrorException e) {
                     ErlLogger.debug(e.getMessage());
-                    return new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, e.getMessage());
+                    return new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
+                            e.getMessage());
                 } catch (final InvocationTargetException e) {
                     return new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
                             e.getCause().getMessage());
                 } finally {
                     if (backend != null) {
-						try {
-							backend.getOtpRpc().async_call("init", "stop", "");
-							Thread.sleep(200);
-						} catch (Exception e) {
-						}
+                        try {
+                            backend.getOtpRpc().async_call("init", "stop", "");
+                            Thread.sleep(200);
+                        } catch (Exception e) {
+                        }
                         backend.dispose();
                     }
                     monitor.done();

@@ -44,7 +44,8 @@ public abstract class ErlidePreferencePage extends PreferencePage {
 
     protected static void addKeysAndPrefs(final String dialogKey, final String[] keys,
             final String[] defaults, final Map<String, String> m) {
-        final List<String> prefs = ErlidePreferencePage.getPreferences(dialogKey, keys, defaults);
+        final List<String> prefs = ErlidePreferencePage.getPreferences(dialogKey, keys,
+                defaults);
         for (int i = 0; i < keys.length; ++i) {
             m.put(keys[i], prefs.get(i));
         }
@@ -52,7 +53,8 @@ public abstract class ErlidePreferencePage extends PreferencePage {
 
     public void setToPreferences(final String[] keys, final String[] defaults,
             final List<Button> buttons) {
-        final List<String> p = ErlidePreferencePage.getPreferences(getDialogPreferenceKey(), keys, defaults);
+        final List<String> p = ErlidePreferencePage
+                .getPreferences(getDialogPreferenceKey(), keys, defaults);
         final List<Boolean> l = ErlidePreferencePage.getBooleanPreferences(p);
         for (int i = 0; i < l.size(); ++i) {
             final boolean b = l.get(i);
@@ -235,7 +237,8 @@ public abstract class ErlidePreferencePage extends PreferencePage {
         IStatus status = status0;
         if (!status.matches(IStatus.ERROR)) {
             for (final Text text : fNumberFields) {
-                final IStatus s = ErlidePreferencePage.validatePositiveNumber(text.getText());
+                final IStatus s = ErlidePreferencePage
+                        .validatePositiveNumber(text.getText());
                 status = s.getSeverity() > status.getSeverity() ? s : status;
             }
         }
@@ -258,7 +261,8 @@ public abstract class ErlidePreferencePage extends PreferencePage {
 
     protected List<String> getPreferences(final String[] indentKeys,
             final String[] indentDefaults) {
-        return ErlidePreferencePage.getPreferences(getDialogPreferenceKey(), indentKeys, indentDefaults);
+        return ErlidePreferencePage.getPreferences(getDialogPreferenceKey(), indentKeys,
+                indentDefaults);
     }
 
 }

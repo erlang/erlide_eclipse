@@ -493,7 +493,8 @@ public class ErlangDebugTarget extends ErlangDebugElement
         final String ver = backend.getRuntime().getVersion().asMajor().toString()
                 .toLowerCase();
         for (final String module : debuggerModules) {
-            final OtpErlangBinary b = getDebuggerBeam(module, "org.erlide.kernel.debugger");
+            final OtpErlangBinary b = getDebuggerBeam(module,
+                    "org.erlide.kernel.debugger");
             if (b != null) {
                 final OtpErlangString filename = new OtpErlangString(module + ".erl");
                 final OtpErlangTuple t = OtpErlang.mkTuple(new OtpErlangAtom(module),

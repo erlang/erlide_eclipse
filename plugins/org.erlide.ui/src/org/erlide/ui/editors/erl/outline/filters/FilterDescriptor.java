@@ -52,14 +52,14 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
                     ErlideUIPlugin.PLUGIN_ID, FilterDescriptor.EXTENSION_POINT_NAME);
             final String extensionPointID = ErlideUIPlugin.PLUGIN_ID + "."
                     + FilterDescriptor.EXTENSION_POINT_NAME;
-            FilterDescriptor.fgFilterDescriptors = FilterDescriptor.createFilterDescriptors(elements, extensionPointID);
+            FilterDescriptor.fgFilterDescriptors = FilterDescriptor
+                    .createFilterDescriptors(elements, extensionPointID);
         }
         return FilterDescriptor.fgFilterDescriptors;
     }
 
     /**
-     * Returns all Erlang element filters which are contributed to the given
-     * view.
+     * Returns all Erlang element filters which are contributed to the given view.
      *
      * @param targetId
      *            the target id
@@ -99,8 +99,8 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
     }
 
     /**
-     * Creates a new <code>ViewerFilter</code>. This method is only valid for
-     * viewer filters.
+     * Creates a new <code>ViewerFilter</code>. This method is only valid for viewer
+     * filters.
      *
      * @return a new <code>ViewerFilter</code>
      */
@@ -138,8 +138,8 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
     /**
      * Returns the filter's id.
      * <p>
-     * This attribute is mandatory for custom filters. The ID for pattern
-     * filters is PATTERN_FILTER_ID_PREFIX plus the pattern itself.
+     * This attribute is mandatory for custom filters. The ID for pattern filters is
+     * PATTERN_FILTER_ID_PREFIX plus the pattern itself.
      * </p>
      *
      * @return the filter id
@@ -151,8 +151,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
     /**
      * Returns the filter's name.
      * <p>
-     * If the name of a pattern filter is missing then the pattern is used as
-     * its name.
+     * If the name of a pattern filter is missing then the pattern is used as its name.
      * </p>
      *
      * @return the filter's name
@@ -168,8 +167,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
     /**
      * Returns the filter's pattern.
      *
-     * @return the pattern string or <code>null</code> if it's not a pattern
-     *         filter
+     * @return the pattern string or <code>null</code> if it's not a pattern filter
      */
     public String getPattern() {
         return fElement.getAttribute(FilterDescriptor.PATTERN_ATTRIBUTE);
@@ -192,11 +190,11 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
     /**
      * Returns the filter's description.
      *
-     * @return the description or <code>null</code> if no description is
-     *         provided
+     * @return the description or <code>null</code> if no description is provided
      */
     public String getDescription() {
-        String description = fElement.getAttribute(FilterDescriptor.DESCRIPTION_ATTRIBUTE);
+        String description = fElement
+                .getAttribute(FilterDescriptor.DESCRIPTION_ATTRIBUTE);
         if (description == null) {
             description = ""; //$NON-NLS-1$
         }

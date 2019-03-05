@@ -70,16 +70,14 @@ public class ErlRuntimeReporter {
             ErlideEventTracer.getInstance().traceCrash(nodeName);
 
             report = createReport(nodeName, exitCode, msg);
-            final String reportMsg = report != null
-                    ? "\n\n" + "An error log has been created at " + report
-                            + ". Please report the problem so that we can fix it.\n"
-                            + (SystemConfiguration
-                                    .hasFeatureEnabled("erlide.ericsson.user") ? ""
-                                            : "https://github.com/erlang/erlide_eclipse/issues")
+            final String reportMsg = report != null ? "\n\n"
+                    + "An error log has been created at " + report
+                    + ". Please report the problem so that we can fix it.\n"
+                    + (SystemConfiguration.hasFeatureEnabled("erlide.ericsson.user") ? ""
+                            : "https://github.com/erlang/erlide_eclipse/issues")
                     : "";
-            MessageReporter.showError(
-                    msg + "\n\n"
-                            + "This error is not recoverable, please restart your Eclipse instance.",
+            MessageReporter.showError(msg + "\n\n"
+                    + "This error is not recoverable, please restart your Eclipse instance.",
                     reportMsg);
 
         } else {

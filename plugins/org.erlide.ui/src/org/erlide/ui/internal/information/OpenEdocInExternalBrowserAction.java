@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2009 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.internal.information;
 
@@ -23,8 +21,8 @@ import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
- * This action opens the selected element's Javadoc in a browser as defined by
- * the preferences.
+ * This action opens the selected element's Javadoc in a browser as defined by the
+ * preferences.
  * <p>
  * The action is applicable to selections containing elements of type
  * <code>IJavaElement</code>.
@@ -41,14 +39,12 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
     private ErlangBrowserInformationControlInput input;
 
     /**
-     * Creates a new <code>OpenAttachedJavadocAction</code>. The action requires
-     * that the selection provided by the site's selection provider is of type
-     * <code>
+     * Creates a new <code>OpenAttachedJavadocAction</code>. The action requires that the
+     * selection provided by the site's selection provider is of type <code>
      * org.eclipse.jface.viewers.IStructuredSelection</code> .
      *
      * @param site
-     *            the site providing additional context information for this
-     *            action
+     *            the site providing additional context information for this action
      */
     public OpenEdocInExternalBrowserAction(final IWorkbenchSite site,
             final ErlangBrowserInformationControlInput input) {
@@ -65,13 +61,12 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
     }
 
     /**
-     * Note: This constructor is for internal use only. Clients should not call
-     * this constructor.
+     * Note: This constructor is for internal use only. Clients should not call this
+     * constructor.
      *
      * @param editor
      *            the Java editor
-     * @noreference This constructor is not intended to be referenced by
-     *              clients.
+     * @noreference This constructor is not intended to be referenced by clients.
      */
     public OpenEdocInExternalBrowserAction(final ErlangEditor editor) {
         this(editor.getEditorSite(), null);
@@ -101,8 +96,8 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
      *
      * @param selection
      *            the structured selection.
-     * @return <code>true</code> if the action can be enabled,
-     *         <code>false</code> otherwise
+     * @return <code>true</code> if the action can be enabled, <code>false</code>
+     *         otherwise
      */
     protected boolean canEnableFor(final IStructuredSelection selection) {
         if (input != null) {
@@ -177,8 +172,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
     }
 
     /**
-     * Tells whether to use an external browser or the one chosen by the
-     * preferences.
+     * Tells whether to use an external browser or the one chosen by the preferences.
      *
      * @return <code>true</code> if it should always use the external browser,
      *         <code>false</code> to use the browser chosen in the preferences
@@ -207,8 +201,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
     }
 
     /**
-     * Note: this method is for internal use only. Clients should not call this
-     * method.
+     * Note: this method is for internal use only. Clients should not call this method.
      *
      * @return the dialog default title
      *

@@ -70,7 +70,8 @@ public class ListDialogField<Element> extends DialogField {
         }
 
         public ColumnsDescription(final String[] headers, final boolean drawLines) {
-            this(ColumnsDescription.createColumnWeightData(headers.length), headers, drawLines);
+            this(ColumnsDescription.createColumnWeightData(headers.length), headers,
+                    drawLines);
         }
 
         public ColumnsDescription(final int nColumns, final boolean drawLines) {

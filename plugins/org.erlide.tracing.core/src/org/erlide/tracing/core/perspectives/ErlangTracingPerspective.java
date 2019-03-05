@@ -39,34 +39,40 @@ public class ErlangTracingPerspective implements IPerspectiveFactory {
 
     private void defineLayout(final IPageLayout pageLayout) {
         // top left
-        final IFolderLayout topLeft = pageLayout.createFolder(ErlangTracingPerspective.TOP_LEFT, IPageLayout.LEFT,
-                0.30f, pageLayout.getEditorArea());
+        final IFolderLayout topLeft = pageLayout.createFolder(
+                ErlangTracingPerspective.TOP_LEFT, IPageLayout.LEFT, 0.30f,
+                pageLayout.getEditorArea());
         topLeft.addView(ErlideUIConstants.NAVIGATOR_VIEW_ID);
 
         // center left
-        final IFolderLayout centerLeft = pageLayout.createFolder(ErlangTracingPerspective.CENTER_LEFT,
-                IPageLayout.BOTTOM, 0.20f, ErlangTracingPerspective.TOP_LEFT);
+        final IFolderLayout centerLeft = pageLayout.createFolder(
+                ErlangTracingPerspective.CENTER_LEFT, IPageLayout.BOTTOM, 0.20f,
+                ErlangTracingPerspective.TOP_LEFT);
         centerLeft.addView(ErlangTracingPerspective.BROWSER_VIEW_ID);
 
         // bottom left
-        final IFolderLayout bottomLeft = pageLayout.createFolder(ErlangTracingPerspective.BOTTOM_LEFT,
-                IPageLayout.BOTTOM, 0.30f, ErlangTracingPerspective.CENTER_LEFT);
+        final IFolderLayout bottomLeft = pageLayout.createFolder(
+                ErlangTracingPerspective.BOTTOM_LEFT, IPageLayout.BOTTOM, 0.30f,
+                ErlangTracingPerspective.CENTER_LEFT);
         bottomLeft.addView(ErlangTracingPerspective.TREE_VIEWER_VIEW_ID);
 
         // bottom center
-        final IFolderLayout bottomCenter = pageLayout.createFolder(ErlangTracingPerspective.BOTTOM_CENTER,
-                IPageLayout.BOTTOM, 0.60f, pageLayout.getEditorArea());
+        final IFolderLayout bottomCenter = pageLayout.createFolder(
+                ErlangTracingPerspective.BOTTOM_CENTER, IPageLayout.BOTTOM, 0.60f,
+                pageLayout.getEditorArea());
         bottomCenter.addView(IPageLayout.ID_PROBLEM_VIEW);
         bottomCenter.addView(ErlangTracingPerspective.CONTROL_PANEL_VIEW_ID);
 
         // right center
-        final IFolderLayout rightCenter = pageLayout.createFolder(ErlangTracingPerspective.RIGHT_CENTER,
-                IPageLayout.RIGHT, 0.75f, pageLayout.getEditorArea());
+        final IFolderLayout rightCenter = pageLayout.createFolder(
+                ErlangTracingPerspective.RIGHT_CENTER, IPageLayout.RIGHT, 0.75f,
+                pageLayout.getEditorArea());
         rightCenter.addView(IPageLayout.ID_OUTLINE);
 
         // right bottom
-        final IFolderLayout rightBottom = pageLayout.createFolder(ErlangTracingPerspective.RIGHT_BOTTOM,
-                IPageLayout.RIGHT, 0.70f, ErlangTracingPerspective.BOTTOM_CENTER);
+        final IFolderLayout rightBottom = pageLayout.createFolder(
+                ErlangTracingPerspective.RIGHT_BOTTOM, IPageLayout.RIGHT, 0.70f,
+                ErlangTracingPerspective.BOTTOM_CENTER);
         rightBottom.addView(IConsoleConstants.ID_CONSOLE_VIEW);
     }
 }

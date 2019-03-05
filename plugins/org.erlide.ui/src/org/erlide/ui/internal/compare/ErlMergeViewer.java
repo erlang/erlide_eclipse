@@ -1,13 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2005 IBM Corporation and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *     QNX Software System
+ * Contributors: IBM Corporation - initial API and implementation QNX Software System
  *******************************************************************************/
 package org.erlide.ui.internal.compare;
 
@@ -122,9 +119,8 @@ public class ErlMergeViewer extends TextMergeViewer {
     }
 
     /**
-     * Creates a color from the information stored in the given preference
-     * store. Returns <code>null</code> if there is no such information
-     * available.
+     * Creates a color from the information stored in the given preference store. Returns
+     * <code>null</code> if there is no such information available.
      */
     private static RGB createColor(final IPreferenceStore store, final String key) {
         if (!store.contains(key)) {

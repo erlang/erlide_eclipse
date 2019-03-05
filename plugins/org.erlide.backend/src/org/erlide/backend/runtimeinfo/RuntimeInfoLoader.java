@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2009 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.backend.runtimeinfo;
 
@@ -32,7 +30,8 @@ public final class RuntimeInfoLoader {
 
     public static RuntimeInfo load(final Preferences node) {
         final String path = node.get(RuntimeInfoLoader.CODE_PATH, "");
-        final RuntimeInfo info = new RuntimeInfo(node.name(), node.get(RuntimeInfoLoader.HOME_DIR, ""),
+        final RuntimeInfo info = new RuntimeInfo(node.name(),
+                node.get(RuntimeInfoLoader.HOME_DIR, ""),
                 node.get(RuntimeInfoLoader.ARGS, ""), PreferencesUtils.unpackList(path));
         return info;
     }

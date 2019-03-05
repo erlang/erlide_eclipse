@@ -100,8 +100,8 @@ public class SearchUtil {
                     result.addModule(module);
                 } else if (i instanceof IParent) {
                     final IParent parent = (IParent) i;
-                    SearchCoreUtil.addExternalModules(parent, result,
-                            externalModulePaths, addExternals, addOtp);
+                    SearchCoreUtil.addExternalModules(parent, result, externalModulePaths,
+                            addExternals, addOtp);
                 }
             }
         }
@@ -110,7 +110,8 @@ public class SearchUtil {
 
     public static Match createMatch(final ModuleLineFunctionArityRef ref,
             final Map<String, IErlModule> pathToModuleMap) {
-        final ErlangSearchElement ese = SearchUtil.createSearchElementFromRef(ref, pathToModuleMap);
+        final ErlangSearchElement ese = SearchUtil.createSearchElementFromRef(ref,
+                pathToModuleMap);
         return new Match(ese, ref.getOffset(), ref.getLength());
     }
 
@@ -124,7 +125,8 @@ public class SearchUtil {
     public static ErlangSearchElement createSearchElement(
             final ModuleLineFunctionArityRef ref, final IErlModule module) {
         return new ErlangSearchElement(module, ref.getModulePath(), ref.getName(),
-                ref.getArity(), ref.getClauseHead(), ref.isSubClause(), SearchUtil.refToKind(ref));
+                ref.getArity(), ref.getClauseHead(), ref.isSubClause(),
+                SearchUtil.refToKind(ref));
     }
 
     public static ErlElementKind refToKind(final ModuleLineFunctionArityRef ref) {
@@ -139,7 +141,7 @@ public class SearchUtil {
             return ErlElementKind.MACRO_DEF;
         case SearchUtil.ARI_INCLUDE:
             return ErlElementKind.ATTRIBUTE;
-            // include actually, attributes are not saved (yet)
+        // include actually, attributes are not saved (yet)
         case SearchUtil.ARI_RECORD_FIELD_DEF:
             return ErlElementKind.RECORD_FIELD;
         default:
@@ -181,8 +183,8 @@ public class SearchUtil {
         if (res.isExternalCall()) {
             if (module != null && offset != -1) {
                 final IErlElement e = module.getElementAt(offset);
-                if (e != null
-                        && (e.getKind() == ErlElementKind.TYPESPEC || e.getKind() == ErlElementKind.RECORD_DEF)) {
+                if (e != null && (e.getKind() == ErlElementKind.TYPESPEC
+                        || e.getKind() == ErlElementKind.RECORD_DEF)) {
                     return new TypeRefPattern(moduleName, res.getFun(), limitTo);
                 }
             }
@@ -238,33 +240,33 @@ public class SearchUtil {
     }
 
     public static void runQuery(final ErlangSearchPattern pattern,
-            final ErlSearchScope scope, final String scopeDescription, final Shell shell) {
+            final ErlSearchScope scope, final String scopeDescription,
+            final Shell shell) {
         final ErlSearchQuery query = new ErlSearchQuery(pattern, scope, scopeDescription);
         if (query.canRunInBackground()) {
             /*
-             * This indirection with Object as parameter is needed to prevent
-             * the loading of the Search plug-in: the VM verifies the method
-             * call and hence loads the types used in the method signature,
-             * eventually triggering the loading of a plug-in (in this case
-             * ISearchQuery results in Search plug-in being loaded).
+             * This indirection with Object as parameter is needed to prevent the loading
+             * of the Search plug-in: the VM verifies the method call and hence loads the
+             * types used in the method signature, eventually triggering the loading of a
+             * plug-in (in this case ISearchQuery results in Search plug-in being loaded).
              */
             NewSearchUI.runQueryInBackground(query);
         } else {
             final IProgressService progressService = PlatformUI.getWorkbench()
                     .getProgressService();
             /*
-             * This indirection with Object as parameter is needed to prevent
-             * the loading of the Search plug-in: the VM verifies the method
-             * call and hence loads the types used in the method signature,
-             * eventually triggering the loading of a plug-in (in this case it
-             * would be ISearchQuery).
+             * This indirection with Object as parameter is needed to prevent the loading
+             * of the Search plug-in: the VM verifies the method call and hence loads the
+             * types used in the method signature, eventually triggering the loading of a
+             * plug-in (in this case it would be ISearchQuery).
              */
             final IStatus status = NewSearchUI.runQueryInForeground(progressService,
                     query);
             if (status.matches(IStatus.ERROR | IStatus.INFO | IStatus.WARNING)) {
                 ErrorDialog.openError(shell, "Search",
                         "Problems occurred while searching. "
-                                + "The affected files will be skipped.", status);
+                                + "The affected files will be skipped.",
+                        status);
             }
         }
     }
@@ -324,8 +326,8 @@ public class SearchUtil {
                     }
                 }
                 if (parent != null) {
-                    SearchCoreUtil.addExternalModules(parent, result,
-                            externalModulePaths, addExternals, addOTP);
+                    SearchCoreUtil.addExternalModules(parent, result, externalModulePaths,
+                            addExternals, addOTP);
                 }
             }
         }
@@ -336,8 +338,8 @@ public class SearchUtil {
         if (projects == null || projects.isEmpty()) {
             return "";
         }
-        final StringBuilder sb = new StringBuilder(projects.size() == 1 ? "project"
-                : "projects");
+        final StringBuilder sb = new StringBuilder(
+                projects.size() == 1 ? "project" : "projects");
         sb.append(' ');
         int i = 0;
         for (final IProject p : projects) {
@@ -414,7 +416,8 @@ public class SearchUtil {
     private static IDialogSettings getDialogStoreSection() {
         final IDialogSettings dialogSettings = ErlideUIPlugin.getDefault()
                 .getDialogSettings();
-        IDialogSettings settingsStore = dialogSettings.getSection(SearchUtil.DIALOG_SETTINGS_KEY);
+        IDialogSettings settingsStore = dialogSettings
+                .getSection(SearchUtil.DIALOG_SETTINGS_KEY);
         if (settingsStore == null) {
             settingsStore = dialogSettings.addNewSection(SearchUtil.DIALOG_SETTINGS_KEY);
         }
@@ -429,7 +432,8 @@ public class SearchUtil {
     }
 
     private static void restoreState() {
-        SearchUtil.fgLRUWorkingSets = new LRUWorkingSetsList(SearchUtil.LRU_WORKINGSET_LIST_SIZE);
+        SearchUtil.fgLRUWorkingSets = new LRUWorkingSetsList(
+                SearchUtil.LRU_WORKINGSET_LIST_SIZE);
         final IDialogSettings settingsStore = SearchUtil.getDialogStoreSection();
 
         for (int i = SearchUtil.LRU_WORKINGSET_LIST_SIZE - 1; i >= 0; i--) {
@@ -445,8 +449,8 @@ public class SearchUtil {
                     }
                 }
                 if (!workingSets.isEmpty()) {
-                    SearchUtil.fgLRUWorkingSets.add(workingSets.toArray(new IWorkingSet[workingSets
-                            .size()]));
+                    SearchUtil.fgLRUWorkingSets.add(
+                            workingSets.toArray(new IWorkingSet[workingSets.size()]));
                 }
             }
         }
@@ -501,10 +505,10 @@ public class SearchUtil {
         final OtpErlangList l = (OtpErlangList) t.elementAt(1);
         for (final OtpErlangObject i : l) {
             /*
-             * find_data([#ref{function=F, arity=A, clause=C, data=D, offset=O,
-             * length=L, sub_clause=S} | Rest], Data, M, Acc) -> case D of Data
-             * -> find_data(Rest, Data, M, [{M, F, A, C, S, O, L} | Acc]); _ ->
-             * find_data(Rest, Data, M, Acc) end.
+             * find_data([#ref{function=F, arity=A, clause=C, data=D, offset=O, length=L,
+             * sub_clause=S} | Rest], Data, M, Acc) -> case D of Data -> find_data(Rest,
+             * Data, M, [{M, F, A, C, S, O, L} | Acc]); _ -> find_data(Rest, Data, M, Acc)
+             * end.
              */
             final OtpErlangTuple modLineT = (OtpErlangTuple) i;
             final String modName = Util.stringValue(modLineT.elementAt(0));
@@ -524,9 +528,9 @@ public class SearchUtil {
                 name = Util.stringValue(nameO);
             }
             result.add(new ModuleLineFunctionArityRef(modName, offsetL.intValue(),
-                    lengthL.intValue(), name, arity, clauseHead, Boolean
-                            .parseBoolean(subClause.atomValue()), Boolean
-                            .parseBoolean(isDef.atomValue())));
+                    lengthL.intValue(), name, arity, clauseHead,
+                    Boolean.parseBoolean(subClause.atomValue()),
+                    Boolean.parseBoolean(isDef.atomValue())));
         }
     }
 

@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available
- * at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.views;
 
@@ -105,9 +103,8 @@ public class CallHierarchyView extends ViewPart {
             if (parentElement == input && children.length == 0) {
                 // TODO ErlangXref should cache _all_ projects added to it
                 return new Object[] { "<no callers from project " + ErlangEngine
-                        .getInstance()
-                        .getModelUtilService().getProject(ErlangEngine.getInstance()
-                                .getModelUtilService().getModule(parent))
+                        .getInstance().getModelUtilService().getProject(ErlangEngine
+                                .getInstance().getModelUtilService().getModule(parent))
                         .getName() + ">" };
             }
             final List<IErlFunction> result = new ArrayList<>();
