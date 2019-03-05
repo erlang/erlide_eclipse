@@ -205,12 +205,9 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
     public void handleDebugEvents(final DebugEvent[] events) {
         for (final DebugEvent event : events) {
             if (event.getSource().equals(getProcess())) {
-                final Runnable r = new Runnable() {
-                    @Override
-                    public void run() {
-                        if (fTerminate != null) {
-                            fTerminate.update();
-                        }
+                final Runnable r = () -> {
+                    if (fTerminate != null) {
+                        fTerminate.update();
                     }
                 };
                 DisplayUtils.asyncExec(r);

@@ -88,7 +88,7 @@ public class ResourceManager extends SWTResourceManager {
         if (descriptor == null) {
             return null;
         }
-        Image image = ResourceManager.descriptorImageMap.computeIfAbsent(descriptor,
+        final Image image = ResourceManager.descriptorImageMap.computeIfAbsent(descriptor,
                 d -> d.createImage());
         return image;
     }
@@ -134,7 +134,7 @@ public class ResourceManager extends SWTResourceManager {
             cornerDecoratedImageMap = new HashMap<>();
             ResourceManager.m_decoratedImageMap[corner] = cornerDecoratedImageMap;
         }
-        Map<Image, Image> decoratedMap = cornerDecoratedImageMap
+        final Map<Image, Image> decoratedMap = cornerDecoratedImageMap
                 .computeIfAbsent(baseImage, k -> new HashMap<>());
         //
         Image result = decoratedMap.get(decorator);
@@ -177,7 +177,7 @@ public class ResourceManager extends SWTResourceManager {
         SWTResourceManager.disposeImages();
         // dispose ImageDescriptor images
         {
-            for (Image image : ResourceManager.descriptorImageMap.values()) {
+            for (final Image image : ResourceManager.descriptorImageMap.values()) {
                 image.dispose();
             }
             ResourceManager.descriptorImageMap.clear();
@@ -197,7 +197,7 @@ public class ResourceManager extends SWTResourceManager {
         }
         // dispose plugin images
         {
-            for (Image image : ResourceManager.m_URLImageMap.values()) {
+            for (final Image image : ResourceManager.m_URLImageMap.values()) {
                 image.dispose();
             }
             ResourceManager.m_URLImageMap.clear();

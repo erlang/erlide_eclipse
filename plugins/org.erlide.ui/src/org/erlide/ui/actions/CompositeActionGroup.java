@@ -52,7 +52,7 @@ public class CompositeActionGroup extends ActionGroup {
         if (fGroups == null) {
             return;
         }
-        for (ActionGroup fGroup : fGroups) {
+        for (final ActionGroup fGroup : fGroups) {
             fGroup.dispose();
         }
     }
@@ -63,7 +63,7 @@ public class CompositeActionGroup extends ActionGroup {
         if (fGroups == null) {
             return;
         }
-        for (ActionGroup fGroup : fGroups) {
+        for (final ActionGroup fGroup : fGroups) {
             fGroup.fillActionBars(actionBars);
         }
     }
@@ -74,7 +74,7 @@ public class CompositeActionGroup extends ActionGroup {
         if (fGroups == null) {
             return;
         }
-        for (ActionGroup fGroup : fGroups) {
+        for (final ActionGroup fGroup : fGroups) {
             fGroup.fillContextMenu(menu);
         }
     }
@@ -85,7 +85,7 @@ public class CompositeActionGroup extends ActionGroup {
         if (fGroups == null) {
             return;
         }
-        for (ActionGroup fGroup : fGroups) {
+        for (final ActionGroup fGroup : fGroups) {
             fGroup.setContext(context);
         }
     }
@@ -96,7 +96,7 @@ public class CompositeActionGroup extends ActionGroup {
         if (fGroups == null) {
             return;
         }
-        for (ActionGroup fGroup : fGroups) {
+        for (final ActionGroup fGroup : fGroups) {
             fGroup.updateActionBars();
         }
     }

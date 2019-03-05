@@ -33,7 +33,6 @@ import org.erlide.ui.templates.ErlTemplateCompletionProcessor;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.event_tracer.ErlideEventTracer;
 
-import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
@@ -141,14 +140,7 @@ public abstract class AbstractErlContentAssistProcessor
                     final List<CompletionData> resultData = completionService
                             .computeCompletions(backend, project, module, elementBefore,
                                     offset, before, isInString());
-                    result = Lists.transform(resultData,
-                            new Function<CompletionData, ICompletionProposal>() {
-                                @Override
-                                public ICompletionProposal apply(
-                                        final CompletionData data) {
-                                    return toProposal(data);
-                                }
-                            });
+                    result = Lists.transform(resultData, data -> toProposal(data));
                 }
                 final ErlTemplateCompletionProcessor t = new ErlTemplateCompletionProcessor(
                         doc, offset - before.length(), before.length());
@@ -189,8 +181,8 @@ public abstract class AbstractErlContentAssistProcessor
     protected ICompletionProposal toProposal(final CompletionData data) {
         if (data instanceof FunctionCompletionData) {
             final FunctionCompletionData fdata = (FunctionCompletionData) data;
-            String info = fdata.getAdditionalProposalInfo();
-            StringBuffer buffer = new StringBuffer(info == null ? "" : info);
+            final String info = fdata.getAdditionalProposalInfo();
+            final StringBuffer buffer = new StringBuffer(info == null ? "" : info);
             return new ErlCompletionProposal(fdata.getOffsetsAndLengths(),
                     fdata.getDisplayString(), fdata.getReplacementString(),
                     fdata.getReplacementOffset(), fdata.getReplacementLength(),

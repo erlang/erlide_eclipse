@@ -38,7 +38,7 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
             final IErlModule module = fErlangEditor.getModule();
             if (module != null) {
                 final IResource resource = module.getResource();
-                for (IResource changedResource : changedResources) {
+                for (final IResource changedResource : changedResources) {
                     if (changedResource.equals(resource)) {
                         updateEditorImage(module);
                     }
@@ -67,12 +67,7 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
     private void postImageChange(final Image newImage) {
         final Shell shell = fErlangEditor.getEditorSite().getShell();
         if (shell != null && !shell.isDisposed()) {
-            shell.getDisplay().syncExec(new Runnable() {
-                @Override
-                public void run() {
-                    fErlangEditor.updatedTitleImage(newImage);
-                }
-            });
+            shell.getDisplay().syncExec(() -> fErlangEditor.updatedTitleImage(newImage));
         }
     }
 

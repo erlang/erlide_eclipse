@@ -13,7 +13,6 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.model.LineBreakpoint;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
@@ -44,14 +43,11 @@ public class ErlangLineBreakpoint extends LineBreakpoint implements IErlangBreak
 
     public void createMarker(final IResource resource, final int lineNumber)
             throws CoreException {
-        final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-            @Override
-            public void run(final IProgressMonitor monitor) throws CoreException {
-                final IMarker marker = DebugMarkerUtils.createErlangLineBreakpointMarker(
-                        resource, lineNumber, getModelIdentifier());
-                setMarker(marker);
-                resetClauseHead(lineNumber - 1, resource);
-            }
+        final IWorkspaceRunnable runnable = monitor -> {
+            final IMarker marker = DebugMarkerUtils.createErlangLineBreakpointMarker(
+                    resource, lineNumber, getModelIdentifier());
+            setMarker(marker);
+            resetClauseHead(lineNumber - 1, resource);
         };
         run(getMarkerRule(resource), runnable);
     }

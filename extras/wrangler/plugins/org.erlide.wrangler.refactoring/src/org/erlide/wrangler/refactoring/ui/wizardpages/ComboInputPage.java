@@ -11,8 +11,6 @@ package org.erlide.wrangler.refactoring.ui.wizardpages;
 import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.RowLayout;
@@ -112,21 +110,16 @@ public class ComboInputPage extends InputPage {
 
         final IValidator validator = new AtomValidator();
 
-        selectionList.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                if (validator.isValid(selectionList.getText())) {
-                    ((SimpleWranglerRefactoring) getRefactoring())
-                            .setUserInput(selectionList.getText());
-                    setErrorMessage(null);
-                    setPageComplete(true);
-                } else {
-                    setPageComplete(false);
-                    setErrorMessage("Module name must be a a valid atom!");
-                }
+        selectionList.addModifyListener(e -> {
+            if (validator.isValid(selectionList.getText())) {
+                ((SimpleWranglerRefactoring) getRefactoring())
+                        .setUserInput(selectionList.getText());
+                setErrorMessage(null);
+                setPageComplete(true);
+            } else {
+                setPageComplete(false);
+                setErrorMessage("Module name must be a a valid atom!");
             }
-
         });
 
     }

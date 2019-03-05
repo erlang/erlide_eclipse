@@ -24,6 +24,6 @@ public interface IRefactoringRpcMessage extends IRpcMessage {
      *
      * @return changed files list
      */
-    public List<ChangedFile> getRefactoringChangeset();
+    List<ChangedFile> getRefactoringChangeset();
 
 }

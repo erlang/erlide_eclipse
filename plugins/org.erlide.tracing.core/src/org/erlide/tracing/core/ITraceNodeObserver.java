@@ -12,7 +12,7 @@ public interface ITraceNodeObserver {
     /**
      * This method is invoked after starting tracing.
      */
-    public void startTracing();
+    void startTracing();
 
     /**
      * This method is invoked after finishing loading file.
@@ -20,7 +20,7 @@ public interface ITraceNodeObserver {
      * @param status
      *            status
      */
-    public void finishLoadingFile(TracingStatus status);
+    void finishLoadingFile(TracingStatus status);
 
     /**
      * This method is invoked after finishing loading traces from file.
@@ -28,15 +28,15 @@ public interface ITraceNodeObserver {
      * @param status
      *            status
      */
-    public void finishLoadingTraces(TracingStatus status);
+    void finishLoadingTraces(TracingStatus status);
 
     /**
      * This method is invoked after removing file containing tracing results from list.
      */
-    public void removeFile();
+    void removeFile();
 
     /**
      * This method is invoked when list of trace patterns changes.
      */
-    public void updateTracePatterns();
+    void updateTracePatterns();
 }

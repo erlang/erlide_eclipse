@@ -216,7 +216,7 @@ public class OtpErlangRef extends OtpErlangObject {
     public String toString() {
         String s = "#Ref<" + node;
 
-        for (int id : ids) {
+        for (final int id : ids) {
             s += "." + id;
         }
 

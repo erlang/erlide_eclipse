@@ -1,7 +1,6 @@
 package org.erlide.engine.model.root;
 
 import java.io.File;
-import java.io.FilenameFilter;
 
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -52,12 +51,8 @@ public class ProjectConfiguratorFactory implements IProjectConfiguratorFactory {
         case REBAR:
         case EMAKE:
             final String configName = configType.getConfigName();
-            final String[] resources = directory.list(new FilenameFilter() {
-                @Override
-                public boolean accept(final File dir, final String name) {
-                    return dir.equals(directory) && name.equals(configName);
-                }
-            });
+            final String[] resources = directory.list(
+                    (dir, name) -> dir.equals(directory) && name.equals(configName));
             if (resources.length == 0) {
                 // TODO is this ok?
                 return new OTPProjectConfigurator();

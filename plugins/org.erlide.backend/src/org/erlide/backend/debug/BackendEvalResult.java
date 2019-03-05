@@ -24,28 +24,28 @@ public final class BackendEvalResult {
     /**
      * @return Returns the errorReason.
      */
-    public final OtpErlangObject getErrorReason() {
+    public OtpErlangObject getErrorReason() {
         return errorReason;
     }
 
     /**
      * @return Returns the bindings.
      */
-    public final OtpErlangObject getBindings() {
+    public OtpErlangObject getBindings() {
         return bindings;
     }
 
     /**
      * @return Returns the ok.
      */
-    public final boolean isOk() {
+    public boolean isOk() {
         return ok;
     }
 
     /**
      * @return Returns the value.
      */
-    public final OtpErlangObject getValue() {
+    public OtpErlangObject getValue() {
         return value;
     }
 

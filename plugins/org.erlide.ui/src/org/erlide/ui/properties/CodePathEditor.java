@@ -28,7 +28,7 @@ public class CodePathEditor extends ListEditor {
     protected String createList(final String[] items) {
         final StringBuilder path = new StringBuilder(""); //$NON-NLS-1$
 
-        for (String item : items) {
+        for (final String item : items) {
             path.append(item);
             path.append(File.pathSeparator);
         }

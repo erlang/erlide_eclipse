@@ -109,7 +109,7 @@ public class PreferenceConstants {
 
     public static final String OUTLINE_ENABLED_FILTERS = "erlangOutlineEnabledFilters"; //$NON-NLS-1$
 
-    public static enum Color {
+    public enum Color {
         //@formatter:off
         ALICEBLUE(240, 248, 255),
         ANTIQUEWHITE(250, 235, 215),

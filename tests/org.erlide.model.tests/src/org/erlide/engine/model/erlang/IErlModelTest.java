@@ -62,13 +62,7 @@ public class IErlModelTest extends ErlModelTestBase {
     @Test
     public void addModelChangeListener() throws Exception {
         final List<IErlElement> changed = Lists.newArrayList();
-        final IErlModelChangeListener listener = new IErlModelChangeListener() {
-
-            @Override
-            public void elementChanged(final IErlElement element) {
-                changed.add(element);
-            }
-        };
+        final IErlModelChangeListener listener = element -> changed.add(element);
         final IErlModule module2 = ErlideTestUtils.createModule(project, "zz.erl",
                 "-module(zz).\n");
         final IErlModule module3 = ErlideTestUtils.createModule(project, "tt.erl",

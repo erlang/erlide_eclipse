@@ -177,7 +177,7 @@ public class OtpParser {
         return OtpParser.parseMap(tokens, stack);
     }
 
-    private static enum TokenKind {
+    private enum TokenKind {
         ATOM, VARIABLE, STRING, INTEGER, PLACEHOLDER, TUPLESTART, TUPLEEND, LISTSTART, LISTEND, COMMA, CONS, MAP, ARROW, UNKNOWN
     }
 

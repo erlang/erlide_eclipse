@@ -10,8 +10,6 @@ package org.erlide.wrangler.refactoring.duplicatedcode.ui;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -118,12 +116,7 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
         minToksText.setLayoutData(
                 new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         minToksText.setText("20");
-        minToksText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                validateInput();
-            }
-        });
+        minToksText.addModifyListener(e -> validateInput());
 
         final Label minClonesLabel = new Label(composite, SWT.WRAP);
         minClonesLabel.setText("Minimum number of appearance times:");
@@ -139,12 +132,7 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
         minClonesText.setLayoutData(
                 new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         minClonesText.setText("2");
-        minClonesText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                validateInput();
-            }
-        });
+        minClonesText.addModifyListener(e -> validateInput());
 
         onlyInFileCheckBoxButton = new Button(composite, SWT.CHECK);
         onlyInFileCheckBoxButton.setText("Detect duplicates in the project");

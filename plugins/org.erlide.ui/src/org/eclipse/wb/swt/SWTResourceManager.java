@@ -258,7 +258,7 @@ public class SWTResourceManager {
             cornerDecoratedImageMap = new HashMap<>();
             SWTResourceManager.m_decoratedImageMap[corner] = cornerDecoratedImageMap;
         }
-        Map<Image, Image> decoratedMap = cornerDecoratedImageMap
+        final Map<Image, Image> decoratedMap = cornerDecoratedImageMap
                 .computeIfAbsent(baseImage, k -> new HashMap<>());
         //
         Image result = decoratedMap.get(decorator);
@@ -445,7 +445,7 @@ public class SWTResourceManager {
      */
     public static Cursor getCursor(final int id) {
         final Integer key = id;
-        Cursor cursor = SWTResourceManager.m_idToCursorMap.computeIfAbsent(key,
+        final Cursor cursor = SWTResourceManager.m_idToCursorMap.computeIfAbsent(key,
                 k -> new Cursor(Display.getDefault(), id));
         return cursor;
     }

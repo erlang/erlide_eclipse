@@ -17,9 +17,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.debug.core.model.IStreamMonitor;
 import org.erlide.core.builder.BuildNotifier;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
@@ -86,33 +84,22 @@ public class ToolExecutor {
             }
             final IProcess process = myLaunch.getProcesses()[0];
             process.getStreamsProxy().getOutputStreamMonitor()
-                    .addListener(new IStreamListener() {
-
-                        @Override
-                        public void streamAppended(final String text,
-                                final IStreamMonitor mon) {
-                            final List<String> lines = Arrays.asList(text.split("\n"));
-                            if (progressCallback != null) {
-                                for (final String line : lines) {
-                                    progressCallback.stdout(line);
-                                }
+                    .addListener((text, mon) -> {
+                        final List<String> lines = Arrays.asList(text.split("\n"));
+                        if (progressCallback != null) {
+                            for (final String line : lines) {
+                                progressCallback.stdout(line);
                             }
                         }
                     });
-            process.getStreamsProxy().getErrorStreamMonitor()
-                    .addListener(new IStreamListener() {
-
-                        @Override
-                        public void streamAppended(final String text,
-                                final IStreamMonitor mon) {
-                            final List<String> lines = Arrays.asList(text.split("\n"));
-                            if (progressCallback != null) {
-                                for (final String line : lines) {
-                                    progressCallback.stderr(line);
-                                }
-                            }
-                        }
-                    });
+            process.getStreamsProxy().getErrorStreamMonitor().addListener((text, mon) -> {
+                final List<String> lines = Arrays.asList(text.split("\n"));
+                if (progressCallback != null) {
+                    for (final String line : lines) {
+                        progressCallback.stderr(line);
+                    }
+                }
+            });
             boolean done = false;
             try {
                 Thread.sleep(60);

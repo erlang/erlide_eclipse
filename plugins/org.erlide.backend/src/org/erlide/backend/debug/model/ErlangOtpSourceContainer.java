@@ -1,7 +1,6 @@
 package org.erlide.backend.debug.model;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -43,12 +42,8 @@ public class ErlangOtpSourceContainer extends CompositeSourceContainer {
     }
 
     private String highestVersion(final File directory, final String prefix) {
-        final String candidates[] = directory.list(new FilenameFilter() {
-            @Override
-            public boolean accept(final File dir, final String name) {
-                return name.startsWith(prefix);
-            }
-        });
+        final String candidates[] = directory
+                .list((dir, name) -> name.startsWith(prefix));
         if (candidates == null || candidates.length == 0) {
             return null;
         }

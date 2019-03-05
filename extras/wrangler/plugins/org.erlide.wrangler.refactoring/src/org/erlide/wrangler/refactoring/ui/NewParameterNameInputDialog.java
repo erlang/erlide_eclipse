@@ -10,8 +10,6 @@ package org.erlide.wrangler.refactoring.ui;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -70,12 +68,9 @@ public class NewParameterNameInputDialog extends AbstractInputDialog {
         newParameterName = new Text(composite, getInputTextStyle());
         newParameterName.setLayoutData(
                 new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-        newParameterName.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                data = newParameterName.getText();
-                validateInput();
-            }
+        newParameterName.addModifyListener(e -> {
+            data = newParameterName.getText();
+            validateInput();
         });
 
         errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);

@@ -21,16 +21,16 @@ public interface IWarningHandler {
      * @param message
      *            warning message
      */
-    public void addMessage(String message);
+    void addMessage(String message);
 
     /**
      * Removes all warning messages
      */
-    public void removeAll();
+    void removeAll();
 
     /**
      * Refreshes the displayed warning messages.
      */
-    public void refresh();
+    void refresh();
 
 }

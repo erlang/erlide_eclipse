@@ -13,7 +13,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -222,12 +221,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
                 new WorkbenchLabelProvider(), SWT.NONE,
                 DialogUtil.inRegularFontMode(parent));
 
-        final ICheckStateListener listener = new ICheckStateListener() {
-            @Override
-            public void checkStateChanged(final CheckStateChangedEvent event) {
-                updateWidgetEnablements();
-            }
-        };
+        final ICheckStateListener listener = event -> updateWidgetEnablements();
 
         final WorkbenchViewerComparator comparator = new WorkbenchViewerComparator();
         selectionGroup.setTreeComparator(comparator);
@@ -375,7 +369,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
         final Object[] newSelectedTypes = dialog.getResult();
         if (newSelectedTypes != null) { // ie.- did not press Cancel
             selectedTypes = new ArrayList<>(newSelectedTypes.length);
-            for (Object newSelectedType : newSelectedTypes) {
+            for (final Object newSelectedType : newSelectedTypes) {
                 selectedTypes.add(newSelectedType);
             }
             setupSelectionsBasedOnSelectedTypes();
@@ -431,12 +425,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      */
     protected void updateSelections(final Map<Object, List<Object>> map) {
 
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                selectionGroup.updateSelections(map);
-            }
-        };
+        final Runnable runnable = () -> selectionGroup.updateSelections(map);
 
         BusyIndicator.showWhile(getShell().getDisplay(), runnable);
     }

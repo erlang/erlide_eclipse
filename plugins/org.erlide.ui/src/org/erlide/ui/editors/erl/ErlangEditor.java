@@ -373,7 +373,8 @@ public class ErlangEditor extends AbstractErlangEditor
 
         if (fProjectionSupport != null) {
             @SuppressWarnings("unchecked")
-            Object adapter = fProjectionSupport.getAdapter(getSourceViewer(), required);
+            final Object adapter = fProjectionSupport.getAdapter(getSourceViewer(),
+                    required);
             if (adapter != null) {
                 return adapter;
             }

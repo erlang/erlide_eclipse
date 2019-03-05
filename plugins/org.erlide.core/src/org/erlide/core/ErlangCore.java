@@ -184,7 +184,7 @@ public final class ErlangCore {
         return version;
     }
 
-    private String findFeatureVersion(String key,
+    private String findFeatureVersion(final String key,
             final IBundleGroupProvider[] providers) {
         String version = "?";
         for (final IBundleGroupProvider provider : providers) {

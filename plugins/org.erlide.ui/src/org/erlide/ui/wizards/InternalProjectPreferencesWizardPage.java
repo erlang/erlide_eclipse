@@ -7,18 +7,14 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.engine.NewProjectData;
@@ -66,12 +62,7 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
         discoverBtn.setToolTipText("Tries to guess the project's configuration \n"
                 + "by finding all erl and hrl files");
         discoverBtn.setText("Discover paths...");
-        discoverBtn.addListener(SWT.Selection, new Listener() {
-            @Override
-            public void handleEvent(final Event event) {
-                discoverPaths();
-            }
-        });
+        discoverBtn.addListener(SWT.Selection, event -> discoverPaths());
 
         if (SystemConfiguration.getInstance().isTest()) {
             createExternalModuleEditor(composite);
@@ -168,12 +159,8 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
         }
         externalModules.setToolTipText("enter a list of folders");
         externalModules.setText(info.getExternalModulesFile());
-        externalModules.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                info.setExternalModulesFile(externalModules.getText());
-            }
-        });
+        externalModules.addModifyListener(
+                e -> info.setExternalModulesFile(externalModules.getText()));
         externalModulesBrowse = new Button(composite, SWT.NONE);
         {
             final FormData fd_externalModulesBrowse = new FormData();
@@ -214,12 +201,8 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
         }
         externalIncludes.setToolTipText("enter a list of folders");
         externalIncludes.setText(info.getExternalIncludesFile());
-        externalIncludes.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                info.setExternalIncludesFile(externalIncludes.getText());
-            }
-        });
+        externalIncludes.addModifyListener(
+                e -> info.setExternalIncludesFile(externalIncludes.getText()));
         externalIncludesBrowse = new Button(composite, SWT.NONE);
         {
             final FormData fd_externalIncludesBrowse = new FormData();

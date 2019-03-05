@@ -34,7 +34,6 @@ import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.ErlModelStatus;
 import org.erlide.engine.model.ErlModelStatusConstants;
 import org.erlide.engine.model.IErlElement;
-import org.erlide.engine.model.IErlElementVisitor;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.SourcePathUtils;
 import org.erlide.engine.model.builder.BuilderProperties;
@@ -383,28 +382,23 @@ public class ErlProject extends Openable
     @Override
     public Collection<IErlModule> getExternalModules() throws ErlModelException {
         final List<IErlModule> result = Lists.newArrayList();
-        accept(new IErlElementVisitor() {
-
-            @Override
-            public boolean visit(final IErlElement element) throws ErlModelException {
-                final boolean isExternalOrProject = element
-                        .getKind() == ErlElementKind.EXTERNAL_ROOT
-                        || element.getKind() == ErlElementKind.EXTERNAL_APP
-                        || element.getKind() == ErlElementKind.EXTERNAL_FOLDER
-                        || element.getKind() == ErlElementKind.PROJECT;
-                if (element instanceof IErlModule) {
-                    final IErlModule module = (IErlModule) element;
-                    if (module.getAncestorOfKind(
-                            ErlElementKind.PROJECT) == ErlProject.this) {
-                        result.add(module);
-                    }
-                    return false;
-                } else if (isExternalOrProject && element instanceof IOpenable) {
-                    final IOpenable openable = (IOpenable) element;
-                    openable.open(null);
+        accept(element -> {
+            final boolean isExternalOrProject = element
+                    .getKind() == ErlElementKind.EXTERNAL_ROOT
+                    || element.getKind() == ErlElementKind.EXTERNAL_APP
+                    || element.getKind() == ErlElementKind.EXTERNAL_FOLDER
+                    || element.getKind() == ErlElementKind.PROJECT;
+            if (element instanceof IErlModule) {
+                final IErlModule module = (IErlModule) element;
+                if (module.getAncestorOfKind(ErlElementKind.PROJECT) == ErlProject.this) {
+                    result.add(module);
                 }
-                return isExternalOrProject;
+                return false;
+            } else if (isExternalOrProject && element instanceof IOpenable) {
+                final IOpenable openable = (IOpenable) element;
+                openable.open(null);
             }
+            return isExternalOrProject;
         }, EnumSet.noneOf(AcceptFlags.class), ErlElementKind.MODULE);
         return result;
     }
@@ -515,30 +509,26 @@ public class ErlProject extends Openable
     @Override
     public Collection<IErlModule> getExternalIncludes() throws ErlModelException {
         final List<IErlModule> result = Lists.newArrayList();
-        accept(new IErlElementVisitor() {
-
-            @Override
-            public boolean visit(final IErlElement element) throws ErlModelException {
-                final boolean isExternalOrProject = element
-                        .getKind() == ErlElementKind.EXTERNAL_ROOT
+        accept(element -> {
+            final boolean isExternalOrProject = element
+                    .getKind() == ErlElementKind.EXTERNAL_ROOT
+                    || element.getKind() == ErlElementKind.EXTERNAL_APP
+                    || element.getKind() == ErlElementKind.EXTERNAL_FOLDER
+                    || element.getKind() == ErlElementKind.PROJECT;
+            if (element instanceof IErlModule) {
+                final IErlModule module = (IErlModule) element;
+                if (module.getSourceKind() == SourceKind.HRL && (module
+                        .getAncestorOfKind(ErlElementKind.PROJECT) == ErlProject.this
                         || element.getKind() == ErlElementKind.EXTERNAL_APP
-                        || element.getKind() == ErlElementKind.EXTERNAL_FOLDER
-                        || element.getKind() == ErlElementKind.PROJECT;
-                if (element instanceof IErlModule) {
-                    final IErlModule module = (IErlModule) element;
-                    if (module.getSourceKind() == SourceKind.HRL && (module
-                            .getAncestorOfKind(ErlElementKind.PROJECT) == ErlProject.this
-                            || element.getKind() == ErlElementKind.EXTERNAL_APP
-                            || element.getKind() == ErlElementKind.EXTERNAL_FOLDER)) {
-                        result.add(module);
-                    }
-                    return false;
-                } else if (isExternalOrProject && element instanceof IOpenable) {
-                    final IOpenable openable = (IOpenable) element;
-                    openable.open(null);
+                        || element.getKind() == ErlElementKind.EXTERNAL_FOLDER)) {
+                    result.add(module);
                 }
-                return isExternalOrProject;
+                return false;
+            } else if (isExternalOrProject && element instanceof IOpenable) {
+                final IOpenable openable = (IOpenable) element;
+                openable.open(null);
             }
+            return isExternalOrProject;
         }, EnumSet.noneOf(AcceptFlags.class), ErlElementKind.MODULE);
         return result;
     }
@@ -561,13 +551,9 @@ public class ErlProject extends Openable
         removeConfigurationChangeListeners();
         clearCaches();
         try {
-            accept(new IErlElementVisitor() {
-
-                @Override
-                public boolean visit(final IErlElement element) throws ErlModelException {
-                    element.dispose();
-                    return false;
-                }
+            accept(element -> {
+                element.dispose();
+                return false;
             }, EnumSet.of(AcceptFlags.CHILDREN_FIRST, AcceptFlags.LEAFS_ONLY),
                     ErlElementKind.MODULE);
         } catch (final ErlModelException e) {

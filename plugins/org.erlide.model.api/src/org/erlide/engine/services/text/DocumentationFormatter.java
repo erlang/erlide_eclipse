@@ -49,7 +49,7 @@ public class DocumentationFormatter {
         return stringBuilder.toString().replace("\n", "<br/>");
     }
 
-    private static Object convertToHTML(String content) {
+    private static Object convertToHTML(final String content) {
         String result = content.replaceAll("&", "&amp;");
         result = result.replaceAll("\"", "&quot;");
         result = result.replaceAll("<", "&lt;");

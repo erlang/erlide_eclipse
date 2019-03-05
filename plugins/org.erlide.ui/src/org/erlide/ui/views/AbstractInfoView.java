@@ -432,22 +432,15 @@ public abstract class AbstractInfoView extends ViewPart
                     return;
                 }
 
-                display.asyncExec(new Runnable() {
+                display.asyncExec(() -> {
 
-                    /*
-                     * @see java.lang.Runnable#run()
-                     */
-                    @Override
-                    public void run() {
-
-                        if (fComputeCount != currentCount
-                                || getViewSite().getShell().isDisposed()) {
-                            return;
-                        }
-
-                        fCurrentViewInfo = info;
-                        doSetInfo(info);
+                    if (fComputeCount != currentCount
+                            || getViewSite().getShell().isDisposed()) {
+                        return;
                     }
+
+                    fCurrentViewInfo = info;
+                    doSetInfo(info);
                 });
             }
         };

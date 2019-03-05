@@ -58,7 +58,7 @@ public class ColorManager implements IColorManager {
     public void dispose(final Display display) {
         final Map<RGB, Color> colorTable = fDisplayTable.get(display);
         if (colorTable != null) {
-            for (Color color : colorTable.values()) {
+            for (final Color color : colorTable.values()) {
                 if (color != null && !color.isDisposed()) {
                     color.dispose();
                 }
@@ -82,17 +82,11 @@ public class ColorManager implements IColorManager {
             colorTable = new HashMap<>(10);
             fDisplayTable.put(display, colorTable);
             if (fAutoDisposeOnDisplayDispose) {
-                display.disposeExec(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        dispose(display);
-                    }
-                });
+                display.disposeExec(() -> dispose(display));
             }
         }
 
-        Color color = colorTable.computeIfAbsent(rgb,
+        final Color color = colorTable.computeIfAbsent(rgb,
                 r -> new Color(Display.getCurrent(), r));
 
         return color;

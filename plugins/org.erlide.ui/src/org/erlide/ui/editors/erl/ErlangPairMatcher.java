@@ -349,7 +349,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
         private Set<String> getAllCharacters() {
             if (fStringsCache == null) {
                 final Set<String> set = new HashSet<>();
-                for (String fPair : fPairs) {
+                for (final String fPair : fPairs) {
                     set.add(fPair);
                 }
                 fStringsCache = set;

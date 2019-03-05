@@ -11,7 +11,7 @@ public class ConsoleMessageReporter {
 
     private final Plugin plugin;
 
-    public ConsoleMessageReporter(Plugin plugin) {
+    public ConsoleMessageReporter(final Plugin plugin) {
         this.plugin = plugin;
     }
 

@@ -10,6 +10,6 @@ package org.erlide.util;
 
 public interface IDisposable {
 
-    public abstract void dispose();
+    void dispose();
 
 }

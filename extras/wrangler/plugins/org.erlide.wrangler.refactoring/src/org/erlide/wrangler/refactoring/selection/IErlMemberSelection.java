@@ -25,20 +25,20 @@ public interface IErlMemberSelection extends IErlSelection {
      *
      * @return selection range
      */
-    public IErlRange getSelectionRange();
+    IErlRange getSelectionRange();
 
     /**
      * Get the member range
      *
      * @return range
      */
-    public IErlRange getMemberRange();
+    IErlRange getMemberRange();
 
     /**
      * Get the document which conatins the member
      *
      * @return document
      */
-    public IDocument getDocument();
+    IDocument getDocument();
 
 }

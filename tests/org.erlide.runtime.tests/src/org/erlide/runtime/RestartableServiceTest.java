@@ -53,12 +53,7 @@ public class RestartableServiceTest {
     }
 
     private RestartableService service;
-    private final Provider<Service> dummyFactory = new Provider<Service>() {
-        @Override
-        public Service get() {
-            return new DummyService();
-        }
-    };
+    private final Provider<Service> dummyFactory = () -> new DummyService();
 
     @After
     public void cleanup() {

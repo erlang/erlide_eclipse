@@ -141,14 +141,10 @@ public class SendToConsoleAction extends SelectionDispatchAction {
             }
             final Display display = ErlideUIPlugin.getStandardDisplay();
             final String addMessage = nl + message;
-            display.asyncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    try {
-                        document.replace(offset, 0, addMessage);
-                    } catch (final BadLocationException e) {
-                    }
+            display.asyncExec(() -> {
+                try {
+                    document.replace(offset, 0, addMessage);
+                } catch (final BadLocationException e) {
                 }
             });
             ErlLogger.debug("message %s", message);

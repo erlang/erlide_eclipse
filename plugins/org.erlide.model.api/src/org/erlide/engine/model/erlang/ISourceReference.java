@@ -55,8 +55,8 @@ public interface ISourceReference {
      */
     ISourceRange getSourceRange();
 
-    public int getLineStart();
+    int getLineStart();
 
-    public int getLineEnd();
+    int getLineEnd();
 
 }

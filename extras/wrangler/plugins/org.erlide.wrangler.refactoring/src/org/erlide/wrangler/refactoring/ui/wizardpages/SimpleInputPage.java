@@ -9,8 +9,6 @@
 package org.erlide.wrangler.refactoring.ui.wizardpages;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -89,14 +87,7 @@ public class SimpleInputPage extends InputPage {
 
         setControl(composite);
 
-        inputText.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                isInputValid();
-            }
-
-        });
+        inputText.addModifyListener(e -> isInputValid());
 
         inputText.setText(defaultInput);
         inputText.setFocus();

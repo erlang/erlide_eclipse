@@ -155,7 +155,7 @@ public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementL
     IErlModule getModuleFromText(IParent parent, String name, String initialText,
             Charset encoding);
 
-    public void removeModule(final IErlModule module);
+    void removeModule(final IErlModule module);
 
     void putEdited(String path, IErlModule module);
 

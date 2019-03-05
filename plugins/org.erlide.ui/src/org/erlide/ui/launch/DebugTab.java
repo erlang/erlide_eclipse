@@ -20,11 +20,9 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -128,13 +126,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         // inconvenience!");
 
         listViewer = new ListViewer(interpretedModulesGroup, SWT.BORDER | SWT.MULTI);
-        listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(final SelectionChangedEvent event) {
-                final ISelection selection = event.getSelection();
-                removeButton.setEnabled(!selection.isEmpty());
-            }
+        listViewer.addSelectionChangedListener(event -> {
+            final ISelection selection = event.getSelection();
+            removeButton.setEnabled(!selection.isEmpty());
         });
         // checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
         // @Override

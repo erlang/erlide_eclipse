@@ -11,7 +11,6 @@ package org.erlide.ui.util;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 
 /**
  * An overlaying preference store.
@@ -281,13 +280,10 @@ public class OverlayPreferenceStore implements IPreferenceStore {
      */
     public void start() {
         if (fPropertyListener == null) {
-            fPropertyListener = new IPropertyChangeListener() {
-                @Override
-                public void propertyChange(final PropertyChangeEvent event) {
-                    final OverlayKey key = findOverlayKey(event.getProperty());
-                    if (key != null) {
-                        propagateProperty(fParent, key, fStore);
-                    }
+            fPropertyListener = event -> {
+                final OverlayKey key = findOverlayKey(event.getProperty());
+                if (key != null) {
+                    propagateProperty(fParent, key, fStore);
                 }
             };
             fParent.addPropertyChangeListener(fPropertyListener);

@@ -68,7 +68,7 @@ public interface ISourceUnit {
 
     IErlPreprocessorDef findPreprocessorDef(String definedName, ErlElementKind kind);
 
-    public Collection<IErlPreprocessorDef> getPreprocessorDefs(final ErlElementKind kind);
+    Collection<IErlPreprocessorDef> getPreprocessorDefs(final ErlElementKind kind);
 
     Collection<ErlangIncludeFile> getIncludeFiles() throws ErlModelException;
 

@@ -277,20 +277,16 @@ public final class RuntimeInfo {
 
         // now get micro version from kernel's minor version
         final File lib = new File(path + "/lib");
-        final File[] kernels = lib.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(final File pathname) {
-                try {
-                    boolean r = pathname.isDirectory();
-                    r &= pathname.getName().startsWith("kernel-");
-                    final String canonicalPath = pathname.getCanonicalPath()
-                            .toLowerCase();
-                    final String absolutePath = pathname.getAbsolutePath().toLowerCase();
-                    r &= canonicalPath.equals(absolutePath);
-                    return r;
-                } catch (final IOException e) {
-                    return false;
-                }
+        final File[] kernels = lib.listFiles((FileFilter) pathname -> {
+            try {
+                boolean r = pathname.isDirectory();
+                r &= pathname.getName().startsWith("kernel-");
+                final String canonicalPath = pathname.getCanonicalPath().toLowerCase();
+                final String absolutePath = pathname.getAbsolutePath().toLowerCase();
+                r &= canonicalPath.equals(absolutePath);
+                return r;
+            } catch (final IOException e) {
+                return false;
             }
         });
         if (kernels != null && kernels.length > 0) {

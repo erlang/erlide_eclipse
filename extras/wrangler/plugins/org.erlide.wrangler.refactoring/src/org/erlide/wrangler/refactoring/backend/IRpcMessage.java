@@ -23,7 +23,7 @@ public interface IRpcMessage {
      *
      * @return true if the wrangler operation node was successful
      */
-    public boolean isSuccessful();
+    boolean isSuccessful();
 
     /**
      * If Wrangler could not perform the operation, it returns with an error or warning
@@ -31,14 +31,14 @@ public interface IRpcMessage {
      *
      * @return error message from wrangler
      */
-    public String getMessageString();
+    String getMessageString();
 
     /**
      * Returns with the state of the refactoring
      *
      * @return RefactoringState
      */
-    public RefactoringState getRefactoringState();
+    RefactoringState getRefactoringState();
 
     /**
      * Parses an RpcResultImpl object.
@@ -46,6 +46,6 @@ public interface IRpcMessage {
      * @param result
      *            result of an RPC
      */
-    public void parse(RpcResult result);
+    void parse(RpcResult result);
 
 }

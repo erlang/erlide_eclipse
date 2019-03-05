@@ -3,8 +3,6 @@ package org.erlide.branding;
 import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.StringConverter;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
@@ -59,13 +57,9 @@ public class SplashHandler extends BasicSplashHandler {
             buildIdPoint = new Point(30, splash.getSize().y - 60);
         }
 
-        getContent().addPaintListener(new PaintListener() {
-
-            @Override
-            public void paintControl(final PaintEvent e) {
-                e.gc.setForeground(getForeground());
-                e.gc.drawText(buildId, buildIdPoint.x, buildIdPoint.y, true);
-            }
+        getContent().addPaintListener(e -> {
+            e.gc.setForeground(getForeground());
+            e.gc.drawText(buildId, buildIdPoint.x, buildIdPoint.y, true);
         });
     }
 }

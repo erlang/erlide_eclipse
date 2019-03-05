@@ -114,7 +114,7 @@ public class DefaultErlangFoldingPreferenceBlock
     }
 
     private void initializeFields() {
-        for (Button b : fCheckBoxes.keySet()) {
+        for (final Button b : fCheckBoxes.keySet()) {
             final String key = fCheckBoxes.get(b);
             b.setSelection(fOverlayStore.getBoolean(key));
         }

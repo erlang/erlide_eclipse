@@ -36,27 +36,23 @@ class ElementChangedListener implements IElementChangedListener {
 
         final Display d = page.getControl().getDisplay();
         if (d != null) {
-            d.asyncExec(new Runnable() {
+            d.asyncExec(() -> {
+                // IErlModule cu = (IErlModule) fInput;
+                // IErlElement base = cu;
+                // base = getMainType(cu);
+                // if (base == null)
+                // {
+                // if (fOutlineViewer != null)
+                // fOutlineViewer.refresh(true);
+                // return;
+                // }
+                // IErlElementDelta delta = findElement(base,
+                // e.getDelta());
+                // if (delta != null && fOutlineViewer != null)
+                // {
+                // fOutlineViewer.reconcile(delta);
+                // }
 
-                @Override
-                public void run() {
-                    // IErlModule cu = (IErlModule) fInput;
-                    // IErlElement base = cu;
-                    // base = getMainType(cu);
-                    // if (base == null)
-                    // {
-                    // if (fOutlineViewer != null)
-                    // fOutlineViewer.refresh(true);
-                    // return;
-                    // }
-                    // IErlElementDelta delta = findElement(base,
-                    // e.getDelta());
-                    // if (delta != null && fOutlineViewer != null)
-                    // {
-                    // fOutlineViewer.reconcile(delta);
-                    // }
-
-                }
             });
         }
     }

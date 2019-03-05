@@ -26,14 +26,14 @@ public interface IResultParser {
      *
      * @return true if RPC is successful
      */
-    public boolean isSuccessful();
+    boolean isSuccessful();
 
     /**
      * Gets the error message if there's any.
      *
      * @return error message string
      */
-    public String getErrorMessage();
+    String getErrorMessage();
 
     /**
      * Parses the RPC
@@ -41,12 +41,12 @@ public interface IResultParser {
      * @param object
      *            rpc result
      */
-    public void parse(OtpErlangObject object);
+    void parse(OtpErlangObject object);
 
     /**
      * Returns with the duplicates
      *
      * @return list of duplicates
      */
-    public List<DuplicatedCodeElement> getDuplicates();
+    List<DuplicatedCodeElement> getDuplicates();
 }

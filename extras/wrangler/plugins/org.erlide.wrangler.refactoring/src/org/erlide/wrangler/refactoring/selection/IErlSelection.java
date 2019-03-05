@@ -41,7 +41,7 @@ public interface IErlSelection extends ISelection {
      *
      * @return kind of the selection
      */
-    public SelectionKind getKind();
+    SelectionKind getKind();
 
     /**
      * Get detailed kind of the selection.
@@ -50,41 +50,41 @@ public interface IErlSelection extends ISelection {
      *
      * @return kind of the selection
      */
-    public SelectionKind getDetailedKind();
+    SelectionKind getDetailedKind();
 
     /**
      * Get the actual selection's file path.
      *
      * @return file path string
      */
-    public String getFilePath();
+    String getFilePath();
 
     /**
      * Get the actual file
      *
      * @return Ifile object
      */
-    public IFile getFile();
+    IFile getFile();
 
     /**
      * Get the actual selection's module.
      *
      * @return
      */
-    public IErlModule getErlModule();
+    IErlModule getErlModule();
 
     /**
      * Get the actual's selections project's search path.
      *
      * @return list of directories
      */
-    public OtpErlangList getSearchPath();
+    OtpErlangList getSearchPath();
 
     /**
      * Get the corresponding Erlang element
      *
      * @return IErlElement object
      */
-    public IErlElement getErlElement();
+    IErlElement getErlElement();
 
 }

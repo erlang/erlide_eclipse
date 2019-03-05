@@ -21,12 +21,12 @@ public interface IErlRange extends IRange {
      *
      * @return offset of the selection
      */
-    public int getOffset();
+    int getOffset();
 
     /**
      * Get the selection's length
      *
      * @return length of the selection
      */
-    public int getLength();
+    int getLength();
 }

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IInformationControl;
-import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -14,7 +12,6 @@ import org.eclipse.jface.text.templates.TemplateCompletionProcessor;
 import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Shell;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.views.SourceViewerInformationControl;
@@ -70,14 +67,8 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
             final TemplateContext context, final IRegion region, final int relevance) {
         final ErlTemplateProposal p = new ErlTemplateProposal(template, context, region,
                 getImage(template), relevance);
-        p.setInformationControlCreator(new IInformationControlCreator() {
-
-            @Override
-            public IInformationControl createInformationControl(final Shell parent) {
-                return new SourceViewerInformationControl(parent,
-                        PreferenceConstants.EDITOR_TEXT_FONT);
-            }
-        });
+        p.setInformationControlCreator(parent -> new SourceViewerInformationControl(
+                parent, PreferenceConstants.EDITOR_TEXT_FONT));
         return p;
     }
 

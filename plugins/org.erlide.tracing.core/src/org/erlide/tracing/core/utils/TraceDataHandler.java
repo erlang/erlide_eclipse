@@ -270,7 +270,7 @@ public class TraceDataHandler {
             node.setSize(size);
 
             // node label
-            String builder = infoDateFormatter.format(from) + " - "
+            final String builder = infoDateFormatter.format(from) + " - "
                     + infoDateFormatter.format(to) + " (" + size + " traces): " + path;
             node.setLabel(builder);
 

@@ -118,20 +118,16 @@ public class TestResultsView extends ViewPart {
     }
 
     public void notifyEvent(final OtpErlangObject msg) {
-        DisplayUtils.asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    handleEvent(msg);
-                    treeViewer.refresh();
-                    control.update();
-                } catch (final OtpParserException e) {
-                    ErlLogger.error(e);
-                } catch (final OtpErlangException e) {
-                    ErlLogger.error(e);
-                }
+        DisplayUtils.asyncExec(() -> {
+            try {
+                handleEvent(msg);
+                treeViewer.refresh();
+                control.update();
+            } catch (final OtpParserException e1) {
+                ErlLogger.error(e1);
+            } catch (final OtpErlangException e2) {
+                ErlLogger.error(e2);
             }
-
         });
     }
 

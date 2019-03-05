@@ -227,7 +227,7 @@ public class ErlangDebugTarget extends ErlangDebugElement
     public void installDeferredBreakpoints() {
         final IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager()
                 .getBreakpoints(getModelIdentifier());
-        for (IBreakpoint breakpoint : breakpoints) {
+        for (final IBreakpoint breakpoint : breakpoints) {
             breakpointAdded(breakpoint);
         }
     }

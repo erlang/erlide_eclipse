@@ -62,7 +62,6 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.google.common.base.Charsets;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 public class ErlModule extends Openable implements IErlModule {
@@ -183,38 +182,31 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public IErlElement getElementAt(final int position) throws ErlModelException {
-        return ErlangEngine.getInstance().getModel().innermostThat(this,
-                new Predicate<IErlElement>() {
-                    @Override
-                    public boolean apply(final IErlElement e) {
-                        if (e instanceof ISourceReference) {
-                            final ISourceReference ch = (ISourceReference) e;
-                            ISourceRange r;
-                            r = ch.getSourceRange();
-                            if (r != null && r.hasPosition(position)) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                });
+        return ErlangEngine.getInstance().getModel().innermostThat(this, e -> {
+            if (e instanceof ISourceReference) {
+                final ISourceReference ch = (ISourceReference) e;
+                ISourceRange r;
+                r = ch.getSourceRange();
+                if (r != null && r.hasPosition(position)) {
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 
     @Override
     public IErlMember getElementAtLine(final int lineNumber) {
         return (IErlMember) ErlangEngine.getInstance().getModel().innermostThat(this,
-                new Predicate<IErlElement>() {
-                    @Override
-                    public boolean apply(final IErlElement e) {
-                        if (e instanceof ISourceReference) {
-                            final ISourceReference sr = (ISourceReference) e;
-                            if (sr.getLineStart() <= lineNumber
-                                    && sr.getLineEnd() >= lineNumber) {
-                                return true;
-                            }
+                e -> {
+                    if (e instanceof ISourceReference) {
+                        final ISourceReference sr = (ISourceReference) e;
+                        if (sr.getLineStart() <= lineNumber
+                                && sr.getLineEnd() >= lineNumber) {
+                            return true;
                         }
-                        return false;
                     }
+                    return false;
                 });
     }
 

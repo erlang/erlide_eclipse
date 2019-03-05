@@ -9,7 +9,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public interface EdocExportService {
 
-    public abstract void files(Collection<String> files,
-            Map<String, OtpErlangObject> options) throws RpcException;
+    void files(Collection<String> files, Map<String, OtpErlangObject> options)
+            throws RpcException;
 
 }

@@ -73,29 +73,26 @@ public class HotCodeReplaceErrorDialog extends ErrorDialog {
     protected void buttonPressed(final int id) {
         if (id == TERMINATE_ID || id == DISCONNECT_ID || id == RESTART_ID) {
             final String[] operation = new String[1];
-            final Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (id == TERMINATE_ID) {
-                            operation[0] = "Terminate";
-                            target.terminate();
-                        } else if (id == DISCONNECT_ID) {
-                            operation[0] = "Disconnect";
-                            target.disconnect();
-                        } else {
-                            operation[0] = "Restart";
-                            final ILaunch launch = target.getLaunch();
-                            launch.terminate();
-                            final ILaunchConfiguration config = launch
-                                    .getLaunchConfiguration();
-                            if (config != null && config.exists()) {
-                                DebugUITools.launch(config, launch.getLaunchMode());
-                            }
+            final Runnable r = () -> {
+                try {
+                    if (id == TERMINATE_ID) {
+                        operation[0] = "Terminate";
+                        target.terminate();
+                    } else if (id == DISCONNECT_ID) {
+                        operation[0] = "Disconnect";
+                        target.disconnect();
+                    } else {
+                        operation[0] = "Restart";
+                        final ILaunch launch = target.getLaunch();
+                        launch.terminate();
+                        final ILaunchConfiguration config = launch
+                                .getLaunchConfiguration();
+                        if (config != null && config.exists()) {
+                            DebugUITools.launch(config, launch.getLaunchMode());
                         }
-                    } catch (final DebugException e) {
-                        ErlLogger.error(e);
                     }
+                } catch (final DebugException e) {
+                    ErlLogger.error(e);
                 }
             };
             BusyIndicator.showWhile(getShell().getDisplay(), r);

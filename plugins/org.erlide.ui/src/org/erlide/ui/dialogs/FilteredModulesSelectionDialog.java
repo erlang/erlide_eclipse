@@ -42,8 +42,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
@@ -218,40 +216,36 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
         super.fillViewMenu(menuManager);
 
         workingSetFilterActionGroup = new WorkingSetFilterActionGroup(getShell(),
-                new IPropertyChangeListener() {
-                    @Override
-                    public void propertyChange(final PropertyChangeEvent event) {
-                        final String property = event.getProperty();
+                event -> {
+                    final String property = event.getProperty();
 
-                        if (WorkingSetFilterActionGroup.CHANGE_WORKING_SET
-                                .equals(property)) {
+                    if (WorkingSetFilterActionGroup.CHANGE_WORKING_SET.equals(property)) {
 
-                            IWorkingSet workingSet = (IWorkingSet) event.getNewValue();
+                        IWorkingSet workingSet = (IWorkingSet) event.getNewValue();
 
-                            if (workingSet != null && !(workingSet.isAggregateWorkingSet()
-                                    && workingSet.isEmpty())) {
-                                workingSetFilter.setWorkingSet(workingSet);
-                                setSubtitle(workingSet.getLabel());
-                            } else {
-                                final IWorkbenchWindow window = PlatformUI.getWorkbench()
-                                        .getActiveWorkbenchWindow();
+                        if (workingSet != null && !(workingSet.isAggregateWorkingSet()
+                                && workingSet.isEmpty())) {
+                            workingSetFilter.setWorkingSet(workingSet);
+                            setSubtitle(workingSet.getLabel());
+                        } else {
+                            final IWorkbenchWindow window = PlatformUI.getWorkbench()
+                                    .getActiveWorkbenchWindow();
 
-                                if (window != null) {
-                                    final IWorkbenchPage page = window.getActivePage();
-                                    workingSet = page.getAggregateWorkingSet();
+                            if (window != null) {
+                                final IWorkbenchPage page = window.getActivePage();
+                                workingSet = page.getAggregateWorkingSet();
 
-                                    if (workingSet.isAggregateWorkingSet()
-                                            && workingSet.isEmpty()) {
-                                        workingSet = null;
-                                    }
+                                if (workingSet.isAggregateWorkingSet()
+                                        && workingSet.isEmpty()) {
+                                    workingSet = null;
                                 }
-
-                                workingSetFilter.setWorkingSet(workingSet);
-                                setSubtitle(null);
                             }
 
-                            scheduleRefresh();
+                            workingSetFilter.setWorkingSet(workingSet);
+                            setSubtitle(null);
                         }
+
+                        scheduleRefresh();
                     }
                 });
 
@@ -337,25 +331,21 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
                     fCollator = collator;
                 }
             }
-            fComparator = new Comparator<Object>() {
+            fComparator = (o1, o2) -> {
+                final String s1 = o1 instanceof IResource ? ((IResource) o1).getName()
+                        : (String) o1;
+                final String s2 = o2 instanceof IResource ? ((IResource) o2).getName()
+                        : (String) o2;
 
-                @Override
-                public int compare(final Object o1, final Object o2) {
-                    final String s1 = o1 instanceof IResource ? ((IResource) o1).getName()
-                            : (String) o1;
-                    final String s2 = o2 instanceof IResource ? ((IResource) o2).getName()
-                            : (String) o2;
-
-                    if (s1.startsWith(patternText)) {
-                        return -1;
-                    }
-                    if (s2.startsWith(patternText)) {
-                        return 1;
-                    }
-
-                    final int result = fCollator.compare(s1, s2);
-                    return result;
+                if (s1.startsWith(patternText)) {
+                    return -1;
                 }
+                if (s2.startsWith(patternText)) {
+                    return 1;
+                }
+
+                final int result = fCollator.compare(s1, s2);
+                return result;
             };
         }
         return fComparator;

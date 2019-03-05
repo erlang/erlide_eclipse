@@ -205,13 +205,9 @@ public class ProblemsLabelDecorator
         }
         fListeners.add(listener);
         if (fProblemChangedListener == null) {
-            fProblemChangedListener = new IProblemChangedListener() {
-                @Override
-                public void problemsChanged(final IResource[] changedResources,
-                        final boolean isMarkerChange) {
-                    fireProblemsChanged(changedResources, isMarkerChange);
-                }
-            };
+            fProblemChangedListener = (changedResources,
+                    isMarkerChange) -> fireProblemsChanged(changedResources,
+                            isMarkerChange);
             ErlideUIPlugin.getDefault().getProblemMarkerManager()
                     .addListener(fProblemChangedListener);
         }
@@ -223,7 +219,7 @@ public class ProblemsLabelDecorator
             final LabelProviderChangedEvent event = new ProblemsLabelChangedEvent(this,
                     changedResources, isMarkerChange);
             final Object[] listeners = fListeners.getListeners();
-            for (Object listener : listeners) {
+            for (final Object listener : listeners) {
                 ((ILabelProviderListener) listener).labelProviderChanged(event);
             }
         }

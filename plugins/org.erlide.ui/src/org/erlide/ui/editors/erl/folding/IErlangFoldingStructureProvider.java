@@ -50,16 +50,16 @@ public interface IErlangFoldingStructureProvider extends IErlModelChangeListener
      *            the projection viewer that displays the annotations created by this
      *            structure provider
      */
-    public abstract void install(ITextEditor editor, ProjectionViewer viewer);
+    void install(ITextEditor editor, ProjectionViewer viewer);
 
     /**
      * Uninstalls this structure provider. Any references to editors or viewers should be
      * cleared.
      */
-    public abstract void uninstall();
+    void uninstall();
 
     /**
      * (Re-)initializes the structure provided by the receiver.
      */
-    public abstract void initialize();
+    void initialize();
 }

@@ -37,7 +37,7 @@ public abstract class ExternalBuilder extends ErlangBuilder {
             final BuildNotifier notifier) throws CoreException {
         final IProject project = erlProject.getWorkspaceProject();
 
-        String osCommand = getOsCommand(erlProject);
+        final String osCommand = getOsCommand(erlProject);
         ErlLogger.trace("build",
                 "Start " + kind + " for " + project.getName() + ": " + osCommand);
 

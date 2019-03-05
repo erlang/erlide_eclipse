@@ -26,7 +26,7 @@ public class DialyzerBuilder {
     public static final String BUILDER_ID = "org.erlide.core.builder.dialyzer";
     private final IProject project;
 
-    public DialyzerBuilder(IProject project) {
+    public DialyzerBuilder(final IProject project) {
         this.project = project;
     }
 

@@ -22,42 +22,42 @@ public interface IRange {
      *
      * @return starting line
      */
-    public int getStartLine();
+    int getStartLine();
 
     /**
      * Get the ending line of the range.
      *
      * @return ending line
      */
-    public int getEndLine();
+    int getEndLine();
 
     /**
      * Get the starting column of the range.
      *
      * @return starting column
      */
-    public int getStartCol();
+    int getStartCol();
 
     /**
      * Get the ending column of the range.
      *
      * @return ending column
      */
-    public int getEndCol();
+    int getEndCol();
 
     /**
      * Get an Erlang tuple containing the starting position. {Line, Column}
      *
      * @return starting position
      */
-    public OtpErlangTuple getStartPos();
+    OtpErlangTuple getStartPos();
 
     /**
      * Get an Erlang tuple containing the ending position. {Line, Column}
      *
      * @return ending position
      */
-    public OtpErlangTuple getEndPos();
+    OtpErlangTuple getEndPos();
 
     /**
      * Get an Erlang tuple containing the range start and end position. {{StartingLine,
@@ -65,9 +65,9 @@ public interface IRange {
      *
      * @return range tuple
      */
-    public OtpErlangTuple getPos();
+    OtpErlangTuple getPos();
 
     @Override
-    public String toString();
+    String toString();
 
 }

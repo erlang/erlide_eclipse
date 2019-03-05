@@ -9,42 +9,42 @@ import org.eclipse.swt.widgets.Shell;
 @SuppressWarnings("restriction")
 public class ErlangBrowserInformationControl extends BrowserInformationControl {
 
-    public ErlangBrowserInformationControl(Shell parent, String symbolicFontName,
-            boolean resizable) {
+    public ErlangBrowserInformationControl(final Shell parent,
+            final String symbolicFontName, final boolean resizable) {
         super(parent, symbolicFontName, resizable);
     }
 
-    public ErlangBrowserInformationControl(Shell parent, String font,
-            ToolBarManager tbm) {
+    public ErlangBrowserInformationControl(final Shell parent, final String font,
+            final ToolBarManager tbm) {
         super(parent, font, tbm);
     }
 
-    public ErlangBrowserInformationControl(Shell parent, String dialogFont,
-            String tooltipAffordanceString) {
+    public ErlangBrowserInformationControl(final Shell parent, final String dialogFont,
+            final String tooltipAffordanceString) {
         super(parent, dialogFont, tooltipAffordanceString);
     }
 
     @Override
-    public void addInputChangeListener(IInputChangedListener inputChangeListener) {
+    public void addInputChangeListener(final IInputChangedListener inputChangeListener) {
         super.addInputChangeListener(inputChangeListener);
     }
 
     @Override
-    public void addLocationListener(LocationListener listener) {
+    public void addLocationListener(final LocationListener listener) {
         super.addLocationListener(listener);
     }
 
     @Override
-    public void notifyDelayedInputChange(Object newInput) {
+    public void notifyDelayedInputChange(final Object newInput) {
         super.notifyDelayedInputChange(newInput);
     }
 
-    public static boolean isAvailable(Shell parent) {
+    public static boolean isAvailable(final Shell parent) {
         return BrowserInformationControl.isAvailable(parent);
     }
 
     @Override
-    public void setInput(Object input) {
+    public void setInput(final Object input) {
         super.setInput(input);
     }
 
@@ -54,7 +54,7 @@ public class ErlangBrowserInformationControl extends BrowserInformationControl {
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public void setSize(final int width, final int height) {
         super.setSize(width, height);
     }
 

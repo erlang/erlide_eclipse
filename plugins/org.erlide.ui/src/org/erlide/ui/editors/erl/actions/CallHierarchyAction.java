@@ -40,7 +40,7 @@ public class CallHierarchyAction extends Action {
         super("Call hierarchy");
         editor = erlangEditor;
         this.module = module;
-        this.xrefService = new ErlangXref(OtpRpcFactory.getOtpRpc());
+        xrefService = new ErlangXref(OtpRpcFactory.getOtpRpc());
     }
 
     @Override

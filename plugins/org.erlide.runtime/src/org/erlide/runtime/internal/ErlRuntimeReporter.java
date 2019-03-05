@@ -53,12 +53,7 @@ public class ErlRuntimeReporter {
         return msg;
     }
 
-    FilenameFilter filter = new FilenameFilter() {
-        @Override
-        public boolean accept(final File dir, final String name) {
-            return name.matches("^core.[0-9]+$");
-        }
-    };
+    FilenameFilter filter = (dir, name) -> name.matches("^core.[0-9]+$");
 
     public void createFileReport(final String nodeName, final int exitCode) {
         final String msg = String.format("Backend '%s' crashed with exit code %d.",

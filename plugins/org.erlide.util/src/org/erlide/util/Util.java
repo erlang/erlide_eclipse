@@ -387,7 +387,7 @@ public final class Util {
         out.write(utflen >>> 8 & 0xFF);
         out.write(utflen & 0xFF);
         if (strlen == utflen) {
-            for (char aStr : str) {
+            for (final char aStr : str) {
                 out.write(aStr);
             }
         } else {

@@ -77,7 +77,7 @@ public class ProblemMarkerManager implements IResourceChangeListener,
         private boolean isErrorDelta(final IResourceDelta delta) {
             if ((delta.getFlags() & IResourceDelta.MARKERS) != 0) {
                 final IMarkerDelta[] markerDeltas = delta.getMarkerDeltas();
-                for (IMarkerDelta markerDelta : markerDeltas) {
+                for (final IMarkerDelta markerDelta : markerDeltas) {
                     if (markerDelta.isSubtypeOf(IMarker.PROBLEM)) {
                         final int kind = markerDelta.getKind();
                         if (kind == IResourceDelta.ADDED
@@ -175,7 +175,7 @@ public class ProblemMarkerManager implements IResourceChangeListener,
             @SuppressWarnings("synthetic-access")
             public void run() {
                 final Object[] listeners = fListeners.getListeners();
-                for (Object listener : listeners) {
+                for (final Object listener : listeners) {
                     final IProblemChangedListener curr = (IProblemChangedListener) listener;
                     curr.problemsChanged(changes, isMarkerChange);
                 }

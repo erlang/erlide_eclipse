@@ -80,48 +80,43 @@ public class ProjectCreator {
         }
 
         // create the new project operation
-        final IRunnableWithProgress op = new IRunnableWithProgress() {
-            @Override
-            public void run(final IProgressMonitor monitor)
-                    throws InvocationTargetException {
+        final IRunnableWithProgress op = monitor -> {
 
-                final CreateProjectOperation op1 = new CreateProjectOperation(description,
-                        WizardMessages.NewProject_windowTitle);
-                try {
-                    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=219901
-                    // Making this undoable would be a bad idea
-                    op1.execute(monitor, notifier);
+            final CreateProjectOperation op1 = new CreateProjectOperation(description,
+                    WizardMessages.NewProject_windowTitle);
+            try {
+                // https://bugs.eclipse.org/bugs/show_bug.cgi?id=219901
+                // Making this undoable would be a bad idea
+                op1.execute(monitor, notifier);
 
-                    newProjectHandle.open(monitor);
-                    description.setNatureIds(new String[] { ErlangCore.NATURE_ID });
-                    newProjectHandle.setDescription(description, null);
+                newProjectHandle.open(monitor);
+                description.setNatureIds(new String[] { ErlangCore.NATURE_ID });
+                newProjectHandle.setDescription(description, null);
 
-                    final BuilderTool builder = info.getBuilder();
-                    ErlangNature.setErlangProjectBuilder(newProjectHandle, builder);
-                    createBuilderConfig(builder);
+                final BuilderTool builder = info.getBuilder();
+                ErlangNature.setErlangProjectBuilder(newProjectHandle, builder);
+                createBuilderConfig(builder);
 
-                    createFolders(newProjectHandle,
-                            Lists.newArrayList(info.getOutputDir()), monitor);
-                    createFolders(newProjectHandle, info.getSourceDirs(), monitor);
-                    createFolders(newProjectHandle, info.getIncludeDirs(), monitor);
+                createFolders(newProjectHandle, Lists.newArrayList(info.getOutputDir()),
+                        monitor);
+                createFolders(newProjectHandle, info.getSourceDirs(), monitor);
+                createFolders(newProjectHandle, info.getIncludeDirs(), monitor);
 
-                    createConfig(newProjectHandle, info.getConfigType(), monitor);
+                createConfig(newProjectHandle, info.getConfigType(), monitor);
 
-                    final IErlProject erlProject = ErlangEngine.getInstance().getModel()
-                            .getErlangProject(newProjectHandle);
-                    erlProject.setConfigType(info.getConfigType());
-                    final BuilderProperties builderProperties = new BuilderProperties();
-                    builderProperties.setBuilderTool(builder);
-                    builderProperties
-                            .setCompileTarget(info.getBuilderData().get("compile"));
-                    builderProperties.setCleanTarget(info.getBuilderData().get("clean"));
+                final IErlProject erlProject = ErlangEngine.getInstance().getModel()
+                        .getErlangProject(newProjectHandle);
+                erlProject.setConfigType(info.getConfigType());
+                final BuilderProperties builderProperties = new BuilderProperties();
+                builderProperties.setBuilderTool(builder);
+                builderProperties.setCompileTarget(info.getBuilderData().get("compile"));
+                builderProperties.setCleanTarget(info.getBuilderData().get("clean"));
 
-                    erlProject.setBuilderProperties(builderProperties);
-                    erlProject.setProperties(info);
+                erlProject.setBuilderProperties(builderProperties);
+                erlProject.setProperties(info);
 
-                } catch (final Exception e) {
-                    throw new InvocationTargetException(e);
-                }
+            } catch (final Exception e) {
+                throw new InvocationTargetException(e);
             }
         };
 

@@ -67,14 +67,14 @@ public class HoverUtil {
         }
         // result = result.replaceFirst("<?[^>]+>", "");
 
-        String sheet = "<link rel=\"stylesheet\" type=\"text/css\" href=\""
+        final String sheet = "<link rel=\"stylesheet\" type=\"text/css\" href=\""
                 + HoverUtil.getStyleSheet() + "\">";
         // ColorRegistry colorRegistry = JFaceResources.getColorRegistry();
         // Color foreground =
         // colorRegistry.get("org.eclipse.ui.workbench.HOVER_FOREGROUND"); //$NON-NLS-1$
         // Color background =
         // colorRegistry.get("org.eclipse.ui.workbench.HOVER_BACKGROUND"); //$NON-NLS-1$
-        String style = sheet + "<style type='text/css'>body { " + //$NON-NLS-1$
+        final String style = sheet + "<style type='text/css'>body { " + //$NON-NLS-1$
                 "font-family: " //$NON-NLS-1$
                 + JFaceResources.getDefaultFontDescriptor().getFontData()[0].getName()
                 + "; " + //$NON-NLS-1$
@@ -90,8 +90,8 @@ public class HoverUtil {
                 // : "") + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 " }</style>"; //$NON-NLS-1$
 
-        int headIndex = result.indexOf("<head>"); //$NON-NLS-1$
-        StringBuilder builder = new StringBuilder(result.length() + style.length());
+        final int headIndex = result.indexOf("<head>"); //$NON-NLS-1$
+        final StringBuilder builder = new StringBuilder(result.length() + style.length());
         builder.append(result.substring(0, headIndex + "<head>".length())); //$NON-NLS-1$
         builder.append(style);
         builder.append(result.substring(headIndex + "<head>".length())); //$NON-NLS-1$

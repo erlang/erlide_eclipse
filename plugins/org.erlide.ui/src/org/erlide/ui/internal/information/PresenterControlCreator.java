@@ -250,24 +250,21 @@ public final class PresenterControlCreator
                 // StructuredSelection());
                 // tbm.add(openExternalJavadocAction);
 
-                final IInputChangedListener inputChangeListener = new IInputChangedListener() {
-                    @Override
-                    public void inputChanged(final Object newInput) {
-                        backAction.update();
-                        forwardAction.update();
-                        if (newInput == null) {
-                            selectionProvider.setSelection(new StructuredSelection());
-                        } else if (newInput instanceof ErlangBrowserInformationControlInput) {
-                            final ErlangBrowserInformationControlInput input = (ErlangBrowserInformationControlInput) newInput;
-                            final Object inputElement = input.getInputElement();
-                            selectionProvider
-                                    .setSelection(new StructuredSelection(inputElement));
-                            final boolean hasInputElement = inputElement != null;
-                            showInEdocViewAction.setEnabled(hasInputElement);
-                            openDeclarationAction.setEnabled(hasInputElement);
-                            openEdocInExternalBrowserAction.setInput(newInput);
-                            openEdocInExternalBrowserAction.setEnabled(hasInputElement);
-                        }
+                final IInputChangedListener inputChangeListener = newInput -> {
+                    backAction.update();
+                    forwardAction.update();
+                    if (newInput == null) {
+                        selectionProvider.setSelection(new StructuredSelection());
+                    } else if (newInput instanceof ErlangBrowserInformationControlInput) {
+                        final ErlangBrowserInformationControlInput input = (ErlangBrowserInformationControlInput) newInput;
+                        final Object inputElement = input.getInputElement();
+                        selectionProvider
+                                .setSelection(new StructuredSelection(inputElement));
+                        final boolean hasInputElement = inputElement != null;
+                        showInEdocViewAction.setEnabled(hasInputElement);
+                        openDeclarationAction.setEnabled(hasInputElement);
+                        openEdocInExternalBrowserAction.setInput(newInput);
+                        openEdocInExternalBrowserAction.setEnabled(hasInputElement);
                     }
                 };
                 control.addInputChangeListener(inputChangeListener);

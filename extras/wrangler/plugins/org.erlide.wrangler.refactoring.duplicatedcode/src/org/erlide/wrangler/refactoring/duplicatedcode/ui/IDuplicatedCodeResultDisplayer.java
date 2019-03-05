@@ -25,6 +25,6 @@ public interface IDuplicatedCodeResultDisplayer {
      * @param result
      *            result of the refactoring - duplicates
      */
-    public void showResult(List<DuplicatedCodeElement> result);
+    void showResult(List<DuplicatedCodeElement> result);
 
 }

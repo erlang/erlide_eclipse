@@ -624,42 +624,39 @@ public class DebuggerTraceView extends AbstractDebugView
         if (viewer == null || viewer.getControl().isDisposed()) {
             return;
         }
-        DisplayUtils.asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                if (viewer == null || viewer.getControl().isDisposed()) {
-                    return;
-                }
-                // if (viewer.getInput() != source) {
-                // viewer.setInput(source);
-                // viewer.refresh();
-                // } else {
-                if (data.getWhat() == TraceChangedEventData.ADDED) {
-                    final ILaunch launch = data.getLaunch();
-                    if (!launches.contains(launch)) {
-                        launches.add(launch);
-                        viewer.add(viewer.getInput(), launch);
-                        parentMap.put(launch, viewer.getInput());
-                    }
-                    List<IDebugTarget> nodes = nodeMap.computeIfAbsent(launch,
-                            k -> new ArrayList<>(1));
-                    final IDebugTarget node = data.getNode();
-                    if (!nodes.contains(node)) {
-                        nodes.add(node);
-                        viewer.add(launch, node);
-                        parentMap.put(node, launch);
-                    }
-                    List<DebugTraceEvent> events = eventMap.computeIfAbsent(node,
-                            k -> new ArrayList<>(data.getEvents().length));
-                    final OtpErlangPid pid = data.getPid();
-                    for (final OtpErlangTuple t : data.getEvents()) {
-                        events.add(new DebugTraceEvent(pid, t));
-                        parentMap.put(t, node);
-                    }
-                    viewer.add(node, data.getEvents());
-                }
-                // }
+        DisplayUtils.asyncExec(() -> {
+            if (viewer == null || viewer.getControl().isDisposed()) {
+                return;
             }
+            // if (viewer.getInput() != source) {
+            // viewer.setInput(source);
+            // viewer.refresh();
+            // } else {
+            if (data.getWhat() == TraceChangedEventData.ADDED) {
+                final ILaunch launch = data.getLaunch();
+                if (!launches.contains(launch)) {
+                    launches.add(launch);
+                    viewer.add(viewer.getInput(), launch);
+                    parentMap.put(launch, viewer.getInput());
+                }
+                final List<IDebugTarget> nodes = nodeMap.computeIfAbsent(launch,
+                        k1 -> new ArrayList<>(1));
+                final IDebugTarget node = data.getNode();
+                if (!nodes.contains(node)) {
+                    nodes.add(node);
+                    viewer.add(launch, node);
+                    parentMap.put(node, launch);
+                }
+                final List<DebugTraceEvent> events = eventMap.computeIfAbsent(node,
+                        k2 -> new ArrayList<>(data.getEvents().length));
+                final OtpErlangPid pid = data.getPid();
+                for (final OtpErlangTuple t : data.getEvents()) {
+                    events.add(new DebugTraceEvent(pid, t));
+                    parentMap.put(t, node);
+                }
+                viewer.add(node, data.getEvents());
+            }
+            // }
         });
     }
 

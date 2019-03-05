@@ -171,7 +171,7 @@ public class CoverEventHandler extends ErlangEventHandler {
 
     private void prepFuncResults(final OtpErlangList funcList, final ModuleStats stats) {
 
-        for (OtpErlangObject aFuncList : funcList) {
+        for (final OtpErlangObject aFuncList : funcList) {
             final OtpErlangTuple res = (OtpErlangTuple) aFuncList;
 
             final FunctionStats func = new FunctionStats();
@@ -193,7 +193,7 @@ public class CoverEventHandler extends ErlangEventHandler {
 
     private void prepLineResults(final OtpErlangList lineList, final ModuleStats stats) {
 
-        for (OtpErlangObject aLineList : lineList) {
+        for (final OtpErlangObject aLineList : lineList) {
             final OtpErlangTuple res = (OtpErlangTuple) aLineList;
             final int num = Integer.parseInt(res.elementAt(1).toString());
             final int calls = Integer.parseInt(res.elementAt(2).toString());

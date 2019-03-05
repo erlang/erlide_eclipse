@@ -8,7 +8,6 @@ import java.io.ObjectOutputStream;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
@@ -52,27 +51,21 @@ public class SaveAction extends Action {
 
         final InputDialog nameDialog = new InputDialog(shell, "Saving coverage results",
                 "Enter the name for saving coverage results",
-                "cov_" + StatsTreeModel.getInstance().getTimestamp(),
-                new IInputValidator() {
+                "cov_" + StatsTreeModel.getInstance().getTimestamp(), newText -> {
 
-                    @Override
-                    public String isValid(final String newText) {
+                    final String[] names = dir.list();
 
-                        final String[] names = dir.list();
-
-                        if (newText == null || newText.length() < 1) {
-                            return "Name too short";
-                        }
-
-                        for (final String name : names) {
-                            if (name.equals(newText)) {
-                                return "Results file with the same name already exists";
-                            }
-                        }
-
-                        return null;
+                    if (newText == null || newText.length() < 1) {
+                        return "Name too short";
                     }
 
+                    for (final String name : names) {
+                        if (name.equals(newText)) {
+                            return "Results file with the same name already exists";
+                        }
+                    }
+
+                    return null;
                 });
 
         nameDialog.open();

@@ -5,7 +5,6 @@ import java.util.List;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -20,19 +19,16 @@ public class TestProjectProperties {
     private List<String> findTestDirs(final IProject prj) {
         final List<String> result = Lists.newArrayList();
         try {
-            prj.accept(new IResourceVisitor() {
-                @Override
-                public boolean visit(final IResource resource) throws CoreException {
-                    if (resource.getName().matches(".*_SUITE.erl")) {
-                        final IContainer dir = resource.getParent();
-                        final IPath pdir = dir.getProjectRelativePath();
-                        final String sdir = pdir.toString();
-                        if (!sdir.contains("/garbage/") && !result.contains(sdir)) {
-                            result.add(sdir);
-                        }
+            prj.accept(resource -> {
+                if (resource.getName().matches(".*_SUITE.erl")) {
+                    final IContainer dir = resource.getParent();
+                    final IPath pdir = dir.getProjectRelativePath();
+                    final String sdir = pdir.toString();
+                    if (!sdir.contains("/garbage/") && !result.contains(sdir)) {
+                        result.add(sdir);
                     }
-                    return true;
                 }
+                return true;
             });
         } catch (final CoreException e) {
             ErlLogger.debug(e);

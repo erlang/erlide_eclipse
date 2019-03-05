@@ -82,18 +82,13 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
         final String containerName = fPage.getContainerName();
         final String fileName = fPage.getFileName();
         final String skeleton = fPage.getSkeleton();
-        final IRunnableWithProgress op = new IRunnableWithProgress() {
-
-            @Override
-            public void run(final IProgressMonitor monitor)
-                    throws InvocationTargetException {
-                try {
-                    doFinish(containerName, fileName, skeleton, monitor);
-                } catch (final CoreException e) {
-                    throw new InvocationTargetException(e);
-                } finally {
-                    monitor.done();
-                }
+        final IRunnableWithProgress op = monitor -> {
+            try {
+                doFinish(containerName, fileName, skeleton, monitor);
+            } catch (final CoreException e) {
+                throw new InvocationTargetException(e);
+            } finally {
+                monitor.done();
             }
         };
         try {
@@ -143,16 +138,12 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
         // ErlangCore.getModelManager().create(file, null);
 
         monitor.setTaskName("Opening file for editing...");
-        getShell().getDisplay().asyncExec(new Runnable() {
-
-            @Override
-            public void run() {
-                final IWorkbenchPage page = PlatformUI.getWorkbench()
-                        .getActiveWorkbenchWindow().getActivePage();
-                try {
-                    IDE.openEditor(page, file, true);
-                } catch (final PartInitException e) {
-                }
+        getShell().getDisplay().asyncExec(() -> {
+            final IWorkbenchPage page = PlatformUI.getWorkbench()
+                    .getActiveWorkbenchWindow().getActivePage();
+            try {
+                IDE.openEditor(page, file, true);
+            } catch (final PartInitException e) {
             }
         });
         monitor.worked(1);

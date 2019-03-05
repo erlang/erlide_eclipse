@@ -44,7 +44,7 @@ public class ErlideDebug {
 
     @SuppressWarnings("boxing")
     public static OtpErlangPid startDebug(final IOtpRpc backend, final int debugFlags,
-            OtpErlangPid parentPid) throws DebugException {
+            final OtpErlangPid parentPid) throws DebugException {
         OtpErlangObject res = null;
         try {
             res = backend.call(ErlideDebug.ERLIDE_DEBUG, "start_debug", "i", debugFlags);

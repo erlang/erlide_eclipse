@@ -33,28 +33,24 @@ public class ParserDB {
     private static volatile boolean running;
 
     public static void create() {
-        final Runnable x = new Runnable() {
-            @Override
-            public void run() {
-                ParserDB.running = true;
-                try {
-                    ParserDB.db = new ParserDB();
-                    // out = new PrintStream(
-                    // new File("/home/qvladum/parserDB.txt"));
-                    ParserDB.out = System.out;
+        final Runnable x = () -> {
+            ParserDB.running = true;
+            try {
+                ParserDB.db = new ParserDB();
+                // out = new PrintStream(
+                // new File("/home/qvladum/parserDB.txt"));
+                ParserDB.out = System.out;
 
-                    final IErlModel model = ErlangEngine.getInstance().getModel();
-                    final Collection<SourcePathProvider> sourcePathProviders = SourcePathUtils
-                            .getSourcePathProviders();
-                    final long time = System.currentTimeMillis();
-                    ParserDB.db.run(model, sourcePathProviders, false);
-                    System.out.println(
-                            " took " + (System.currentTimeMillis() - time) / 1000);
-                } catch (final Exception e) {
-                    ErlLogger.error(e);
-                }
-                ParserDB.running = false;
+                final IErlModel model = ErlangEngine.getInstance().getModel();
+                final Collection<SourcePathProvider> sourcePathProviders = SourcePathUtils
+                        .getSourcePathProviders();
+                final long time = System.currentTimeMillis();
+                ParserDB.db.run(model, sourcePathProviders, false);
+                System.out.println(" took " + (System.currentTimeMillis() - time) / 1000);
+            } catch (final Exception e) {
+                ErlLogger.error(e);
             }
+            ParserDB.running = false;
         };
         if (!ParserDB.running) {
             new Thread(x).start();

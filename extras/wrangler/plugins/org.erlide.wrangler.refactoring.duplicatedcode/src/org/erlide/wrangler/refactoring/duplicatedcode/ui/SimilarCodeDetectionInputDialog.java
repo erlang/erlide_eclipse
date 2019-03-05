@@ -10,8 +10,6 @@ package org.erlide.wrangler.refactoring.duplicatedcode.ui;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -94,12 +92,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
         minLenText.setLayoutData(
                 new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         minLenText.setText("5");
-        minLenText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                validateInput();
-            }
-        });
+        minLenText.addModifyListener(e -> validateInput());
 
         final Label minTokslabel = new Label(composite, SWT.WRAP);
         minTokslabel.setText("Minimum number of tokens a clone should have:");
@@ -115,12 +108,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
         minToksText.setLayoutData(
                 new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         minToksText.setText("40");
-        minToksText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                validateInput();
-            }
-        });
+        minToksText.addModifyListener(e -> validateInput());
 
         final Label minFreqLabel = new Label(composite, SWT.WRAP);
         minFreqLabel.setText("Minimum number appearance times:");
@@ -136,12 +124,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
         minFreqText.setLayoutData(
                 new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         minFreqText.setText("2");
-        minFreqText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                validateInput();
-            }
-        });
+        minFreqText.addModifyListener(e -> validateInput());
 
         final Label maxNewVarsLabel = new Label(composite, SWT.WRAP);
         maxNewVarsLabel.setText(
@@ -158,12 +141,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
         maxNewVarsText.setLayoutData(
                 new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         maxNewVarsText.setText("4");
-        maxNewVarsText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                validateInput();
-            }
-        });
+        maxNewVarsText.addModifyListener(e -> validateInput());
 
         final Label simScoreLabel = new Label(composite, SWT.WRAP);
         simScoreLabel.setText("Similarity score (between 0.1 and 1.0):");
@@ -179,14 +157,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
         simScoreText.setLayoutData(
                 new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         simScoreText.setText("0.8");
-        simScoreText.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                validateInput();
-            }
-
-        });
+        simScoreText.addModifyListener(e -> validateInput());
 
         onlyInFileCheckBoxButton = new Button(composite, SWT.CHECK);
         onlyInFileCheckBoxButton.setText("Detect similar code snippets in the project");

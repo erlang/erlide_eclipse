@@ -177,7 +177,7 @@ public class BreakpointMarkerUpdater implements IMarkerUpdater {
         final IBreakpoint[] breakpoints = manager
                 .getBreakpoints(ErlDebugConstants.ID_ERLANG_DEBUG_MODEL);
         final String markerType = currentmarker.getType();
-        for (IBreakpoint breakpoint1 : breakpoints) {
+        for (final IBreakpoint breakpoint1 : breakpoints) {
             if (!(breakpoint1 instanceof IErlangBreakpoint)) {
                 continue;
             }

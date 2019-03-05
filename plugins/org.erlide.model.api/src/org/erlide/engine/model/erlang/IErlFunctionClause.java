@@ -19,11 +19,11 @@ import java.util.List;
  */
 public interface IErlFunctionClause extends IErlMember {
 
-    public String getHead();
+    String getHead();
 
-    public String getFunctionName();
+    String getFunctionName();
 
-    public List<String> getParameters();
+    List<String> getParameters();
 
     int getArity();
 

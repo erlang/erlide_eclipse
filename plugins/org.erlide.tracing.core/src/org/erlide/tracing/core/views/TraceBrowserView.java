@@ -6,7 +6,6 @@ import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -168,13 +167,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         treeViewer.setInput(TraceCollections.getFilesList());
 
         // listener
-        treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(final SelectionChangedEvent event) {
-                doSelection(event);
-            }
-        });
+        treeViewer.addSelectionChangedListener(event -> doSelection(event));
     }
 
     /**
@@ -228,12 +221,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
 
     @Override
     public void startTracing() {
-        Display.getDefault().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                enableActions(false);
-            }
-        });
+        Display.getDefault().asyncExec(() -> enableActions(false));
     }
 
     @Override
@@ -244,12 +232,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
             task.finish();
         } else {
             // when loading was initialized outside this view
-            Display.getDefault().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    doAfterLoadingFile();
-                }
-            });
+            Display.getDefault().asyncExec(() -> doAfterLoadingFile());
         }
     }
 
@@ -263,12 +246,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
 
     @Override
     public void removeFile() {
-        Display.getDefault().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                treeViewer.refresh();
-            }
-        });
+        Display.getDefault().asyncExec(() -> treeViewer.refresh());
     }
 
     @Override

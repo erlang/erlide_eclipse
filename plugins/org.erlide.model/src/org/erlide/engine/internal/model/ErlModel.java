@@ -10,7 +10,6 @@ package org.erlide.engine.internal.model;
 
 import java.nio.charset.Charset;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,7 +36,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
-import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.ModelPlugin;
@@ -493,7 +491,7 @@ public class ErlModel extends Openable implements IErlModel {
 
     @Override
     public IErlModule getModuleFromText(final IParent parent, final String name,
-            final String initialText, Charset encoding) {
+            final String initialText, final Charset encoding) {
         return getModuleWithoutResource(parent, name, null, encoding, initialText);
     }
 
@@ -894,19 +892,14 @@ public class ErlModel extends Openable implements IErlModel {
                 change(rsrc, changedDelta.get(rsrc));
             }
             // make sure we don't dispose trees before leaves...
-            removed.sort(new Comparator<IResource>() {
-
-                @Override
-                public int compare(final IResource o1, final IResource o2) {
-                    if (o1.equals(o2)) {
-                        return 0;
-                    } else if (o1.getFullPath().isPrefixOf(o2.getFullPath())) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
+            removed.sort((o1, o2) -> {
+                if (o1.equals(o2)) {
+                    return 0;
+                } else if (o1.getFullPath().isPrefixOf(o2.getFullPath())) {
+                    return 1;
+                } else {
+                    return -1;
                 }
-
             });
             for (final IResource rsrc : removed) {
                 remove(rsrc);
@@ -1172,12 +1165,7 @@ public class ErlModel extends Openable implements IErlModel {
     @Override
     public IErlLibrary getLibrary(final String name) throws ErlModelException {
         return IterableExtensions.findFirst(getLibraries(),
-                new Function1<IErlLibrary, Boolean>() {
-                    @Override
-                    public Boolean apply(final IErlLibrary input) {
-                        return input.getName().equals(name);
-                    }
-                });
+                input -> input.getName().equals(name));
     }
 
 }

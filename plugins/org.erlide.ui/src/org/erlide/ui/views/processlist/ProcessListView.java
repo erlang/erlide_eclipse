@@ -9,15 +9,12 @@
 package org.erlide.ui.views.processlist;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -40,7 +37,6 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.engine.ErlangEngine;
@@ -128,12 +124,9 @@ public class ProcessListView extends ViewPart {
                 if (!event.getTopic().equals(getTopic())) {
                     return;
                 }
-                DisplayUtils.asyncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!viewer.getControl().isDisposed()) {
-                            viewer.refresh();
-                        }
+                DisplayUtils.asyncExec(() -> {
+                    if (!viewer.getControl().isDisposed()) {
+                        viewer.refresh();
                     }
                 });
             }
@@ -218,12 +211,7 @@ public class ProcessListView extends ViewPart {
         viewer.setLabelProvider(new ViewLabelProvider());
         // viewer.setSorter(new NameSorter());
         viewer.setInput(getViewSite());
-        viewer.addDoubleClickListener(new IDoubleClickListener() {
-            @Override
-            public void doubleClick(final DoubleClickEvent event) {
-                doubleClickAction.run();
-            }
-        });
+        viewer.addDoubleClickListener(event -> doubleClickAction.run());
 
         t.setLinesVisible(true);
         t.setHeaderVisible(true);
@@ -238,13 +226,8 @@ public class ProcessListView extends ViewPart {
 
     private void initErlangService() {
         // TODO this is wrong - all backends should be inited
-        BackendCore.getBackendManager().forEachBackend(new Procedure1<IBackend>() {
-            @Override
-            public void apply(final IBackend b) {
-                ErlangEngine.getInstance().getProclistService()
-                        .processListInit(b.getOtpRpc());
-            }
-        });
+        BackendCore.getBackendManager().forEachBackend(b -> ErlangEngine.getInstance()
+                .getProclistService().processListInit(b.getOtpRpc()));
     }
 
     private void hookContextMenu() {
@@ -253,13 +236,7 @@ public class ProcessListView extends ViewPart {
         viewer.getControl().setMenu(menu);
         getSite().registerContextMenu(menuMgr, viewer);
         menuMgr.setRemoveAllWhenShown(true);
-        menuMgr.addMenuListener(new IMenuListener() {
-
-            @Override
-            public void menuAboutToShow(final IMenuManager manager) {
-                ProcessListView.this.fillContextMenu(manager);
-            }
-        });
+        menuMgr.addMenuListener(manager -> ProcessListView.this.fillContextMenu(manager));
     }
 
     private void contributeToActionBars() {

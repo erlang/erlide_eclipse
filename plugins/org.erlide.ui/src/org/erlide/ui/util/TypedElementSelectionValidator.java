@@ -64,7 +64,7 @@ public class TypedElementSelectionValidator implements ISelectionStatusValidator
     }
 
     private boolean isOfAcceptedType(final Object o) {
-        for (Class<?> fAcceptedType : fAcceptedTypes) {
+        for (final Class<?> fAcceptedType : fAcceptedTypes) {
             if (fAcceptedType.isInstance(o)) {
                 return true;
             }

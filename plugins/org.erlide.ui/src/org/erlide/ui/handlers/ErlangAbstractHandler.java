@@ -111,19 +111,16 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
         }
         ErlideEventTracer.getInstance().traceOperationStart(this);
         try {
-            final IRunnableWithProgress myRunnableWithProgress = new IRunnableWithProgress() {
-                @Override
-                public void run(final IProgressMonitor monitor0) {
-                    final IProgressMonitor monitor = monitor0 != null ? monitor0
-                            : new NullProgressMonitor();
-                    try {
-                        monitor.beginTask(
-                                "Processing " + textEditor.getEditorInput().getName(),
-                                IProgressMonitor.UNKNOWN);
-                        doAction(sel, textEditor);
-                    } finally {
-                        monitor.done();
-                    }
+            final IRunnableWithProgress myRunnableWithProgress = monitor0 -> {
+                final IProgressMonitor monitor = monitor0 != null ? monitor0
+                        : new NullProgressMonitor();
+                try {
+                    monitor.beginTask(
+                            "Processing " + textEditor.getEditorInput().getName(),
+                            IProgressMonitor.UNKNOWN);
+                    doAction(sel, textEditor);
+                } finally {
+                    monitor.done();
                 }
             };
 

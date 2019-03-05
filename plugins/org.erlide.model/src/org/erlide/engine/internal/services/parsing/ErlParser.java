@@ -8,7 +8,12 @@
  *******************************************************************************/
 package org.erlide.engine.internal.services.parsing;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.erlang.ErlAttribute;

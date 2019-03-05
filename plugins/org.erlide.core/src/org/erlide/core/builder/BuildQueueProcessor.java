@@ -1,6 +1,7 @@
 package org.erlide.core.builder;
 
 import java.util.Queue;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;

@@ -30,12 +30,7 @@ public class OpenBrowserUtil {
      * @since 3.6
      */
     public static void open(final URL url, final Display display) {
-        display.syncExec(new Runnable() {
-            @Override
-            public void run() {
-                OpenBrowserUtil.internalOpen(url, false);
-            }
-        });
+        display.syncExec(() -> OpenBrowserUtil.internalOpen(url, false));
     }
 
     /**
@@ -48,34 +43,26 @@ public class OpenBrowserUtil {
      * @since 3.6
      */
     public static void openExternal(final URL url, final Display display) {
-        display.syncExec(new Runnable() {
-            @Override
-            public void run() {
-                OpenBrowserUtil.internalOpen(url, true);
-            }
-        });
+        display.syncExec(() -> OpenBrowserUtil.internalOpen(url, true));
     }
 
     private static void internalOpen(final URL url, final boolean useExternalBrowser) {
-        BusyIndicator.showWhile(null, new Runnable() {
-            @Override
-            public void run() {
-                final URL helpSystemUrl = PlatformUI.getWorkbench().getHelpSystem()
-                        .resolve(url.toExternalForm(), true);
-                try {
-                    final IWorkbenchBrowserSupport browserSupport = PlatformUI
-                            .getWorkbench().getBrowserSupport();
-                    IWebBrowser browser;
-                    if (useExternalBrowser) {
-                        browser = browserSupport.getExternalBrowser();
-                    } else {
-                        browser = browserSupport.createBrowser(null);
-                    }
-                    browser.openURL(helpSystemUrl);
-                } catch (final PartInitException ex) {
-                    // XXX: show dialog?
-                    ErlLogger.error(ex);
+        BusyIndicator.showWhile(null, () -> {
+            final URL helpSystemUrl = PlatformUI.getWorkbench().getHelpSystem()
+                    .resolve(url.toExternalForm(), true);
+            try {
+                final IWorkbenchBrowserSupport browserSupport = PlatformUI.getWorkbench()
+                        .getBrowserSupport();
+                IWebBrowser browser;
+                if (useExternalBrowser) {
+                    browser = browserSupport.getExternalBrowser();
+                } else {
+                    browser = browserSupport.createBrowser(null);
                 }
+                browser.openURL(helpSystemUrl);
+            } catch (final PartInitException ex) {
+                // XXX: show dialog?
+                ErlLogger.error(ex);
             }
         });
     }

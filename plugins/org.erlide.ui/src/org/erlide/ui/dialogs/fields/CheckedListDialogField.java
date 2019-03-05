@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -70,13 +69,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
     protected TableViewer createTableViewer(final Composite parent) {
         final Table table = new Table(parent, SWT.CHECK + getListStyle());
         final CheckboxTableViewer tableViewer = new CheckboxTableViewer(table);
-        tableViewer.addCheckStateListener(new ICheckStateListener() {
-
-            @Override
-            public void checkStateChanged(final CheckStateChangedEvent e) {
-                doCheckStateChanged(e);
-            }
-        });
+        tableViewer.addCheckStateListener(e -> doCheckStateChanged(e));
         return tableViewer;
     }
 

@@ -12,23 +12,23 @@ import org.eclipse.swt.graphics.Image;
  */
 public interface ITreeNode {
 
-    public boolean hasChildren();
+    boolean hasChildren();
 
-    public List<ITreeNode> getChildren();
+    List<ITreeNode> getChildren();
 
-    public void addChildren(ITreeNode... child);
+    void addChildren(ITreeNode... child);
 
-    public void removeChild(ITreeNode child);
+    void removeChild(ITreeNode child);
 
-    public ITreeNode getParent();
+    ITreeNode getParent();
 
-    public void setParent(ITreeNode parent);
+    void setParent(ITreeNode parent);
 
-    public String getLabel();
+    String getLabel();
 
-    public void setLabel(String label);
+    void setLabel(String label);
 
-    public Image getImage();
+    Image getImage();
 
-    public void setImage(Image image);
+    void setImage(Image image);
 }

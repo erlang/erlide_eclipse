@@ -12,5 +12,5 @@ import org.erlide.engine.model.IParent;
  *
  */
 public interface IErlImport extends IErlImportExport, IErlMember, IParent {
-    public String getImportModule();
+    String getImportModule();
 }

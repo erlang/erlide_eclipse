@@ -113,7 +113,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
      *
      * @since 3.2
      */
-    private static interface Filter {
+    private interface Filter {
 
         boolean match(ErlangProjectionAnnotation annotation);
     }
@@ -469,14 +469,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
      */
     private final Filter fCollapseCommentsFilter = new CommentsFilter(false);
 
-    private final Filter fExpandAllFilter = new Filter() {
-
-        @Override
-        public boolean match(final ErlangProjectionAnnotation annotation) {
-            return annotation.isCollapsed();
-        }
-
-    };
+    private final Filter fExpandAllFilter = annotation -> annotation.isCollapsed();
 
     public DefaultErlangFoldingStructureProvider() {
     }
@@ -948,19 +941,14 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
             if (annotation instanceof ErlangProjectionAnnotation) {
                 final ErlangProjectionAnnotation epa = (ErlangProjectionAnnotation) annotation;
                 final Position position = model.getPosition(epa);
-                List<Tuple> list = map.computeIfAbsent(epa.getElement(),
+                final List<Tuple> list = map.computeIfAbsent(epa.getElement(),
                         k -> new ArrayList<>(2));
                 list.add(new Tuple(epa, position));
             }
         }
 
-        final Comparator<Tuple> comparator = new Comparator<Tuple>() {
-
-            @Override
-            public int compare(final Tuple o1, final Tuple o2) {
-                return o1.position.getOffset() - o2.position.getOffset();
-            }
-        };
+        final Comparator<Tuple> comparator = (o1, o2) -> o1.position.getOffset()
+                - o2.position.getOffset();
         for (final List<Tuple> name : map.values()) {
             final List<Tuple> list = name;
             list.sort(comparator);

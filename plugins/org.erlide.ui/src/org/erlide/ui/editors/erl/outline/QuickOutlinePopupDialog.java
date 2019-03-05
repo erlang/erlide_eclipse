@@ -27,8 +27,6 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionEvent;
@@ -468,26 +466,23 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
             }
         });
         // Handle text modify events
-        fFilterText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                String text = ((Text) e.widget).getText();
-                final int length = text.length();
-                if (length > 0) {
-                    // Append a '*' pattern to the end of the text value if it
-                    // does not have one already
-                    if (text.charAt(length - 1) != '*') {
-                        text = text + '*';
-                    }
-                    // Prepend a '*' pattern to the beginning of the text value
-                    // if it does not have one already
-                    if (text.charAt(0) != '*') {
-                        text = '*' + text;
-                    }
+        fFilterText.addModifyListener(e -> {
+            String text = ((Text) e.widget).getText();
+            final int length = text.length();
+            if (length > 0) {
+                // Append a '*' pattern to the end of the text value if it
+                // does not have one already
+                if (text.charAt(length - 1) != '*') {
+                    text = text + '*';
                 }
-                // Set and update the pattern
-                setMatcherString(text, true);
+                // Prepend a '*' pattern to the beginning of the text value
+                // if it does not have one already
+                if (text.charAt(0) != '*') {
+                    text = '*' + text;
+                }
             }
+            // Set and update the pattern
+            setMatcherString(text, true);
         });
     }
 
@@ -551,7 +546,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
         final ILabelProvider labelProvider = (ILabelProvider) fTreeViewer
                 .getLabelProvider();
         // Process each item in the tree
-        for (TreeItem item : items) {
+        for (final TreeItem item : items) {
             Object element = item.getData();
             // Return the first element if no pattern is set
             if (fStringMatcher == null) {

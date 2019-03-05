@@ -2,7 +2,7 @@
  * Code borrowed from PyDev
  *
  * @author: ptoofani
- * 
+ *
  * @author Fabio Zadrozny Created: June 2004 License: Common Public License v1.0
  */
 
@@ -660,7 +660,7 @@ public class ErlideSelection {
      */
     public static boolean endsWithSomeChar(final char[] cs,
             final String activationToken) {
-        for (char c : cs) {
+        for (final char c : cs) {
             if (activationToken.endsWith(c + "")) {
                 return true;
             }

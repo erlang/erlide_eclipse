@@ -15,8 +15,6 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -64,17 +62,13 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
                 for (final IPath dir : erlProject.getProperties().getSourceDirs()) {
                     final IFolder folder = project.getFolder(dir);
                     if (folder.isAccessible()) {
-                        folder.accept(new IResourceVisitor() {
-                            @Override
-                            public boolean visit(final IResource resource)
-                                    throws CoreException {
-                                if ("erl".equals(resource.getFileExtension())) {
-                                    if (resource.isAccessible()) {
-                                        files.add(resource.getLocation().toString());
-                                    }
+                        folder.accept(resource -> {
+                            if ("erl".equals(resource.getFileExtension())) {
+                                if (resource.isAccessible()) {
+                                    files.add(resource.getLocation().toString());
                                 }
-                                return true;
                             }
+                            return true;
                         });
                     }
                 }

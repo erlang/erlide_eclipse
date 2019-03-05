@@ -22,26 +22,26 @@ public interface IOutlineContentCreator {
     /**
      * @return
      */
-    public ViewerComparator createOutlineComparator();
+    ViewerComparator createOutlineComparator();
 
     /**
      * @return
      */
-    public ViewerComparator createDefaultOutlineComparator();
+    ViewerComparator createDefaultOutlineComparator();
 
     /**
      * @return
      */
-    public ILabelProvider createOutlineLabelProvider();
+    ILabelProvider createOutlineLabelProvider();
 
     /**
      * @return
      */
-    public ITreeContentProvider createOutlineContentProvider();
+    ITreeContentProvider createOutlineContentProvider();
 
     /**
      * @return
      */
-    public Object getOutlineInput();
+    Object getOutlineInput();
 
 }

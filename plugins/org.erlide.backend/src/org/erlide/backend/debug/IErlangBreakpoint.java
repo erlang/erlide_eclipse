@@ -95,8 +95,8 @@ public interface IErlangBreakpoint extends IBreakpoint {
 
     int getHitCount();
 
-    final int BREAK_ACTION_BREAK = 0;
-    final int BREAK_ACTION_TRACE_AND_CONTINUE = 1;
+    int BREAK_ACTION_BREAK = 0;
+    int BREAK_ACTION_TRACE_AND_CONTINUE = 1;
 
     void setBreakAction(int traceAction);
 

@@ -441,7 +441,7 @@ public class SearchUtil {
                     .getArray(SearchUtil.STORE_LRU_WORKING_SET_NAMES + i);
             if (lruWorkingSetNames != null) {
                 final Set<IWorkingSet> workingSets = new HashSet<>(2);
-                for (String lruWorkingSetName : lruWorkingSetNames) {
+                for (final String lruWorkingSetName : lruWorkingSetNames) {
                     final IWorkingSet workingSet = PlatformUI.getWorkbench()
                             .getWorkingSetManager().getWorkingSet(lruWorkingSetName);
                     if (workingSet != null) {

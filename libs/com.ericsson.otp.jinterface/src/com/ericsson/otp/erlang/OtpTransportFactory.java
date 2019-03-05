@@ -91,8 +91,7 @@ public interface OtpTransportFactory {
      * @return new socket object
      * @throws IOException
      */
-    public abstract OtpTransport createTransport(String addr, int port)
-            throws IOException;
+    OtpTransport createTransport(String addr, int port) throws IOException;
 
     /**
      * Create instance of {@link OtpTransport}
@@ -104,8 +103,7 @@ public interface OtpTransportFactory {
      * @return new socket object
      * @throws IOException
      */
-    public abstract OtpTransport createTransport(InetAddress addr, int port)
-            throws IOException;
+    OtpTransport createTransport(InetAddress addr, int port) throws IOException;
 
     /**
      * Create instance of {@link OtpServerTransport}
@@ -115,5 +113,5 @@ public interface OtpTransportFactory {
      * @return new socket object
      * @throws IOException
      */
-    public OtpServerTransport createServerTransport(int port) throws IOException;
+    OtpServerTransport createServerTransport(int port) throws IOException;
 }

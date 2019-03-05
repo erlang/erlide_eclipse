@@ -12,15 +12,12 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.wrangler.refactoring.duplicatedcode.actions.ClipboardAction;
@@ -43,16 +40,8 @@ public class DuplicatesView extends ViewPart {
     // }
     // }
 
-    ISelectionListener listener = new ISelectionListener() {
-
-        @Override
-        public void selectionChanged(final IWorkbenchPart part,
-                final ISelection selection) {
-            MessageDialog.openInformation(getSite().getShell(), "test",
-                    selection.toString());
-
-        }
-    };
+    ISelectionListener listener = (part, selection) -> MessageDialog
+            .openInformation(getSite().getShell(), "test", selection.toString());
 
     private TreeViewer viewer;
     private Action copyGeneralisedToClipboard;
@@ -178,24 +167,21 @@ public class DuplicatesView extends ViewPart {
         copyFunCallToClipboard.setImageDescriptor(PlatformUI.getWorkbench()
                 .getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
 
-        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(final SelectionChangedEvent event) {
-                final ISelection sel = event.getSelection();
-                if (sel == null || sel.isEmpty()) {
-                    return;
-                }
-                final TreeSelection tsel = (TreeSelection) sel;
-                final AbstractResultTreeObject selection = (AbstractResultTreeObject) tsel
-                        .getFirstElement();
-                copyGeneralisedToClipboard.setText(selection.getSuggestedCode());
-
-                if (selection instanceof DuplicatedCodeInstanceElement) {
-                    final DuplicatedCodeInstanceElement dcie = (DuplicatedCodeInstanceElement) selection;
-                    copyFunCallToClipboard.setText(dcie.getReplicationFunction());
-                }
-
+        viewer.addSelectionChangedListener(event -> {
+            final ISelection sel = event.getSelection();
+            if (sel == null || sel.isEmpty()) {
+                return;
             }
+            final TreeSelection tsel = (TreeSelection) sel;
+            final AbstractResultTreeObject selection = (AbstractResultTreeObject) tsel
+                    .getFirstElement();
+            copyGeneralisedToClipboard.setText(selection.getSuggestedCode());
+
+            if (selection instanceof DuplicatedCodeInstanceElement) {
+                final DuplicatedCodeInstanceElement dcie = (DuplicatedCodeInstanceElement) selection;
+                copyFunCallToClipboard.setText(dcie.getReplicationFunction());
+            }
+
         });
 
     }

@@ -52,15 +52,15 @@ public class ErlangCompletionService implements CompletionService {
 
     private static final List<CompletionData> EMPTY_COMPLETIONS = new ArrayList<>();
 
-    public ErlangCompletionService(IOtpRpc backend) {
+    public ErlangCompletionService(final IOtpRpc backend) {
         contextAssistService = new ErlideContextAssist(backend);
     }
 
     @Override
     public List<CompletionData> computeCompletions(final IOtpRpc backend,
-            IErlProject project0, IErlModule module0, String elementBefore0,
-            final int offset, final String before0, final boolean inString)
-            throws CoreException {
+            final IErlProject project0, final IErlModule module0,
+            final String elementBefore0, final int offset, final String before0,
+            final boolean inString) throws CoreException {
         // FIXME these should be passed on as parameters, where needed
         project = project0;
         module = module0;

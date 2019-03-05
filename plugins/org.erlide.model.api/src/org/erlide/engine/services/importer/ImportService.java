@@ -13,7 +13,6 @@ public interface ImportService {
      *
      * @return
      */
-    public abstract ErlProjectImport importProject(String prefix,
-            List<String> importSources);
+    ErlProjectImport importProject(String prefix, List<String> importSources);
 
 }

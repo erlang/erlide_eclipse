@@ -178,7 +178,8 @@ public final class MarkerUtils {
 
     private static void addMessage(final Map<String, List<OtpErlangTuple>> map,
             final String key, final OtpErlangTuple tuple) {
-        List<OtpErlangTuple> list = map.computeIfAbsent(key, k -> Lists.newArrayList());
+        final List<OtpErlangTuple> list = map.computeIfAbsent(key,
+                k -> Lists.newArrayList());
         list.add(tuple);
     }
 

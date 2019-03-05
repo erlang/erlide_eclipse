@@ -6,7 +6,6 @@ import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
@@ -22,7 +21,6 @@ import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
@@ -178,15 +176,9 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
     @Override
     public IInformationControlCreator getInformationControlCreator(
             final ISourceViewer sourceViewer) {
-        return new IInformationControlCreator() {
-
-            @Override
-            public IInformationControl createInformationControl(final Shell parent) {
-                return new DefaultInformationControl(parent,
-                        EditorsUI.getTooltipAffordanceString(),
-                        new ErlInformationPresenter(true));
-            }
-        };
+        return parent -> new DefaultInformationControl(parent,
+                EditorsUI.getTooltipAffordanceString(),
+                new ErlInformationPresenter(true));
     }
 
     @Override
@@ -200,13 +192,10 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
     }
 
     private IInformationControlCreator getQuickAssistAssistantInformationControlCreator() {
-        return new IInformationControlCreator() {
-            @Override
-            public IInformationControl createInformationControl(final Shell parent) {
-                final String affordance = ErlangSourceViewerConfiguration
-                        .getAdditionalInfoAffordanceString();
-                return new DefaultInformationControl(parent, affordance);
-            }
+        return parent -> {
+            final String affordance = ErlangSourceViewerConfiguration
+                    .getAdditionalInfoAffordanceString();
+            return new DefaultInformationControl(parent, affordance);
         };
     }
 

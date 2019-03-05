@@ -132,7 +132,7 @@ public class ResourceTreeAndListGroup extends EventManager
      */
     protected boolean areAllChildrenWhiteChecked(final Object treeElement) {
         final Object[] children = treeContentProvider.getChildren(treeElement);
-        for (Object aChildren : children) {
+        for (final Object aChildren : children) {
             if (!whiteCheckedTreeItems.contains(aChildren)) {
                 return false;
             }
@@ -182,17 +182,14 @@ public class ResourceTreeAndListGroup extends EventManager
     public void checkStateChanged(final CheckStateChangedEvent event) {
 
         // Potentially long operation - show a busy cursor
-        BusyIndicator.showWhile(treeViewer.getControl().getDisplay(), new Runnable() {
-            @Override
-            public void run() {
-                if (event.getCheckable().equals(treeViewer)) {
-                    treeItemChecked(event.getElement(), event.getChecked());
-                } else {
-                    listItemChecked(event.getElement(), event.getChecked(), true);
-                }
-
-                notifyCheckStateChangeListeners(event);
+        BusyIndicator.showWhile(treeViewer.getControl().getDisplay(), () -> {
+            if (event.getCheckable().equals(treeViewer)) {
+                treeItemChecked(event.getElement(), event.getChecked());
+            } else {
+                listItemChecked(event.getElement(), event.getChecked(), true);
             }
+
+            notifyCheckStateChangeListeners(event);
         });
     }
 
@@ -286,7 +283,7 @@ public class ResourceTreeAndListGroup extends EventManager
         // must remain gray-checked as well. Only ask expanded nodes
         if (expandedTreeNodes.contains(treeElement)) {
             final Object[] children = treeContentProvider.getChildren(treeElement);
-            for (Object aChildren : children) {
+            for (final Object aChildren : children) {
                 if (checkedStateStore.containsKey(aChildren)) {
                     return true;
                 }
@@ -320,7 +317,7 @@ public class ResourceTreeAndListGroup extends EventManager
         // statuses will be needed to determine the white-checked status for
         // this tree element
         final Object[] children = treeContentProvider.getElements(treeElement);
-        for (Object aChildren : children) {
+        for (final Object aChildren : children) {
             determineWhiteCheckedDescendents(aChildren);
         }
 
@@ -341,37 +338,34 @@ public class ResourceTreeAndListGroup extends EventManager
      * Expand an element in a tree viewer
      */
     private void expandTreeElement(final Object item) {
-        BusyIndicator.showWhile(treeViewer.getControl().getDisplay(), new Runnable() {
-            @Override
-            public void run() {
+        BusyIndicator.showWhile(treeViewer.getControl().getDisplay(), () -> {
 
-                // First see if the children need to be given their
-                // checked state at all. If they've
-                // already been realized then this won't be necessary
-                if (expandedTreeNodes.contains(item)) {
-                    checkNewTreeElements(treeContentProvider.getChildren(item));
-                } else {
+            // First see if the children need to be given their
+            // checked state at all. If they've
+            // already been realized then this won't be necessary
+            if (expandedTreeNodes.contains(item)) {
+                checkNewTreeElements(treeContentProvider.getChildren(item));
+            } else {
 
-                    expandedTreeNodes.add(item);
-                    if (whiteCheckedTreeItems.contains(item)) {
-                        // If this is the first expansion and this is a
-                        // white checked node then check the children
-                        final Object[] children = treeContentProvider.getChildren(item);
-                        for (Object aChildren : children) {
-                            if (!whiteCheckedTreeItems.contains(aChildren)) {
-                                final Object child = aChildren;
-                                setWhiteChecked(child, true);
-                                treeViewer.setChecked(child, true);
-                                checkedStateStore.put(child, new ArrayList<>());
-                            }
+                expandedTreeNodes.add(item);
+                if (whiteCheckedTreeItems.contains(item)) {
+                    // If this is the first expansion and this is a
+                    // white checked node then check the children
+                    final Object[] children = treeContentProvider.getChildren(item);
+                    for (final Object aChildren : children) {
+                        if (!whiteCheckedTreeItems.contains(aChildren)) {
+                            final Object child = aChildren;
+                            setWhiteChecked(child, true);
+                            treeViewer.setChecked(child, true);
+                            checkedStateStore.put(child, new ArrayList<>());
                         }
-
-                        // Now be sure to select the list of items too
-                        setListForWhiteSelection(item);
                     }
-                }
 
+                    // Now be sure to select the list of items too
+                    setListForWhiteSelection(item);
+                }
             }
+
         });
     }
 
@@ -447,7 +441,7 @@ public class ResourceTreeAndListGroup extends EventManager
             }
             result.addAll(listChildren);
             final Object[] children = treeContentProvider.getChildren(treeElement);
-            for (Object aChildren : children) {
+            for (final Object aChildren : children) {
                 findAllWhiteCheckedItems(aChildren, result);
             }
         }
@@ -470,7 +464,7 @@ public class ResourceTreeAndListGroup extends EventManager
         // Iterate through the children of the root as the root is not in the
         // store
         final Object[] children = treeContentProvider.getChildren(root);
-        for (Object aChildren : children) {
+        for (final Object aChildren : children) {
             findAllSelectedListElements(aChildren, null,
                     whiteCheckedTreeItems.contains(aChildren), filter, monitor);
         }
@@ -497,7 +491,7 @@ public class ResourceTreeAndListGroup extends EventManager
             @Override
             public void filterElements(final Object[] elements,
                     final IProgressMonitor monitor) {
-                for (Object element : elements) {
+                for (final Object element : elements) {
                     returnValue.add(element);
                 }
             }
@@ -525,7 +519,7 @@ public class ResourceTreeAndListGroup extends EventManager
         // Iterate through the children of the root as the root is not in the
         // store
         final Object[] children = treeContentProvider.getChildren(root);
-        for (Object aChildren : children) {
+        for (final Object aChildren : children) {
             findAllWhiteCheckedItems(aChildren, result);
         }
 
@@ -718,7 +712,7 @@ public class ResourceTreeAndListGroup extends EventManager
      */
     protected void notifyCheckStateChangeListeners(final CheckStateChangedEvent event) {
         final Object[] array = getListeners();
-        for (Object anArray : array) {
+        for (final Object anArray : array) {
             final ICheckStateListener l = (ICheckStateListener) anArray;
             SafeRunner.run(new SafeRunnable() {
                 @Override
@@ -745,19 +739,16 @@ public class ResourceTreeAndListGroup extends EventManager
                 && whiteCheckedTreeItems.contains(treeElement)) {
 
             // Potentially long operation - show a busy cursor
-            BusyIndicator.showWhile(treeViewer.getControl().getDisplay(), new Runnable() {
-                @Override
-                public void run() {
-                    setListForWhiteSelection(treeElement);
-                    listViewer.setAllChecked(true);
-                }
+            BusyIndicator.showWhile(treeViewer.getControl().getDisplay(), () -> {
+                setListForWhiteSelection(treeElement);
+                listViewer.setAllChecked(true);
             });
 
         } else {
             final List<Object> listItemsToCheck = checkedStateStore.get(treeElement);
 
             if (listItemsToCheck != null) {
-                for (Object aListItemsToCheck : listItemsToCheck) {
+                for (final Object aListItemsToCheck : listItemsToCheck) {
                     listViewer.setChecked(aListItemsToCheck, true);
                 }
             }
@@ -839,12 +830,9 @@ public class ResourceTreeAndListGroup extends EventManager
         }
 
         // Potentially long operation - show a busy cursor
-        BusyIndicator.showWhile(treeViewer.getControl().getDisplay(), new Runnable() {
-            @Override
-            public void run() {
-                setTreeChecked(root, selection);
-                listViewer.setAllChecked(selection);
-            }
+        BusyIndicator.showWhile(treeViewer.getControl().getDisplay(), () -> {
+            setTreeChecked(root, selection);
+            listViewer.setAllChecked(selection);
         });
     }
 
@@ -859,7 +847,7 @@ public class ResourceTreeAndListGroup extends EventManager
 
         final Object[] listItems = listContentProvider.getElements(treeElement);
         final List<Object> listItemsChecked = new ArrayList<>();
-        for (Object listItem : listItems) {
+        for (final Object listItem : listItems) {
             listItemsChecked.add(listItem);
         }
 
@@ -924,7 +912,7 @@ public class ResourceTreeAndListGroup extends EventManager
         // expanded
         if (expandedTreeNodes.contains(treeElement)) {
             final Object[] children = treeContentProvider.getChildren(treeElement);
-            for (Object aChildren : children) {
+            for (final Object aChildren : children) {
                 setTreeChecked(aChildren, state);
             }
         }

@@ -53,17 +53,13 @@ public final class ErlConsoleDocument extends Document implements BackendShellLi
 
     @Override
     public void changed(final BackendShellEvent event) {
-        DisplayUtils.asyncExec(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    replace(event.getOffset(), event.getRemovedLength(), event.getText());
-                } catch (final BadLocationException e) {
-                    ErlLogger.debug("%d, %d, %s", event.getOffset(),
-                            event.getRemovedLength(), event.getText());
-                    ErlLogger.error(e);
-                }
+        DisplayUtils.asyncExec(() -> {
+            try {
+                replace(event.getOffset(), event.getRemovedLength(), event.getText());
+            } catch (final BadLocationException e) {
+                ErlLogger.debug("%d, %d, %s", event.getOffset(), event.getRemovedLength(),
+                        event.getText());
+                ErlLogger.error(e);
             }
         });
     }

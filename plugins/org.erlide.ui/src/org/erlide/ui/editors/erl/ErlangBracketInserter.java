@@ -11,7 +11,6 @@ import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension;
-import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.IPositionUpdater;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewerExtension;
@@ -340,34 +339,27 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
         final IDocument document = sourceViewer.getDocument();
         if (document instanceof IDocumentExtension) {
             final IDocumentExtension extension = (IDocumentExtension) document;
-            extension.registerPostNotificationReplace(null,
-                    new IDocumentExtension.IReplace() {
+            extension.registerPostNotificationReplace(null, (d, owner) -> {
+                if ((level.fFirstPosition.isDeleted || level.fFirstPosition.length == 0)
+                        && !level.fSecondPosition.isDeleted
+                        && level.fSecondPosition.offset == level.fFirstPosition.offset) {
+                    try {
+                        document.replace(level.fSecondPosition.offset,
+                                level.fSecondPosition.length, ""); //$NON-NLS-1$
+                    } catch (final BadLocationException e1) {
+                        ErlLogger.error(e1);
+                    }
+                }
 
-                        @Override
-                        public void perform(final IDocument d,
-                                final IDocumentListener owner) {
-                            if ((level.fFirstPosition.isDeleted
-                                    || level.fFirstPosition.length == 0)
-                                    && !level.fSecondPosition.isDeleted
-                                    && level.fSecondPosition.offset == level.fFirstPosition.offset) {
-                                try {
-                                    document.replace(level.fSecondPosition.offset,
-                                            level.fSecondPosition.length, ""); //$NON-NLS-1$
-                                } catch (final BadLocationException e) {
-                                    ErlLogger.error(e);
-                                }
-                            }
-
-                            if (fBracketLevelStack.isEmpty()) {
-                                document.removePositionUpdater(fUpdater);
-                                try {
-                                    document.removePositionCategory(CATEGORY);
-                                } catch (final BadPositionCategoryException e) {
-                                    ErlLogger.error(e);
-                                }
-                            }
-                        }
-                    });
+                if (fBracketLevelStack.isEmpty()) {
+                    document.removePositionUpdater(fUpdater);
+                    try {
+                        document.removePositionCategory(CATEGORY);
+                    } catch (final BadPositionCategoryException e2) {
+                        ErlLogger.error(e2);
+                    }
+                }
+            });
         }
 
     }

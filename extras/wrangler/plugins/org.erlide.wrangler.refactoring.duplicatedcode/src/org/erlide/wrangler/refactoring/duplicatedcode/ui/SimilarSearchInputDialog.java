@@ -10,8 +10,6 @@ package org.erlide.wrangler.refactoring.duplicatedcode.ui;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -66,14 +64,7 @@ public class SimilarSearchInputDialog extends AbstractInputDialog {
         simScoreText.setLayoutData(
                 new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         simScoreText.setText("0.8");
-        simScoreText.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                validateInput();
-            }
-
-        });
+        simScoreText.addModifyListener(e -> validateInput());
 
         onlyInFileCheckBoxButton = new Button(composite, SWT.CHECK);
         onlyInFileCheckBoxButton.setText("Detect similar code snippets in the project");

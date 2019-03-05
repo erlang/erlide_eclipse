@@ -8,7 +8,6 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -65,23 +64,20 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
      */
     @Override
     public boolean performOk() {
-        final IWorkspaceRunnable wr = new IWorkspaceRunnable() {
-            @Override
-            public void run(final IProgressMonitor monitor) throws CoreException {
-                final IErlangBreakpoint breakpoint = getBreakpoint();
-                final boolean delOnCancel = breakpoint.getMarker().getAttribute(
-                        ErlangBreakpointPropertyPage.ATTR_DELETE_ON_CANCEL) != null;
-                if (delOnCancel) {
-                    // if this breakpoint is being created, remove the
-                    // "delete on cancel" attribute
-                    // and register with the breakpoint manager
-                    breakpoint.getMarker().setAttribute(
-                            ErlangBreakpointPropertyPage.ATTR_DELETE_ON_CANCEL,
-                            (String) null);
-                    breakpoint.setRegistered(true);
-                }
-                doStore();
+        final IWorkspaceRunnable wr = monitor -> {
+            final IErlangBreakpoint breakpoint = getBreakpoint();
+            final boolean delOnCancel = breakpoint.getMarker().getAttribute(
+                    ErlangBreakpointPropertyPage.ATTR_DELETE_ON_CANCEL) != null;
+            if (delOnCancel) {
+                // if this breakpoint is being created, remove the
+                // "delete on cancel" attribute
+                // and register with the breakpoint manager
+                breakpoint.getMarker().setAttribute(
+                        ErlangBreakpointPropertyPage.ATTR_DELETE_ON_CANCEL,
+                        (String) null);
+                breakpoint.setRegistered(true);
             }
+            doStore();
         };
         try {
             ResourcesPlugin.getWorkspace().run(wr, null, 0, null);

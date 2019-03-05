@@ -55,7 +55,7 @@ public interface IParent {
 
     void addChild(IErlElement child);
 
-    public void setChildren(final Collection<? extends IErlElement> children);
+    void setChildren(final Collection<? extends IErlElement> children);
 
     void removeChild(IErlElement e);
 

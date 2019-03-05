@@ -29,7 +29,6 @@ import org.eclipse.jface.viewers.IPostSelectionProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -97,14 +96,10 @@ public class MarkOccurencesSupport implements IDisposable {
     protected void installOccurrencesFinder(final boolean forceUpdate) {
         fMarkOccurrenceAnnotations = true;
 
-        fPostSelectionListener = new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(final SelectionChangedEvent event) {
-                final ISelection selection = event.getSelection();
-                editor.markOccurencesHandler.updateOccurrenceAnnotations(
-                        (ITextSelection) selection, editor.getModule());
-            }
+        fPostSelectionListener = event -> {
+            final ISelection selection = event.getSelection();
+            editor.markOccurencesHandler.updateOccurrenceAnnotations(
+                    (ITextSelection) selection, editor.getModule());
         };
         final ISelectionProvider selectionProvider = editor.getSelectionProvider();
         if (selectionProvider != null) {
@@ -234,7 +229,7 @@ public class MarkOccurencesSupport implements IDisposable {
                 ((IAnnotationModelExtension) annotationModel)
                         .replaceAnnotations(fOccurrenceAnnotations, null);
             } else {
-                for (Annotation fOccurrenceAnnotation : fOccurrenceAnnotations) {
+                for (final Annotation fOccurrenceAnnotation : fOccurrenceAnnotations) {
                     annotationModel.removeAnnotation(fOccurrenceAnnotation);
                 }
             }

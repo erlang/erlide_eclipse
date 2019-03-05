@@ -164,7 +164,7 @@ public class DialyzerPreferencePage extends PropertyPage
     protected Control createContents(final Composite parent) {
         loadPrefs();
         prefsComposite = new Composite(parent, SWT.NONE);
-        GridLayout gl_prefsComposite = new GridLayout();
+        final GridLayout gl_prefsComposite = new GridLayout();
         gl_prefsComposite.numColumns = 2;
         prefsComposite.setLayout(gl_prefsComposite);
 
@@ -223,7 +223,7 @@ public class DialyzerPreferencePage extends PropertyPage
     }
 
     private void createDialyzeCheckbox(final Composite group) {
-        Label lblNewLabel = new Label(prefsComposite, SWT.NONE);
+        final Label lblNewLabel = new Label(prefsComposite, SWT.NONE);
         lblNewLabel.setToolTipText(
                 "Only useful for small projects, the project is locked while running dialyzer");
         lblNewLabel.setImage(SWTResourceManager.getImage(DialyzerPreferencePage.class,
@@ -701,15 +701,12 @@ public class DialyzerPreferencePage extends PropertyPage
                 }
             }
             if (changed) {
-                getControl().getDisplay().asyncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!fPLTTableViewer.getControl().isDisposed()) {
-                            fPLTTableViewer.refresh();
-                            fPLTTableViewer.setSelection(
-                                    new StructuredSelection(selectedPLTPaths));
-                            fPLTTableViewer.setCheckedElements(checkedPltPaths.toArray());
-                        }
+                getControl().getDisplay().asyncExec(() -> {
+                    if (!fPLTTableViewer.getControl().isDisposed()) {
+                        fPLTTableViewer.refresh();
+                        fPLTTableViewer
+                                .setSelection(new StructuredSelection(selectedPLTPaths));
+                        fPLTTableViewer.setCheckedElements(checkedPltPaths.toArray());
                     }
                 });
             }

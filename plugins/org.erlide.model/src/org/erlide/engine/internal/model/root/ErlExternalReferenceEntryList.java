@@ -126,7 +126,7 @@ public class ErlExternalReferenceEntryList extends Openable implements IErlExter
                 addChild(parent);
             }
             for (final String path : otherItems) {
-                IPath apath = new Path(path);
+                final IPath apath = new Path(path);
                 final IErlModule module = model.getModuleFromFile(parent,
                         getNameFromPath(apath), apath, null);
                 parent.addChild(module);

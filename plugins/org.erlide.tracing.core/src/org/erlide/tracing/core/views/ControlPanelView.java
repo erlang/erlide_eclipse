@@ -4,13 +4,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -364,13 +362,10 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     private void fillProcessesList(final TableViewer tableViewer) {
         final IProgressService ps = PlatformUI.getWorkbench().getProgressService();
         try {
-            ps.busyCursorWhile(new IRunnableWithProgress() {
-                @Override
-                public void run(final IProgressMonitor pm) {
-                    final TracedProcess[] processesList = ProcessHelper
-                            .getProcsOnTracedNodes();
-                    TraceBackend.getInstance().setProcesses(processesList);
-                }
+            ps.busyCursorWhile(pm -> {
+                final TracedProcess[] processesList = ProcessHelper
+                        .getProcsOnTracedNodes();
+                TraceBackend.getInstance().setProcesses(processesList);
             });
         } catch (final Exception e) {
             ErlLogger.error(e);
@@ -816,14 +811,10 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
     @Override
     public void startTracing() {
-        DisplayUtils.asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                startStopAction
-                        .setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-                                .getImageDescriptor(ISharedImages.IMG_ELCL_STOP));
-                startStopAction.setToolTipText(ControlPanelView.STOP_LABEL);
-            }
+        DisplayUtils.asyncExec(() -> {
+            startStopAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
+                    .getImageDescriptor(ISharedImages.IMG_ELCL_STOP));
+            startStopAction.setToolTipText(ControlPanelView.STOP_LABEL);
         });
     }
 
@@ -845,11 +836,6 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
     @Override
     public void updateTracePatterns() {
-        Display.getDefault().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                functionsTableViewer.refresh();
-            }
-        });
+        Display.getDefault().asyncExec(() -> functionsTableViewer.refresh());
     }
 }

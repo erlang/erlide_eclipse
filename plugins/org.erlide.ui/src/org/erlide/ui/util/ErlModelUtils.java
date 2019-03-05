@@ -101,7 +101,7 @@ public class ErlModelUtils {
             Charset encoding;
             try {
                 encoding = Charset.forName(file.getCharset());
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 encoding = Charsets.UTF_8;
             }
             module = model.getModuleFromFile(model, file.getName(), path, encoding);
@@ -156,7 +156,7 @@ public class ErlModelUtils {
                     final IEncodedStorage encodedStorage = (IEncodedStorage) storage;
                     try {
                         return Charset.forName(encodedStorage.getCharset());
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         return Charsets.UTF_8;
                     }
                 }
@@ -165,7 +165,7 @@ public class ErlModelUtils {
         }
         try {
             return Charset.forName(ResourcesPlugin.getEncoding());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return Charsets.UTF_8;
         }
     }

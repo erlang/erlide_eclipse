@@ -30,7 +30,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -86,12 +85,7 @@ public class ErlangFileWizardPage extends WizardPage {
 
         moduleTemplates = ErlideUIPlugin.getDefault().getTemplateStore().getTemplates(
                 ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
-        fModifyListener = new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                dialogChanged();
-            }
-        };
+        fModifyListener = e -> dialogChanged();
     }
 
     /**

@@ -134,7 +134,7 @@ public class CallHierarchyView extends ViewPart {
     }
 
     public CallHierarchyView() {
-        this.xrefService = new ErlangXref(OtpRpcFactory.getOtpRpc());
+        xrefService = new ErlangXref(OtpRpcFactory.getOtpRpc());
         xrefService.start();
     }
 

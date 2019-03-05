@@ -12,7 +12,6 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
@@ -126,13 +125,8 @@ public abstract class ErlidePreferencePage extends PreferencePage {
     }
 
     protected Collection<Text> fNumberFields = Lists.newArrayList();
-    private final ModifyListener fNumberFieldListener = new ModifyListener() {
-
-        @Override
-        public void modifyText(final ModifyEvent e) {
-            numberFieldChanged((Text) e.widget);
-        }
-    };
+    private final ModifyListener fNumberFieldListener = e -> numberFieldChanged(
+            (Text) e.widget);
 
     public ErlidePreferencePage() {
         super();

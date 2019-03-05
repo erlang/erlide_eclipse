@@ -66,8 +66,8 @@ public class LRUWorkingSetsList {
     }
 
     private void removeDeletedWorkingSets() {
-        for (IWorkingSet[] workingSets : new ArrayList<>(fLRUList)) {
-            for (IWorkingSet workingSet : workingSets) {
+        for (final IWorkingSet[] workingSets : new ArrayList<>(fLRUList)) {
+            for (final IWorkingSet workingSet : workingSets) {
                 if (PlatformUI.getWorkbench().getWorkingSetManager()
                         .getWorkingSet(workingSet.getName()) == null) {
                     fLRUList.remove(workingSets);
@@ -80,7 +80,7 @@ public class LRUWorkingSetsList {
     private IWorkingSet[] find(final List<IWorkingSet[]> list,
             final IWorkingSet[] workingSets) {
         final Set<IWorkingSet> workingSetList = new HashSet<>(Arrays.asList(workingSets));
-        for (IWorkingSet[] lruWorkingSets : list) {
+        for (final IWorkingSet[] lruWorkingSets : list) {
             final Set<IWorkingSet> lruWorkingSetList = new HashSet<>(
                     Arrays.asList(lruWorkingSets));
             if (lruWorkingSetList.equals(workingSetList)) {

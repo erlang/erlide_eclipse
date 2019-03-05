@@ -247,21 +247,16 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         moduleDialog.setMessage("Select Erlang module: ");
 
         projectMBr = browserWithLabel(comp, "Project:", projectDialog);
-        projectMBr.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                updateLaunchConfigurationDialog();
-                final String projectName = projectMBr.getText();
-                if (projectName != null && !projectName.isEmpty()) {
-                    final IErlProject p = ErlangEngine.getInstance().getModel()
-                            .getErlangProject(ResourcesPlugin.getWorkspace().getRoot()
-                                    .getProject(projectName));
-                    if (p != null) {
-                        moduleDialog.setElements(createModuleArray(p));
-                    }
+        projectMBr.addModifyListener(e -> {
+            updateLaunchConfigurationDialog();
+            final String projectName = projectMBr.getText();
+            if (projectName != null && !projectName.isEmpty()) {
+                final IErlProject p = ErlangEngine.getInstance().getModel()
+                        .getErlangProject(ResourcesPlugin.getWorkspace().getRoot()
+                                .getProject(projectName));
+                if (p != null) {
+                    moduleDialog.setElements(createModuleArray(p));
                 }
-
             }
 
         });

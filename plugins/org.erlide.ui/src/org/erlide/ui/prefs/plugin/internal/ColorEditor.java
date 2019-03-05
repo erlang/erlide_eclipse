@@ -10,8 +10,6 @@ package org.erlide.ui.prefs.plugin.internal;
 
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -79,18 +77,14 @@ public class ColorEditor {
             }
         });
 
-        fButton.addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(final DisposeEvent event) {
-                if (fImage != null) {
-                    fImage.dispose();
-                    fImage = null;
-                }
-                if (fColor != null) {
-                    fColor.dispose();
-                    fColor = null;
-                }
+        fButton.addDisposeListener(event -> {
+            if (fImage != null) {
+                fImage.dispose();
+                fImage = null;
+            }
+            if (fColor != null) {
+                fColor.dispose();
+                fColor = null;
             }
         });
     }

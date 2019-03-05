@@ -155,7 +155,7 @@ public class CodeManager {
     }
 
     private PathItem findItem(final List<PathItem> l, final String p) {
-        for (PathItem it : l) {
+        for (final PathItem it : l) {
             if (it.path.equals(p)) {
                 return it;
             }

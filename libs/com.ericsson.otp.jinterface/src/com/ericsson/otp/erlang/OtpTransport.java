@@ -33,16 +33,16 @@ public interface OtpTransport {
     /**
      * @see Socket#getInputStream()
      */
-    public abstract InputStream getInputStream() throws IOException;
+    InputStream getInputStream() throws IOException;
 
     /**
      * @see Socket#getOutputStream()
      */
-    public abstract OutputStream getOutputStream() throws IOException;
+    OutputStream getOutputStream() throws IOException;
 
     /**
      * @see Socket#close()
      */
-    public abstract void close() throws IOException;
+    void close() throws IOException;
 
 }

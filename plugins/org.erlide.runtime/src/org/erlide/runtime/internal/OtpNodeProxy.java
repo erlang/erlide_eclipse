@@ -81,12 +81,7 @@ public class OtpNodeProxy implements IOtpNodeProxy {
         registerEventListener(new LogEventHandler());
         registerEventListener(new ErlangLogEventHandler());
 
-        final Provider<Service> factory = new Provider<Service>() {
-            @Override
-            public Service get() {
-                return new OtpNodeProxyService(data.isManaged());
-            }
-        };
+        final Provider<Service> factory = () -> new OtpNodeProxyService(data.isManaged());
 
         ServiceRestartPolicy policy;
         if (data.isRestartable()) {
