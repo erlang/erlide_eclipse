@@ -165,10 +165,10 @@ public final class RuntimeInfo {
 
         final boolean hasErl = RuntimeInfo.hasExecutableFile(otpHome + "/bin/erl");
 
-        final File lib = new File(otpHome + "/lib");
-        final boolean hasLib = lib.isDirectory() && lib.exists();
+        //final File lib = new File(otpHome + "/lib");
+        //final boolean hasLib = lib.isDirectory() && lib.exists();
 
-        return hasErl && hasLib;
+        return hasErl; //&& hasLib;
     }
 
     private static boolean hasExecutableFile(final String fileName) {

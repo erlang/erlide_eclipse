@@ -8,6 +8,7 @@ jdk:
 cache:
   directories:
     - $HOME/.m2
+    - $HOME/.gem
 
 install: true
 
@@ -15,12 +16,16 @@ before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
+  - "echo 'gem: --no-rdoc --no-ri' > $HOME/.gemrc"
   - gem update --system
   - gem update bundler
-  - ls -al .
+  #- kerl update releases
+  #- kerl build 20.3 20.3
+  #- kerl install 20.3 $HOME/erlang/20.3
+  #- . $HOME/erlang/20.3/activate
 
 script:
-  - ./mvnw -B -U clean verify -P help -Dmaven.test.failure.ignore=true -DskipTests=true -Dmaven.test.skip=true
+  - ./mvnw -B -U clean verify -P help -Dmaven.test.failure.ignore=true 
   - pwd
   - ls -al .
 # publish update site
