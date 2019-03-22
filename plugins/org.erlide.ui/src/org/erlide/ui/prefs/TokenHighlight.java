@@ -10,23 +10,23 @@ import org.osgi.service.prefs.Preferences;
 
 public enum TokenHighlight {
     //@formatter:off
-    DEFAULT(new RGB(0, 0, 0), 0),
-    KEYWORD(new RGB(160, 32, 240), 1),
-    ATOM(new RGB(0, 0, 0), 0),
-    MACRO(new RGB(95, 158, 160), 0),
-    ARROW(new RGB(0, 0, 255), 0),
-    CHAR(new RGB(188, 143, 143), 0),
-    VARIABLE(new RGB(184, 134, 11), 0),
-    INTEGER(new RGB(90, 90, 180), 0),
-    FLOAT(new RGB(0, 0, 128), 0),
+    DEFAULT(new RGB(66,113,174), 0),
+    KEYWORD(new RGB(137,89,168), 1),
+    ATOM(new RGB(77,77,76), 0),
+    MACRO(new RGB(234,183,0), 0),
+    ARROW(new RGB(66,113,174), 1),
+    CHAR(new RGB(113,140,0), 0),
+    VARIABLE(new RGB(200,40,41), 0),
+    INTEGER(new RGB( 245,135,31), 0),
+    FLOAT(new RGB( 245,135,31), 0),
 
-    COMMENT(new RGB(130, 34, 34), 0),
-    EDOC_TAG(new RGB(130, 34, 34), 1, "EDoc tag (in comments)"),
-    HTML_TAG(new RGB(179, 106, 106), 0, "HTML tag (in comments)"),
+    COMMENT(new RGB(142,144,140), 0),
+    EDOC_TAG(new RGB(142,144,140), 1, "EDoc tag (in comments)"),
+    HTML_TAG(new RGB(142,144,140), 2, "HTML tag (in comments)"),
 
-    STRING(new RGB(183, 143, 143), 0),
-    ESCAPE_TAG(new RGB(183, 143, 143), 1, "Escaped chars (in strings)"),
-    TILDE_TAG(new RGB(183, 143, 143), 1, "Format specifiers (in strings)");
+    STRING(new RGB(113,140,0), 0),
+    ESCAPE_TAG(new RGB(113,140,0), 1, "Escaped chars (in strings)"),
+    TILDE_TAG(new RGB(113,140,0), 1, "Format specifiers (in strings)");
     //@formatter:on
 
     private final RGB defaultColor;

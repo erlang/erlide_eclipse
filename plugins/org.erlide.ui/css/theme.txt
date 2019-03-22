@@ -1,0 +1,26 @@
+  #ffffff Background 0,0,0
+  #efefef Current Line 239,239,239
+  #d6d6d6 Selection 55,59,65
+1 #4d4d4c Foreground 77,77,76 default
+0 #8e908c Comment 142,144,140 comment
+2 #c82829 Red 200,40,41 variable
+3 #f5871f Orange 245,135,31 number
+4 #eab700 Yellow 234,183,0 macro
+5 #718c00 Green 113,140,0 string,char
+6 #3e999f Aqua 62,153,159 operator
+7 #4271ae Blue 66,113,174 function,atom
+8 #8959a8 Purple 137,89,168 keyword
+
+
+  #1d1f21 Background 29,31,33
+  #282a2e Current Line
+  #373b41 Selection
+1 #c5c8c6 Foreground 197,200,198
+0 #969896 Comment 150,152,150
+2 #cc6666 Red 204,102,102
+3 #de935f Orange 222,147,95
+4 #f0c674 Yellow 240,198,116
+5 #b5bd68 Green 181,189,104
+6 #8abeb7 Aqua 138,190,183
+7 #81a2be Blue 129,162,190
+8 #b294bb Purple 178,148,187
