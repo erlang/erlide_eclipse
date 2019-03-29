@@ -10,7 +10,15 @@
 			<attribute name="annotationpath" value="../../erlide_eclipse/.eea"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="src/"/>
-	<classpathentry kind="src" path="xtend-gen/"/>
+	<classpathentry kind="src" path="src/">
+		<attributes>
+			<attribute name="test" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="xtend-gen/">
+		<attributes>
+			<attribute name="test" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
