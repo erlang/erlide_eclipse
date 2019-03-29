@@ -1,5 +1,11 @@
 package org.erlide.ui.prefs;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -10,8 +16,8 @@ import org.osgi.service.prefs.Preferences;
 
 public enum TokenHighlight {
     //@formatter:off
-    DEFAULT(new RGB(66,113,174), 0),
-    KEYWORD(new RGB(137,89,168), 1),
+    DEFAULT("4271ae", 0),
+    KEYWORD("8959a8", 1),
     ATOM(new RGB(77,77,76), 0),
     MACRO(new RGB(234,183,0), 0),
     ARROW(new RGB(66,113,174), 1),
@@ -41,6 +47,78 @@ public enum TokenHighlight {
         this.defaultColor = defaultColor;
         this.defaultStyle = defaultStyle;
         this.displayName = displayName;
+    }
+
+    private TokenHighlight(String defaultColor, int defaultStyle) {
+        this(defaultColor, defaultStyle, null);
+    }
+
+    private TokenHighlight(String defaultColor, int defaultStyle,
+            final String displayName) {
+        this.defaultColor = getRgbFromCss(defaultColor);
+        this.defaultStyle = defaultStyle;
+        this.displayName = displayName;
+    }
+
+    public static RGB getRgbFromCss(String color) {
+        int i;
+        int s;
+        int f;
+        switch (color.length()) {
+        case 3:
+            i = 0;
+            s = 1;
+            f = 17;
+            break;
+        case 4:
+            i = 1;
+            s = 1;
+            f = 17;
+            break;
+        case 6:
+            i = 0;
+            s = 2;
+            f = 1;
+            break;
+        case 7:
+            i = 1;
+            s = 2;
+            f = 1;
+            break;
+        default:
+            throw new IllegalArgumentException(
+                    "Unrecognizable CSS color string: '" + color + "'");
+        }
+        Integer r = Integer.valueOf(color.substring(i, i + s), 16) * f;
+        Integer g = Integer.valueOf(color.substring(i + s, i + 2 * s), 16) * f;
+        Integer b = Integer.valueOf(color.substring(i + 2 * s, i + 3 * s), 16) * f;
+        return new RGB(r, g, b);
+    }
+
+    public static String getValueFromCss(String css, String key, String kind) {
+        Pattern pattern = Pattern.compile(
+                ".*'editor_colors_" + key + "_" + kind + " = ([^']+)'.*", Pattern.DOTALL);
+        System.out.println(pattern);
+        System.out.println(css);
+        Matcher m = pattern.matcher(css);
+        if (m.matches())
+            return m.group(1);
+        return null;
+    }
+
+    public static String getCssTheme() {
+        // IWorkbench workbench = PlatformUI.getWorkbench();
+        // ITheme theme = workbench.getThemeManager().getCurrentTheme();
+        // System.out.println(theme.getColorRegistry().getKeySet());
+        try (InputStream is = TokenHighlight.class
+                .getResourceAsStream("/css/light_highlighting.css");
+                Scanner s = new Scanner(is)) {
+            s.useDelimiter("\\A");
+            return s.hasNext() ? s.next() : "";
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public String getName() {
