@@ -7,7 +7,6 @@
 		<groupId>org.erlide</groupId>
 		<artifactId>org.erlide.libraries</artifactId>
 		<version>1.0.0</version>
-		<relativePath>..</relativePath>
 	</parent>
 
 	<artifactId>org.fishwife.jrugged</artifactId>
