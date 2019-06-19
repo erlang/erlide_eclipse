@@ -1,6 +1,6 @@
 package org.erlide.engine
 
-import com.google.common.base.Objects
+import com.google.common.base.MoreObjects
 import java.io.File
 import java.util.Map
 import org.eclipse.core.runtime.IPath
@@ -10,10 +10,10 @@ import org.erlide.engine.model.root.ErlangProjectProperties
 import org.erlide.engine.model.root.IProjectConfigurator
 import org.erlide.engine.model.root.IProjectConfiguratorFactory
 import org.erlide.engine.model.root.ProjectConfigType
+import org.erlide.engine.model.root.ProjectConfiguratorFactory
 import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.api.RuntimeCore
 import org.erlide.runtime.runtimeinfo.RuntimeInfo
-import org.erlide.engine.model.root.ProjectConfiguratorFactory
 
 @Accessors
 class NewProjectData extends ErlangProjectProperties {
@@ -34,7 +34,7 @@ class NewProjectData extends ErlangProjectProperties {
     }
 
     override String toString() {
-        val helper = Objects.toStringHelper(this) => [
+        val helper = MoreObjects.toStringHelper(this) => [
             add("name", name)
             add("location", location)
             add("existingProject", existingProject)

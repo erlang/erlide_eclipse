@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2005 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.actions;
 
@@ -28,8 +26,8 @@ import org.erlide.ui.editors.erl.actions.IErlangEditorActionDefinitionIds;
 import org.erlide.ui.util.IContextMenuConstants;
 
 /**
- * Action group that adds the actions opening a new editor to the context menu
- * and the action bar's navigate menu.
+ * Action group that adds the actions opening a new editor to the context menu and the
+ * action bar's navigate menu.
  *
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -46,8 +44,8 @@ public class OpenEditorActionGroup extends ActionGroup {
     private final OpenAction fOpen;
 
     /**
-     * Creates a new <code>OpenActionGroup</code>. The group requires that the
-     * selection provided by the part's selection provider is of type <code>
+     * Creates a new <code>OpenActionGroup</code>. The group requires that the selection
+     * provided by the part's selection provider is of type <code>
      * org.eclipse.jface.viewers.IStructuredSelection</code> .
      *
      * @param part
@@ -63,8 +61,8 @@ public class OpenEditorActionGroup extends ActionGroup {
     /**
      * Returns the open action managed by this action group.
      *
-     * @return the open action. Returns <code>null</code> if the group doesn't
-     *         provide any open action
+     * @return the open action. Returns <code>null</code> if the group doesn't provide any
+     *         open action
      */
     public IAction getOpenAction() {
         return fOpen;

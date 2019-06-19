@@ -51,10 +51,10 @@ public class CompilerOptionsTest {
     @Test
     public void test_4() {
         final CompilerOptions prefs = new CompilerOptions();
-        prefs.setListOption(CompilerOptions.DEFINE,
-                new Pair<>("Macro", "[value,1]"));
+        prefs.setListOption(CompilerOptions.DEFINE, new Pair<>("Macro", "[value,1]"));
         final String actual = prefs.export().toString();
-        final String expect = "[{d,'Macro',[value,1]}," + CompilerOptionsTest.DEF_VALUES + "]";
+        final String expect = "[{d,'Macro',[value,1]}," + CompilerOptionsTest.DEF_VALUES
+                + "]";
         Assert.assertEquals(expect, actual);
     }
 
@@ -133,7 +133,8 @@ public class CompilerOptionsTest {
         final CompilerOptions prefs = new CompilerOptions();
         prefs.setPathOption(CompilerOptions.INCLUDE_DIRS, parseIncludes("/tmp/x,/tmp/y"));
         final String actual = prefs.export().toString();
-        final String expect = "[{i,\"/tmp/x\"},{i,\"/tmp/y\"}," + CompilerOptionsTest.DEF_VALUES + "]";
+        final String expect = "[{i,\"/tmp/x\"},{i,\"/tmp/y\"},"
+                + CompilerOptionsTest.DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
     }
 

@@ -16,7 +16,6 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -357,12 +356,12 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
     }
 
     @Override
-    public void saveState(IMemento aMemento) {
+    public void saveState(final IMemento aMemento) {
         if (exprs.isEmpty()) {
             return;
         }
         final IMemento aMemento2 = aMemento.createChild("LiveExpressions");
-        for (LiveExpr expr : exprs) {
+        for (final LiveExpr expr : exprs) {
             aMemento2.createChild("expression").putTextData(expr.toString());
         }
     }
@@ -428,13 +427,8 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
     private void hookContextMenu() {
         final MenuManager menuMgr = new MenuManager("#PopupMenu");
         menuMgr.setRemoveAllWhenShown(true);
-        menuMgr.addMenuListener(new IMenuListener() {
-
-            @Override
-            public void menuAboutToShow(final IMenuManager manager) {
-                LiveExpressionsView.this.fillContextMenu(manager);
-            }
-        });
+        menuMgr.addMenuListener(
+                manager -> LiveExpressionsView.this.fillContextMenu(manager));
         final Menu menu = menuMgr.createContextMenu(viewer.getControl());
         viewer.getControl().setMenu(menu);
         getSite().registerContextMenu(menuMgr, viewer);
@@ -540,18 +534,14 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
 
     private void refreshView() {
         if (!viewer.getControl().isDisposed()) {
-            DisplayUtils.asyncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (viewer == null) {
-                        return;
-                    }
-                    if (viewer.getControl().isDisposed()) {
-                        return;
-                    }
-                    viewer.refresh();
+            DisplayUtils.asyncExec(() -> {
+                if (viewer == null) {
+                    return;
                 }
+                if (viewer.getControl().isDisposed()) {
+                    return;
+                }
+                viewer.refresh();
             });
         }
     }

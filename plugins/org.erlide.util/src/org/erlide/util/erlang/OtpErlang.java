@@ -81,7 +81,8 @@ public class OtpErlang {
 
     public static OtpBindings match(final String pattern, final String term)
             throws OtpParserException {
-        return OtpErlang.match(OtpErlang.parse(pattern), OtpErlang.parse(term), new OtpBindings());
+        return OtpErlang.match(OtpErlang.parse(pattern), OtpErlang.parse(term),
+                new OtpBindings());
     }
 
     public static OtpBindings match(final String pattern, final OtpErlangObject term)
@@ -180,7 +181,8 @@ public class OtpErlang {
             return rez;
         }
         if (lpattern.getLastTail() instanceof OtpPatternVariable) {
-            return OtpErlang.match(lpattern.getLastTail(), lterm.getNthTail(patternArity), rez);
+            return OtpErlang.match(lpattern.getLastTail(), lterm.getNthTail(patternArity),
+                    rez);
         }
         return OtpErlang.match(lpattern.getLastTail(), lterm.getLastTail(), rez);
     }

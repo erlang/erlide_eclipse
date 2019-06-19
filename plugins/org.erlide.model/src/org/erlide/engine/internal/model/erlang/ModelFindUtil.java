@@ -200,7 +200,8 @@ public class ModelFindUtil implements ModelFindService {
                 return module.getModuleName();
             }
             final IErlPreprocessorDef def = module.findPreprocessorDef(
-                    ModelFindUtil.withoutInterrogationMark(definedName), ErlElementKind.MACRO_DEF);
+                    ModelFindUtil.withoutInterrogationMark(definedName),
+                    ErlElementKind.MACRO_DEF);
             if (def != null) {
                 final String extra = def.getExtra();
                 final int p = extra.indexOf(',');

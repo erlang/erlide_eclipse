@@ -9,10 +9,10 @@ import java.util.ListIterator;
 import java.util.Map;
 
 /**
- * The content provider class is responsible for providing objects to the view.
- * It can wrap existing objects in adapters or simply return objects as-is.
- * These objects may be sensitive to the current input of the view, or ignore it
- * and always show the same content (like Task List, for example).
+ * The content provider class is responsible for providing objects to the view. It can
+ * wrap existing objects in adapters or simply return objects as-is. These objects may be
+ * sensitive to the current input of the view, or ignore it and always show the same
+ * content (like Task List, for example).
  *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  */

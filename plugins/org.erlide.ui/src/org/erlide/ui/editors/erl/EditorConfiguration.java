@@ -1,13 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2004 Eric Merritt and others. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Eric Merritt
- *     Vlad Dumitrescu
+ * Contributors: Eric Merritt Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
@@ -19,12 +16,10 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.engine.ErlangEngine;
@@ -102,26 +97,22 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     @Override
     public IInformationControlCreator getInformationControlCreator(
             final ISourceViewer sourceViewer) {
-        return new IInformationControlCreator() {
-
-            @Override
-            public IInformationControl createInformationControl(final Shell parent) {
-                if (parent.getText().length() == 0
-                        && ErlangBrowserInformationControl.isAvailable(parent)) {
-                    final ErlangBrowserInformationControl info = new ErlangBrowserInformationControl(
-                            parent, JFaceResources.DIALOG_FONT,
-                            EditorsUI.getTooltipAffordanceString()) {
-                        @Override
-                        public IInformationControlCreator getInformationPresenterControlCreator() {
-                            return new PresenterControlCreator(editor);
-                        }
-                    };
-                    return info;
-                }
-                return new DefaultInformationControl(parent,
-                        EditorsUI.getTooltipAffordanceString(),
-                        new ErlInformationPresenter(true));
+        return parent -> {
+            if (parent.getText().length() == 0
+                    && ErlangBrowserInformationControl.isAvailable(parent)) {
+                final ErlangBrowserInformationControl info = new ErlangBrowserInformationControl(
+                        parent, JFaceResources.DIALOG_FONT,
+                        EditorsUI.getTooltipAffordanceString()) {
+                    @Override
+                    public IInformationControlCreator getInformationPresenterControlCreator() {
+                        return new PresenterControlCreator(editor);
+                    }
+                };
+                return info;
             }
+            return new DefaultInformationControl(parent,
+                    EditorsUI.getTooltipAffordanceString(),
+                    new ErlInformationPresenter(true));
         };
     }
 

@@ -24,7 +24,8 @@ import org.erlide.ui.util.OverlayPreferenceStore.TypeDescriptor;
 /**
  * Erlang (erlide) default folding preferences.
  */
-public class DefaultErlangFoldingPreferenceBlock implements IErlangFoldingPreferenceBlock {
+public class DefaultErlangFoldingPreferenceBlock
+        implements IErlangFoldingPreferenceBlock {
 
     private final IPreferenceStore fStore;
 
@@ -113,7 +114,7 @@ public class DefaultErlangFoldingPreferenceBlock implements IErlangFoldingPrefer
     }
 
     private void initializeFields() {
-        for (Button b : fCheckBoxes.keySet()) {
+        for (final Button b : fCheckBoxes.keySet()) {
             final String key = fCheckBoxes.get(b);
             b.setSelection(fOverlayStore.getBoolean(key));
         }

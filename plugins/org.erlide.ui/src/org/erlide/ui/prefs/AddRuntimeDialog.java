@@ -26,10 +26,7 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.ui.dialogs.fields.DialogField;
-import org.erlide.ui.dialogs.fields.IDialogFieldListener;
 import org.erlide.ui.dialogs.fields.IListAdapter;
-import org.erlide.ui.dialogs.fields.IStringButtonAdapter;
 import org.erlide.ui.dialogs.fields.ListDialogField;
 import org.erlide.ui.dialogs.fields.StringButtonDialogField;
 import org.erlide.ui.dialogs.fields.StringDialogField;
@@ -102,21 +99,13 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
     }
 
     protected void createFieldListeners() {
-        fOtpHome.setDialogFieldListener(new IDialogFieldListener() {
-
-            @Override
-            public void dialogFieldChanged(final DialogField field) {
-                setLocationStatus(validateLocation());
-                updateStatusLine();
-            }
+        fOtpHome.setDialogFieldListener(field -> {
+            setLocationStatus(validateLocation());
+            updateStatusLine();
         });
-        fName.setDialogFieldListener(new IDialogFieldListener() {
-
-            @Override
-            public void dialogFieldChanged(final DialogField field) {
-                setNameStatus(validateName());
-                updateStatusLine();
-            }
+        fName.setDialogFieldListener(field -> {
+            setNameStatus(validateName());
+            updateStatusLine();
         });
     }
 
@@ -126,13 +115,7 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
 
     @Override
     protected Control createDialogArea(final Composite ancestor) {
-        fOtpHome = new StringButtonDialogField(new IStringButtonAdapter() {
-
-            @Override
-            public void changeControlPressed(final DialogField field) {
-                browseForInstallDir();
-            }
-        });
+        fOtpHome = new StringButtonDialogField(field -> browseForInstallDir());
         fOtpHome.setLabelText("Location"); //$NON-NLS-1$
         fOtpHome.setButtonLabel("&Browse..."); //$NON-NLS-1$
 
@@ -271,8 +254,8 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
     }
 
     /**
-     * Updates the status of the ok button to reflect the given status.
-     * Subclasses may override this method to update additional buttons.
+     * Updates the status of the ok button to reflect the given status. Subclasses may
+     * override this method to update additional buttons.
      *
      * @param status
      *            the status.

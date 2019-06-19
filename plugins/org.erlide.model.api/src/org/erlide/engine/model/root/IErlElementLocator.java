@@ -31,8 +31,8 @@ public interface IErlElementLocator {
             throws ErlModelException;
 
     /**
-     * Locates definitions of functions matching the given signature. Function
-     * name and module can be regexps.
+     * Locates definitions of functions matching the given signature. Function name and
+     * module can be regexps.
      *
      * @throws ErlModelException
      */
@@ -42,9 +42,9 @@ public interface IErlElementLocator {
             final String modulePath, final IErlElementLocator.Scope scope)
             throws ErlModelException;
 
-    IErlModule findIncludeFromProject(final IErlProject project,
-            final String includeName, final String includePath,
-            final IErlElementLocator.Scope scope) throws ErlModelException;
+    IErlModule findIncludeFromProject(final IErlProject project, final String includeName,
+            final String includePath, final IErlElementLocator.Scope scope)
+            throws ErlModelException;
 
     IErlModule findIncludeFromModule(final IErlModule module, final String includeName,
             final String includePath, final IErlElementLocator.Scope scope)

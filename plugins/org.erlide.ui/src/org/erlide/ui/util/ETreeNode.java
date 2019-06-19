@@ -3,14 +3,12 @@ package org.erlide.ui.util;
 import java.util.Objects;
 
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2005, 2007 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 import org.eclipse.jface.util.Util;
@@ -18,10 +16,10 @@ import org.eclipse.jface.util.Util;
 import com.google.common.collect.Iterables;
 
 /**
- * A simple data structure that is useful for implemented tree models. This can
- * be returned by
- * {@link org.eclipse.jface.viewers.IStructuredContentProvider#getElements(Object)}
- * . It allows simple delegation of methods from
+ * A simple data structure that is useful for implemented tree models. This can be
+ * returned by
+ * {@link org.eclipse.jface.viewers.IStructuredContentProvider#getElements(Object)} . It
+ * allows simple delegation of methods from
  * {@link org.eclipse.jface.viewers.ITreeContentProvider} such as
  * {@link org.eclipse.jface.viewers.ITreeContentProvider#getChildren(Object)},
  * {@link org.eclipse.jface.viewers.ITreeContentProvider#getParent(Object)} and
@@ -31,16 +29,15 @@ import com.google.common.collect.Iterables;
 public class ETreeNode {
 
     /**
-     * The array of child tree nodes for this tree node. If there are no
-     * children, then this value may either by an empty array or
-     * <code>null</code>. There should be no <code>null</code> children in the
-     * array.
+     * The array of child tree nodes for this tree node. If there are no children, then
+     * this value may either by an empty array or <code>null</code>. There should be no
+     * <code>null</code> children in the array.
      */
     private Iterable<ETreeNode> children;
 
     /**
-     * The parent tree node for this tree node. This value may be
-     * <code>null</code> if there is no parent.
+     * The parent tree node for this tree node. This value may be <code>null</code> if
+     * there is no parent.
      */
     private ETreeNode parent;
 
@@ -69,11 +66,11 @@ public class ETreeNode {
     }
 
     /**
-     * Returns the child nodes. Empty arrays are converted to <code>null</code>
-     * before being returned.
+     * Returns the child nodes. Empty arrays are converted to <code>null</code> before
+     * being returned.
      *
-     * @return The child nodes; may be <code>null</code>, but never empty. There
-     *         should be no <code>null</code> children in the array.
+     * @return The child nodes; may be <code>null</code>, but never empty. There should be
+     *         no <code>null</code> children in the array.
      */
     public Iterable<ETreeNode> getChildren() {
         if (children != null && Iterables.size(children) == 0) {
@@ -85,8 +82,7 @@ public class ETreeNode {
     /**
      * Returns the parent node.
      *
-     * @return The parent node; may be <code>null</code> if there are no parent
-     *         nodes.
+     * @return The parent node; may be <code>null</code> if there are no parent nodes.
      */
     public ETreeNode getParent() {
         return parent;
@@ -104,8 +100,8 @@ public class ETreeNode {
     /**
      * Returns whether the tree has any children.
      *
-     * @return <code>true</code> if its array of children is not
-     *         <code>null</code> and is non-empty; <code>false</code> otherwise.
+     * @return <code>true</code> if its array of children is not <code>null</code> and is
+     *         non-empty; <code>false</code> otherwise.
      */
     public boolean hasChildren() {
         return children != null && Iterables.size(children) > 0;
@@ -120,8 +116,8 @@ public class ETreeNode {
      * Sets the children for this node.
      *
      * @param children
-     *            The child nodes; may be <code>null</code> or empty. There
-     *            should be no <code>null</code> children in the array.
+     *            The child nodes; may be <code>null</code> or empty. There should be no
+     *            <code>null</code> children in the array.
      */
     public void setChildren(final Iterable<ETreeNode> children) {
         this.children = children;

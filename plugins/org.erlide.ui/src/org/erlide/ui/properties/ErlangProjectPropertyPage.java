@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.properties;
 
@@ -14,8 +13,6 @@ import java.util.Arrays;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -26,7 +23,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.eclipse.xtext.xbase.lib.Functions;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.ErlangProjectProperties;
@@ -113,13 +109,9 @@ public class ErlangProjectPropertyPage extends PropertyPage {
             runtimeCombo.setLayoutData(gd_combo);
             runtimeCombo.setEnabled(globalEnable);
             final RuntimeVersion[] runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS;
-            runtimeCombo.setItems(ListExtensions.map(Arrays.asList(runtimeVersions),
-                    new Functions.Function1<RuntimeVersion, String>() {
-                        @Override
-                        public String apply(final RuntimeVersion p) {
-                            return p.toString();
-                        }
-                    }).toArray(new String[] {}));
+            runtimeCombo.setItems(
+                    ListExtensions.map(Arrays.asList(runtimeVersions), p -> p.toString())
+                            .toArray(new String[] {}));
             runtimeCombo.setText(model.getRequiredRuntimeVersion().asMajor().toString());
             runtimeCombo.addSelectionListener(new SelectionListener() {
 
@@ -148,13 +140,8 @@ public class ErlangProjectPropertyPage extends PropertyPage {
                     .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
             outputText.setEnabled(globalEnable);
             outputText.setText(model.getOutputDir().toPortableString());
-            outputText.addModifyListener(new ModifyListener() {
-
-                @Override
-                public void modifyText(final ModifyEvent e) {
-                    model.setOutputDir(new Path(outputText.getText()));
-                }
-            });
+            outputText.addModifyListener(
+                    e -> model.setOutputDir(new Path(outputText.getText())));
         }
         {
             final Label lblNewLabel = new Label(composite, SWT.NONE);
@@ -168,13 +155,8 @@ public class ErlangProjectPropertyPage extends PropertyPage {
                     .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
             sourcesText.setEnabled(globalEnable);
             sourcesText.setText(PathSerializer.packList(model.getSourceDirs()));
-            sourcesText.addModifyListener(new ModifyListener() {
-
-                @Override
-                public void modifyText(final ModifyEvent e) {
-                    model.setSourceDirs(PathSerializer.unpackList(sourcesText.getText()));
-                }
-            });
+            sourcesText.addModifyListener(e -> model
+                    .setSourceDirs(PathSerializer.unpackList(sourcesText.getText())));
         }
         {
             final Label lblNewLabel = new Label(composite, SWT.NONE);
@@ -188,14 +170,8 @@ public class ErlangProjectPropertyPage extends PropertyPage {
                     .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
             includesText.setEnabled(globalEnable);
             includesText.setText(PathSerializer.packList(model.getIncludeDirs()));
-            includesText.addModifyListener(new ModifyListener() {
-
-                @Override
-                public void modifyText(final ModifyEvent e) {
-                    model.setIncludeDirs(
-                            PathSerializer.unpackList(includesText.getText()));
-                }
-            });
+            includesText.addModifyListener(e -> model
+                    .setIncludeDirs(PathSerializer.unpackList(includesText.getText())));
         }
         {
             final Label lblNewLabel = new Label(composite, SWT.NONE);
@@ -210,13 +186,8 @@ public class ErlangProjectPropertyPage extends PropertyPage {
             testsText
                     .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
             testsText.setText(PathSerializer.packList(model.getTestDirs()));
-            testsText.addModifyListener(new ModifyListener() {
-
-                @Override
-                public void modifyText(final ModifyEvent e) {
-                    model.setTestDirs(PathSerializer.unpackList(testsText.getText()));
-                }
-            });
+            testsText.addModifyListener(e -> model
+                    .setTestDirs(PathSerializer.unpackList(testsText.getText())));
         }
         new Label(composite, SWT.NONE);
         new Label(composite, SWT.NONE);

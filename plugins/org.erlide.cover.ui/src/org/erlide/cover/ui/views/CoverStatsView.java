@@ -3,17 +3,13 @@ package org.erlide.cover.ui.views;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -83,62 +79,56 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
 
     private final Logger log; // logger
 
-    private final ISelectionChangedListener viewerSelectionChanged = new ISelectionChangedListener() {
+    private final ISelectionChangedListener viewerSelectionChanged = event -> {
+        event.getSelection();
+        final ISelection selection = viewer.getSelection();
 
-        @Override
-        public void selectionChanged(final SelectionChangedEvent event) {
-            event.getSelection();
-            final ISelection selection = viewer.getSelection();
-
-            if (!(selection instanceof ITreeSelection)) {
-                final IStatus executionStatus = new Status(IStatus.ERROR,
-                        Activator.PLUGIN_ID,
-                        "Internall error occured: bad sellection type", null);
-                StatusManager.getManager().handle(executionStatus, StatusManager.SHOW);
-                return;
-            }
-
-            final ITreeSelection treeSelection = (ITreeSelection) selection;
-            final ICoverageObject obj = (ICoverageObject) treeSelection.getFirstElement();
-
-            if (obj == null) {
-                return;
-            }
-
-            switch (obj.getType()) {
-            case FUNCTION:
-                showHtml.setEnabled(false);
-                showCoverage.setEnabled(true);
-                hideCoverage.setEnabled(true);
-                openItem.setEnabled(true);
-                break;
-            case MODULE:
-                showHtml.setEnabled(true);
-                showCoverage.setEnabled(true);
-                hideCoverage.setEnabled(true);
-                openItem.setEnabled(true);
-                break;
-            case FOLDER:
-                showHtml.setEnabled(true);
-                showCoverage.setEnabled(false);
-                hideCoverage.setEnabled(false);
-                openItem.setEnabled(false);
-                break;
-            case PROJECT:
-                showHtml.setEnabled(true);
-                showCoverage.setEnabled(true);
-                hideCoverage.setEnabled(true);
-                openItem.setEnabled(false);
-                break;
-            default:
-                break;
-            }
-
-            if (StatsTreeModel.getInstance().isChanged()) {
-                showHtml.setEnabled(false);
-            }
+        if (!(selection instanceof ITreeSelection)) {
+            final IStatus executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                    "Internall error occured: bad sellection type", null);
+            StatusManager.getManager().handle(executionStatus, StatusManager.SHOW);
+            return;
         }
 
+        final ITreeSelection treeSelection = (ITreeSelection) selection;
+        final ICoverageObject obj = (ICoverageObject) treeSelection.getFirstElement();
+
+        if (obj == null) {
+            return;
+        }
+
+        switch (obj.getType()) {
+        case FUNCTION:
+            showHtml.setEnabled(false);
+            showCoverage.setEnabled(true);
+            hideCoverage.setEnabled(true);
+            openItem.setEnabled(true);
+            break;
+        case MODULE:
+            showHtml.setEnabled(true);
+            showCoverage.setEnabled(true);
+            hideCoverage.setEnabled(true);
+            openItem.setEnabled(true);
+            break;
+        case FOLDER:
+            showHtml.setEnabled(true);
+            showCoverage.setEnabled(false);
+            hideCoverage.setEnabled(false);
+            openItem.setEnabled(false);
+            break;
+        case PROJECT:
+            showHtml.setEnabled(true);
+            showCoverage.setEnabled(true);
+            hideCoverage.setEnabled(true);
+            openItem.setEnabled(false);
+            break;
+        default:
+            break;
+        }
+
+        if (StatsTreeModel.getInstance().isChanged()) {
+            showHtml.setEnabled(false);
+        }
     };
 
     /**
@@ -154,8 +144,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     }
 
     /**
-     * This is a callback that will allow us to create the viewer and initialize
-     * it.
+     * This is a callback that will allow us to create the viewer and initialize it.
      */
     @Override
     public void createPartControl(final Composite parent) {
@@ -217,12 +206,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     private void hookContextMenu() {
         final MenuManager menuMgr = new MenuManager("#PopupMenu");
         menuMgr.setRemoveAllWhenShown(true);
-        menuMgr.addMenuListener(new IMenuListener() {
-            @Override
-            public void menuAboutToShow(final IMenuManager manager) {
-                CoverStatsView.this.fillContextMenu(manager);
-            }
-        });
+        menuMgr.addMenuListener(manager -> CoverStatsView.this.fillContextMenu(manager));
         final Menu menu = menuMgr.createContextMenu(viewer.getControl());
         viewer.getControl().setMenu(menu);
         getSite().registerContextMenu(menuMgr, viewer);
@@ -344,12 +328,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     }
 
     private void hookDoubleClickAction() {
-        viewer.addDoubleClickListener(new IDoubleClickListener() {
-            @Override
-            public void doubleClick(final DoubleClickEvent event) {
-                doubleClickAction.run();
-            }
-        });
+        viewer.addDoubleClickListener(event -> doubleClickAction.run());
     }
 
     /**
@@ -366,12 +345,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         switch (e.getType()) {
         case UPDATE:
 
-            DisplayUtils.asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    viewer.refresh();
-                }
-            });
+            DisplayUtils.asyncExec(() -> viewer.refresh());
             break;
         case ERROR:
             final IStatus executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID,

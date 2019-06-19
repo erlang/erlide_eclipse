@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2006 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2006 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.wizards;
 
@@ -90,8 +88,8 @@ class MessageDialogPage extends DialogPage {
         }
 
         /**
-         * Set the layoutData for the messageArea. In most cases this will be a
-         * copy of the layoutData used in setTitleLayoutData.
+         * Set the layoutData for the messageArea. In most cases this will be a copy of
+         * the layoutData used in setTitleLayoutData.
          *
          * @param layoutData
          *            the layoutData for the message area composite.
@@ -101,8 +99,8 @@ class MessageDialogPage extends DialogPage {
         }
 
         /**
-         * Show the new message in the message text and update the image. Base
-         * the background color on whether or not there are errors.
+         * Show the new message in the message text and update the image. Base the
+         * background color on whether or not there are errors.
          *
          * @param newMessage
          *            The new value for the message
@@ -184,8 +182,8 @@ class MessageDialogPage extends DialogPage {
         }
 
         /**
-         * Clear the error message. Restore the previously displayed message if
-         * there is one, if not restore the title label.
+         * Clear the error message. Restore the previously displayed message if there is
+         * one, if not restore the title label.
          *
          */
         public void clearErrorMessage() {

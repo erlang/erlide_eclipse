@@ -23,7 +23,8 @@ public final class SystemConfiguration {
         mustDefineTclLib = SystemConfiguration.hasFeatureEnabled("erlide.ericsson.user");
         developer = SystemConfiguration.hasFeatureEnabled("erlide.devel");
         test = SystemConfiguration.hasFeatureEnabled("erlide.test");
-        clearCacheAvailable = SystemConfiguration.hasFeatureEnabled("erlide.clearCacheAvailable");
+        clearCacheAvailable = SystemConfiguration
+                .hasFeatureEnabled("erlide.clearCacheAvailable");
         onWindows = System.getProperty("os.name").toLowerCase().contains("windows");
         setWarnProcessSizeLimit(
                 System.getProperty("erlide.process.heap.warn.limit", "10"));
@@ -87,7 +88,8 @@ public final class SystemConfiguration {
         } catch (final Exception e) {
             warnProcessSizeLimitMB = 10;
         }
-        warnProcessSizeLimitMB = Math.max(warnProcessSizeLimitMB, SystemConfiguration.MIN_WARN_LIMIT);
+        warnProcessSizeLimitMB = Math.max(warnProcessSizeLimitMB,
+                SystemConfiguration.MIN_WARN_LIMIT);
         if (warnProcessSizeLimitMB >= killProcessSizeLimitMB) {
             killProcessSizeLimitMB = warnProcessSizeLimitMB + 1;
         }
@@ -99,7 +101,8 @@ public final class SystemConfiguration {
         } catch (final Exception e) {
             killProcessSizeLimitMB = 30;
         }
-        killProcessSizeLimitMB = Math.max(killProcessSizeLimitMB, SystemConfiguration.MIN_KILL_LIMIT);
+        killProcessSizeLimitMB = Math.max(killProcessSizeLimitMB,
+                SystemConfiguration.MIN_KILL_LIMIT);
         if (warnProcessSizeLimitMB >= killProcessSizeLimitMB) {
             warnProcessSizeLimitMB = killProcessSizeLimitMB - 1;
         }

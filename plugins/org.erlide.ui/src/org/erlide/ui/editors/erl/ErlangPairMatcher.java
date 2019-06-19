@@ -1,13 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2006, 2007 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Christian Plesner Hansen (plesner@quenta.org) - initial API and implementation
- *     Vlad Dumitrescu - adapted to Erlang delimiters
+ * Contributors: Christian Plesner Hansen (plesner@quenta.org) - initial API and
+ * implementation Vlad Dumitrescu - adapted to Erlang delimiters
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
@@ -301,7 +299,8 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
          * @return positioning information about the region containing the position
          */
         private ITypedRegion getPartition(final int pos) {
-            if (fCachedPartition == null || !DocumentPartitionAccessor.contains(fCachedPartition, pos)) {
+            if (fCachedPartition == null
+                    || !DocumentPartitionAccessor.contains(fCachedPartition, pos)) {
                 try {
                     fCachedPartition = TextUtilities.getPartition(fDocument,
                             fPartitioning, pos, false);
@@ -350,7 +349,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
         private Set<String> getAllCharacters() {
             if (fStringsCache == null) {
                 final Set<String> set = new HashSet<>();
-                for (String fPair : fPairs) {
+                for (final String fPair : fPairs) {
                     set.add(fPair);
                 }
                 fStringsCache = set;

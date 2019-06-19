@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available
- * at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.console;
 
@@ -55,17 +53,13 @@ public final class ErlConsoleDocument extends Document implements BackendShellLi
 
     @Override
     public void changed(final BackendShellEvent event) {
-        DisplayUtils.asyncExec(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    replace(event.getOffset(), event.getRemovedLength(), event.getText());
-                } catch (final BadLocationException e) {
-                    ErlLogger.debug("%d, %d, %s", event.getOffset(),
-                            event.getRemovedLength(), event.getText());
-                    ErlLogger.error(e);
-                }
+        DisplayUtils.asyncExec(() -> {
+            try {
+                replace(event.getOffset(), event.getRemovedLength(), event.getText());
+            } catch (final BadLocationException e) {
+                ErlLogger.debug("%d, %d, %s", event.getOffset(), event.getRemovedLength(),
+                        event.getText());
+                ErlLogger.error(e);
             }
         });
     }

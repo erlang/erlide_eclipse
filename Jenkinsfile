@@ -97,7 +97,7 @@ def analyze() {
 	step([$class: 'TasksPublisher', canComputeNew: false, excludePattern: '', healthy: '', high: 'FIXME,XXX', low: '', normal: 'TODO', pattern: '**/*.java,**/*.?rl,**/*.xtend', unHealthy: ''])
 	step([$class: 'AnalysisPublisher', canComputeNew: false, healthy: '', unHealthy: ''])
 	step([$class: 'JUnitResultArchiver', allowEmptyResults: true, testResults: '**/target/surefire-reports/TEST-*.xml'])
-	step([$class: 'JacocoPublisher', exclusionPattern: '**/*Test*.class,org/erlide/wrangler/**/*,org/erlide/cover/**/*,org/erlide/tracing/**/*,org/incava/**/*,org/fishwife/**/*,com/ericsson/**/*,nl/kii/**/*,org/erlide/annotations/**/*,org/erlide/util/CharOperation,org/erlide/util/Util', sourcePattern: '**/src/'])
+	step([$class: 'JacocoPublisher', exclusionPattern: '**/*Test*.class,org/erlide/wrangler/**/*,org/erlide/cover/**/*,org/erlide/tracing/**/*,org/incava/**/*,com/ericsson/**/*,org/erlide/annotations/**/*,org/erlide/util/CharOperation,org/erlide/util/Util', sourcePattern: '**/src/'])
 }
 
 def archive() {

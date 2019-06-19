@@ -1,13 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2005 IBM Corporation and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *     QNX Software System
+ * Contributors: IBM Corporation - initial API and implementation QNX Software System
  *******************************************************************************/
 package org.erlide.ui.internal.compare;
 
@@ -74,9 +71,9 @@ public class ErlStructureCreator extends StructureCreator {
     }
 
     /**
-     * A root node for the structure. It is similar to {@link StructureRootNode}
-     * but needed to be a subclass of {@link ErlNode} because of the code used
-     * to build the structure.
+     * A root node for the structure. It is similar to {@link StructureRootNode} but
+     * needed to be a subclass of {@link ErlNode} because of the code used to build the
+     * structure.
      */
     private final class RootErlNode extends ErlNode implements IDisposable {
         private Object fInput;

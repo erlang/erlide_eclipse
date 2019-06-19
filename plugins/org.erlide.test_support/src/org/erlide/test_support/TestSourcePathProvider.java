@@ -10,8 +10,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -62,18 +60,14 @@ public class TestSourcePathProvider
     }
 
     private void computeSourcePaths() throws CoreException {
-        ResourcesPlugin.getWorkspace().getRoot().accept(new IResourceVisitor() {
-
-            @Override
-            public boolean visit(final IResource resource) throws CoreException {
-                final IProject project = resource.getProject();
-                if (project != null && TestSourcePathProvider.isTestDir(resource)) {
-                    final Set<IPath> ps = getProjectPaths(project);
-                    ps.add(resource.getProjectRelativePath());
-                    pathsMap.put(project, ps);
-                }
-                return true;
+        ResourcesPlugin.getWorkspace().getRoot().accept(resource -> {
+            final IProject project = resource.getProject();
+            if (project != null && TestSourcePathProvider.isTestDir(resource)) {
+                final Set<IPath> ps = getProjectPaths(project);
+                ps.add(resource.getProjectRelativePath());
+                pathsMap.put(project, ps);
             }
+            return true;
         });
     }
 
@@ -95,26 +89,24 @@ public class TestSourcePathProvider
 
         try {
             final long time = System.currentTimeMillis();
-            delta.accept(new IResourceDeltaVisitor() {
-                @Override
-                public boolean visit(final IResourceDelta theDelta) throws CoreException {
-                    final IResource resource = theDelta.getResource();
-                    if (!(resource instanceof IContainer)) {
-                        return false;
-                    }
-                    final IContainer container = (IContainer) resource;
-                    final IPath location = container.getLocation();
-                    final Set<IPath> paths = getProjectPaths(resource.getProject());
-                    if (theDelta.getKind() == IResourceDelta.ADDED
-                            && !paths.contains(location) && TestSourcePathProvider.isTestDir(container)) {
-                        paths.add(location);
-                    }
-                    if (theDelta.getKind() == IResourceDelta.REMOVED
-                            && paths.contains(location)) {
-                        paths.remove(location);
-                    }
-                    return true;
+            delta.accept(theDelta -> {
+                final IResource resource = theDelta.getResource();
+                if (!(resource instanceof IContainer)) {
+                    return false;
                 }
+                final IContainer container = (IContainer) resource;
+                final IPath location = container.getLocation();
+                final Set<IPath> paths = getProjectPaths(resource.getProject());
+                if (theDelta.getKind() == IResourceDelta.ADDED
+                        && !paths.contains(location)
+                        && TestSourcePathProvider.isTestDir(container)) {
+                    paths.add(location);
+                }
+                if (theDelta.getKind() == IResourceDelta.REMOVED
+                        && paths.contains(location)) {
+                    paths.remove(location);
+                }
+                return true;
             });
             if (SystemConfiguration.hasFeatureEnabled("erlide.debug.tspp")) {
                 ErlLogger.debug("TSPP took " + (System.currentTimeMillis() - time));

@@ -2,9 +2,8 @@
  * Code borrowed from PyDev
  *
  * @author: ptoofani
- * @author Fabio Zadrozny
- * Created: June 2004
- * License: Common Public License v1.0
+ *
+ * @author Fabio Zadrozny Created: June 2004 License: Common Public License v1.0
  */
 
 package org.erlide.ui.util;
@@ -38,8 +37,7 @@ public class ErlideSelection {
     private ITextSelection textSelection;
 
     /**
-     * Alternate constructor for ErlideSelection. Takes in a text editor from
-     * Eclipse.
+     * Alternate constructor for ErlideSelection. Takes in a text editor from Eclipse.
      *
      * @param textEditor
      *            The text editor operating in Eclipse
@@ -53,8 +51,8 @@ public class ErlideSelection {
      * @param document
      *            the document we are using to make the selection
      * @param selection
-     *            that's the actual selection. It might have an offset and a
-     *            number of selected chars
+     *            that's the actual selection. It might have an offset and a number of
+     *            selected chars
      */
     public ErlideSelection(final IDocument doc, final ITextSelection selection) {
         this.doc = doc;
@@ -106,8 +104,8 @@ public class ErlideSelection {
      * @param document
      *            the document we are using to make the selection
      * @param offset
-     *            the offset where the selection will happen (0 characters will
-     *            be selected)
+     *            the offset where the selection will happen (0 characters will be
+     *            selected)
      */
     public ErlideSelection(final IDocument doc, final int offset) {
         this.doc = doc;
@@ -128,8 +126,8 @@ public class ErlideSelection {
     }
 
     /**
-     * Creates a selection for the document, so that no characters are selected
-     * and the offset is position 0
+     * Creates a selection for the document, so that no characters are selected and the
+     * offset is position 0
      *
      * @param doc
      *            the document where we are doing the selection
@@ -334,9 +332,9 @@ public class ErlideSelection {
      * @param endLineDelim
      *            the delimiter that should be used
      * @param contents
-     *            what should be added (the end line delimiter may be added
-     *            before or after those contents (depending on what are the
-     *            current contents of the document).
+     *            what should be added (the end line delimiter may be added before or
+     *            after those contents (depending on what are the current contents of the
+     *            document).
      * @param afterLine
      *            the contents should be added after the line specified here.
      */
@@ -371,8 +369,8 @@ public class ErlideSelection {
     }
 
     /**
-     * @return the line where the cursor is (from the cursor position to the end
-     *         of the line).
+     * @return the line where the cursor is (from the cursor position to the end of the
+     *         line).
      * @throws BadLocationException
      */
     public String getLineContentsFromCursor() throws BadLocationException {
@@ -387,8 +385,8 @@ public class ErlideSelection {
 
     /**
      * @param ps
-     * @return the line where the cursor is (from the beggining of the line to
-     *         the cursor position).
+     * @return the line where the cursor is (from the beggining of the line to the cursor
+     *         position).
      * @throws BadLocationException
      */
     public String getLineContentsToCursor() throws BadLocationException {
@@ -404,8 +402,8 @@ public class ErlideSelection {
      *
      * @param onlyIfNothingSelected
      *            : If false, check if we already have a selection. If we have a
-     *            selection, it is not changed, however, if it is true, it
-     *            always selects everything.
+     *            selection, it is not changed, however, if it is true, it always selects
+     *            everything.
      */
     public void selectAll(final boolean forceNewSelection) {
         if (!forceNewSelection) {
@@ -604,8 +602,8 @@ public class ErlideSelection {
     }
 
     /**
-     * This function replaces all the contents in the current line before the
-     * cursor for the contents passed as parameter
+     * This function replaces all the contents in the current line before the cursor for
+     * the contents passed as parameter
      */
     public void replaceLineContentsToSelection(final String newContents)
             throws BadLocationException {
@@ -617,8 +615,8 @@ public class ErlideSelection {
     }
 
     /**
-     * This function goes backward in the document searching for an 'if' and
-     * returns the line that has it.
+     * This function goes backward in the document searching for an 'if' and returns the
+     * line that has it.
      *
      * May return null if it was not found.
      */
@@ -662,7 +660,7 @@ public class ErlideSelection {
      */
     public static boolean endsWithSomeChar(final char[] cs,
             final String activationToken) {
-        for (char c : cs) {
+        for (final char c : cs) {
             if (activationToken.endsWith(c + "")) {
                 return true;
             }
@@ -745,19 +743,19 @@ public class ErlideSelection {
     }
 
     /**
-     * This function gets the activation token from the document given the
-     * current cursor position.
+     * This function gets the activation token from the document given the current cursor
+     * position.
      *
      * @param document
      *            this is the document we want info on
      * @param offset
      *            this is the cursor position
      * @param getFullQualifier
-     *            if true we get the full qualifier (even if it passes the
-     *            current cursor location)
-     * @return a tuple with the activation token and the cursor offset (may
-     *         change if we need to get the full qualifier, otherwise, it is the
-     *         same offset passed as a parameter).
+     *            if true we get the full qualifier (even if it passes the current cursor
+     *            location)
+     * @return a tuple with the activation token and the cursor offset (may change if we
+     *         need to get the full qualifier, otherwise, it is the same offset passed as
+     *         a parameter).
      */
     public static Pair<String, Integer> extractActivationToken(final IDocument document,
             final int offset0, final boolean getFullQualifier) {
@@ -812,9 +810,8 @@ public class ErlideSelection {
     /**
      * @param string
      *            the string we care about
-     * @return true if the string passed is only composed of whitespaces (or
-     *         characters that are regarded as whitespaces by
-     *         Character.isWhitespace)
+     * @return true if the string passed is only composed of whitespaces (or characters
+     *         that are regarded as whitespaces by Character.isWhitespace)
      */
     public static boolean containsOnlyWhitespaces(final String string) {
         for (int i = 0; i < string.length(); i++) {
@@ -828,8 +825,8 @@ public class ErlideSelection {
     /**
      * @param selection
      *            the text from where we want to get the indentation
-     * @return a string representing the whitespaces and tabs befor the first
-     *         char in the passed line.
+     * @return a string representing the whitespaces and tabs befor the first char in the
+     *         passed line.
      */
     public static String getIndentationFromLine(final String selection) {
         final int firstCharPosition = ErlideSelection.getFirstCharPosition(selection);
@@ -902,13 +899,12 @@ public class ErlideSelection {
     }
 
     /**
-     * Returns the position of the first non whitespace char in the current
-     * line.
+     * Returns the position of the first non whitespace char in the current line.
      *
      * @param doc
      * @param cursorOffset
-     * @return position of the first character of the line (returned as an
-     *         absolute offset)
+     * @return position of the first character of the line (returned as an absolute
+     *         offset)
      * @throws BadLocationException
      */
     public static int getFirstCharPosition(final IDocument doc, final int cursorOffset)
@@ -958,9 +954,8 @@ public class ErlideSelection {
         }
 
         /**
-         * Note that the first thing it returns is the lineContents to cursor
-         * (and only after that does it return from the full line -- if it is
-         * iterating backwards).
+         * Note that the first thing it returns is the lineContents to cursor (and only
+         * after that does it return from the full line -- if it is iterating backwards).
          */
         @Override
         public String next() {
@@ -1048,8 +1043,8 @@ public class ErlideSelection {
     }
 
     /**
-     * @return the contents from the document starting at the cursor line until
-     *         a colon is reached.
+     * @return the contents from the document starting at the cursor line until a colon is
+     *         reached.
      */
     public String getToColon() {
         final StringBuilder buffer = new StringBuilder();

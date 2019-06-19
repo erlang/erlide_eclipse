@@ -3,8 +3,8 @@ package org.erlide.ui.internal.search;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-public abstract class ErlangSearchContentProvider implements IStructuredContentProvider,
-        IErlSearchContentProvider {
+public abstract class ErlangSearchContentProvider
+        implements IStructuredContentProvider, IErlSearchContentProvider {
     protected final Object[] EMPTY_ARR = new Object[0];
 
     private ErlangSearchResult fResult;

@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend.internal;
 
@@ -19,8 +17,7 @@ import org.erlide.wrangler.refactoring.backend.IWranglerBackend;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 
 /**
- * This class handles the Erlide backends, and holds special ones for Wrangler
- * operations
+ * This class handles the Erlide backends, and holds special ones for Wrangler operations
  *
  * @author Gyorgy Orosz
  * @version %I%, %G%
@@ -103,9 +100,9 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
     public RpcResult callWithoutParser(final String functionName, final String signature,
             final Object... parameters) {
         /*
-         * ErlLogger .info("Wrangler call: " + makeLogStr(functionName,
-         * parameters)); RpcResultImpl res = backend.call_noexception(MODULE,
-         * functionName, signature, parameters);
+         * ErlLogger .info("Wrangler call: " + makeLogStr(functionName, parameters));
+         * RpcResultImpl res = backend.call_noexception(MODULE, functionName, signature,
+         * parameters);
          */
         return callWithoutParser(-1, functionName, signature, parameters);
     }
@@ -128,10 +125,11 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
         ErlLogger.info("Wrangler call: " + makeLogStr(functionName, parameters));
         RpcResult res;
         if (timeout < 0) {
-            res = backend.call_noexception(WranglerRefactoringBackend.MODULE, functionName, signature, parameters);
+            res = backend.call_noexception(WranglerRefactoringBackend.MODULE,
+                    functionName, signature, parameters);
         } else {
-            res = backend.call_noexception(timeout, WranglerRefactoringBackend.MODULE, functionName, signature,
-                    parameters);
+            res = backend.call_noexception(timeout, WranglerRefactoringBackend.MODULE,
+                    functionName, signature, parameters);
         }
 
         // ErlLogger.info("Warning: " + err);
@@ -154,8 +152,9 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
         ErlLogger.info(
                 "Wrangler inspection call: " + makeLogStr(functionName, parameters));
         RpcResult res;
-        res = backend.call_noexception(WranglerRefactoringBackend.UNLIMITED_TIMEOUT, WranglerRefactoringBackend.INSPECTION_MODULE, functionName,
-                signature, parameters);
+        res = backend.call_noexception(WranglerRefactoringBackend.UNLIMITED_TIMEOUT,
+                WranglerRefactoringBackend.INSPECTION_MODULE, functionName, signature,
+                parameters);
         try {
             if (res.isOk()) {
                 final OtpErlangAtom b = (OtpErlangAtom) res.getValue();
@@ -184,8 +183,9 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
         ErlLogger.info(
                 "Wrangler inspection call: " + makeLogStr(functionName, parameters));
         RpcResult res;
-        res = backend.call_noexception(WranglerRefactoringBackend.UNLIMITED_TIMEOUT, WranglerRefactoringBackend.INSPECTION_MODULE, functionName,
-                signature, parameters);
+        res = backend.call_noexception(WranglerRefactoringBackend.UNLIMITED_TIMEOUT,
+                WranglerRefactoringBackend.INSPECTION_MODULE, functionName, signature,
+                parameters);
         return res;
 
     }

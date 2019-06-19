@@ -36,8 +36,8 @@ public final class OpenModuleHandler extends Action
     private static final String PARAM_ID_FILE_PATH = "filePath"; //$NON-NLS-1$
 
     /**
-     * A collection of objects listening to changes to this manager. This
-     * collection is <code>null</code> if there are no listeners.
+     * A collection of objects listening to changes to this manager. This collection is
+     * <code>null</code> if there are no listeners.
      */
     private transient ListenerList<IHandlerListener> listenerList;
 
@@ -51,7 +51,7 @@ public final class OpenModuleHandler extends Action
     }
 
     @Override
-    public final void addHandlerListener(final IHandlerListener listener) {
+    public void addHandlerListener(final IHandlerListener listener) {
         if (listenerList == null) {
             listenerList = new ListenerList<>(ListenerList.IDENTITY);
         }
@@ -60,12 +60,12 @@ public final class OpenModuleHandler extends Action
     }
 
     @Override
-    public final void dispose() {
+    public void dispose() {
         listenerList = null;
     }
 
     @Override
-    public final Object execute(final ExecutionEvent event) throws ExecutionException {
+    public Object execute(final ExecutionEvent event) throws ExecutionException {
         final List<IFile> files = new ArrayList<>();
 
         if (event.getParameter(OpenModuleHandler.PARAM_ID_FILE_PATH) == null) {
@@ -139,7 +139,7 @@ public final class OpenModuleHandler extends Action
     }
 
     @Override
-    public final void init(final IWorkbenchWindow window) {
+    public void init(final IWorkbenchWindow window) {
         // Do nothing.
     }
 
@@ -148,7 +148,7 @@ public final class OpenModuleHandler extends Action
      *
      * @return the resource that should be opened.
      */
-    private final Object[] queryFileResource() {
+    private Object[] queryFileResource() {
         final IWorkbenchWindow window = PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow();
         if (window == null) {
@@ -165,7 +165,7 @@ public final class OpenModuleHandler extends Action
     }
 
     @Override
-    public final void removeHandlerListener(final IHandlerListener listener) {
+    public void removeHandlerListener(final IHandlerListener listener) {
         if (listenerList != null) {
             listenerList.remove(listener);
 
@@ -176,7 +176,7 @@ public final class OpenModuleHandler extends Action
     }
 
     @Override
-    public final void run(final IAction action) {
+    public void run(final IAction action) {
         try {
             execute(new ExecutionEvent());
         } catch (final ExecutionException e) {
@@ -185,7 +185,7 @@ public final class OpenModuleHandler extends Action
     }
 
     @Override
-    public final void selectionChanged(final IAction action, final ISelection selection) {
+    public void selectionChanged(final IAction action, final ISelection selection) {
         // Do nothing.
     }
 }

@@ -270,12 +270,12 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         } catch (final CoreException e) {
             runtimesCombo.setText("");
         }
-        String aname = Long.toHexString(System.currentTimeMillis() & 0xFFFFFF);
-		try {
+        final String aname = Long.toHexString(System.currentTimeMillis() & 0xFFFFFF);
+        try {
             String node = config.getAttribute(ErlRuntimeAttributes.NODE_NAME, aname);
-			if (Strings.isNullOrEmpty(node)) {
-				node = aname;
-			}
+            if (Strings.isNullOrEmpty(node)) {
+                node = aname;
+            }
             nameText.setText(node);
         } catch (final CoreException e) {
             nameText.setText(aname);

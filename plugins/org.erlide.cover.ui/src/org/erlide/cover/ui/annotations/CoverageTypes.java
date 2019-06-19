@@ -8,7 +8,7 @@ package org.erlide.cover.ui.annotations;
  */
 public interface CoverageTypes {
 
-    public static final String FULL_COVERAGE = "org.erlide.cover.ui.fullCoverageAnnotation";
-    public static final String NO_COVERAGE = "org.erlide.cover.ui.noCoverageAnnotation";
+    String FULL_COVERAGE = "org.erlide.cover.ui.fullCoverageAnnotation";
+    String NO_COVERAGE = "org.erlide.cover.ui.noCoverageAnnotation";
 
 }

@@ -9,7 +9,6 @@
 package org.erlide.ui.launch;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,12 +83,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         }
         projects.addAll(getDependentProjects(projects));
         final List<IErlProject> projectList = Lists.newArrayList(projects);
-        projectList.sort(new Comparator<IErlProject>() {
-            @Override
-            public int compare(final IErlProject o1, final IErlProject o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        projectList.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
         try {
             doLaunch(mode, projectList);
         } catch (final CoreException e) {

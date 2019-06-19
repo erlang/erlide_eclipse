@@ -1,13 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2005 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *     Vlad Dumitrescu
+ * Contributors: IBM Corporation - initial API and implementation Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.prefs;
 
@@ -23,11 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -574,13 +567,7 @@ public class RuntimePreferencePage extends PreferencePage implements
         data.horizontalSpan = 1;
         ctrl.setLayoutData(data);
 
-        addSelectionChangedListener(new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(final SelectionChangedEvent event) {
-                checkValid();
-            }
-        });
+        addSelectionChangedListener(event -> checkValid());
 
         checkValid();
 
@@ -694,33 +681,19 @@ public class RuntimePreferencePage extends PreferencePage implements
         // by default, sort by name
         sortByName();
 
-        fRuntimeList.addSelectionChangedListener(new ISelectionChangedListener() {
+        fRuntimeList.addSelectionChangedListener(evt -> enableButtons());
 
-            @Override
-            public void selectionChanged(final SelectionChangedEvent evt) {
-                enableButtons();
+        fRuntimeList.addCheckStateListener(event -> {
+            if (event.getChecked()) {
+                setCheckedRuntime((RuntimeInfo) event.getElement());
+            } else {
+                setCheckedRuntime(null);
             }
         });
 
-        fRuntimeList.addCheckStateListener(new ICheckStateListener() {
-
-            @Override
-            public void checkStateChanged(final CheckStateChangedEvent event) {
-                if (event.getChecked()) {
-                    setCheckedRuntime((RuntimeInfo) event.getElement());
-                } else {
-                    setCheckedRuntime(null);
-                }
-            }
-        });
-
-        fRuntimeList.addDoubleClickListener(new IDoubleClickListener() {
-
-            @Override
-            public void doubleClick(final DoubleClickEvent e) {
-                if (!fRuntimeList.getSelection().isEmpty()) {
-                    editRuntime();
-                }
+        fRuntimeList.addDoubleClickListener(e -> {
+            if (!fRuntimeList.getSelection().isEmpty()) {
+                editRuntime();
             }
         });
         table.addKeyListener(new KeyAdapter() {
@@ -742,46 +715,19 @@ public class RuntimePreferencePage extends PreferencePage implements
         buttons.setFont(font);
 
         fAddButton = createPushButton(buttons, RuntimePreferenceMessages.add);
-        fAddButton.addListener(SWT.Selection, new Listener() {
-            @Override
-            public void handleEvent(final Event evt) {
-                addRuntime();
-            }
-        });
+        fAddButton.addListener(SWT.Selection, evt -> addRuntime());
 
         fEditButton = createPushButton(buttons, RuntimePreferenceMessages.edit);
-        fEditButton.addListener(SWT.Selection, new Listener() {
-            @Override
-            public void handleEvent(final Event evt) {
-                editRuntime();
-            }
-        });
+        fEditButton.addListener(SWT.Selection, evt -> editRuntime());
 
         fDuplicateButton = createPushButton(buttons, RuntimePreferenceMessages.duplicate);
-        fDuplicateButton.addListener(SWT.Selection, new Listener() {
-            @Override
-            public void handleEvent(final Event evt) {
-                duplicateRuntime();
-            }
-
-        });
+        fDuplicateButton.addListener(SWT.Selection, evt -> duplicateRuntime());
 
         fRemoveButton = createPushButton(buttons, RuntimePreferenceMessages.remove);
-        fRemoveButton.addListener(SWT.Selection, new Listener() {
-            @Override
-            public void handleEvent(final Event evt) {
-                removeSelectedRuntimes();
-            }
-        });
+        fRemoveButton.addListener(SWT.Selection, evt -> removeSelectedRuntimes());
 
         fDetectButton = createPushButton(buttons, RuntimePreferenceMessages.detect);
-        fDetectButton.addListener(SWT.Selection, new Listener() {
-            @Override
-            public void handleEvent(final Event evt) {
-                detectRuntimes();
-            }
-
-        });
+        fDetectButton.addListener(SWT.Selection, evt -> detectRuntimes());
 
         configureTableResizing(parent, buttons, table, column1, column2, column3);
 

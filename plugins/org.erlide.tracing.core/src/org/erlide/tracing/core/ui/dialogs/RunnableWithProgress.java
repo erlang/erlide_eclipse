@@ -6,12 +6,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 /**
- * Abstract class that represents long-running operation which should be run in
- * separate thread (while executing UI may show a progress indicator).
- * Operations to be executed have to implemented in {@link #doAction()} method
- * of inheriting class. After executing them thread will wait for calling
- * {@link #finish()} method. Purpose of it is to have task which can be started
- * from one place in the code and stopped from other.
+ * Abstract class that represents long-running operation which should be run in separate
+ * thread (while executing UI may show a progress indicator). Operations to be executed
+ * have to implemented in {@link #doAction()} method of inheriting class. After executing
+ * them thread will wait for calling {@link #finish()} method. Purpose of it is to have
+ * task which can be started from one place in the code and stopped from other.
  *
  * @author Piotr Dorobisz
  *
@@ -47,8 +46,7 @@ public abstract class RunnableWithProgress implements IRunnableWithProgress {
     }
 
     /**
-     * Indicates that all actions are finished and executing thread can
-     * terminate.
+     * Indicates that all actions are finished and executing thread can terminate.
      */
     public synchronized void finish() {
         done = true;

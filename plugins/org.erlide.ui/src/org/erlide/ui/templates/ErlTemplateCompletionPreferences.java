@@ -26,12 +26,15 @@ public class ErlTemplateCompletionPreferences {
     }
 
     public static void putPrefs() {
-        ErlideUIPlugin.getPrefsNode().putBoolean(ErlTemplateCompletionPreferences.INDENT_CODE_PREFS_KEY, ErlTemplateCompletionPreferences.sIndentCode);
+        ErlideUIPlugin.getPrefsNode().putBoolean(
+                ErlTemplateCompletionPreferences.INDENT_CODE_PREFS_KEY,
+                ErlTemplateCompletionPreferences.sIndentCode);
     }
 
     public static void getPrefs() {
-        ErlTemplateCompletionPreferences.sIndentCode = ErlideUIPlugin.getPrefsNode().getBoolean(ErlTemplateCompletionPreferences.INDENT_CODE_PREFS_KEY,
-                ErlTemplateCompletionPreferences.DEFAULT_INDENT_CODE);
+        ErlTemplateCompletionPreferences.sIndentCode = ErlideUIPlugin.getPrefsNode()
+                .getBoolean(ErlTemplateCompletionPreferences.INDENT_CODE_PREFS_KEY,
+                        ErlTemplateCompletionPreferences.DEFAULT_INDENT_CODE);
         ErlTemplateCompletionPreferences.hasPrefs = true;
     }
 

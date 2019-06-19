@@ -31,8 +31,7 @@ public class ErlCompletionProposal implements ICompletionProposal {
         }
 
         /*
-         * @see
-         * org.eclipse.jdt.internal.ui.text.link.LinkedPositionUI.ExitPolicy
+         * @see org.eclipse.jdt.internal.ui.text.link.LinkedPositionUI.ExitPolicy
          * #doExit(org.eclipse.jdt.internal.ui.text.link.LinkedPositionManager,
          * org.eclipse.swt.events.VerifyEvent, int, int)
          */
@@ -172,9 +171,9 @@ public class ErlCompletionProposal implements ICompletionProposal {
     }
 
     /**
-     * Sets up a simple linked mode at {@link #getCursorPosition()} and an exit
-     * policy that will exit the mode when <code>closingCharacter</code> is
-     * typed and an exit position at <code>getCursorPosition() + 1</code>.
+     * Sets up a simple linked mode at {@link #getCursorPosition()} and an exit policy
+     * that will exit the mode when <code>closingCharacter</code> is typed and an exit
+     * position at <code>getCursorPosition() + 1</code>.
      *
      * @param document
      *            the document

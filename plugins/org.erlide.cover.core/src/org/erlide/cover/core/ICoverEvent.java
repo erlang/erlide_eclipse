@@ -13,13 +13,13 @@ public interface ICoverEvent {
      *
      * @return
      */
-    public CoverStatus getType();
+    CoverStatus getType();
 
     /**
      * Get information message
      *
      * @return
      */
-    public String getInfo();
+    String getInfo();
 
 }

@@ -153,14 +153,15 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     private void checkNavigatorView() {
         Display.getDefault().asyncExec(() -> {
-            IWorkbenchWindow win = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            final IWorkbenchWindow win = PlatformUI.getWorkbench()
+                    .getActiveWorkbenchWindow();
             try {
                 final IWorkbenchPage page = win.getActivePage();
                 final IViewPart vv = page.findView("org.erlide.ui.views.navigator.view");
                 if (vv != null) {
-                    Shell shell = win.getShell();
-                    String title = "An update to Erlide requires resetting the layout of your window";
-                    String message = "Choose OK to do it now, or CANCEL to wait (this "
+                    final Shell shell = win.getShell();
+                    final String title = "An update to Erlide requires resetting the layout of your window";
+                    final String message = "Choose OK to do it now, or CANCEL to wait (this "
                             + "message will be shown again every time Eclipse is started).\n\n"
                             + "Note that the 'Erlang navigator' view (to the left) will"
                             + " be empty and unusable until the layout is reset.\n\n"
@@ -192,47 +193,40 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     private void notifyBadHostname(final String workspace) {
-        PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                final Shell activeShell = PlatformUI.getWorkbench()
-                        .getActiveWorkbenchWindow().getShell();
-                final String message = "We are sorry, but your machine's host name is not configured properly "
-                        + "and erlide can't work. You need to fix your .hosts file and restart.\n\n";
-                final String description = "Java and Erlang can't agree on hostnames. Please check the log in "
-                        + workspace
-                        + "/erlide.log for details on which names were tried.\n\n"
-                        + "Hostnames with dots in them can't be used as short names.\n"
-                        + "Hostnames with dashes in them might not always work.\n\n"
-                        + "Try to conect two Erlang nodes manually first. Add the working hostname to .hosts.";
-                ErrorDialog.openError(activeShell, "Erlide can't work properly", message,
-                        new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, description));
-            }
+        PlatformUI.getWorkbench().getDisplay().asyncExec(() -> {
+            final Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .getShell();
+            final String message = "We are sorry, but your machine's host name is not configured properly "
+                    + "and erlide can't work. You need to fix your .hosts file and restart.\n\n";
+            final String description = "Java and Erlang can't agree on hostnames. Please check the log in "
+                    + workspace + "/erlide.log for details on which names were tried.\n\n"
+                    + "Hostnames with dots in them can't be used as short names.\n"
+                    + "Hostnames with dashes in them might not always work.\n\n"
+                    + "Try to conect two Erlang nodes manually first. Add the working hostname to .hosts.";
+            ErrorDialog.openError(activeShell, "Erlide can't work properly", message,
+                    new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, description));
         });
     }
 
     private void notifyNoRuntimeAndRestart(final String workspace) {
-        PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                final Shell activeShell = PlatformUI.getWorkbench()
-                        .getActiveWorkbenchWindow().getShell();
-                final String message = "We are sorry, but the configured Erlang runtime could not be started "
-                        + "and erlide can't work. Please check and fix the configuration.";
-                final String description = "The log in " + workspace
-                        + "/erlide.log may contain more information.";
-                ErrorDialog.openError(activeShell, "Erlide can't work properly", message,
-                        new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, description));
+        PlatformUI.getWorkbench().getDisplay().asyncExec(() -> {
+            final Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .getShell();
+            final String message = "We are sorry, but the configured Erlang runtime could not be started "
+                    + "and erlide can't work. Please check and fix the configuration.";
+            final String description = "The log in " + workspace
+                    + "/erlide.log may contain more information.";
+            ErrorDialog.openError(activeShell, "Erlide can't work properly", message,
+                    new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, description));
 
-                final PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        "org.erlide.ui.preferences.runtimes", null, null);
-                if (pref != null) {
-                    if (pref.open() == Window.OK) {
-                        ErlLogger.info(
-                                "Restarting workbench after initial runtime configuration...");
-                        PlatformUI.getWorkbench().restart();
-                    }
+            final PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                    "org.erlide.ui.preferences.runtimes", null, null);
+            if (pref != null) {
+                if (pref.open() == Window.OK) {
+                    ErlLogger.info(
+                            "Restarting workbench after initial runtime configuration...");
+                    PlatformUI.getWorkbench().restart();
                 }
             }
         });
@@ -416,8 +410,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     public static void log(final Exception e) {
-        log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, ErlangStatus.INTERNAL_ERROR.getValue(),
-                e.getMessage(), null));
+        log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
+                ErlangStatus.INTERNAL_ERROR.getValue(), e.getMessage(), null));
     }
 
     public static void log(final IStatus status) {
@@ -425,8 +419,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     public static void logErrorMessage(final String message) {
-        log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, ErlangStatus.INTERNAL_ERROR.getValue(),
-                message, null));
+        log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
+                ErlangStatus.INTERNAL_ERROR.getValue(), message, null));
     }
 
     public static void logErrorStatus(final String message, final IStatus status) {
@@ -441,8 +435,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     public static void log(final Throwable e) {
-        log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, ErlangStatus.INTERNAL_ERROR.getValue(),
-                "Erlide internal error", e));
+        log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
+                ErlangStatus.INTERNAL_ERROR.getValue(), "Erlide internal error", e));
     }
 
     public static ImageDescriptorRegistry getImageDescriptorRegistry() {
@@ -520,7 +514,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             try {
                 fStore.load();
             } catch (final IOException e) {
-                getLog().log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, IStatus.OK, "", e)); //$NON-NLS-1$
+                getLog().log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
+                        IStatus.OK, "", e)); //$NON-NLS-1$
             }
             ErlangSourceContextTypeModule.getDefault().addElementResolvers();
         }

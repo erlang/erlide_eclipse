@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.util;
 
@@ -72,8 +70,8 @@ public final class ChangesetMaker {
         }
         // replace
         else if (diff.getAddedEnd() != -1 && diff.getDeletedEnd() != -1) {
-            result = ChangesetMaker.createReplaceEdit(diff.getAddedStart(), diff.getAddedEnd(),
-                    diff.getDeletedStart(), diff.getDeletedEnd());
+            result = ChangesetMaker.createReplaceEdit(diff.getAddedStart(),
+                    diff.getAddedEnd(), diff.getDeletedStart(), diff.getDeletedEnd());
         }
         // insert
         else if (diff.getAddedEnd() != -1 && diff.getDeletedEnd() == -1) {
@@ -108,8 +106,8 @@ public final class ChangesetMaker {
     // }
 
     /**
-     * Reads the input file, compares with the given new string, then creates
-     * Eclipse's <code>TextEdit</code>-s.
+     * Reads the input file, compares with the given new string, then creates Eclipse's
+     * <code>TextEdit</code>-s.
      *
      * @param in
      *            original file
@@ -129,9 +127,11 @@ public final class ChangesetMaker {
 
         ChangesetMaker.inFileCharArray = ChangesetMaker.readFile(ChangesetMaker.inFile);
         ChangesetMaker.outFileCharArray = new ArrayList<>();
-        ChangesetMaker.outFileCharArray = ChangesetMaker.convertArrayToArrayList(out.toCharArray());
+        ChangesetMaker.outFileCharArray = ChangesetMaker
+                .convertArrayToArrayList(out.toCharArray());
 
-        ChangesetMaker.algorithm = new Diff<>(ChangesetMaker.inFileCharArray, ChangesetMaker.outFileCharArray);
+        ChangesetMaker.algorithm = new Diff<>(ChangesetMaker.inFileCharArray,
+                ChangesetMaker.outFileCharArray);
 
         ChangesetMaker.differencesList = ChangesetMaker.algorithm.diff();
         for (final Difference d : ChangesetMaker.differencesList) {
@@ -142,8 +142,8 @@ public final class ChangesetMaker {
     }
 
     /**
-     * Creates a <code>ReplaceEdit</code> object from the given parameters and
-     * the stored input/output strings.
+     * Creates a <code>ReplaceEdit</code> object from the given parameters and the stored
+     * input/output strings.
      *
      * @param addedStart
      * @param addedEnd
@@ -176,8 +176,7 @@ public final class ChangesetMaker {
     }
 
     /**
-     * Gets the string from the new source file, according to the given
-     * parameters.
+     * Gets the string from the new source file, according to the given parameters.
      *
      * @param from
      *            string's starting position
@@ -211,10 +210,9 @@ public final class ChangesetMaker {
             final char c[] = new char[1];
             while (input.read(c) > 0) {
                 /*
-                 * char[] chars = line.toCharArray(); for (int i = 0; i <
-                 * chars.length; ++i) { result.add(chars[i]); }
-                 * result.add('\n'); } input.close(); if (result.size() != 0) {
-                 * result.remove(result.size() - 1);
+                 * char[] chars = line.toCharArray(); for (int i = 0; i < chars.length;
+                 * ++i) { result.add(chars[i]); } result.add('\n'); } input.close(); if
+                 * (result.size() != 0) { result.remove(result.size() - 1);
                  */
                 result.add(c[0]);
             }

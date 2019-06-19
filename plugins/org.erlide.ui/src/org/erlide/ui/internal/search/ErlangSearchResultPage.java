@@ -94,8 +94,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 
     // private final EditorOpener fEditorOpener = new EditorOpener();
 
-    private static final String[] SHOW_IN_TARGETS = {
-            IPageLayout.ID_PROJECT_EXPLORER };
+    private static final String[] SHOW_IN_TARGETS = { IPageLayout.ID_PROJECT_EXPLORER };
     private static final IShowInTargetList SHOW_IN_TARGET_LIST = new IShowInTargetList() {
         @Override
         @SuppressWarnings("synthetic-access")
@@ -316,7 +315,8 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
     public void saveState(final IMemento memento) {
         super.saveState(memento);
         memento.putInteger(ErlangSearchResultPage.KEY_SORTING, fCurrentSortOrder);
-        memento.putInteger(ErlangSearchResultPage.KEY_LIMIT, getElementLimit().intValue());
+        memento.putInteger(ErlangSearchResultPage.KEY_LIMIT,
+                getElementLimit().intValue());
     }
 
     public Object getAdapter(final Class<?> adapter) {
@@ -340,8 +340,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
                 final int fileCount = getInput().getElements().length;
                 if (itemCount < fileCount) {
                     final String format = "{0} (showing {1} of {2} files)";
-                    return MessageFormat.format(format, label, itemCount,
-                            fileCount);
+                    return MessageFormat.format(format, label, itemCount, fileCount);
                 }
             }
         }

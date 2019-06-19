@@ -29,13 +29,14 @@ public class FunctionPattern extends ErlangSearchPattern {
     @Override
     public OtpErlangObject getSearchObject() {
         if (moduleName == null || moduleName.isEmpty()) {
-            return makeFAPatternObject(ErlangSearchPattern.FUNCTION_DEF_ATOM, ErlangSearchPattern.FUNCTION_CALL_ATOM, name,
-                    arity);
+            return makeFAPatternObject(ErlangSearchPattern.FUNCTION_DEF_ATOM,
+                    ErlangSearchPattern.FUNCTION_CALL_ATOM, name, arity);
         }
-        final OtpErlangAtom defA = matchAnyFunctionDefinition ? ErlangSearchPattern.FUNCTION_DEF_ATOM
+        final OtpErlangAtom defA = matchAnyFunctionDefinition
+                ? ErlangSearchPattern.FUNCTION_DEF_ATOM
                 : ErlangSearchPattern.FUNCTION_DEF_MOD_ATOM;
-        return makeMFAPatternObject(defA, ErlangSearchPattern.EXTERNAL_CALL_ATOM, moduleName, name, arity,
-                matchAnyFunctionDefinition);
+        return makeMFAPatternObject(defA, ErlangSearchPattern.EXTERNAL_CALL_ATOM,
+                moduleName, name, arity, matchAnyFunctionDefinition);
     }
 
     @Override

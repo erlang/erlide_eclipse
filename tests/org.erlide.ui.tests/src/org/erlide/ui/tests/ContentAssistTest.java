@@ -32,7 +32,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.xtext.xbase.lib.Functions;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
@@ -180,12 +179,7 @@ public class ContentAssistTest {
                 .computeCompletionProposals(sourceViewer, offset);
 
         assertThat(ListExtensions.map(Lists.newArrayList(completionProposals),
-                new Functions.Function1<ICompletionProposal, String>() {
-                    @Override
-                    public String apply(final ICompletionProposal cp) {
-                        return cp.getDisplayString();
-                    }
-                })).isEqualTo(expected);
+                cp -> cp.getDisplayString())).isEqualTo(expected);
     }
 
     // http://www.assembla.com/spaces/erlide/tickets/947

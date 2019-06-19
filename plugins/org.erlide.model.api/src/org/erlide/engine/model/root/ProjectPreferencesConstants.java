@@ -1,13 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Eric Merritt and others. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Eric Merritt
- *     Vlad Dumitrescu
- *     Mickael Remond
+ * Contributors: Eric Merritt Vlad Dumitrescu Mickael Remond
  *******************************************************************************/
 package org.erlide.engine.model.root;
 
@@ -36,9 +33,9 @@ public final class ProjectPreferencesConstants {
     public static final String DEFAULT_EXTERNAL_INCLUDES = "";
 
     public static final String RUNTIME_VERSION = "backend_version";
-    public static final RuntimeVersion DEFAULT_RUNTIME_VERSION = new RuntimeVersion(19);
-    public static final RuntimeVersion[] SUPPORTED_VERSIONS = { new RuntimeVersion(17),
-            new RuntimeVersion(18), new RuntimeVersion(19), new RuntimeVersion(20) };
+    public static final RuntimeVersion DEFAULT_RUNTIME_VERSION = new RuntimeVersion(21);
+    public static final RuntimeVersion[] SUPPORTED_VERSIONS = { new RuntimeVersion(19),
+            new RuntimeVersion(20), new RuntimeVersion(21), new RuntimeVersion(22) };
     public static final RuntimeVersion FALLBACK_RUNTIME_VERSION = ProjectPreferencesConstants.SUPPORTED_VERSIONS[0];
 
     public static final String PROJECT_EXTERNAL_MODULES = "external_modules";

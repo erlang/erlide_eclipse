@@ -23,13 +23,12 @@ public class AnnotationSupport {
     }
 
     /**
-     * Returns whether the given annotation is configured as a target for the
-     * "Go to Next/Previous Annotation" actions
+     * Returns whether the given annotation is configured as a target for the "Go to
+     * Next/Previous Annotation" actions
      *
      * @param annotation
      *            the annotation
-     * @return <code>true</code> if this is a target, <code>false</code>
-     *         otherwise
+     * @return <code>true</code> if this is a target, <code>false</code> otherwise
      * @since 3.0
      */
     public boolean isNavigationTarget(final Annotation annotation) {
@@ -58,9 +57,9 @@ public class AnnotationSupport {
     }
 
     /**
-     * Returns the annotation closest to the given range respecting the given
-     * direction. If an annotation is found, the annotation's current position
-     * is copied into the provided position.
+     * Returns the annotation closest to the given range respecting the given direction.
+     * If an annotation is found, the annotation's current position is copied into the
+     * provided position.
      */
     private Annotation getNextAnnotation(final int offset, final int length,
             final boolean forward, final Position annotationPosition) {

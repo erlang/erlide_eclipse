@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Lukas Larsson and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Lukas Larsson and others. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Lukas Larsson
+ * Contributors: Lukas Larsson
  *******************************************************************************/
 
 package org.erlide.ui.wizards;
@@ -15,8 +14,6 @@ import java.util.ArrayList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -117,9 +114,8 @@ public class FunctionGroup implements SelectionListener {
         editFunctionBtn.addSelectionListener(this);
 
         /*
-         * addState = new Button(container,SWT.PUSH); addState.setText(" Toggle
-         * State "); // addState.setLayoutData(new
-         * GridData(SWT.FILL,SWT.CENTER,true,false));
+         * addState = new Button(container,SWT.PUSH); addState.setText(" Toggle State ");
+         * // addState.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
          * addState.addSelectionListener(this);
          */
     }
@@ -136,22 +132,10 @@ public class FunctionGroup implements SelectionListener {
 
         functionNameText = new Text(container, SWT.BORDER | SWT.SINGLE);
         functionNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-        functionNameText.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                dialogChanged();
-            }
-        });
+        functionNameText.addModifyListener(e -> dialogChanged());
 
         arityText = new Text(container, SWT.BORDER | SWT.SINGLE);
-        arityText.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                dialogChanged();
-            }
-        });
+        arityText.addModifyListener(e -> dialogChanged());
         arityText.addKeyListener(new KeyListener() {
 
             @Override

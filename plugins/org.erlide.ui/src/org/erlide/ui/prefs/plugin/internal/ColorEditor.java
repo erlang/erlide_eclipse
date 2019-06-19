@@ -1,7 +1,7 @@
 /***************************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This
- * program and the accompanying materials are made available under the terms of the
- * Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors: IBM Corporation - initial API and implementation
@@ -10,8 +10,6 @@ package org.erlide.ui.prefs.plugin.internal;
 
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -79,18 +77,14 @@ public class ColorEditor {
             }
         });
 
-        fButton.addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(final DisposeEvent event) {
-                if (fImage != null) {
-                    fImage.dispose();
-                    fImage = null;
-                }
-                if (fColor != null) {
-                    fColor.dispose();
-                    fColor = null;
-                }
+        fButton.addDisposeListener(event -> {
+            if (fImage != null) {
+                fImage.dispose();
+                fImage = null;
+            }
+            if (fColor != null) {
+                fColor.dispose();
+                fColor = null;
             }
         });
     }

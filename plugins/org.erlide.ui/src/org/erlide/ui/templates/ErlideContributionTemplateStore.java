@@ -26,8 +26,7 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
      *            the preference store in which to store custom templates under
      *            <code>key</code>
      * @param key
-     *            the key into <code>store</code> where to store custom
-     *            templates
+     *            the key into <code>store</code> where to store custom templates
      */
     public ErlideContributionTemplateStore(final IPreferenceStore store,
             final String key) {
@@ -35,19 +34,18 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
     }
 
     /**
-     * Creates a new template store with a context type registry. Only templates
-     * that specify a context type contained in the registry will be loaded by
-     * this store if the registry is not <code>null</code>.
+     * Creates a new template store with a context type registry. Only templates that
+     * specify a context type contained in the registry will be loaded by this store if
+     * the registry is not <code>null</code>.
      *
      * @param registry
-     *            a context type registry, or <code>null</code> if all templates
-     *            should be loaded
+     *            a context type registry, or <code>null</code> if all templates should be
+     *            loaded
      * @param store
      *            the preference store in which to store custom templates under
      *            <code>key</code>
      * @param key
-     *            the key into <code>store</code> where to store custom
-     *            templates
+     *            the key into <code>store</code> where to store custom templates
      */
     public ErlideContributionTemplateStore(final ContextTypeRegistry registry,
             final IPreferenceStore store, final String key) {
@@ -114,14 +112,13 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
     }
 
     /**
-     * Returns <code>true</code> if a context type id specifies a valid context
-     * type or if no context type registry is present.
+     * Returns <code>true</code> if a context type id specifies a valid context type or if
+     * no context type registry is present.
      *
      * @param contextTypeId
      *            the context type id to look for
-     * @return <code>true</code> if the context type specified by the id is
-     *         present in the context type registry, or if no registry is
-     *         specified
+     * @return <code>true</code> if the context type specified by the id is present in the
+     *         context type registry, or if no registry is specified
      */
     private boolean contextExists(final String contextTypeId) {
         return contextTypeId != null && (getRegistry() == null

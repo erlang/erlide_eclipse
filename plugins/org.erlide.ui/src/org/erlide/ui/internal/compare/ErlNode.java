@@ -1,13 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2005 IBM Corporation and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *     QNX Software System
+ * Contributors: IBM Corporation - initial API and implementation QNX Software System
  *******************************************************************************/
 package org.erlide.ui.internal.compare;
 
@@ -64,9 +61,9 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
     }
 
     /**
-     * Extends the range to include ranges of children, this is needed since the
-     * range of a function in the erlang model only covers the first clause
-     * (which is good in the outline and the navigator, but not optimal here).
+     * Extends the range to include ranges of children, this is needed since the range of
+     * a function in the erlang model only covers the first clause (which is good in the
+     * outline and the navigator, but not optimal here).
      *
      * @see org.eclipse.compare.structuremergeviewer.DocumentRangeNode#addChild(org.eclipse.compare.structuremergeviewer.DocumentRangeNode)
      */

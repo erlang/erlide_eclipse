@@ -54,7 +54,7 @@ public class RegexpRule implements IPredicateRule {
     }
 
     private boolean isEOL(final int c, final char[][] lineDelimiters) {
-        for (char[] lineDelimiter : lineDelimiters) {
+        for (final char[] lineDelimiter : lineDelimiters) {
             if (c == lineDelimiter[0]) {
                 return true;
             }

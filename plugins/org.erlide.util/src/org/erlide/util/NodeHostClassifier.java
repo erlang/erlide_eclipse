@@ -4,11 +4,11 @@ public final class NodeHostClassifier {
     public final HostnameType host;
     public final NodeType mode;
 
-    public static enum HostnameType {
+    public enum HostnameType {
         NONE, SHORT, LONG
     }
 
-    public static enum NodeType {
+    public enum NodeType {
         LOCAL_STANDALONE, LOCAL_DISTRIBUTED, REMOTE
     }
 

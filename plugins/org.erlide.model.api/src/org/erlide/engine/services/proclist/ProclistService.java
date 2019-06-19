@@ -8,10 +8,10 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 
 public interface ProclistService {
 
-    public abstract void processListInit(IOtpRpc b);
+    void processListInit(IOtpRpc b);
 
-    public abstract OtpErlangList getProcessList(IOtpRpc b);
+    OtpErlangList getProcessList(IOtpRpc b);
 
-    public abstract OtpErlangObject getProcessInfo(IOtpRpc b, OtpErlangPid pid);
+    OtpErlangObject getProcessInfo(IOtpRpc b, OtpErlangPid pid);
 
 }

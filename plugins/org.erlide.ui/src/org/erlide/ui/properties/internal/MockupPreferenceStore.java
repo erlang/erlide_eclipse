@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package org.erlide.ui.properties.internal;
@@ -17,8 +15,8 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
 /**
- * Mockup preference store, for registering listeners and firing events, without
- * being an actual store.
+ * Mockup preference store, for registering listeners and firing events, without being an
+ * actual store.
  * <p>
  * All methods except firing, adding and removing listeners throw an
  * {@link java.lang.UnsupportedOperationException}.
@@ -65,9 +63,9 @@ public class MockupPreferenceStore implements IPreferenceStore {
     }
 
     /**
-     * Fires a property change event with the given source, property name, old
-     * and new value. Used when the event source should be different from this
-     * mockup preference store.
+     * Fires a property change event with the given source, property name, old and new
+     * value. Used when the event source should be different from this mockup preference
+     * store.
      *
      * @param source
      *            The event source

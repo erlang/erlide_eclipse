@@ -16,7 +16,7 @@ public class LogUtils {
     }
 
     public static void log(final Plugin plugin, final int severity, final Object obj,
-                           final int depth) {
+            final int depth) {
         if (severity < IStatus.WARNING) {
             return;
         }

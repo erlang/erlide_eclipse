@@ -1,6 +1,6 @@
 /**
  * Original code from:
- * 		http://www.dzone.com/links/r/some_junit_tricks_for_easier_and_better_test_cases.html
+ * http://www.dzone.com/links/r/some_junit_tricks_for_easier_and_better_test_cases.html
  */
 package org.erlide.engine.util;
 
@@ -50,14 +50,16 @@ public class ExceptionUtils {
                 .getStackTrace()) {
             String forbiddenPackageName = null;
             if (shouldFilter) {
-                forbiddenPackageName = ExceptionUtils.tryGetForbiddenPackageName(traceElement);
+                forbiddenPackageName = ExceptionUtils
+                        .tryGetForbiddenPackageName(traceElement);
             }
 
             if (forbiddenPackageName == null) {
                 if (!skippedPackages.isEmpty()) {
                     // 37 lines skipped for [org.h2, org.hibernate, sun.,
                     // java.lang.reflect.Method, $Proxy]
-                    s.println(ExceptionUtils.getSkippedPackagesMessage(skippedPackages, skippedLines));
+                    s.println(ExceptionUtils.getSkippedPackagesMessage(skippedPackages,
+                            skippedLines));
                 }
                 // at hib.HibExample.test(HibExample.java:18)
                 s.println(ExceptionUtils.INDENT + "at " + traceElement);
@@ -69,7 +71,8 @@ public class ExceptionUtils {
             }
         }
         if (skippedLines > 0) {
-            s.println(ExceptionUtils.getSkippedPackagesMessage(skippedPackages, skippedLines));
+            s.println(ExceptionUtils.getSkippedPackagesMessage(skippedPackages,
+                    skippedLines));
         }
     }
 
@@ -77,8 +80,8 @@ public class ExceptionUtils {
     // java.lang.reflect.Method, $Proxy]
     private static String getSkippedPackagesMessage(final Set<String> skippedPackages,
             final int skippedLines) {
-        return ExceptionUtils.INDENT + skippedLines + " line" + (skippedLines == 1 ? "" : "s")
-                + " skipped for " + skippedPackages;
+        return ExceptionUtils.INDENT + skippedLines + " line"
+                + (skippedLines == 1 ? "" : "s") + " skipped for " + skippedPackages;
     }
 
     private static Throwable getBottomThrowable(final Throwable t0) {
@@ -105,9 +108,9 @@ public class ExceptionUtils {
     }
 
     /**
-     * Checks to see if the class is part of a forbidden package. If so, it
-     * returns the package name from the list of suppressed packages that
-     * matches, otherwise it returns null.
+     * Checks to see if the class is part of a forbidden package. If so, it returns the
+     * package name from the list of suppressed packages that matches, otherwise it
+     * returns null.
      */
     private static String tryGetForbiddenPackageName(
             final StackTraceElement traceElement) {

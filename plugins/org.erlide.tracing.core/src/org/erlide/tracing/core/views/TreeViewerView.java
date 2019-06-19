@@ -5,7 +5,6 @@ import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -20,9 +19,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
@@ -102,13 +99,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         treeViewer.setInput(TraceCollections.getTracesList());
 
         // listener
-        treeViewer.addDoubleClickListener(new IDoubleClickListener() {
-
-            @Override
-            public void doubleClick(final DoubleClickEvent event) {
-                doDoubleClick(event);
-            }
-        });
+        treeViewer.addDoubleClickListener(event -> doDoubleClick(event));
     }
 
     private void createButtonsPanel(final Composite parent) {
@@ -179,26 +170,22 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         traceIndexField = new Text(buttonsPanel, SWT.SINGLE | SWT.BORDER);
         traceIndexField.setToolTipText("Select index of first trace event to display");
         traceIndexField.setLayoutData(new RowData(60, SWT.DEFAULT));
-        traceIndexField.addListener(SWT.Modify, new Listener() {
+        traceIndexField.addListener(SWT.Modify, event -> {
+            try {
+                correctInput = false;
+                final Long value = new Long(traceIndexField.getText());
 
-            @Override
-            public void handleEvent(final Event event) {
-                try {
-                    correctInput = false;
-                    final Long value = new Long(traceIndexField.getText());
-
-                    if (value >= 1 && value <= TraceBackend.getInstance()
-                            .getActiveResultSet().getSize()) {
-                        index = value;
-                        showButton.setEnabled(
-                                nextButton.isEnabled() || previousButton.isEnabled());
-                        correctInput = true;
-                    } else {
-                        showButton.setEnabled(false);
-                    }
-                } catch (final Exception e) {
+                if (value >= 1 && value <= TraceBackend.getInstance().getActiveResultSet()
+                        .getSize()) {
+                    index = value;
+                    showButton.setEnabled(
+                            nextButton.isEnabled() || previousButton.isEnabled());
+                    correctInput = true;
+                } else {
                     showButton.setEnabled(false);
                 }
+            } catch (final Exception e) {
+                showButton.setEnabled(false);
             }
         });
         traceIndexField.addKeyListener(new KeyListener() {
@@ -319,22 +306,14 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
     @Override
     public void startTracing() {
-        Display.getDefault().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                buttonsPanel.setEnabled(false);
-            }
-        });
+        Display.getDefault().asyncExec(() -> buttonsPanel.setEnabled(false));
     }
 
     @Override
     public void finishLoadingFile(final TracingStatus theStatus) {
-        Display.getDefault().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                if (TracingStatus.OK.equals(theStatus)) {
-                    treeViewer.refresh();
-                }
+        Display.getDefault().asyncExec(() -> {
+            if (TracingStatus.OK.equals(theStatus)) {
+                treeViewer.refresh();
             }
         });
     }
@@ -347,23 +326,15 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
             task.finish();
         } else {
             // when loading was initialized outside this view
-            Display.getDefault().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    doAfterLoadingTraces();
-                }
-            });
+            Display.getDefault().asyncExec(() -> doAfterLoadingTraces());
         }
     }
 
     @Override
     public void removeFile() {
-        Display.getDefault().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                updateButtonsPanel();
-                treeViewer.refresh();
-            }
+        Display.getDefault().asyncExec(() -> {
+            updateButtonsPanel();
+            treeViewer.refresh();
         });
     }
 

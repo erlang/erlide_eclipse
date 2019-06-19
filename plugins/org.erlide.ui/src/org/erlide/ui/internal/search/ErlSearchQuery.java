@@ -137,11 +137,9 @@ public class ErlSearchQuery implements ISearchQuery {
         };
         try {
             final ErlSearchScope reducedScope = pattern.reduceScope(scope);
-            ErlangEngine
-                    .getInstance()
-                    .getSearchServerService()
-                    .startFindRefs(pattern, reducedScope,
-                            ErlangEngine.getInstance().getStateDir(), callback, false);
+            ErlangEngine.getInstance().getSearchServerService().startFindRefs(pattern,
+                    reducedScope, ErlangEngine.getInstance().getStateDir(), callback,
+                    false);
         } catch (final RpcException e) {
             return new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, "Search error", e);
         }

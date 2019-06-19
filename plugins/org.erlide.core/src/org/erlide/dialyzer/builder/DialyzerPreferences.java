@@ -102,7 +102,8 @@ public final class DialyzerPreferences {
 
     @Override
     public String toString() {
-        return "['"+pltPaths + "', " + getFromSource() + ", " + getDialyzeOnCompile()+"]";
+        return "['" + pltPaths + "', " + getFromSource() + ", " + getDialyzeOnCompile()
+                + "]";
     }
 
     public void removeAllProjectSpecificSettings() {

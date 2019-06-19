@@ -28,7 +28,8 @@ public final class RuntimePreferenceMessages extends NLS {
     public static String RuntimePreferencePage_erlideLabel_text;
 
     static {
-        NLS.initializeMessages(RuntimePreferenceMessages.BUNDLE_NAME, RuntimePreferenceMessages.class);
+        NLS.initializeMessages(RuntimePreferenceMessages.BUNDLE_NAME,
+                RuntimePreferenceMessages.class);
     }
 
     private RuntimePreferenceMessages() {

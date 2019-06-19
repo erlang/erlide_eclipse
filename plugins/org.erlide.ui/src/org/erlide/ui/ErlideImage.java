@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available
- * at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui;
 
@@ -66,7 +64,8 @@ public enum ErlideImage {
 
     private static URL fgIconBaseURL;
     static {
-        ErlideImage.fgIconBaseURL = ErlideUIPlugin.getDefault().getBundle().getEntry("/icons/full/"); //$NON-NLS-1$
+        ErlideImage.fgIconBaseURL = ErlideUIPlugin.getDefault().getBundle()
+                .getEntry("/icons/full/"); //$NON-NLS-1$
     }
 
     private ErlideImage(final ErlideImagePrefix prefix, final String path) {
@@ -131,8 +130,8 @@ public enum ErlideImage {
     }
 
     /**
-     * Sets the three image descriptors for enabled, disabled, and hovered to an
-     * action. The actions are retrieved from the *tool16 folders.
+     * Sets the three image descriptors for enabled, disabled, and hovered to an action.
+     * The actions are retrieved from the *tool16 folders.
      *
      * @param action
      *            the action
@@ -145,8 +144,8 @@ public enum ErlideImage {
     }
 
     /**
-     * Sets the three image descriptors for enabled, disabled, and hovered to an
-     * action. The icons are retrieved from the *lcl16 folders.
+     * Sets the three image descriptors for enabled, disabled, and hovered to an action.
+     * The icons are retrieved from the *lcl16 folders.
      *
      * @param action
      *            the action

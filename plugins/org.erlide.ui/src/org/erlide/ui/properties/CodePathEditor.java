@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2008 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.properties;
 
@@ -30,7 +28,7 @@ public class CodePathEditor extends ListEditor {
     protected String createList(final String[] items) {
         final StringBuilder path = new StringBuilder(""); //$NON-NLS-1$
 
-        for (String item : items) {
+        for (final String item : items) {
             path.append(item);
             path.append(File.pathSeparator);
         }

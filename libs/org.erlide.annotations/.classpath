@@ -7,7 +7,8 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins">
 		<attributes>
-			<attribute name="annotationpath" value="../../erlide_eclipse/.eea"/>
+			<attribute name="annotationpath" value="/erlide_eclipse/.eea"/>
+			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src/"/>

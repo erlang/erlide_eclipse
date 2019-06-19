@@ -19,7 +19,6 @@ import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -36,15 +35,11 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CaretEvent;
-import org.eclipse.swt.custom.CaretListener;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -105,12 +100,7 @@ public class ErlangConsolePage extends Page
     private boolean disposeColors;
     private final IBackend backend;
 
-    private final ISelectionChangedListener selectionChangedListener = new ISelectionChangedListener() {
-        @Override
-        public void selectionChanged(final SelectionChangedEvent event) {
-            updateSelectionDependentActions();
-        }
-    };
+    private final ISelectionChangedListener selectionChangedListener = event -> updateSelectionDependentActions();
 
     private Color bgcolor;
 
@@ -209,16 +199,13 @@ public class ErlangConsolePage extends Page
                 .getPreferenceColor(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
         consoleOutputText.setBackground(bgcolor);
         DebugUIPlugin.getDefault().getPreferenceStore()
-                .addPropertyChangeListener(new IPropertyChangeListener() {
-                    @Override
-                    public void propertyChange(final PropertyChangeEvent event) {
-                        if (event.getProperty().equals(
-                                IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR)) {
-                            final Color color = DebugUIPlugin.getPreferenceColor(
-                                    IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
-                            consoleOutputText.setBackground(color);
-                            consoleInputText.setBackground(color);
-                        }
+                .addPropertyChangeListener(event -> {
+                    if (event.getProperty()
+                            .equals(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR)) {
+                        final Color color = DebugUIPlugin.getPreferenceColor(
+                                IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
+                        consoleOutputText.setBackground(color);
+                        consoleInputText.setBackground(color);
                     }
                 });
         consoleOutputText.addKeyListener(new KeyAdapter() {
@@ -255,35 +242,29 @@ public class ErlangConsolePage extends Page
                         + "Ctrl/Cmd-arrows navigate the input history.");
         helpLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        final ModifyListener modifyListener = new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                final String consoleText = ErlangConsolePage.trimInput(consoleInputText.getText());
-                final boolean atEndOfInput = consoleText.endsWith(".")
-                        && consoleInputText.getCaretOffset() >= consoleText.length();
+        final ModifyListener modifyListener = e -> {
+            final String consoleText = ErlangConsolePage
+                    .trimInput(consoleInputText.getText());
+            final boolean atEndOfInput = consoleText.endsWith(".")
+                    && consoleInputText.getCaretOffset() >= consoleText.length();
 
-                if (atEndOfInput) {
-                    final boolean inputComplete = isInputComplete();
-                    if (inputComplete) {
-                        consoleInputText.setBackground(bgColor_Ok);
-                    }
-                } else {
-                    consoleInputText.setBackground(bgcolor);
+            if (atEndOfInput) {
+                final boolean inputComplete = isInputComplete();
+                if (inputComplete) {
+                    consoleInputText.setBackground(bgColor_Ok);
                 }
+            } else {
+                consoleInputText.setBackground(bgcolor);
             }
         };
         // consoleInput.addModifyListener(modifyListener);
-        consoleInputText.addCaretListener(new CaretListener() {
-            @Override
-            public void caretMoved(final CaretEvent event) {
-                modifyListener.modifyText(null);
-            }
-        });
+        consoleInputText.addCaretListener(event -> modifyListener.modifyText(null));
         consoleInputText.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(final KeyEvent e) {
                 final boolean ctrlOrCommandPressed = (e.stateMask & SWT.MOD1) == SWT.MOD1;
-                final String conText = ErlangConsolePage.trimInput(consoleInputText.getText());
+                final String conText = ErlangConsolePage
+                        .trimInput(consoleInputText.getText());
                 final boolean atEndOfInput = consoleInputText.getCaretOffset() >= conText
                         .length() && conText.endsWith(".");
                 e.doit = true;
@@ -344,12 +325,7 @@ public class ErlangConsolePage extends Page
         // }
         fMenuManager = new MenuManager("#ContextMenu", id); //$NON-NLS-1$
         fMenuManager.setRemoveAllWhenShown(true);
-        fMenuManager.addMenuListener(new IMenuListener() {
-            @Override
-            public void menuAboutToShow(final IMenuManager m) {
-                contextMenuAboutToShow(m);
-            }
-        });
+        fMenuManager.addMenuListener(m -> contextMenuAboutToShow(m));
         final Menu menu = fMenuManager.createContextMenu(getControl());
         getControl().setMenu(menu);
 
@@ -533,7 +509,7 @@ public class ErlangConsolePage extends Page
     }
 
     protected void updateSelectionDependentActions() {
-        for (String fSelectionAction : fSelectionActions) {
+        for (final String fSelectionAction : fSelectionActions) {
             updateAction(fSelectionAction);
         }
     }

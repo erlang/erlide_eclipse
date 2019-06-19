@@ -42,8 +42,9 @@ public final class MarkerUtils {
     private static final String FIXME_TAG = "F" + "IXME";
     private static final String XXX_TAG = "X" + "XX";
     private static final String TODO_TAG = "T" + "ODO";
-    private static final String TODO_XXX_FIXME_PATTERN = "^[^%]*%+[ \t]*(" + MarkerUtils.TODO_TAG
-            + "|" + MarkerUtils.XXX_TAG + "|" + MarkerUtils.FIXME_TAG + ").*";
+    private static final String TODO_XXX_FIXME_PATTERN = "^[^%]*%+[ \t]*("
+            + MarkerUtils.TODO_TAG + "|" + MarkerUtils.XXX_TAG + "|"
+            + MarkerUtils.FIXME_TAG + ").*";
     // Copied from org.eclipse.ui.ide (since we don't want ui code in core)
     public static final String PATH_ATTRIBUTE = "org.eclipse.ui.views.markers.path";//$NON-NLS-1$
 
@@ -55,8 +56,8 @@ public final class MarkerUtils {
 
     public static void addTaskMarker(final IResource resource, final String message,
             final int lineNumber, final int priority) {
-        MarkerUtils.createMarker(resource, null, message, lineNumber, IMarker.SEVERITY_INFO,
-                MarkerUtils.TASK_MARKER);
+        MarkerUtils.createMarker(resource, null, message, lineNumber,
+                IMarker.SEVERITY_INFO, MarkerUtils.TASK_MARKER);
     }
 
     /**
@@ -68,13 +69,14 @@ public final class MarkerUtils {
     public static void addErrorMarkers(final IResource resource,
             final OtpErlangList errorList) {
         final OtpErlangObject[] messages = errorList.elements();
-        final Map<String, List<OtpErlangTuple>> groupedMessages = MarkerUtils.groupMessagesByFile(
-                messages);
+        final Map<String, List<OtpErlangTuple>> groupedMessages = MarkerUtils
+                .groupMessagesByFile(messages);
 
         for (final Entry<String, List<OtpErlangTuple>> entry : groupedMessages
                 .entrySet()) {
             final String fileName = entry.getKey();
-            final IResource res = MarkerUtils.findResourceForFileName(resource, entry, fileName);
+            final IResource res = MarkerUtils.findResourceForFileName(resource, entry,
+                    fileName);
 
             for (final OtpErlangTuple data : entry.getValue()) {
                 MarkerUtils.addAnnotationForMessage(resource, fileName, res, data);
@@ -176,7 +178,8 @@ public final class MarkerUtils {
 
     private static void addMessage(final Map<String, List<OtpErlangTuple>> map,
             final String key, final OtpErlangTuple tuple) {
-        List<OtpErlangTuple> list = map.computeIfAbsent(key, k -> Lists.newArrayList());
+        final List<OtpErlangTuple> list = map.computeIfAbsent(key,
+                k -> Lists.newArrayList());
         list.add(tuple);
     }
 
@@ -226,7 +229,8 @@ public final class MarkerUtils {
     public static void deleteMarkers(final IResource resource) {
         MarkerUtils.removeProblemMarkersFor(resource);
         if (resource instanceof IFile) {
-            MarkerUtils.deleteMarkersWithCompiledFile(resource.getProject(), (IFile) resource);
+            MarkerUtils.deleteMarkersWithCompiledFile(resource.getProject(),
+                    (IFile) resource);
             // should we delete markers for dependent hrl files?
         }
     }
@@ -339,12 +343,12 @@ public final class MarkerUtils {
             }
 
             for (final Pair<String, Integer> c : cl) {
-                MarkerUtils.createTaskMarkerAtText(resource, c.getValue(), c.getKey(), MarkerUtils.TODO_TAG,
-                        IMarker.PRIORITY_NORMAL);
-                MarkerUtils.createTaskMarkerAtText(resource, c.getValue(), c.getKey(), MarkerUtils.XXX_TAG,
-                        IMarker.PRIORITY_NORMAL);
-                MarkerUtils.createTaskMarkerAtText(resource, c.getValue(), c.getKey(), MarkerUtils.FIXME_TAG,
-                        IMarker.PRIORITY_HIGH);
+                MarkerUtils.createTaskMarkerAtText(resource, c.getValue(), c.getKey(),
+                        MarkerUtils.TODO_TAG, IMarker.PRIORITY_NORMAL);
+                MarkerUtils.createTaskMarkerAtText(resource, c.getValue(), c.getKey(),
+                        MarkerUtils.XXX_TAG, IMarker.PRIORITY_NORMAL);
+                MarkerUtils.createTaskMarkerAtText(resource, c.getValue(), c.getKey(),
+                        MarkerUtils.FIXME_TAG, IMarker.PRIORITY_HIGH);
             }
         } catch (final IOException e) {
         }

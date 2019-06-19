@@ -184,12 +184,14 @@ public class SWTResourceManager {
      * @return the small {@link Image} that can be used as placeholder for missing image.
      */
     private static Image getMissingImage() {
-        final Image image = new Image(Display.getCurrent(), SWTResourceManager.MISSING_IMAGE_SIZE,
+        final Image image = new Image(Display.getCurrent(),
+                SWTResourceManager.MISSING_IMAGE_SIZE,
                 SWTResourceManager.MISSING_IMAGE_SIZE);
         //
         final GC gc = new GC(image);
         gc.setBackground(getColor(SWT.COLOR_RED));
-        gc.fillRectangle(0, 0, SWTResourceManager.MISSING_IMAGE_SIZE, SWTResourceManager.MISSING_IMAGE_SIZE);
+        gc.fillRectangle(0, 0, SWTResourceManager.MISSING_IMAGE_SIZE,
+                SWTResourceManager.MISSING_IMAGE_SIZE);
         gc.dispose();
         //
         return image;
@@ -231,7 +233,8 @@ public class SWTResourceManager {
      * @return {@link Image} The resulting decorated image
      */
     public static Image decorateImage(final Image baseImage, final Image decorator) {
-        return SWTResourceManager.decorateImage(baseImage, decorator, SWTResourceManager.BOTTOM_RIGHT);
+        return SWTResourceManager.decorateImage(baseImage, decorator,
+                SWTResourceManager.BOTTOM_RIGHT);
     }
 
     /**
@@ -255,7 +258,8 @@ public class SWTResourceManager {
             cornerDecoratedImageMap = new HashMap<>();
             SWTResourceManager.m_decoratedImageMap[corner] = cornerDecoratedImageMap;
         }
-        Map<Image, Image> decoratedMap = cornerDecoratedImageMap.computeIfAbsent(baseImage, k -> new HashMap<>());
+        final Map<Image, Image> decoratedMap = cornerDecoratedImageMap
+                .computeIfAbsent(baseImage, k -> new HashMap<>());
         //
         Image result = decoratedMap.get(decorator);
         if (result == null) {
@@ -441,7 +445,8 @@ public class SWTResourceManager {
      */
     public static Cursor getCursor(final int id) {
         final Integer key = id;
-        Cursor cursor = SWTResourceManager.m_idToCursorMap.computeIfAbsent(key, k -> new Cursor(Display.getDefault(), id));
+        final Cursor cursor = SWTResourceManager.m_idToCursorMap.computeIfAbsent(key,
+                k -> new Cursor(Display.getDefault(), id));
         return cursor;
     }
 

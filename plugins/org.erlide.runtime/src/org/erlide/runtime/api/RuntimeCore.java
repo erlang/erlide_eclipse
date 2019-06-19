@@ -18,8 +18,8 @@ public class RuntimeCore {
             final RuntimeInfoCatalogData data = serializer.load();
 
             RuntimeCore.runtimeInfoCatalog = new RuntimeInfoCatalog();
-            RuntimeCore.runtimeInfoCatalog.setRuntimes(data.runtimes, data.defaultRuntimeName,
-                    data.erlideRuntimeName);
+            RuntimeCore.runtimeInfoCatalog.setRuntimes(data.runtimes,
+                    data.defaultRuntimeName, data.erlideRuntimeName);
             final RuntimeInfo runtime = RuntimeCore.runtimeInfoCatalog.getErlideRuntime();
             if (!HostnameChecker.getInstance().detectHostNames(runtime.getOtpHome())) {
                 // XXX show troubleshooting page and re-detect

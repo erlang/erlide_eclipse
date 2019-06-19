@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.ui;
 
@@ -181,7 +179,8 @@ public class RefactoringHandler extends AbstractHandler {
             pages.add(page);
 
             // introduce new variable refactoring
-        } else if ("org.erlide.wrangler.refactoring.introducenewvariable".equals(actionId)) {
+        } else if ("org.erlide.wrangler.refactoring.introducenewvariable"
+                .equals(actionId)) {
             pages.add(new SimpleInputPage("Introduce new variable",
                     "Please type the new variable name!", "New variable name:",
                     "New name must be a valid Erlang variable name!",
@@ -241,7 +240,8 @@ public class RefactoringHandler extends AbstractHandler {
             refactoring = new MoveFunctionRefactoring();
 
             // run fold expression against a local function
-        } else if ("org.erlide.wrangler.refactoring.foldlocalexpression".equals(actionId)) {
+        } else if ("org.erlide.wrangler.refactoring.foldlocalexpression"
+                .equals(actionId)) {
 
             refactoring = new FoldLocalExpressionRefactoring();
 
@@ -282,7 +282,8 @@ public class RefactoringHandler extends AbstractHandler {
                 }
 
                 // run introduce macro refactoring
-            } else if ("org.erlide.wrangler.refactoring.introducemacro".equals(actionId)) {
+            } else if ("org.erlide.wrangler.refactoring.introducemacro"
+                    .equals(actionId)) {
                 refactoring = new IntroduceMacroRefactoring();
                 pages.add(new SimpleInputPage("Introduce macro definition",
                         "Please type the new macro name!", "New macro name:",
@@ -295,14 +296,16 @@ public class RefactoringHandler extends AbstractHandler {
                         "New process name must be an Erlang atom!", new AtomValidator()));
 
                 // run function to process refactoring
-            } else if ("org.erlide.wrangler.refactoring.functiontoprocess".equals(actionId)) {
+            } else if ("org.erlide.wrangler.refactoring.functiontoprocess"
+                    .equals(actionId)) {
                 refactoring = new FunctionToProcessRefactoring();
                 pages.add(new SimpleInputPage("Convert function to process",
                         "Please type the new process name!", "New process name:",
                         "New process name must be an Erlang atom!", new AtomValidator()));
 
                 // run tuple function parameters refactoring
-            } else if ("org.erlide.wrangler.refactoring.tuplefunctonparameters".equals(actionId)) {
+            } else if ("org.erlide.wrangler.refactoring.tuplefunctonparameters"
+                    .equals(actionId)) {
                 refactoring = new TupleFunctionParametersRefactoring();
 
                 // run generalise function refactoring
@@ -310,8 +313,8 @@ public class RefactoringHandler extends AbstractHandler {
                 /*
                  * pages.add(new CostumworkFlowInputPage("Generalise function",
                  * "Please type the new parameter name!", "New parameter name:",
-                 * "New parameter name must be a valid Erlang variable name!",
-                 * new VariableNameValidator()));
+                 * "New parameter name must be a valid Erlang variable name!", new
+                 * VariableNameValidator()));
                  */
                 try {
                     refactoring = runGenFunRefactoring(pages, activeShell);
@@ -325,7 +328,8 @@ public class RefactoringHandler extends AbstractHandler {
                 }
 
                 // fold against macro definition
-            } else if ("org.erlide.wrangler.refactoring.foldagainstmacro".equals(actionId)) {
+            } else if ("org.erlide.wrangler.refactoring.foldagainstmacro"
+                    .equals(actionId)) {
                 refactoring = new FoldAgainstMacro();
 
                 pages.add(new SelectionInputPage("Fold against macro definition",
@@ -334,7 +338,8 @@ public class RefactoringHandler extends AbstractHandler {
                         (CostumWorkflowRefactoringWithPositionsSelection) refactoring));
 
                 // normalize record expression
-            } else if ("org.erlide.wrangler.refactoring.normalizerecordexpression".equals(actionId)) {
+            } else if ("org.erlide.wrangler.refactoring.normalizerecordexpression"
+                    .equals(actionId)) {
                 final boolean showDefaultFields = MessageDialog.openQuestion(activeShell,
                         "Showing defaults", "Show record fields with default values?");
                 refactoring = new NormalizeRecordExpression(showDefaultFields);
@@ -358,22 +363,27 @@ public class RefactoringHandler extends AbstractHandler {
                         "Select expressions which should be merged",
                         (CostumWorkflowRefactoringWithPositionsSelection) refactoring));
 
-            } else if ("org.erlide.wrangler.refactoring.eqc_statemtorecord".equals(actionId)) {
+            } else if ("org.erlide.wrangler.refactoring.eqc_statemtorecord"
+                    .equals(actionId)) {
                 refactoring = new EqcStatemStateDataToRecordRefactoring();
                 pages.add(new RecordDataInputPage("eqc_statem State Data To Record"));
 
-            } else if ("org.erlide.wrangler.refactoring.eqc_fsmtorecord".equals(actionId)) {
+            } else if ("org.erlide.wrangler.refactoring.eqc_fsmtorecord"
+                    .equals(actionId)) {
                 refactoring = new EqcFsmStateDataToRecordRefactoring();
                 pages.add(new RecordDataInputPage("eqc_fsm State Data To Record"));
 
-            } else if ("org.erlide.wrangler.refactoring.gen_fsmtorecord".equals(actionId)) {
+            } else if ("org.erlide.wrangler.refactoring.gen_fsmtorecord"
+                    .equals(actionId)) {
                 refactoring = new GenFsmStateDataToRecordRefactoring();
                 pages.add(new RecordDataInputPage("gen_fsm State Data To Record"));
 
-            } else if ("org.erlide.wrangler.refactoring.unfoldfunctionapplication".equals(actionId)) {
+            } else if ("org.erlide.wrangler.refactoring.unfoldfunctionapplication"
+                    .equals(actionId)) {
                 refactoring = new UnfoldFunctionApplicationRefactoring();
 
-            } else if ("org.erlide.wrangler.refactoring.partitionexports".equals(actionId)) {
+            } else if ("org.erlide.wrangler.refactoring.partitionexports"
+                    .equals(actionId)) {
                 refactoring = new PartitionExportsRefactoring();
                 final SimpleInputPage page = new SimpleInputPage("Partition exports",
                         "Please input the the distance treshould between 0.1 and 1.0",
@@ -455,8 +465,8 @@ public class RefactoringHandler extends AbstractHandler {
     }
 
     /**
-     * Checks whether there is any warning messages, if yes displays a view,
-     * containg all of them.
+     * Checks whether there is any warning messages, if yes displays a view, containg all
+     * of them.
      */
     protected void checkWarningMessages() {
         try {
@@ -505,9 +515,8 @@ public class RefactoringHandler extends AbstractHandler {
      * @return
      * @throws OtpErlangRangeException
      */
-    protected WranglerRefactoring runGenFunRefactoring(
-            final List<WranglerPage> pages, final Shell activeShell)
-            throws OtpErlangRangeException {
+    protected WranglerRefactoring runGenFunRefactoring(final List<WranglerPage> pages,
+            final Shell activeShell) throws OtpErlangRangeException {
         WranglerRefactoring refactoring = null;
 
         final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters

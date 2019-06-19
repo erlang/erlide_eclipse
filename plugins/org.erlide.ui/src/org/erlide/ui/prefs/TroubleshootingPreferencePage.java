@@ -227,7 +227,8 @@ public class TroubleshootingPreferencePage extends PreferencePage
                 Program.launch(link.getToolTipText());
             }
         });
-        // FIXME link.setToolTipText("https://github.com/erlang/erlide_eclipse/wiki/Troubleshooting");
+        // FIXME
+        // link.setToolTipText("https://github.com/erlang/erlide_eclipse/wiki/Troubleshooting");
         link.setText("<a>More detailed troubleshooting information</a>");
 
         updateHostNames();
@@ -258,19 +259,16 @@ public class TroubleshootingPreferencePage extends PreferencePage
             shortLabel.setForeground(cm.getColor(darkRed));
         }
 
-        Display.getDefault().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                if (retriever.canConnect(fileLongText.getText(), true)) {
-                    fileLongText.setBackground(cm.getColor(lightGreen));
-                } else {
-                    fileLongText.setBackground(cm.getColor(lightRed));
-                }
-                if (retriever.canConnect(fileShortText.getText(), false)) {
-                    fileShortText.setBackground(cm.getColor(lightGreen));
-                } else {
-                    fileShortText.setBackground(cm.getColor(lightRed));
-                }
+        Display.getDefault().asyncExec(() -> {
+            if (retriever.canConnect(fileLongText.getText(), true)) {
+                fileLongText.setBackground(cm.getColor(lightGreen));
+            } else {
+                fileLongText.setBackground(cm.getColor(lightRed));
+            }
+            if (retriever.canConnect(fileShortText.getText(), false)) {
+                fileShortText.setBackground(cm.getColor(lightGreen));
+            } else {
+                fileShortText.setBackground(cm.getColor(lightRed));
             }
         });
     }
@@ -278,12 +276,9 @@ public class TroubleshootingPreferencePage extends PreferencePage
     private void set_async(final Text text, final Function0<? extends String> function,
             final ErlangHostnameRetriever r, final boolean isLong) {
         text.setText("...wait...");
-        Display.getDefault().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                final String name = fix(function.apply());
-                text.setText(fix(name));
-            }
+        Display.getDefault().asyncExec(() -> {
+            final String name = fix(function.apply());
+            text.setText(fix(name));
         });
     }
 

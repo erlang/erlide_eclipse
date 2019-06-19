@@ -13,6 +13,6 @@ public interface ICoverObserver {
      *
      * @param e
      */
-    public void eventOccured(ICoverEvent e);
+    void eventOccured(ICoverEvent e);
 
 }

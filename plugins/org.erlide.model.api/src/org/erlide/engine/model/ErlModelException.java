@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.engine.model;
 
@@ -17,13 +15,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 
 /**
- * A checked exception representing a failure in the Erlang model. Erlang model
- * exceptions contain an Erlang-specific status object describing the cause of
- * the exception.
+ * A checked exception representing a failure in the Erlang model. Erlang model exceptions
+ * contain an Erlang-specific status object describing the cause of the exception.
  * <p>
- * This class is not intended to be subclassed by clients. Instances of this
- * class are automatically created by the Erlang model when problems arise, so
- * there is generally no need for clients to create instances.
+ * This class is not intended to be subclassed by clients. Instances of this class are
+ * automatically created by the Erlang model when problems arise, so there is generally no
+ * need for clients to create instances.
  * </p>
  *
  * @see IErlModelStatus
@@ -64,8 +61,8 @@ public class ErlModelException extends CoreException {
     /**
      * Returns the underlying <code>Throwable</code> that caused the failure.
      *
-     * @return the wrappered <code>Throwable</code>, or <code>null</code> if the
-     *         direct case of the failure was at the Erlang model layer
+     * @return the wrappered <code>Throwable</code>, or <code>null</code> if the direct
+     *         case of the failure was at the Erlang model layer
      */
     public Throwable getException() {
         if (nestedCoreException == null) {
@@ -89,13 +86,13 @@ public class ErlModelException extends CoreException {
     }
 
     /**
-     * Returns whether this exception indicates that an Erlang model element
-     * does not exist. Such exceptions have a status with a code of
-     * <code>IErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST</code>. This is a
-     * convenience method.
+     * Returns whether this exception indicates that an Erlang model element does not
+     * exist. Such exceptions have a status with a code of
+     * <code>IErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST</code>. This is a convenience
+     * method.
      *
-     * @return <code>true</code> if this exception indicates that a Erlang model
-     *         element does not exist
+     * @return <code>true</code> if this exception indicates that a Erlang model element
+     *         does not exist
      * @see IErlModelStatus#elementDoesNotExist()
      * @see ErlModelStatusConstants#ELEMENT_DOES_NOT_EXIST
      */
@@ -141,8 +138,8 @@ public class ErlModelException extends CoreException {
     }
 
     /*
-     * Returns a printable representation of this exception suitable for
-     * debugging purposes only.
+     * Returns a printable representation of this exception suitable for debugging
+     * purposes only.
      */
     @Override
     public String toString() {

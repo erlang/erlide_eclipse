@@ -6,12 +6,11 @@ import org.eclipse.ui.texteditor.AbstractRulerActionDelegate;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
- * Action to open a properties dialog on a Erlang breakpoint from a ruler
- * context menu.
+ * Action to open a properties dialog on a Erlang breakpoint from a ruler context menu.
  * <p>
  * This action can also be contributed to a vertical ruler context menu via the
- * <code>popupMenus</code> extension point, by referencing the ruler's context
- * menu identifier in the <code>targetID</code> attribute.
+ * <code>popupMenus</code> extension point, by referencing the ruler's context menu
+ * identifier in the <code>targetID</code> attribute.
  *
  * <pre>
  * &lt;extension point=&quot;org.eclipse.ui.popupMenus&quot;&gt;
@@ -39,8 +38,7 @@ public class ErlangBreakpointPropertiesRulerActionDelegate
         extends AbstractRulerActionDelegate {
 
     /**
-     * @see AbstractRulerActionDelegate#createAction(ITextEditor,
-     *      IVerticalRulerInfo)
+     * @see AbstractRulerActionDelegate#createAction(ITextEditor, IVerticalRulerInfo)
      */
     @Override
     protected IAction createAction(final ITextEditor editor,

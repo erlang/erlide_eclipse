@@ -41,14 +41,16 @@ public class KeyBindingHelper {
      *         otherwise).
      */
     public static boolean matchesQuickAssistKeybinding(final KeyEvent event) {
-        return KeyBindingHelper.matchesKeybinding(event, ITextEditorActionDefinitionIds.QUICK_ASSIST);
+        return KeyBindingHelper.matchesKeybinding(event,
+                ITextEditorActionDefinitionIds.QUICK_ASSIST);
     }
 
     /**
      * @return the key sequence that is the best match for a quick assist request.
      */
     public static KeySequence getQuickAssistProposalBinding() {
-        return KeyBindingHelper.getCommandKeyBinding(ITextEditorActionDefinitionIds.QUICK_ASSIST);
+        return KeyBindingHelper
+                .getCommandKeyBinding(ITextEditorActionDefinitionIds.QUICK_ASSIST);
     }
 
     // END pre-defined helpers

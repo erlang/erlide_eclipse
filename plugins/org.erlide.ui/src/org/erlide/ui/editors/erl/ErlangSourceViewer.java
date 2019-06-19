@@ -29,7 +29,7 @@ import com.google.common.collect.Maps;
 
 public class ErlangSourceViewer extends ProjectionViewer implements IDisposable {
 
-    private ErlangBracketInserter fBracketInserter;
+    private final ErlangBracketInserter fBracketInserter;
 
     public ErlangSourceViewer(final Composite parent, final IVerticalRuler ruler,
             final IOverviewRuler overviewRuler, final boolean showsAnnotationOverview,

@@ -31,7 +31,8 @@ public class Activator extends AbstractUIPlugin {
         Activator.plugin = this;
 
         // loading images
-        final URL baseUrl = FileLocator.find(getBundle(), new Path(Activator.ICONS_PATH), null);
+        final URL baseUrl = FileLocator.find(getBundle(), new Path(Activator.ICONS_PATH),
+                null);
         for (final Images image : Images.values()) {
             getImageRegistry().put(image.toString(), ImageDescriptor
                     .createFromURL(new URL(baseUrl + image.getFileName())));

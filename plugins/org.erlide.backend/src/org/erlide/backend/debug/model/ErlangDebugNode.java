@@ -14,9 +14,8 @@ import org.eclipse.debug.core.model.IThread;
 import org.erlide.backend.debug.IErlangDebugNode;
 
 /**
- * A debug node is a distributed node connected to the debug target. It is only
- * created when debugging distributed systems, and only for the "other" nodes
- * connected.
+ * A debug node is a distributed node connected to the debug target. It is only created
+ * when debugging distributed systems, and only for the "other" nodes connected.
  *
  * @author jakob
  *

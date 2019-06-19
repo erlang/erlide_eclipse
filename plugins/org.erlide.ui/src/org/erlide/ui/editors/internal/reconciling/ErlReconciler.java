@@ -135,11 +135,10 @@ public class ErlReconciler implements IReconciler {
         }
 
         /**
-         * The background activity. Waits until there is something in the queue
-         * managing the changes that have been applied to the text viewer.
-         * Removes the first change from the queue and process it. If
-         * fReconcileAllAtOnce is set, it removes all changes and processes
-         * them.
+         * The background activity. Waits until there is something in the queue managing
+         * the changes that have been applied to the text viewer. Removes the first change
+         * from the queue and process it. If fReconcileAllAtOnce is set, it removes all
+         * changes and processes them.
          * <p>
          * Calls {@link AbstractReconciler#initialProcess()} on entrance.
          * </p>
@@ -229,8 +228,8 @@ public class ErlReconciler implements IReconciler {
             }
 
             /*
-             * The second OR condition handles the case when the document gets
-             * changed while still inside initialProcess().
+             * The second OR condition handles the case when the document gets changed
+             * while still inside initialProcess().
              */
             if (fProgressMonitor != null
                     && (fThread.isActive() || fThread.isDirty() && fThread.isAlive())) {
@@ -301,8 +300,8 @@ public class ErlReconciler implements IReconciler {
     }
 
     /**
-     * Tells the reconciler how long it should wait for further text changes
-     * before activating the appropriate reconciling strategies.
+     * Tells the reconciler how long it should wait for further text changes before
+     * activating the appropriate reconciling strategies.
      *
      * @param delay
      *            the duration in milliseconds of a change collection period.
@@ -312,14 +311,14 @@ public class ErlReconciler implements IReconciler {
     }
 
     /**
-     * Tells the reconciler whether any of the available reconciling strategies
-     * is interested in getting detailed dirty region information or just in the
-     * fact that the document has been changed. In the second case, the
-     * reconciling can not incrementally be pursued.
+     * Tells the reconciler whether any of the available reconciling strategies is
+     * interested in getting detailed dirty region information or just in the fact that
+     * the document has been changed. In the second case, the reconciling can not
+     * incrementally be pursued.
      *
      * @param isIncremental
-     *            indicates whether this reconciler will be configured with
-     *            incremental reconciling strategies
+     *            indicates whether this reconciler will be configured with incremental
+     *            reconciling strategies
      *
      * @see DirtyRegion
      * @see IReconcilingStrategy
@@ -329,17 +328,15 @@ public class ErlReconciler implements IReconciler {
     }
 
     /**
-     * Tells the reconciler whether it is allowed to change the document inside
-     * its reconciler thread.
+     * Tells the reconciler whether it is allowed to change the document inside its
+     * reconciler thread.
      * <p>
-     * If this is set to <code>false</code> an
-     * {@link UnsupportedOperationException} will be thrown when this
-     * restriction will be violated.
+     * If this is set to <code>false</code> an {@link UnsupportedOperationException} will
+     * be thrown when this restriction will be violated.
      * </p>
      *
      * @param isAllowedToModify
-     *            indicates whether this reconciler is allowed to modify the
-     *            document
+     *            indicates whether this reconciler is allowed to modify the document
      * @since 3.2
      */
     public void setIsAllowedToModifyDocument(final boolean isAllowedToModify) {
@@ -435,8 +432,8 @@ public class ErlReconciler implements IReconciler {
     }
 
     /**
-     * Hook for subclasses which want to perform some action as soon as
-     * reconciliation is needed.
+     * Hook for subclasses which want to perform some action as soon as reconciliation is
+     * needed.
      * <p>
      * Default implementation is to do nothing.
      * </p>
@@ -447,8 +444,8 @@ public class ErlReconciler implements IReconciler {
     }
 
     /**
-     * Forces the reconciler to reconcile the structure of the whole document.
-     * Clients may extend this method.
+     * Forces the reconciler to reconcile the structure of the whole document. Clients may
+     * extend this method.
      */
     public void forceReconciling() {
 
@@ -473,8 +470,8 @@ public class ErlReconciler implements IReconciler {
     }
 
     /**
-     * Starts the reconciler to reconcile the queued dirty-regions. Clients may
-     * extend this method.
+     * Starts the reconciler to reconcile the queued dirty-regions. Clients may extend
+     * this method.
      */
     protected synchronized void startReconciling() {
         if (fThread == null) {
@@ -535,8 +532,8 @@ public class ErlReconciler implements IReconciler {
     }
 
     /**
-     * This method is called on startup of the background activity. It is called
-     * only once during the life time of the reconciler.
+     * This method is called on startup of the background activity. It is called only once
+     * during the life time of the reconciler.
      */
     protected void initialProcess() {
         synchronized (fMutex) {

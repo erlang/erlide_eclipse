@@ -182,7 +182,8 @@ public class TestCaseData {
         try {
             b = OtpErlang.match("{Cause, Stack}", reason);
             if (b == null) {
-                return new FailReason("internal error: " + reason.toString(), TestCaseData.NO_STACK);
+                return new FailReason("internal error: " + reason.toString(),
+                        TestCaseData.NO_STACK);
             }
             final Collection<OtpErlangObject> stack = b.getList("Stack");
             return new FailReason(b.get("Cause").toString(), stack);

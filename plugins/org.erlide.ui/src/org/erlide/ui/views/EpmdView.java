@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -97,12 +95,7 @@ public class EpmdView extends ViewPart implements IEpmdListener {
     @Override
     public void createPartControl(final Composite parent) {
         treeViewer = new TreeViewer(parent, SWT.BORDER);
-        treeViewer.addDoubleClickListener(new IDoubleClickListener() {
-            @Override
-            public void doubleClick(final DoubleClickEvent event) {
-                treeViewer.refresh();
-            }
-        });
+        treeViewer.addDoubleClickListener(event -> treeViewer.refresh());
         treeViewer.setContentProvider(new TreeContentProvider());
         treeViewer.setLabelProvider(new TreeLabelProvider());
         treeViewer.setAutoExpandLevel(2);
@@ -124,11 +117,6 @@ public class EpmdView extends ViewPart implements IEpmdListener {
     public void updateNodeStatus(final String host, final Collection<String> started,
             final Collection<String> stopped) {
         model = epmdWatcher.getData();
-        DisplayUtils.asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                treeViewer.setInput(model);
-            }
-        });
+        DisplayUtils.asyncExec(() -> treeViewer.setInput(model));
     }
 }

@@ -20,8 +20,8 @@ public interface INavigatorDropHandler {
      * @param target
      * @return
      */
-    public IStatus handleDrop(CommonDropAdapter dropAdapter,
-            DropTargetEvent dropTargetEvent, Object target);
+    IStatus handleDrop(CommonDropAdapter dropAdapter, DropTargetEvent dropTargetEvent,
+            Object target);
 
     /**
      * Function for validating drop event
@@ -31,7 +31,7 @@ public interface INavigatorDropHandler {
      * @param transferType
      * @return
      */
-    public IStatus validateDrop(Object target, int operation, TransferData transferType);
+    IStatus validateDrop(Object target, int operation, TransferData transferType);
 
     /*
      * public boolean setDragData(final DragSourceEvent anEvent, final

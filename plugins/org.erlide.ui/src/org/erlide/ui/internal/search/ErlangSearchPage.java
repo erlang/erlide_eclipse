@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2007 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.internal.search;
 
@@ -262,7 +260,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             }
             SearchUtil.updateLRUWorkingSets(workingSets);
         }
-        break;
+            break;
         default:
             break;
         }
@@ -296,8 +294,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     }
 
     /**
-     * Return search pattern data and update previous searches. An existing
-     * entry will be updated.
+     * Return search pattern data and update previous searches. An existing entry will be
+     * updated.
      *
      * @return the pattern data
      */
@@ -776,7 +774,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         try {
             final int historySize = s.getInt(ErlangSearchPage.STORE_HISTORY_SIZE);
             for (int i = 0; i < historySize; i++) {
-                final IDialogSettings histSettings = s.getSection(ErlangSearchPage.STORE_HISTORY + i);
+                final IDialogSettings histSettings = s
+                        .getSection(ErlangSearchPage.STORE_HISTORY + i);
                 if (histSettings != null) {
                     final SearchPatternData data = SearchPatternData.create(histSettings);
                     if (data != null) {
@@ -795,10 +794,12 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     private void writeConfiguration() {
         final IDialogSettings s = getDialogSettings();
 
-        final int historySize = Math.min(fPreviousSearchPatterns.size(), ErlangSearchPage.HISTORY_SIZE);
+        final int historySize = Math.min(fPreviousSearchPatterns.size(),
+                ErlangSearchPage.HISTORY_SIZE);
         s.put(ErlangSearchPage.STORE_HISTORY_SIZE, historySize);
         for (int i = 0; i < historySize; i++) {
-            final IDialogSettings histSettings = s.addNewSection(ErlangSearchPage.STORE_HISTORY + i);
+            final IDialogSettings histSettings = s
+                    .addNewSection(ErlangSearchPage.STORE_HISTORY + i);
             final SearchPatternData data = fPreviousSearchPatterns.get(i);
             data.store(histSettings);
         }

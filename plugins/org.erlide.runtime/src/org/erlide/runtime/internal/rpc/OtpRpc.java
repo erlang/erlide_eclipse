@@ -117,18 +117,15 @@ public class OtpRpc implements IOtpRpc {
         try {
             final RpcFuture future = sendRpcCall(localNode, nodeName, false, gleader,
                     module, fun, signature, args);
-            final Runnable target = new Runnable() {
-                @Override
-                public void run() {
-                    OtpErlangObject result;
-                    try {
-                        result = future.checkedGet(timeout, TimeUnit.MILLISECONDS);
-                        cb.onSuccess(result);
-                    } catch (final Exception e) {
-                        ErlLogger.error("Could not execute RPC " + module + ":" + fun
-                                + " : " + e.getMessage());
-                        cb.onFailure(e);
-                    }
+            final Runnable target = () -> {
+                OtpErlangObject result;
+                try {
+                    result = future.checkedGet(timeout, TimeUnit.MILLISECONDS);
+                    cb.onSuccess(result);
+                } catch (final Exception e) {
+                    ErlLogger.error("Could not execute RPC " + module + ":" + fun + " : "
+                            + e.getMessage());
+                    cb.onFailure(e);
                 }
             };
             // We can't use jobs here, it's an Eclipse dependency

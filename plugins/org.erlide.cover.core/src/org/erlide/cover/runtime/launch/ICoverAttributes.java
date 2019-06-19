@@ -10,15 +10,15 @@ import org.erlide.core.ErlangCore;
  */
 public interface ICoverAttributes {
 
-    public final String prefix = ErlangCore.PLUGIN_ID;
+    String prefix = ErlangCore.PLUGIN_ID;
 
-    public final String TYPE = ICoverAttributes.prefix + ".type";
-    public final String PROJECT = ICoverAttributes.prefix + ".project";
-    public final String MODULE = ICoverAttributes.prefix + ".module";
-    public final String FILE = ICoverAttributes.prefix + ".file";
-    public final String APP_PROJECT = ICoverAttributes.prefix + ".app_project";
-    public final String APPLICATION = ICoverAttributes.prefix + ".application";
+    String TYPE = ICoverAttributes.prefix + ".type";
+    String PROJECT = ICoverAttributes.prefix + ".project";
+    String MODULE = ICoverAttributes.prefix + ".module";
+    String FILE = ICoverAttributes.prefix + ".file";
+    String APP_PROJECT = ICoverAttributes.prefix + ".app_project";
+    String APPLICATION = ICoverAttributes.prefix + ".application";
 
-    public final String COMBO = ICoverAttributes.prefix + ".framework";
+    String COMBO = ICoverAttributes.prefix + ".framework";
 
 }

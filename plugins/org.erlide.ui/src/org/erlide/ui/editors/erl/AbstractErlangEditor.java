@@ -56,7 +56,8 @@ public abstract class AbstractErlangEditor extends TextEditor {
     protected void configureSourceViewerDecorationSupport(
             final SourceViewerDecorationSupport support) {
         support.setCharacterPairMatcher(getBracketMatcher());
-        support.setMatchingCharacterPainterPreferenceKeys(AbstractErlangEditor.MATCHING_BRACKETS,
+        support.setMatchingCharacterPainterPreferenceKeys(
+                AbstractErlangEditor.MATCHING_BRACKETS,
                 AbstractErlangEditor.MATCHING_BRACKETS_COLOR);
 
         super.configureSourceViewerDecorationSupport(support);

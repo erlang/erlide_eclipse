@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.util;
 
@@ -182,7 +180,7 @@ public final class WranglerUtils {
     }
 
     private static void findModulesRecursively(final IResource res,
-                                               final List<IFile> files) throws CoreException {
+            final List<IFile> files) throws CoreException {
         if (res instanceof IContainer) {
             final IContainer c = (IContainer) res;
             for (final IResource r : c.members()) {
@@ -255,17 +253,19 @@ public final class WranglerUtils {
     }
 
     /*
-     * static public String getTextSegment(int startLine, int startPos, int
-     * endLine, int endPos, IFile file) throws BadLocationException { IDocument
-     * doc = getDocument(file); return getTextSegment(startLine, startPos,
-     * endLine, endPos, doc); }
+     * static public String getTextSegment(int startLine, int startPos, int endLine, int
+     * endPos, IFile file) throws BadLocationException { IDocument doc =
+     * getDocument(file); return getTextSegment(startLine, startPos, endLine, endPos,
+     * doc); }
      */
 
     protected static String getTextSegment(final int startLine, final int startPos,
             final int endLine, final int endPos, final IDocument doc)
             throws BadLocationException {
-        final int startOffset = WranglerUtils.calculateOffsetFromPosition(startLine, startPos, doc);
-        final int endOffset = WranglerUtils.calculateOffsetFromPosition(endLine, endPos, doc);
+        final int startOffset = WranglerUtils.calculateOffsetFromPosition(startLine,
+                startPos, doc);
+        final int endOffset = WranglerUtils.calculateOffsetFromPosition(endLine, endPos,
+                doc);
         return WranglerUtils.getTextSegment(startOffset, endOffset, doc);
     }
 
@@ -314,7 +314,8 @@ public final class WranglerUtils {
      */
     public static void highlightSelection(final int offset, final int length,
             final IErlMemberSelection selection) {
-        final ITextEditor editor = (ITextEditor) WranglerUtils.openFile(selection.getFile());
+        final ITextEditor editor = (ITextEditor) WranglerUtils
+                .openFile(selection.getFile());
         WranglerUtils.highlightSelection(offset, length, editor);
     }
 
@@ -347,8 +348,7 @@ public final class WranglerUtils {
         final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                 .getActivePage();
         /*
-         * IEditorDescriptor desc =
-         * PlatformUI.getWorkbench().getEditorRegistry()
+         * IEditorDescriptor desc = PlatformUI.getWorkbench().getEditorRegistry()
          * .getDefaultEditor(file.getName());
          */
 

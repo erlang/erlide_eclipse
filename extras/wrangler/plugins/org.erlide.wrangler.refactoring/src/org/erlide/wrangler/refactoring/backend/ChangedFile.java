@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend;
 
@@ -67,11 +65,10 @@ public class ChangedFile {
     }
 
     /**
-     * Creates <code>Change</code> objects from the original and the modified
-     * source.
+     * Creates <code>Change</code> objects from the original and the modified source.
      *
-     * @return the created <code>Change</code> object which typically instance
-     *         of <code>TextFileChange</code>
+     * @return the created <code>Change</code> object which typically instance of
+     *         <code>TextFileChange</code>
      * @throws IOException
      *             if an exception occurs while accessing the source file
      */

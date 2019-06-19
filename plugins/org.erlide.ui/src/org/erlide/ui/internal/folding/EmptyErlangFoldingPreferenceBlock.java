@@ -10,8 +10,8 @@ import org.erlide.ui.editors.erl.folding.IErlangFoldingPreferenceBlock;
 
 /**
  * Empty preference block for extensions to the
- * <code>org.erlide.ui.erlangFoldingStructureProvider</code> extension point
- * that do not specify their own.
+ * <code>org.erlide.ui.erlangFoldingStructureProvider</code> extension point that do not
+ * specify their own.
  */
 
 public class EmptyErlangFoldingPreferenceBlock implements IErlangFoldingPreferenceBlock {

@@ -11,11 +11,11 @@ public interface IEUnitObserver {
     /**
      * Reports change in the model tree when new test results arrived
      */
-    public void treeChanged();
+    void treeChanged();
 
     /**
      * Reports change in summary
      */
-    public void labelChanged();
+    void labelChanged();
 
 }

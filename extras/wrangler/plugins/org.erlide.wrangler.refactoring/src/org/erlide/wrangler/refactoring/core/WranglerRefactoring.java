@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.core;
 
@@ -29,8 +27,7 @@ import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 /**
- * Abstract class for implementing Wrangler refactorings. Implementors should
- * extend this.
+ * Abstract class for implementing Wrangler refactorings. Implementors should extend this.
  *
  * @author Gyorgy Orosz
  * @version %I%, %G%
@@ -46,8 +43,8 @@ public abstract class WranglerRefactoring extends Refactoring {
     }
 
     /**
-     * Run the RPC call. Usually only one RPC call is needed, for this, this
-     * function is used to do the trick.
+     * Run the RPC call. Usually only one RPC call is needed, for this, this function is
+     * used to do the trick.
      *
      * @param sel
      *            selected code piece

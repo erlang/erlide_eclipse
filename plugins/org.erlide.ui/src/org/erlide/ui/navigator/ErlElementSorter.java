@@ -31,18 +31,18 @@ public class ErlElementSorter extends ViewerSorter {
     }
 
     @SuppressWarnings("deprecation")
-	public ErlElementSorter() {
+    public ErlElementSorter() {
         super();
     }
 
     @SuppressWarnings("deprecation")
-	public ErlElementSorter(final int how) {
+    public ErlElementSorter(final int how) {
         super();
         this.how = how;
     }
 
     @SuppressWarnings("deprecation")
-	public ErlElementSorter(final Collator collator) {
+    public ErlElementSorter(final Collator collator) {
         super(collator);
     }
 

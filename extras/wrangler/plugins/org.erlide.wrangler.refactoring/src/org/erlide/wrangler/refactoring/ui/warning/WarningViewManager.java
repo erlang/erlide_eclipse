@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.ui.warning;
 
@@ -51,7 +49,8 @@ public class WarningViewManager {
     public static void addWarningMessage(final String message) {
         try {
             // if (view == null) {
-            WarningViewManager.setWarningView((IWarningHandler) WarningViewManager.showWarningView());
+            WarningViewManager.setWarningView(
+                    (IWarningHandler) WarningViewManager.showWarningView());
             // }
             WarningViewManager.view.addMessage(message);
             WarningViewManager.view.refresh();
@@ -72,7 +71,8 @@ public class WarningViewManager {
 
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         try {
-            final IViewPart theView = window.getActivePage().showView(WarningViewManager.warningViewID);
+            final IViewPart theView = window.getActivePage()
+                    .showView(WarningViewManager.warningViewID);
             return theView;
         } catch (final PartInitException e) {
             ErlLogger.error(e);
@@ -87,7 +87,8 @@ public class WarningViewManager {
         final IWorkbench workbench = PlatformUI.getWorkbench();
 
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        final IViewPart theView = window.getActivePage().findView(WarningViewManager.warningViewID);
+        final IViewPart theView = window.getActivePage()
+                .findView(WarningViewManager.warningViewID);
         window.getActivePage().hideView(theView);
 
     }

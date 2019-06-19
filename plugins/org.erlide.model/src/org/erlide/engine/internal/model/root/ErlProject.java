@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.engine.internal.model.root;
 
@@ -36,7 +34,6 @@ import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.ErlModelStatus;
 import org.erlide.engine.model.ErlModelStatusConstants;
 import org.erlide.engine.model.IErlElement;
-import org.erlide.engine.model.IErlElementVisitor;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.SourcePathUtils;
 import org.erlide.engine.model.builder.BuilderProperties;
@@ -68,18 +65,18 @@ import com.google.common.collect.Lists;
  * Handle for an Erlang project.
  *
  * <p>
- * A Erlang Project internally maintains a devpath that corresponds to the
- * project's classpath. The classpath may include source folders from the
- * current project; archives in the current project, other projects, and the
- * local file system; and binary folders (output location) of other projects.
- * The Erlang Model presents source elements corresponding to output .beam files
- * in other projects, and thus uses the devpath rather than the classpath (which
- * is really a compilation path). The devpath mimics the classpath, except has
- * source folder entries in place of output locations in external projects.
+ * A Erlang Project internally maintains a devpath that corresponds to the project's
+ * classpath. The classpath may include source folders from the current project; archives
+ * in the current project, other projects, and the local file system; and binary folders
+ * (output location) of other projects. The Erlang Model presents source elements
+ * corresponding to output .beam files in other projects, and thus uses the devpath rather
+ * than the classpath (which is really a compilation path). The devpath mimics the
+ * classpath, except has source folder entries in place of output locations in external
+ * projects.
  *
  * <p>
- * Each ErlProject has a NameLookup facility that locates elements on by name,
- * based on the devpath.
+ * Each ErlProject has a NameLookup facility that locates elements on by name, based on
+ * the devpath.
  *
  * @see IErlProject
  */
@@ -199,10 +196,9 @@ public class ErlProject extends Openable
     }
 
     /**
-     * Returns true if this handle represents the same Erlang project as the
-     * given handle. Two handles represent the same project if they are
-     * identical or if they represent a project with the same underlying
-     * resource and occurrence counts.
+     * Returns true if this handle represents the same Erlang project as the given handle.
+     * Two handles represent the same project if they are identical or if they represent a
+     * project with the same underlying resource and occurrence counts.
      *
      * @see ErlElement#equals(Object)
      */
@@ -287,8 +283,8 @@ public class ErlProject extends Openable
         for (final IPath s : SourcePathUtils.getExtraSourcePathsForModel(fProject)) {
             sourceDirs.add(s);
         }
-        final List<IErlModule> result = new ArrayList<>(ErlProject.getModulesOrIncludes(fProject,
-                ErlangEngine.getInstance().getModel(), sourceDirs, true));
+        final List<IErlModule> result = new ArrayList<>(ErlProject.getModulesOrIncludes(
+                fProject, ErlangEngine.getInstance().getModel(), sourceDirs, true));
         ErlModelCache.getDefault().putModulesForProject(this, result);
         return result;
     }
@@ -334,8 +330,8 @@ public class ErlProject extends Openable
             final List<IErlModule> cached = erlModelCache.getModulesForProject(this);
             final IErlElementLocator model = ErlangEngine.getInstance().getModel();
             if (cached == null) {
-                final List<IErlModule> modules = ErlProject.getModulesOrIncludes(fProject, model,
-                        getProperties().getSourceDirs(), true);
+                final List<IErlModule> modules = ErlProject.getModulesOrIncludes(fProject,
+                        model, getProperties().getSourceDirs(), true);
                 result.addAll(modules);
             } else {
                 result.addAll(cached);
@@ -386,28 +382,23 @@ public class ErlProject extends Openable
     @Override
     public Collection<IErlModule> getExternalModules() throws ErlModelException {
         final List<IErlModule> result = Lists.newArrayList();
-        accept(new IErlElementVisitor() {
-
-            @Override
-            public boolean visit(final IErlElement element) throws ErlModelException {
-                final boolean isExternalOrProject = element
-                        .getKind() == ErlElementKind.EXTERNAL_ROOT
-                        || element.getKind() == ErlElementKind.EXTERNAL_APP
-                        || element.getKind() == ErlElementKind.EXTERNAL_FOLDER
-                        || element.getKind() == ErlElementKind.PROJECT;
-                if (element instanceof IErlModule) {
-                    final IErlModule module = (IErlModule) element;
-                    if (module.getAncestorOfKind(
-                            ErlElementKind.PROJECT) == ErlProject.this) {
-                        result.add(module);
-                    }
-                    return false;
-                } else if (isExternalOrProject && element instanceof IOpenable) {
-                    final IOpenable openable = (IOpenable) element;
-                    openable.open(null);
+        accept(element -> {
+            final boolean isExternalOrProject = element
+                    .getKind() == ErlElementKind.EXTERNAL_ROOT
+                    || element.getKind() == ErlElementKind.EXTERNAL_APP
+                    || element.getKind() == ErlElementKind.EXTERNAL_FOLDER
+                    || element.getKind() == ErlElementKind.PROJECT;
+            if (element instanceof IErlModule) {
+                final IErlModule module = (IErlModule) element;
+                if (module.getAncestorOfKind(ErlElementKind.PROJECT) == ErlProject.this) {
+                    result.add(module);
                 }
-                return isExternalOrProject;
+                return false;
+            } else if (isExternalOrProject && element instanceof IOpenable) {
+                final IOpenable openable = (IOpenable) element;
+                openable.open(null);
             }
+            return isExternalOrProject;
         }, EnumSet.noneOf(AcceptFlags.class), ErlElementKind.MODULE);
         return result;
     }
@@ -518,30 +509,26 @@ public class ErlProject extends Openable
     @Override
     public Collection<IErlModule> getExternalIncludes() throws ErlModelException {
         final List<IErlModule> result = Lists.newArrayList();
-        accept(new IErlElementVisitor() {
-
-            @Override
-            public boolean visit(final IErlElement element) throws ErlModelException {
-                final boolean isExternalOrProject = element
-                        .getKind() == ErlElementKind.EXTERNAL_ROOT
+        accept(element -> {
+            final boolean isExternalOrProject = element
+                    .getKind() == ErlElementKind.EXTERNAL_ROOT
+                    || element.getKind() == ErlElementKind.EXTERNAL_APP
+                    || element.getKind() == ErlElementKind.EXTERNAL_FOLDER
+                    || element.getKind() == ErlElementKind.PROJECT;
+            if (element instanceof IErlModule) {
+                final IErlModule module = (IErlModule) element;
+                if (module.getSourceKind() == SourceKind.HRL && (module
+                        .getAncestorOfKind(ErlElementKind.PROJECT) == ErlProject.this
                         || element.getKind() == ErlElementKind.EXTERNAL_APP
-                        || element.getKind() == ErlElementKind.EXTERNAL_FOLDER
-                        || element.getKind() == ErlElementKind.PROJECT;
-                if (element instanceof IErlModule) {
-                    final IErlModule module = (IErlModule) element;
-                    if (module.getSourceKind() == SourceKind.HRL && (module
-                            .getAncestorOfKind(ErlElementKind.PROJECT) == ErlProject.this
-                            || element.getKind() == ErlElementKind.EXTERNAL_APP
-                            || element.getKind() == ErlElementKind.EXTERNAL_FOLDER)) {
-                        result.add(module);
-                    }
-                    return false;
-                } else if (isExternalOrProject && element instanceof IOpenable) {
-                    final IOpenable openable = (IOpenable) element;
-                    openable.open(null);
+                        || element.getKind() == ErlElementKind.EXTERNAL_FOLDER)) {
+                    result.add(module);
                 }
-                return isExternalOrProject;
+                return false;
+            } else if (isExternalOrProject && element instanceof IOpenable) {
+                final IOpenable openable = (IOpenable) element;
+                openable.open(null);
             }
+            return isExternalOrProject;
         }, EnumSet.noneOf(AcceptFlags.class), ErlElementKind.MODULE);
         return result;
     }
@@ -564,13 +551,9 @@ public class ErlProject extends Openable
         removeConfigurationChangeListeners();
         clearCaches();
         try {
-            accept(new IErlElementVisitor() {
-
-                @Override
-                public boolean visit(final IErlElement element) throws ErlModelException {
-                    element.dispose();
-                    return false;
-                }
+            accept(element -> {
+                element.dispose();
+                return false;
             }, EnumSet.of(AcceptFlags.CHILDREN_FIRST, AcceptFlags.LEAFS_ONLY),
                     ErlElementKind.MODULE);
         } catch (final ErlModelException e) {
@@ -599,7 +582,8 @@ public class ErlProject extends Openable
 
     private void loadCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
-        final String name = node.get(ErlProject.CONFIG_TYPE_TAG, ProjectConfigType.INTERNAL.name());
+        final String name = node.get(ErlProject.CONFIG_TYPE_TAG,
+                ProjectConfigType.INTERNAL.name());
         setConfigType(ProjectConfigType.valueOf(name));
     }
 

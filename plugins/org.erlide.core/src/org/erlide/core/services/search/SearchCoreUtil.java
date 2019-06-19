@@ -18,7 +18,6 @@ import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IErlElement.AcceptFlags;
-import org.erlide.engine.model.IErlElementVisitor;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.IErlExternal;
@@ -33,7 +32,7 @@ import com.google.common.collect.Sets;
 public class SearchCoreUtil {
 
     public static ErlSearchScope getProjectsScope(final Collection<IProject> projects,
-                                                  final boolean addExternals, final boolean addOtp) throws CoreException {
+            final boolean addExternals, final boolean addOtp) throws CoreException {
         final ErlSearchScope result = new ErlSearchScope();
         final Set<String> externalModulePaths = new HashSet<>();
         final IErlModel model = ErlangEngine.getInstance().getModel();
@@ -41,8 +40,8 @@ public class SearchCoreUtil {
             SearchCoreUtil.addProjectToScope(project, result);
             if (NatureUtil.hasErlangNature(project)) {
                 final IErlProject erlProject = model.getErlangProject(project);
-                SearchCoreUtil.addExternalModules(erlProject, result, externalModulePaths, addExternals,
-                        addOtp);
+                SearchCoreUtil.addExternalModules(erlProject, result, externalModulePaths,
+                        addExternals, addOtp);
             }
         }
         return result;
@@ -92,32 +91,27 @@ public class SearchCoreUtil {
                 ErlElementKind.EXTERNAL_ROOT, ErlElementKind.EXTERNAL_APP,
                 ErlElementKind.EXTERNAL_FOLDER);
         for (final IErlElement external : externals) {
-            external.accept(new IErlElementVisitor() {
-
-                @Override
-                public boolean visit(final IErlElement theElement)
-                        throws ErlModelException {
-                    if (theElement instanceof IErlExternal) {
-                        final IErlExternal theExternal = (IErlExternal) theElement;
-                        if (theExternal.isOTP()) {
-                            if (!addOtp) {
-                                return false;
-                            }
-                        } else {
-                            if (!addExternals) {
-                                return false;
-                            }
+            external.accept(theElement -> {
+                if (theElement instanceof IErlExternal) {
+                    final IErlExternal theExternal = (IErlExternal) theElement;
+                    if (theExternal.isOTP()) {
+                        if (!addOtp) {
+                            return false;
                         }
-                        theExternal.open(null);
-                    }
-                    if (theElement instanceof IErlModule) {
-                        final IErlModule module = (IErlModule) theElement;
-                        if (externalModulePaths.add(module.getFilePath())) {
-                            result.addModule(module);
+                    } else {
+                        if (!addExternals) {
+                            return false;
                         }
                     }
-                    return true;
+                    theExternal.open(null);
                 }
+                if (theElement instanceof IErlModule) {
+                    final IErlModule module = (IErlModule) theElement;
+                    if (externalModulePaths.add(module.getFilePath())) {
+                        result.addModule(module);
+                    }
+                }
+                return true;
             }, EnumSet.noneOf(AcceptFlags.class), ErlElementKind.MODULE);
         }
     }
@@ -150,8 +144,8 @@ public class SearchCoreUtil {
         }
         final Set<String> externalModulePaths = new HashSet<>();
         for (final IErlProject project : erlangProjects) {
-            SearchCoreUtil.addExternalModules(project, result, externalModulePaths, addExternals,
-                    addOtp);
+            SearchCoreUtil.addExternalModules(project, result, externalModulePaths,
+                    addExternals, addOtp);
         }
         return result;
     }

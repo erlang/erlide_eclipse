@@ -79,8 +79,7 @@ public class CoveragePerformer implements ICoveragePerformer {
 
             // TODO restarting
 
-            final List<OtpErlangObject> names = new ArrayList<>(
-                    coverNodes.size());
+            final List<OtpErlangObject> names = new ArrayList<>(coverNodes.size());
             for (final String name : coverNodes) {
                 names.add(new OtpErlangAtom(name));
             }
@@ -136,8 +135,7 @@ public class CoveragePerformer implements ICoveragePerformer {
 
     // cover compilation of chosen modules
     private void recompileModules() throws CoverException {
-        final List<OtpErlangObject> paths = new ArrayList<>(
-                config.getModules().size());
+        final List<OtpErlangObject> paths = new ArrayList<>(config.getModules().size());
         for (final IErlModule module : config.getModules()) {
             if (module == null) {
                 final String msg = "No such module at given project. Check your configuration";
@@ -165,8 +163,7 @@ public class CoveragePerformer implements ICoveragePerformer {
     @Override
     public synchronized void analyse() throws CoverException {
 
-        final List<OtpErlangObject> modules = new ArrayList<>(
-                config.getModules().size());
+        final List<OtpErlangObject> modules = new ArrayList<>(config.getModules().size());
         for (final IErlModule module : config.getModules()) {
             log.info(module.getModuleName());
             modules.add(new OtpErlangList(module.getModuleName()));

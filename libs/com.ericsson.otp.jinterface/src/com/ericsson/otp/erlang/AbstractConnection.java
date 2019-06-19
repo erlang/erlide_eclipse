@@ -3,17 +3,15 @@
  *
  * Copyright Ericsson AB 2000-2010. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
  *
  * %CopyrightEnd%
  */
@@ -305,7 +303,8 @@ public abstract class AbstractConnection extends Thread {
             throws OtpAuthException {
         try {
             @SuppressWarnings("resource")
-            final OtpOutputStream header = new OtpOutputStream(AbstractConnection.headerLen);
+            final OtpOutputStream header = new OtpOutputStream(
+                    AbstractConnection.headerLen);
 
             // preamble: 4 byte length + "passthrough" tag + version
             header.write4BE(0); // reserve space for length
@@ -592,8 +591,10 @@ public abstract class AbstractConnection extends Thread {
                     deliver(new OtpMsg(to, ibuf));
                     break;
 
-                case AbstractConnection.regSendTag: // { REG_SEND, FromPid, Cookie, ToName }
-                case AbstractConnection.regSendTTTag: // { REG_SEND, FromPid, Cookie, ToName,
+                case AbstractConnection.regSendTag: // { REG_SEND, FromPid, Cookie, ToName
+                                                    // }
+                case AbstractConnection.regSendTTTag: // { REG_SEND, FromPid, Cookie,
+                                                      // ToName,
                     // TraceToken }
                     if (!cookieOk) {
                         // we only check this once, he can send us bad cookies
@@ -651,8 +652,10 @@ public abstract class AbstractConnection extends Thread {
                     deliver(new OtpMsg(tag, from, to, reason));
                     break;
 
-                case AbstractConnection.exitTTTag: // { EXIT, FromPid, ToPid, TraceToken, Reason }
-                case AbstractConnection.exit2TTTag: // { EXIT2, FromPid, ToPid, TraceToken,
+                case AbstractConnection.exitTTTag: // { EXIT, FromPid, ToPid, TraceToken,
+                                                   // Reason }
+                case AbstractConnection.exit2TTTag: // { EXIT2, FromPid, ToPid,
+                                                    // TraceToken,
                     // Reason
                     // }
                     // as above, but bifferent element number
@@ -1203,7 +1206,8 @@ public abstract class AbstractConnection extends Thread {
 
         if (traceLevel >= AbstractConnection.handshakeThreshold) {
             System.out.println("-> " + "HANDSHAKE sendChallengeReply" + " challenge="
-                    + challenge + " digest=" + AbstractConnection.hex(digest) + " local=" + localNode);
+                    + challenge + " digest=" + AbstractConnection.hex(digest) + " local="
+                    + localNode);
         }
     }
 
@@ -1244,8 +1248,8 @@ public abstract class AbstractConnection extends Thread {
 
         if (traceLevel >= AbstractConnection.handshakeThreshold) {
             System.out.println("<- " + "HANDSHAKE recvChallengeReply" + " from="
-                    + peer.node + " challenge=" + challenge + " digest=" + AbstractConnection.hex(her_digest)
-                    + " local=" + localNode);
+                    + peer.node + " challenge=" + challenge + " digest="
+                    + AbstractConnection.hex(her_digest) + " local=" + localNode);
         }
 
         return challenge;
@@ -1292,7 +1296,8 @@ public abstract class AbstractConnection extends Thread {
 
         if (traceLevel >= AbstractConnection.handshakeThreshold) {
             System.out.println("<- " + "HANDSHAKE recvChallengeAck" + " from=" + peer.node
-                    + " digest=" + AbstractConnection.hex(her_digest) + " local=" + localNode);
+                    + " digest=" + AbstractConnection.hex(her_digest) + " local="
+                    + localNode);
         }
     }
 

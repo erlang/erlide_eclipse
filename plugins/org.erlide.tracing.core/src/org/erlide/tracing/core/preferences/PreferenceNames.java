@@ -17,8 +17,8 @@ public final class PreferenceNames {
     public static String NODE_NAME = "nodeName";
 
     /**
-     * net tick time (<a
-     * href="http://www.erlang.org/doc/man/net_kernel.html#set_net_ticktime-1">
+     * net tick time
+     * (<a href="http://www.erlang.org/doc/man/net_kernel.html#set_net_ticktime-1">
      * http://www.erlang.org/doc/man/net_kernel.html#set_net_ticktime-1</a>)
      */
     public static String TICK_TIME = "tickTime";

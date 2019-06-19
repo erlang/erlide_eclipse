@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2005 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.util;
 
@@ -22,8 +20,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ImageDescriptorRegistry {
 
-    private final Map<ImageDescriptor, Image> fRegistry = new HashMap<>(
-            10);
+    private final Map<ImageDescriptor, Image> fRegistry = new HashMap<>(10);
 
     private final Display fDisplay;
 
@@ -83,12 +80,6 @@ public class ImageDescriptorRegistry {
     }
 
     private void hookDisplay() {
-        fDisplay.disposeExec(new Runnable() {
-
-            @Override
-            public void run() {
-                dispose();
-            }
-        });
+        fDisplay.disposeExec(() -> dispose());
     }
 }

@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2008 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.prefs;
 
@@ -25,8 +23,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -118,13 +114,9 @@ public class CompilerPreferencePage extends PropertyPage
         includeDirsText
                 .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         includeDirsText.setToolTipText(CompilerOptions.INCLUDE_DIRS.getTooltip());
-        includeDirsText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                prefs.setPathOption(CompilerOptions.INCLUDE_DIRS,
-                        PathsOption.fromString(includeDirsText.getText()));
-            }
-        });
+        includeDirsText
+                .addModifyListener(e -> prefs.setPathOption(CompilerOptions.INCLUDE_DIRS,
+                        PathsOption.fromString(includeDirsText.getText())));
 
         final Group warningsGroup = new Group(prefsComposite, SWT.NONE);
         {
@@ -150,13 +142,8 @@ public class CompilerPreferencePage extends PropertyPage
         parseTransformText.setToolTipText(CompilerOptions.PARSE_TRANSFORM.getTooltip());
         parseTransformText
                 .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        parseTransformText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                prefs.setSimpleOption(CompilerOptions.PARSE_TRANSFORM,
-                        parseTransformText.getText());
-            }
-        });
+        parseTransformText.addModifyListener(e -> prefs.setSimpleOption(
+                CompilerOptions.PARSE_TRANSFORM, parseTransformText.getText()));
         new Label(prefsComposite, SWT.NONE);
         new Label(prefsComposite, SWT.NONE);
 
@@ -167,12 +154,8 @@ public class CompilerPreferencePage extends PropertyPage
         final GridData gd_text_2 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
         gd_text_2.heightHint = 60;
         customOptionsText.setLayoutData(gd_text_2);
-        customOptionsText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                prefs.setSimpleOption(CompilerOptions.CUSTOM, customOptionsText.getText());
-            }
-        });
+        customOptionsText.addModifyListener(e -> prefs
+                .setSimpleOption(CompilerOptions.CUSTOM, customOptionsText.getText()));
 
         if (isProjectPreferencePage()) {
             final boolean useProjectSettings = hasProjectSpecificOptions(fProject);
