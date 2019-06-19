@@ -3,8 +3,6 @@ package org.erlide.runtime.internal
 import com.ericsson.otp.erlang.OtpNode
 import com.ericsson.otp.erlang.OtpNodeStatus
 import com.google.common.base.Strings
-import java.net.Socket
-import org.erlide.util.ErlLogger
 import org.erlide.util.HostnameChecker
 
 class LocalNodeCreator {

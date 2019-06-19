@@ -1,4 +1,4 @@
-target "Erlide target"
+target "erlide target"
 
 with source configurePhase requirements
 
@@ -6,7 +6,7 @@ environment JavaSE-1.8
 
 location "http://download.eclipse.org/releases/photon/" {
 	org.eclipse.e4.rcp.feature.group lazy
-	org.eclipse.jdt.annotation lazy 
+	org.eclipse.jdt.annotation lazy
 	org.eclipse.sdk.ide lazy
 }
 location "http://download.erlide.org/update/libs" {
