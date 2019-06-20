@@ -14,7 +14,7 @@ Export-Package: org.erlide.core,
 Require-Bundle: org.erlide.testing.libs,
  org.junit,
  com.google.truth;bundle-version="0.28.0"
-Eclipse-ExtensibleAPI: true 
+ 
 Import-Package: org.erlide.engine.internal,
  org.eclipse.jdt.annotation;resolution:=optional
 Automatic-Module-Name: org.erlide.core.tests

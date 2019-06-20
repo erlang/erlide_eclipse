@@ -107,7 +107,6 @@ Require-Bundle: org.eclipse.compare;bundle-version="3.5.202",
  com.ericsson.otp.jinterface;bundle-version="1.8.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Eclipse-ExtensibleAPI: true
 Import-Package: org.eclipse.jdt.annotation;resolution:=optional
 Automatic-Module-Name: org.erlide.ui
 
