@@ -43,16 +43,6 @@
 			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.14.0</url>
 		</repository>
 		<repository>
-			<id>lsp4j</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/lsp4j/updates/releases/0.3.0/</url>
-		</repository>
-		<repository>
-			<id>handly</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/handly/releases/0.6/repository</url>
-		</repository>
-		<repository>
 			<id>kernel</id>
 			<layout>p2</layout>
 			<url>http://download.erlide.org/update/kernel/0.115.3</url>
@@ -74,7 +64,7 @@
 		<module>plugins/org.erlide.branding</module>
 		<module>plugins/org.erlide.core</module>
 		<module>plugins/org.erlide.help</module>
-		
+
 		<module>plugins/org.erlide.model</module>
 		<module>plugins/org.erlide.model.api</module>
 		<module>plugins/org.erlide.runtime</module>

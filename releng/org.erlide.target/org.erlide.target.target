@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="erlide target" sequenceNumber="1560962107">
+<target name="erlide target" sequenceNumber="1561147255">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.eclipse.e4.rcp.feature.group" version="0.0.0"/>
@@ -21,10 +21,6 @@
       <unit id="org.eclipse.xtend.lib.macro" version="0.0.0"/>
       <unit id="org.eclipse.xtext.xbase.lib" version="0.0.0"/>
       <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.16.0/"/>
-    </location>
-    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
-      <unit id="org.eclipse.lsp4j.sdk.feature.group" version="0.0.0"/>
-      <repository location="http://download.eclipse.org/lsp4j/updates/releases/0.4.0/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.erlide.kernel.feature.feature.group" version="0.0.0"/>
