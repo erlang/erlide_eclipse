@@ -145,16 +145,17 @@ public class ResourceManager extends SWTResourceManager {
             final CompositeImageDescriptor compositImageDesc = new CompositeImageDescriptor() {
                 @Override
                 protected void drawCompositeImage(final int width, final int height) {
-                    drawImage(baseImage.getImageData(), 0, 0);
+                    drawImage(createCachedImageDataProvider(baseImage), 0, 0);
+                    CachedImageDataProvider data = createCachedImageDataProvider(
+                            decorator);
                     if (corner == SWTResourceManager.TOP_LEFT) {
-                        drawImage(decorator.getImageData(), 0, 0);
+                        drawImage(data, 0, 0);
                     } else if (corner == SWTResourceManager.TOP_RIGHT) {
-                        drawImage(decorator.getImageData(), bib.width - dib.width, 0);
+                        drawImage(data, bib.width - dib.width, 0);
                     } else if (corner == SWTResourceManager.BOTTOM_LEFT) {
-                        drawImage(decorator.getImageData(), 0, bib.height - dib.height);
+                        drawImage(data, 0, bib.height - dib.height);
                     } else if (corner == SWTResourceManager.BOTTOM_RIGHT) {
-                        drawImage(decorator.getImageData(), bib.width - dib.width,
-                                bib.height - dib.height);
+                        drawImage(data, bib.width - dib.width, bib.height - dib.height);
                     }
                 }
 

@@ -27,8 +27,8 @@ public class ImageImageDescriptor extends ImageDescriptor {
     }
 
     @Override
-    public ImageData getImageData() {
-        return fImage.getImageData();
+    public ImageData getImageData(int zoom) {
+        return fImage.getImageData(zoom);
     }
 
     @Override
