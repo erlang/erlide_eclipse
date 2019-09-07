@@ -9,7 +9,6 @@
 package org.erlide.ui.jinterface;
 
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -55,8 +54,6 @@ public abstract class AsyncCaller<T> implements Runnable {
                             schedule(interval);
                         }
                     } catch (final RpcException e) {
-                        ErlLogger.error(e);
-                    } catch (final TimeoutException e) {
                         ErlLogger.error(e);
                     }
                     handleResult(context, result);

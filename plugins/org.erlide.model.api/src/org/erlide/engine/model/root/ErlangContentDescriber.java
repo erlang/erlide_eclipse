@@ -73,7 +73,8 @@ public class ErlangContentDescriber implements ITextContentDescriber {
 
     public static Charset detectCodingForFile(final File file, final Charset dflt)
             throws IOException {
-        final String line = Files.readFirstLine(file, StandardCharsets.ISO_8859_1);
+        final String line = Files.asCharSource(file, StandardCharsets.ISO_8859_1)
+                .readFirstLine();
         Charset coding = ErlangContentDescriber.detectEncoding(line);
         if (coding == null) {
             coding = dflt;

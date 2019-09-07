@@ -91,7 +91,7 @@ public class OtpNodeProxy implements IOtpNodeProxy {
         }
 
         service = new RestartableService(factory, policy);
-        service.addListener(new ErlRuntimeListener(), MoreExecutors.sameThreadExecutor());
+        service.addListener(new ErlRuntimeListener(), MoreExecutors.directExecutor());
     }
 
     private void receiveEventMessage(final OtpMbox eventBox) throws OtpErlangExit {

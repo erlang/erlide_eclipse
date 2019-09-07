@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -110,7 +109,6 @@ public class DialyzerUtils {
                 OtpErlangObject r = null;
                 try {
                     r = future.checkedGet(500, TimeUnit.MILLISECONDS);
-                } catch (final TimeoutException e) {
                 } catch (final RpcTimeoutException e) {
                 }
                 if (r != null) {

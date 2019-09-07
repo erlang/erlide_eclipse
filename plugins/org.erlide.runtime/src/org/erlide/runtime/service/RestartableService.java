@@ -80,7 +80,7 @@ public class RestartableService implements Service {
     @Override
     public Service startAsync() {
         delegate = factory.get();
-        delegate.addListener(new RestartListener(), MoreExecutors.sameThreadExecutor());
+        delegate.addListener(new RestartListener(), MoreExecutors.directExecutor());
         delegate.startAsync();
         policy.notifyRestart();
         return this;

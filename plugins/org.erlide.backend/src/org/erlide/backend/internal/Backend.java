@@ -345,7 +345,7 @@ public class Backend implements IStreamListener, IBackend {
                 }
             }
 
-        }, MoreExecutors.sameThreadExecutor());
+        }, MoreExecutors.directExecutor());
 
     }
 

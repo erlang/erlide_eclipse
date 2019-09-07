@@ -4,7 +4,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.IRpcCallback;
@@ -153,8 +152,6 @@ public class OtpRpc implements IOtpRpc {
             }
         } catch (final SignatureException e) {
             throw new RpcException(e);
-        } catch (final TimeoutException e) {
-            throw new RpcTimeoutException(e.getMessage());
         }
         return result;
     }
