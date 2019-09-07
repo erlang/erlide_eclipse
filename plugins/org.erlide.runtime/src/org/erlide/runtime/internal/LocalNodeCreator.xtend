@@ -29,7 +29,6 @@ class LocalNodeCreator {
     }
 
     static def void wait_for_epmd(String host) {
-
         val initializer = new EpmdChecker(host)
     }
 

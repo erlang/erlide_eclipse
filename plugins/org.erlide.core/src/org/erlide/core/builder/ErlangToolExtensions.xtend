@@ -24,7 +24,7 @@ class ErlangToolExtensions {
         val file = getRealFile(makefile)
         if(file === null) return false
 
-        val top = Files.readFirstLine(file, StandardCharsets.ISO_8859_1)
+        val top = Files.asCharSource(file, StandardCharsets.ISO_8859_1).readFirstLine
         return top == "# Copyright 2012 Erlware, LLC. All Rights Reserved."
     }
 
