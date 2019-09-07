@@ -165,10 +165,10 @@ public final class RuntimeInfo {
 
         final boolean hasErl = RuntimeInfo.hasExecutableFile(otpHome + "/bin/erl");
 
-        //final File lib = new File(otpHome + "/lib");
-        //final boolean hasLib = lib.isDirectory() && lib.exists();
+        // final File lib = new File(otpHome + "/lib");
+        // final boolean hasLib = lib.isDirectory() && lib.exists();
 
-        return hasErl; //&& hasLib;
+        return hasErl; // && hasLib;
     }
 
     private static boolean hasExecutableFile(final String fileName) {
@@ -234,7 +234,7 @@ public final class RuntimeInfo {
     private static String readOtpVersion(final String path) {
         final File file = new File(path + "/OTP_VERSION");
         try {
-            return Files.toString(file, Charsets.US_ASCII).trim();
+            return Files.asCharSource(file, Charsets.US_ASCII).read().trim();
         } catch (final IOException e) {
         }
         return null;

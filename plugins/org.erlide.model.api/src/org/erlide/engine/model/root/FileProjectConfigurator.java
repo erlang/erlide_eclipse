@@ -72,7 +72,7 @@ public class FileProjectConfigurator
         if (confString != null) {
             final String content = "%% coding: UTF-8\n" + confString;
             try {
-                Files.write(content, confFile, StandardCharsets.UTF_8);
+                Files.asCharSink(confFile, StandardCharsets.UTF_8).write(content);
             } catch (final IOException e) {
                 ErlLogger.error(e);
             }
