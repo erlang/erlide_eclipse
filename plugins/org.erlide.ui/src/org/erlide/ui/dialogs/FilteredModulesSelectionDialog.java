@@ -502,7 +502,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
                 }
             }
 
-            if (project == resource && accessible) {
+            if (resource.equals(project) && accessible) {
                 addPathFiltersToContentProvider(project);
             }
 
@@ -715,10 +715,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
             if (!super.isSubFilter(filter)) {
                 return false;
             }
-            if (filter instanceof ModuleFilter) {
-                return true;
-            }
-            return false;
+            return filter instanceof ModuleFilter;
         }
 
         @Override

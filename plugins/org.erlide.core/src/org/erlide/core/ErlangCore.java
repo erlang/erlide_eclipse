@@ -152,10 +152,8 @@ public final class ErlangCore {
                 .getDebugOption(ErlangCore.ERLIDE_GLOBAL_TRACE_OPTION);
         final String value = Platform.getDebugOption(
                 ErlangCore.ERLIDE_GLOBAL_TRACE_OPTION + "/" + traceOption);
-        if ("true".equalsIgnoreCase(globalTraceValue) && "true".equalsIgnoreCase(value)) {
-            return true;
-        }
-        return false;
+        return "true".equalsIgnoreCase(globalTraceValue)
+                && "true".equalsIgnoreCase(value);
     }
 
     private String retrieveAllVersions() {

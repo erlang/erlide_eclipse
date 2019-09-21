@@ -40,7 +40,7 @@ public class StringDocument implements IDocument {
 
     @Override
     public String get() {
-        return new String(text);
+        return text;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class StringDocument implements IDocument {
 
     @Override
     public void set(final String text) {
-        this.text = new String(text);
+        this.text = text;
     }
 
     @Override

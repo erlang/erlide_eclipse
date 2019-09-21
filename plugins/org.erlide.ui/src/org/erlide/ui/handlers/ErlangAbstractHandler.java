@@ -68,7 +68,7 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
                         final ISourceRange r1 = ref1.getSourceRange();
                         final int offset = r1.getOffset();
                         int length = r1.getLength();
-                        if (e1 == e2) {
+                        if (e1.equals(e2)) {
                             final int docLength = document.getLength();
                             if (offset + length > docLength) {
                                 length = docLength - offset;

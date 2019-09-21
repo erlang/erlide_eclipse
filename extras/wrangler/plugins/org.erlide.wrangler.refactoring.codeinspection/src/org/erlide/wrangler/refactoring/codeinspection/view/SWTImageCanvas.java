@@ -1,8 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2004 Chengdong Li : cdli@ccs.uky.edu
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Common Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2004 Chengdong Li : cdli@ccs.uky.edu All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Common Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/cpl-v10.html
  *******************************************************************************/
 package org.erlide.wrangler.refactoring.codeinspection.view;
@@ -30,12 +29,11 @@ import org.eclipse.swt.widgets.ScrollBar;
 /**
  * A scrollable image canvas that extends org.eclipse.swt.graphics.Canvas.
  * <p/>
- * It requires Eclipse (version >= 2.1) on Win32/win32; Linux/gtk;
- * MacOSX/carbon.
+ * It requires Eclipse (version >= 2.1) on Win32/win32; Linux/gtk; MacOSX/carbon.
  * <p/>
- * This implementation using the pure SWT, no UI AWT package is used. For
- * convenience, I put everything into one class. However, the best way to
- * implement this is to use inheritance to create multiple hierarchies.
+ * This implementation using the pure SWT, no UI AWT package is used. For convenience, I
+ * put everything into one class. However, the best way to implement this is to use
+ * inheritance to create multiple hierarchies.
  *
  * @author Chengdong Li: cli4@uky.edu
  */
@@ -184,9 +182,9 @@ public class SWTImageCanvas extends Canvas {
     }
 
     /**
-     * Synchronize the scrollbar with the image. If the transform is out of
-     * range, it will correct it. This function considers only following factors
-     * :<b> transform, image size, client area</b>.
+     * Synchronize the scrollbar with the image. If the transform is out of range, it will
+     * correct it. This function considers only following factors :<b> transform, image
+     * size, client area</b>.
      */
     public void syncScrollBars() {
         if (sourceImage == null) {
@@ -291,7 +289,7 @@ public class SWTImageCanvas extends Canvas {
             final ImageLoader imageLoader = new ImageLoader();
             imageLoader.data = new ImageData[] { sourceImage.getImageData() };
             final Path p = new Path(filename);
-            if (p.getFileExtension() == "jpg") {
+            if ("jpg".equals(p.getFileExtension())) {
                 imageLoader.save(filename, SWT.IMAGE_JPEG);
             } else {
                 imageLoader.save(filename, SWT.IMAGE_PNG);
@@ -302,8 +300,8 @@ public class SWTImageCanvas extends Canvas {
     }
 
     /**
-     * Call back funtion of button "open". Will open a file dialog, and choose
-     * the image file. It supports image formats supported by Eclipse.
+     * Call back funtion of button "open". Will open a file dialog, and choose the image
+     * file. It supports image formats supported by Eclipse.
      */
     public void onFileOpen() {
         final FileDialog fileChooser = new FileDialog(getShell(), SWT.OPEN);
@@ -374,9 +372,8 @@ public class SWTImageCanvas extends Canvas {
     }
 
     /**
-     * Perform a zooming operation centered on the given point (dx, dy) and
-     * using the given scale factor. The given AffineTransform instance is
-     * preconcatenated.
+     * Perform a zooming operation centered on the given point (dx, dy) and using the
+     * given scale factor. The given AffineTransform instance is preconcatenated.
      *
      * @param dx
      *            center x
