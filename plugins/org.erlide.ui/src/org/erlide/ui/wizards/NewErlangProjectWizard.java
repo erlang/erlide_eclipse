@@ -171,10 +171,10 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
 
     @Override
     public IWizardPage getNextPage(final IWizardPage page) {
-        if (page == mainPage) {
+        if (page.equals(mainPage)) {
             return builderPage;
         }
-        if (page == builderPage) {
+        if (page.equals(builderPage)) {
             final ProjectConfigType config;
             if (info.getBuilder().equals(BuilderTool.MAKE)
                     || info.getBuilder().equals(BuilderTool.INTERNAL)) {
@@ -193,10 +193,10 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
 
     @Override
     public IWizardPage getPreviousPage(final IWizardPage page) {
-        if (page == builderPage) {
+        if (page.equals(builderPage)) {
             return mainPage;
         }
-        if (page == referencePage) {
+        if (page.equals(referencePage)) {
             return prevPage;
         }
         if (buildPages.containsValue(page)) {

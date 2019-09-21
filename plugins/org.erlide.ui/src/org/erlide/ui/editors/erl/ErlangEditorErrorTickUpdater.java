@@ -59,7 +59,7 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
         // } else {
         newImage = fLabelProvider.getImage(module);
         // }
-        if (titleImage != newImage) {
+        if (!titleImage.equals(newImage)) {
             postImageChange(newImage);
         }
     }

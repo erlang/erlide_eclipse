@@ -24,10 +24,7 @@ public class VariableNameValidator implements IValidator {
 
         if (s.startsWith("_")
                 || s.substring(0, 1).toUpperCase().equals(s.substring(0, 1))) {
-            if (s.replaceAll("[A-Za-z_@0-9]", "").isEmpty()) {
-                return true;
-            }
-            return false;
+            return s.replaceAll("[A-Za-z_@0-9]", "").isEmpty();
         }
         return false;
     }

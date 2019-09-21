@@ -41,7 +41,7 @@ public class OtpRpc implements IOtpRpc {
     public static final boolean CHECK_RPC = Boolean.getBoolean("erlide.checkrpc");
 
     public static long DEFAULT_TIMEOUT;
-    {
+    static {
         OtpRpc.setDefaultTimeout();
     }
 

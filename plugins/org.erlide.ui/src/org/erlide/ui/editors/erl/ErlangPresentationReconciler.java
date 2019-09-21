@@ -39,7 +39,7 @@ public class ErlangPresentationReconciler extends PresentationReconciler {
      */
     public TextPresentation createRepairDescription(final IRegion damage,
             final IDocument document) {
-        if (document != fLastDocument) {
+        if (!document.equals(fLastDocument)) {
             setDocumentToDamagers(document);
             setDocumentToRepairers(document);
             fLastDocument = document;

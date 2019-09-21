@@ -1072,11 +1072,9 @@ public class ErlideSelection {
     public static boolean isCommentLine(final String line) {
         for (int j = 0; j < line.length(); j++) {
             final char c = line.charAt(j);
-            if (c != ' ') {
-                if (c == '%') {
-                    // ok, it starts with % (so, it is a comment)
-                    return true;
-                }
+            if (c == '%') {
+                // ok, it starts with % (so, it is a comment)
+                return true;
             }
         }
         return false;

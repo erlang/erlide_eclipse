@@ -394,10 +394,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
 
         @Override
         public boolean canModify(final Object element, final String property) {
-            if ("expr".equals(property)) {
-                return true;
-            }
-            return false;
+            return "expr".equals(property);
         }
 
         @Override
