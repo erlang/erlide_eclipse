@@ -48,8 +48,9 @@ public class ProcessHelper {
 
             final OtpErlangList nodesList = new OtpErlangList(
                     nodeAtoms.toArray(new OtpErlangAtom[nodeAtoms.size()]));
-            final OtpErlangList procList = (OtpErlangList) backend.call(ProcessHelper.MODULE_NAME,
-                    ProcessHelper.FUNCTION_NAME, "x", nodesList);
+            final OtpErlangList procList = (OtpErlangList) backend.call(
+                    ProcessHelper.MODULE_NAME, ProcessHelper.FUNCTION_NAME, "x",
+                    nodesList);
             final TracedProcess[] processes = new TracedProcess[procList.arity()];
 
             for (int i = 0; i < procList.arity(); i++) {

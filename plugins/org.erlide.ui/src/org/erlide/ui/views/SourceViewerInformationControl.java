@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2005 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.views;
 
@@ -40,8 +38,8 @@ import org.erlide.ui.util.ColorManager;
 
 /**
  * Source viewer based implementation of
- * {@link org.eclipse.jface.text.IInformationControl}. Displays information in a
- * source viewer.
+ * {@link org.eclipse.jface.text.IInformationControl}. Displays information in a source
+ * viewer.
  *
  *
  */
@@ -76,8 +74,8 @@ public class SourceViewerInformationControl
     private int fMaxHeight;
 
     /**
-     * Creates a source viewer information control with the given shell as
-     * parent and the given font.
+     * Creates a source viewer information control with the given shell as parent and the
+     * given font.
      *
      * @param parent
      *            the parent shell
@@ -90,11 +88,10 @@ public class SourceViewerInformationControl
     }
 
     /**
-     * Creates a source viewer information control with the given shell as
-     * parent. The given shell styles are applied to the created shell. The
-     * given styles are applied to the created styled text widget. The text
-     * widget will be initialized with the given font. The status field will
-     * contain the given text or be hidden.
+     * Creates a source viewer information control with the given shell as parent. The
+     * given shell styles are applied to the created shell. The given styles are applied
+     * to the created styled text widget. The text widget will be initialized with the
+     * given font. The status field will contain the given text or be hidden.
      *
      * @param parent
      *            the parent shell
@@ -105,8 +102,8 @@ public class SourceViewerInformationControl
      * @param symbolicFontName
      *            the symbolic font name
      * @param statusFieldText
-     *            the text to be used in the optional status field or
-     *            <code>null</code> if the status field should be hidden
+     *            the text to be used in the optional status field or <code>null</code> if
+     *            the status field should be hidden
      */
     public SourceViewerInformationControl(final Shell parent, final int shellStyle,
             final int style, final String symbolicFontName,
@@ -120,7 +117,8 @@ public class SourceViewerInformationControl
 
         Composite composite = fShell;
         layout = new GridLayout(1, false);
-        final int border = (shellStyle & SWT.NO_TRIM) == 0 ? 0 : SourceViewerInformationControl.BORDER;
+        final int border = (shellStyle & SWT.NO_TRIM) == 0 ? 0
+                : SourceViewerInformationControl.BORDER;
         layout.marginHeight = border;
         layout.marginWidth = border;
         composite.setLayout(layout);
@@ -236,8 +234,7 @@ public class SourceViewerInformationControl
     }
 
     /*
-     * @see
-     * org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt
+     * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt
      * .events.DisposeEvent)
      */
     @Override

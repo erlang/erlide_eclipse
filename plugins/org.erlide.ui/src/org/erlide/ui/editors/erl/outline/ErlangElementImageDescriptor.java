@@ -1,21 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2005 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.editors.erl.outline;
 
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageDataProvider;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.ui.ErlideImage;
-import org.erlide.ui.internal.ErlideUIPlugin;
 
 /**
  * An ErlangImageDescriptor consists of a base image and several adornments. The
@@ -126,7 +123,7 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 
     @Override
     protected void drawCompositeImage(final int width, final int height) {
-        final ImageData bg = getImageData(fBaseImage);
+        final ImageDataProvider bg = getImageData(fBaseImage);
 
         drawImage(bg, 0, 0);
 
@@ -135,13 +132,8 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
         drawBottomLeft();
     }
 
-    private ImageData getImageData(final ImageDescriptor descriptor) {
-        ImageData data = descriptor.getImageData();
-        if (data == null) {
-            data = DEFAULT_IMAGE_DATA;
-            ErlideUIPlugin.logErrorMessage(
-                    "Image data not available: " + descriptor.toString()); //$NON-NLS-1$
-        }
+    private CachedImageDataProvider getImageData(final ImageDescriptor descriptor) {
+        CachedImageDataProvider data = createCachedImageDataProvider(descriptor);
         return data;
     }
 
@@ -155,14 +147,16 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
         final Point size = getSize();
         int x = 0;
         if ((fFlags & ErlangElementImageDescriptor.ERROR) != 0) {
-            final ImageData data = getImageData(ErlideImage.OVR_ERROR.getDescriptor());
-            drawImage(data, x, size.y - data.height);
-            x += data.width;
+            CachedImageDataProvider data = createCachedImageDataProvider(
+                    ErlideImage.OVR_ERROR.getDescriptor());
+            drawImage(data, x, size.y - data.getHeight());
+            x += data.getWidth();
         }
         if ((fFlags & ErlangElementImageDescriptor.WARNING) != 0) {
-            final ImageData data = getImageData(ErlideImage.OVR_WARNING.getDescriptor());
-            drawImage(data, x, size.y - data.height);
-            x += data.width;
+            CachedImageDataProvider data = createCachedImageDataProvider(
+                    ErlideImage.OVR_WARNING.getDescriptor());
+            drawImage(data, x, size.y - data.getHeight());
+            x += data.getWidth();
         }
 
     }

@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2005 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.internal;
 
@@ -24,20 +22,19 @@ import org.erlide.ui.ErlideUIMessages;
 import org.erlide.util.ErlLogger;
 
 /**
- * The default exception handler shows an error dialog when one of its handle
- * methods is called. If the passed exception is a <code>CoreException</code> an
- * error dialog pops up showing the exception's status information. For a
- * <code>InvocationTargetException</code> a normal message dialog pops up
- * showing the exception's message. Additionally the exception is written to the
- * platform log.
+ * The default exception handler shows an error dialog when one of its handle methods is
+ * called. If the passed exception is a <code>CoreException</code> an error dialog pops up
+ * showing the exception's status information. For a
+ * <code>InvocationTargetException</code> a normal message dialog pops up showing the
+ * exception's message. Additionally the exception is written to the platform log.
  */
 public class ExceptionHandler {
 
     private static final ExceptionHandler fgInstance = new ExceptionHandler();
 
     /**
-     * Handles the given <code>CoreException</code>. The workbench shell is used
-     * as a parent for the dialog window.
+     * Handles the given <code>CoreException</code>. The workbench shell is used as a
+     * parent for the dialog window.
      *
      * @param e
      *            the <code>CoreException</code> to be handled
@@ -48,7 +45,8 @@ public class ExceptionHandler {
      */
     public static void handle(final CoreException e, final String title,
             final String message) {
-        ExceptionHandler.handle(e, ErlideUIPlugin.getActiveWorkbenchShell(), title, message);
+        ExceptionHandler.handle(e, ErlideUIPlugin.getActiveWorkbenchShell(), title,
+                message);
     }
 
     /**
@@ -69,8 +67,8 @@ public class ExceptionHandler {
     }
 
     /**
-     * Handles the given <code>InvocationTargetException</code>. The workbench
-     * shell is used as a parent for the dialog window.
+     * Handles the given <code>InvocationTargetException</code>. The workbench shell is
+     * used as a parent for the dialog window.
      *
      * @param e
      *            the <code>InvocationTargetException</code> to be handled
@@ -81,7 +79,8 @@ public class ExceptionHandler {
      */
     public static void handle(final InvocationTargetException e, final String title,
             final String message) {
-        ExceptionHandler.handle(e, ErlideUIPlugin.getActiveWorkbenchShell(), title, message);
+        ExceptionHandler.handle(e, ErlideUIPlugin.getActiveWorkbenchShell(), title,
+                message);
     }
 
     /**

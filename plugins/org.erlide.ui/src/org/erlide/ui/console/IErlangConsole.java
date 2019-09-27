@@ -6,8 +6,8 @@ import org.erlide.runtime.shell.IBackendShell;
 
 public interface IErlangConsole extends IConsole {
 
-    public abstract IBackendShell getShell();
+    IBackendShell getShell();
 
-    public abstract IPluginCodeLoader getBackend();
+    IPluginCodeLoader getBackend();
 
 }

@@ -3,13 +3,13 @@ package org.erlide.ui.navigator;
 import java.text.Collator;
 
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.ISourceReference;
 
-public class ErlElementSorter extends ViewerSorter {
+public class ErlElementSorter extends ViewerComparator {
 
     public static final int SORT_ON_NAME = 0;
     public static final int SORT_ON_EXPORT = 1;
@@ -31,18 +31,18 @@ public class ErlElementSorter extends ViewerSorter {
     }
 
     @SuppressWarnings("deprecation")
-	public ErlElementSorter() {
+    public ErlElementSorter() {
         super();
     }
 
     @SuppressWarnings("deprecation")
-	public ErlElementSorter(final int how) {
+    public ErlElementSorter(final int how) {
         super();
         this.how = how;
     }
 
     @SuppressWarnings("deprecation")
-	public ErlElementSorter(final Collator collator) {
+    public ErlElementSorter(final Collator collator) {
         super(collator);
     }
 

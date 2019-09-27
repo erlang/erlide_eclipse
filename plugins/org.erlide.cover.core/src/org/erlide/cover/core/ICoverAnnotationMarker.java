@@ -11,11 +11,11 @@ public interface ICoverAnnotationMarker {
     /**
      * adds or changes coverage annotations
      */
-    public void addAnnotations();
+    void addAnnotations();
 
     /**
      * clears coverage annotations
      */
-    public void clearAllAnnotations();
+    void clearAllAnnotations();
 
 }

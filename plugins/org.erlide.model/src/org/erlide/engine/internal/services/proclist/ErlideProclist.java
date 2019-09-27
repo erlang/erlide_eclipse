@@ -30,7 +30,8 @@ public class ErlideProclist implements ProclistService {
             return new OtpErlangList();
         }
         try {
-            final OtpErlangObject result = b.call(ErlideProclist.MODULE_NAME, "process_list", "");
+            final OtpErlangObject result = b.call(ErlideProclist.MODULE_NAME,
+                    "process_list", "");
             return (OtpErlangList) result;
         } catch (final Exception e) {
             ErlLogger.warn(e);

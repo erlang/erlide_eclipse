@@ -26,8 +26,8 @@ public class ToggleCommentHandler extends ErlangAbstractHandler {
     protected void doAction(final ISelection sel, final ITextEditor textEditor) {
         final IDocument document = textEditor.getDocumentProvider()
                 .getDocument(textEditor.getEditorInput());
-        final ITextSelection selection = ErlangAbstractHandler.extendSelectionToWholeLines(document,
-                (ITextSelection) sel);
+        final ITextSelection selection = ErlangAbstractHandler
+                .extendSelectionToWholeLines(document, (ITextSelection) sel);
         final ITextSelection getSelection = getTextSelection(document, selection,
                 textEditor);
         String text;
@@ -53,24 +53,21 @@ public class ToggleCommentHandler extends ErlangAbstractHandler {
             return;
         }
         final Display display = textEditor.getEditorSite().getShell().getDisplay();
-        display.syncExec(new Runnable() {
-            @Override
-            public void run() {
-                final ITextOperationTarget target1 = textEditor
-                        .getAdapter(ITextOperationTarget.class);
-                if (target1 instanceof ITextViewer) {
-                    final ITextViewer textViewer = (ITextViewer) target1;
-                    try {
-                        if (!document.get(selection.getOffset(), selection.getLength())
-                                .equals(newText)) {
-                            document.replace(selection.getOffset(), selection.getLength(),
-                                    newText);
-                            textViewer.setSelectedRange(selection.getOffset(),
-                                    newText.length());
-                        }
-                    } catch (final BadLocationException e) {
-                        ErlLogger.warn(e);
+        display.syncExec(() -> {
+            final ITextOperationTarget target1 = textEditor
+                    .getAdapter(ITextOperationTarget.class);
+            if (target1 instanceof ITextViewer) {
+                final ITextViewer textViewer = (ITextViewer) target1;
+                try {
+                    if (!document.get(selection.getOffset(), selection.getLength())
+                            .equals(newText)) {
+                        document.replace(selection.getOffset(), selection.getLength(),
+                                newText);
+                        textViewer.setSelectedRange(selection.getOffset(),
+                                newText.length());
                     }
+                } catch (final BadLocationException e) {
+                    ErlLogger.warn(e);
                 }
             }
         });

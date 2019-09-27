@@ -1,6 +1,5 @@
 /*
- * ResourceUtil.java
- * Created on 2004-08-20
+ * ResourceUtil.java Created on 2004-08-20
  *
  * cvs-id : $Id$
  */
@@ -25,8 +24,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * <p>
- * contains static helping functionality to work on file resources in the
- * workspace.
+ * contains static helping functionality to work on file resources in the workspace.
  * </p>
  *
  * @author Leif Frenzel
@@ -58,16 +56,16 @@ public class ResourceUtil {
     }
 
     /**
-     * finds the corresponding resource for the specified element. This is
-     * element itself, if it is an IResource, or an adapter. Returns null, if no
-     * resource could be found.
+     * finds the corresponding resource for the specified element. This is element itself,
+     * if it is an IResource, or an adapter. Returns null, if no resource could be found.
      */
     public static IResource findResource(final Object element) {
         IResource result = null;
         if (element instanceof IResource) {
             result = (IResource) element;
         } else if (element instanceof IAdaptable) {
-            @Nullable final Object adapter = ((IAdaptable) element).getAdapter(IResource.class);
+            @Nullable
+            final Object adapter = ((IAdaptable) element).getAdapter(IResource.class);
             if (adapter instanceof IResource) {
                 result = (IResource) adapter;
             }
@@ -153,12 +151,14 @@ public class ResourceUtil {
 
     public static IResource findResourceByLocation(final IContainer container,
             final String fileName) {
-        return ResourceUtil.findResource(container, fileName, FindResourceVisitor.FIND_BY_LOCATION);
+        return ResourceUtil.findResource(container, fileName,
+                FindResourceVisitor.FIND_BY_LOCATION);
     }
 
     public static IResource findResourceByName(final IContainer container,
             final String fileName) {
-        return ResourceUtil.findResource(container, fileName, FindResourceVisitor.FIND_BY_NAME);
+        return ResourceUtil.findResource(container, fileName,
+                FindResourceVisitor.FIND_BY_NAME);
     }
 
     private static IResource findResource(final IContainer container,

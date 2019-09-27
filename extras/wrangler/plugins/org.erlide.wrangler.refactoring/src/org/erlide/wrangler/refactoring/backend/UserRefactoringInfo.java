@@ -41,11 +41,8 @@ public class UserRefactoringInfo {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof UserRefactoringInfo
-                && ((UserRefactoringInfo) obj).getCallback().equals(callback)) {
-            return true;
-        }
-        return false;
+        return obj instanceof UserRefactoringInfo
+                && ((UserRefactoringInfo) obj).getCallback().equals(callback);
     }
 
     @Override

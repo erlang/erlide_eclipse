@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.engine.model;
 
@@ -24,20 +22,19 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     public static final IErlElement[] NO_ELEMENTS = new IErlElement[0];
 
     /**
-     * The elements related to the failure, or <code>null</code> if no elements
-     * are involved.
+     * The elements related to the failure, or <code>null</code> if no elements are
+     * involved.
      */
     protected IErlElement[] fElements = new IErlElement[0];
 
     /**
-     * The path related to the failure, or <code>null</code> if no path is
-     * involved.
+     * The path related to the failure, or <code>null</code> if no path is involved.
      */
     protected IPath fPath;
 
     /**
-     * The <code>String</code> related to the failure, or <code>null</code> if
-     * no <code>String</code> is involved.
+     * The <code>String</code> related to the failure, or <code>null</code> if no
+     * <code>String</code> is involved.
      */
     protected String fString;
 
@@ -123,17 +120,16 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     }
 
     /**
-     * Constructs an Erlang model status with the given corresponding element
-     * and string
+     * Constructs an Erlang model status with the given corresponding element and string
      */
-    public ErlModelStatus(final int code, final IErlElement element, final String string) {
+    public ErlModelStatus(final int code, final IErlElement element,
+            final String string) {
         this(code, new IErlElement[] { element });
         fString = string;
     }
 
     /**
-     * Constructs an Erlang model status with the given corresponding element
-     * and path
+     * Constructs an Erlang model status with the given corresponding element and path
      */
     public ErlModelStatus(final int code, final IErlElement element, final IPath path) {
         this(code, new IErlElement[] { element });
@@ -141,8 +137,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     }
 
     /**
-     * Constructs an Erlang model status with the given corresponding element,
-     * path and string
+     * Constructs an Erlang model status with the given corresponding element, path and
+     * string
      */
     public ErlModelStatus(final int code, final IErlElement element, final IPath path,
             final String string) {
@@ -203,8 +199,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
                 return Util.bind("status.cannotUseDeviceOnPath", getPath().toString()); //$NON-NLS-1$
 
             case ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST:
-                return Util.bind(
-                        "element.doesNotExist", fElements[0].toStringWithAncestors()); //$NON-NLS-1$
+                return Util.bind("element.doesNotExist", //$NON-NLS-1$
+                        fElements[0].toStringWithAncestors());
 
             case ErlModelStatusConstants.INDEX_OUT_OF_BOUNDS:
                 return Util.bind("status.indexOutOfBounds"); //$NON-NLS-1$
@@ -213,8 +209,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
                 return Util.bind("status.invalidContents"); //$NON-NLS-1$
 
             case ErlModelStatusConstants.INVALID_DESTINATION:
-                return Util
-                        .bind("status.invalidDestination", fElements[0].toStringWithAncestors()); //$NON-NLS-1$
+                return Util.bind("status.invalidDestination", //$NON-NLS-1$
+                        fElements[0].toStringWithAncestors());
 
             case ErlModelStatusConstants.INVALID_ELEMENT_TYPES:
                 final StringBuilder buff = new StringBuilder(
@@ -234,8 +230,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
                 if (fString != null) {
                     return fString;
                 }
-                return Util
-                        .bind("status.invalidPath", getPath() == null ? "null" : getPath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
+                return Util.bind("status.invalidPath", //$NON-NLS-1$
+                        getPath() == null ? "null" : getPath().toString()); //$NON-NLS-1$
 
             case ErlModelStatusConstants.INVALID_PROJECT:
                 return Util.bind("status.invalidProject", fString); //$NON-NLS-1$
@@ -250,8 +246,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
                 if (fString != null) {
                     return Util.bind("status.invalidSibling", fString); //$NON-NLS-1$
                 }
-                return Util.bind(
-                        "status.invalidSibling", fElements[0].toStringWithAncestors()); //$NON-NLS-1$
+                return Util.bind("status.invalidSibling", //$NON-NLS-1$
+                        fElements[0].toStringWithAncestors());
 
             case ErlModelStatusConstants.IO_EXCEPTION:
                 return Util.bind("status.IOException"); //$NON-NLS-1$
@@ -279,8 +275,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
                 return Util.bind("operation.needString"); //$NON-NLS-1$
 
             case ErlModelStatusConstants.PATH_OUTSIDE_PROJECT:
-                return Util
-                        .bind("operation.pathOutsideProject", fString, fElements[0].toStringWithAncestors()); //$NON-NLS-1$
+                return Util.bind("operation.pathOutsideProject", fString, //$NON-NLS-1$
+                        fElements[0].toStringWithAncestors());
 
             case ErlModelStatusConstants.READ_ONLY:
                 final IErlElement element = fElements[0];
@@ -389,8 +385,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     }
 
     /**
-     * Creates and returns a new <code>IErlModelStatus</code> that is a a
-     * multi-status status.
+     * Creates and returns a new <code>IErlModelStatus</code> that is a a multi-status
+     * status.
      *
      * @see IStatus#isMultiStatus()
      */
@@ -402,8 +398,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     }
 
     /**
-     * Creates and returns a new <code>IErlModelStatus</code> that is a a
-     * multi-status status.
+     * Creates and returns a new <code>IErlModelStatus</code> that is a a multi-status
+     * status.
      *
      * @see IStatus#isMultiStatus()
      */
@@ -414,17 +410,15 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     }
 
     /**
-     * Returns a printable representation of this exception for debugging
-     * purposes.
+     * Returns a printable representation of this exception for debugging purposes.
      */
     @Override
     public String toString() {
         if (this == ErlModelStatus.VERIFIED_OK) {
             return "ErlModelStatus[OK]"; //$NON-NLS-1$
         }
-        String buffer = "Erlang Model Status [" + //$NON-NLS-1$
-                getMessage() +
-                ']';
+        final String buffer = "Erlang Model Status [" + //$NON-NLS-1$
+                getMessage() + ']';
         return buffer;
     }
 }

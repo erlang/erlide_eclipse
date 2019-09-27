@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2005 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.util;
 
@@ -21,8 +19,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 public interface IContextMenuConstants {
 
     /**
-     * Pop-up menu: name of group for goto actions (value
-     * <code>"group.open"</code>).
+     * Pop-up menu: name of group for goto actions (value <code>"group.open"</code>).
      * <p>
      * Examples for open actions are:
      * <ul>
@@ -34,8 +31,7 @@ public interface IContextMenuConstants {
     String GROUP_GOTO = "group.goto"; //$NON-NLS-1$
 
     /**
-     * Pop-up menu: name of group for open actions (value
-     * <code>"group.open"</code>).
+     * Pop-up menu: name of group for open actions (value <code>"group.open"</code>).
      * <p>
      * Examples for open actions are:
      * <ul>
@@ -47,8 +43,7 @@ public interface IContextMenuConstants {
     String GROUP_OPEN = "group.open"; //$NON-NLS-1$
 
     /**
-     * Pop-up menu: name of group for show actions (value
-     * <code>"group.show"</code>).
+     * Pop-up menu: name of group for show actions (value <code>"group.show"</code>).
      * <p>
      * Examples for show actions are:
      * <ul>
@@ -60,8 +55,7 @@ public interface IContextMenuConstants {
     String GROUP_SHOW = "group.show"; //$NON-NLS-1$
 
     /**
-     * Pop-up menu: name of group for new actions (value
-     * <code>"group.new"</code>).
+     * Pop-up menu: name of group for new actions (value <code>"group.new"</code>).
      * <p>
      * Examples for new actions are:
      * <ul>
@@ -73,8 +67,7 @@ public interface IContextMenuConstants {
     String GROUP_NEW = "group.new"; //$NON-NLS-1$
 
     /**
-     * Pop-up menu: name of group for build actions (value
-     * <code>"group.build"</code>).
+     * Pop-up menu: name of group for build actions (value <code>"group.build"</code>).
      */
     String GROUP_BUILD = "group.build"; //$NON-NLS-1$
 
@@ -92,22 +85,19 @@ public interface IContextMenuConstants {
 
     /**
      * Pop-up menu: name of group for source actions. This is an alias for
-     * <code>GROUP_GENERATE</code> to be more consistent with main menu bar
-     * structure.
+     * <code>GROUP_GENERATE</code> to be more consistent with main menu bar structure.
      *
      * @since 2.0
      */
     String GROUP_SOURCE = IContextMenuConstants.GROUP_GENERATE;
 
     /**
-     * Pop-up menu: name of group for search actions (value
-     * <code>"group.search"</code>).
+     * Pop-up menu: name of group for search actions (value <code>"group.search"</code>).
      */
     String GROUP_SEARCH = "group.search"; //$NON-NLS-1$
 
     /**
-     * Pop-up menu: name of group for additional actions (value
-     * <code>"additions"</code>).
+     * Pop-up menu: name of group for additional actions (value <code>"additions"</code>).
      */
     String GROUP_ADDITIONS = "additions"; //$NON-NLS-1$
 

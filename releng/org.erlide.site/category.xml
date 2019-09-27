@@ -7,7 +7,6 @@
       <category name="extras"/>
    </feature>
    <feature url="features/com.abstratt.eclipsegraphviz.feature_2.2.201606.201701211537.jar" id="com.abstratt.eclipsegraphviz.feature" version="2.2.201606.201701211537"/>
-   <feature url="features/org.eclipse.lsp4j.sdk_0.3.0.v20170913-0640.jar" id="org.eclipse.lsp4j.sdk" version="0.3.0.v20170913-0640"/>
    <feature url="features/org.erlide.kernel.feature_0.115.3.201806041948.jar" id="org.erlide.kernel.feature" version="0.115.3.201806041948">
       <category name="erlide"/>
    </feature>

@@ -74,7 +74,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
             ErlLogger.error("Can't create backend without a runtime defined!");
             return null;
         }
-        String defaultNodeName = getDefaultNodeNameFromProjects(config,
+        final String defaultNodeName = getDefaultNodeNameFromProjects(config,
                 Long.toHexString(System.currentTimeMillis() & 0xFFFFFF));
         final String nodeName = config.getAttribute(ErlRuntimeAttributes.NODE_NAME,
                 defaultNodeName);
@@ -85,9 +85,9 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
         return data;
     }
 
-    private String getDefaultNodeNameFromProjects(ILaunchConfiguration config,
-            String defaultDefault) throws CoreException {
-        String projects = config.getAttribute(ErlRuntimeAttributes.PROJECTS,
+    private String getDefaultNodeNameFromProjects(final ILaunchConfiguration config,
+            final String defaultDefault) throws CoreException {
+        final String projects = config.getAttribute(ErlRuntimeAttributes.PROJECTS,
                 defaultDefault);
         final String[] names = projects.split(BackendData.PROJECT_NAME_SEPARATOR);
         return names[0];

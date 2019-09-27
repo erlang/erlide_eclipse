@@ -68,23 +68,26 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
                         final ISourceRange r1 = ref1.getSourceRange();
                         final int offset = r1.getOffset();
                         int length = r1.getLength();
-                        if (e1 == e2) {
+                        if (e1.equals(e2)) {
                             final int docLength = document.getLength();
                             if (offset + length > docLength) {
                                 length = docLength - offset;
                             }
-                            return ErlangAbstractHandler.extendSelectionToWholeLines(document,
+                            return ErlangAbstractHandler.extendSelectionToWholeLines(
+                                    document,
                                     new TextSelection(document, offset, length));
                         } else if (e2 == null) {
-                            return ErlangAbstractHandler.extendSelectionToWholeLines(document,
-                                    new TextSelection(document, offset,
-                                            selection.getLength() + selection.getOffset()
-                                                    - offset));
+                            return ErlangAbstractHandler
+                                    .extendSelectionToWholeLines(document,
+                                            new TextSelection(document, offset,
+                                                    selection.getLength()
+                                                            + selection.getOffset()
+                                                            - offset));
                         } else if (e2 instanceof ISourceReference) {
                             final ISourceReference ref2 = (ISourceReference) e2;
                             final ISourceRange r2 = ref2.getSourceRange();
-                            return ErlangAbstractHandler.extendSelectionToWholeLines(document,
-                                    new TextSelection(document, offset,
+                            return ErlangAbstractHandler.extendSelectionToWholeLines(
+                                    document, new TextSelection(document, offset,
                                             r2.getOffset() - offset + r2.getLength()));
                         }
                     }
@@ -108,19 +111,16 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
         }
         ErlideEventTracer.getInstance().traceOperationStart(this);
         try {
-            final IRunnableWithProgress myRunnableWithProgress = new IRunnableWithProgress() {
-                @Override
-                public void run(final IProgressMonitor monitor0) {
-                    final IProgressMonitor monitor = monitor0 != null ? monitor0
-                            : new NullProgressMonitor();
-                    try {
-                        monitor.beginTask(
-                                "Processing " + textEditor.getEditorInput().getName(),
-                                IProgressMonitor.UNKNOWN);
-                        doAction(sel, textEditor);
-                    } finally {
-                        monitor.done();
-                    }
+            final IRunnableWithProgress myRunnableWithProgress = monitor0 -> {
+                final IProgressMonitor monitor = monitor0 != null ? monitor0
+                        : new NullProgressMonitor();
+                try {
+                    monitor.beginTask(
+                            "Processing " + textEditor.getEditorInput().getName(),
+                            IProgressMonitor.UNKNOWN);
+                    doAction(sel, textEditor);
+                } finally {
+                    monitor.done();
                 }
             };
 
@@ -137,15 +137,15 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
     }
 
     /**
-     * Extend the selection that the action will work on. Default
-     * implementation, extend to whole lines. Might be overridden.
+     * Extend the selection that the action will work on. Default implementation, extend
+     * to whole lines. Might be overridden.
      *
      * @param document
      *            text {@link IDocument}
      * @param selection
      *            original selection
-     * @return new {@link ITextSelection} extended to the whole lines
-     *         intersected by selection
+     * @return new {@link ITextSelection} extended to the whole lines intersected by
+     *         selection
      */
     public static ITextSelection extendSelectionToWholeLines(final IDocument document,
             final ITextSelection selection) {

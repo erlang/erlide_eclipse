@@ -13,7 +13,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -52,8 +51,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     // private Button containerBrowseButton;
 
     /**
-     * The <code>selectionGroup</code> field should have been created with a
-     * private modifier. Subclasses should not access this field directly.
+     * The <code>selectionGroup</code> field should have been created with a private
+     * modifier. Subclasses should not access this field directly.
      */
     protected ResourceTreeAndListGroup selectionGroup;
 
@@ -69,9 +68,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     // ErlangDataTransferMessages.WizardImportPage_folderMustExist;
 
     /**
-     * Creates an import wizard page. If the initial resource selection contains
-     * exactly one container resource then it will be used as the default import
-     * destination.
+     * Creates an import wizard page. If the initial resource selection contains exactly
+     * one container resource then it will be used as the default import destination.
      *
      * @param name
      *            the name of the page
@@ -109,8 +107,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
 
     /**
      * The <code>WizardResourceImportPage</code> implementation of this
-     * <code>WizardDataTransferPage</code> method returns <code>true</code>.
-     * Subclasses may override this method.
+     * <code>WizardDataTransferPage</code> method returns <code>true</code>. Subclasses
+     * may override this method.
      */
     protected boolean allowNewContainerName() {
         return true;
@@ -223,12 +221,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
                 new WorkbenchLabelProvider(), SWT.NONE,
                 DialogUtil.inRegularFontMode(parent));
 
-        final ICheckStateListener listener = new ICheckStateListener() {
-            @Override
-            public void checkStateChanged(final CheckStateChangedEvent event) {
-                updateWidgetEnablements();
-            }
-        };
+        final ICheckStateListener listener = event -> updateWidgetEnablements();
 
         final WorkbenchViewerComparator comparator = new WorkbenchViewerComparator();
         selectionGroup.setTreeComparator(comparator);
@@ -256,15 +249,15 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     }
 
     /**
-     * Returns the path of the container resource specified in the container
-     * name entry field, or <code>null</code> if no name has been typed in.
+     * Returns the path of the container resource specified in the container name entry
+     * field, or <code>null</code> if no name has been typed in.
      * <p>
-     * The container specified by the full path might not exist and would need
-     * to be created.
+     * The container specified by the full path might not exist and would need to be
+     * created.
      * </p>
      *
-     * @return the full path of the container resource specified in the
-     *         container name entry field, or <code>null</code>
+     * @return the full path of the container resource specified in the container name
+     *         entry field, or <code>null</code>
      */
     protected IPath getContainerFullPath() {
         // IWorkspace workspace = IDEWorkbenchPlugin.getPluginWorkspace();
@@ -277,14 +270,14 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     }
 
     /**
-     * Returns a content provider for <code>FileSystemElement</code>s that
-     * returns only files as children.
+     * Returns a content provider for <code>FileSystemElement</code>s that returns only
+     * files as children.
      */
     protected abstract ITreeContentProvider getFileProvider();
 
     /**
-     * Returns a content provider for <code>FileSystemElement</code>s that
-     * returns only folders as children.
+     * Returns a content provider for <code>FileSystemElement</code>s that returns only
+     * folders as children.
      */
     protected abstract ITreeContentProvider getFolderProvider();
 
@@ -299,8 +292,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     }
 
     /**
-     * Returns this page's list of currently-specified resources to be imported.
-     * This is the primary resource selection facility accessor for subclasses.
+     * Returns this page's list of currently-specified resources to be imported. This is
+     * the primary resource selection facility accessor for subclasses.
      *
      * @return a list of resources currently selected for export (element type:
      *         <code>IResource</code>)
@@ -314,8 +307,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     }
 
     /**
-     * Returns this page's list of currently-specified resources to be imported
-     * filtered by the IElementFilter.
+     * Returns this page's list of currently-specified resources to be imported filtered
+     * by the IElementFilter.
      *
      */
     protected void getSelectedResources(final IElementFilter filter,
@@ -324,12 +317,11 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     }
 
     /**
-     * Returns the container resource specified in the container name entry
-     * field, or <code>null</code> if such a container does not exist in the
-     * workbench.
+     * Returns the container resource specified in the container name entry field, or
+     * <code>null</code> if such a container does not exist in the workbench.
      *
-     * @return the container resource specified in the container name entry
-     *         field, or <code>null</code>
+     * @return the container resource specified in the container name entry field, or
+     *         <code>null</code>
      */
     protected IContainer getSpecifiedContainer() {
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -345,8 +337,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     }
 
     /**
-     * Returns a collection of the currently-specified resource types for use by
-     * the type selection dialog.
+     * Returns a collection of the currently-specified resource types for use by the type
+     * selection dialog.
      */
     protected java.util.List<Object> getTypesToImport() {
 
@@ -355,8 +347,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
 
     /**
      * The <code>WizardResourceImportPage</code> implementation of this
-     * <code>Listener</code> method handles all events and enablements for
-     * controls on this page. Subclasses may extend.
+     * <code>Listener</code> method handles all events and enablements for controls on
+     * this page. Subclasses may extend.
      *
      * @param event
      *            Event
@@ -366,8 +358,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     }
 
     /**
-     * Open a registered type selection dialog and note the selections in the
-     * receivers types-to-export field
+     * Open a registered type selection dialog and note the selections in the receivers
+     * types-to-export field
      */
     protected void handleTypesEditButtonPressed() {
 
@@ -377,7 +369,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
         final Object[] newSelectedTypes = dialog.getResult();
         if (newSelectedTypes != null) { // ie.- did not press Cancel
             selectedTypes = new ArrayList<>(newSelectedTypes.length);
-            for (Object newSelectedType : newSelectedTypes) {
+            for (final Object newSelectedType : newSelectedTypes) {
                 selectedTypes.add(newSelectedType);
             }
             setupSelectionsBasedOnSelectedTypes();
@@ -406,8 +398,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     }
 
     /**
-     * Sets the value of this page's container resource field, or stores it for
-     * future use if this page's controls do not exist yet.
+     * Sets the value of this page's container resource field, or stores it for future use
+     * if this page's controls do not exist yet.
      *
      * @param value
      *            String
@@ -419,8 +411,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     }
 
     /**
-     * Update the tree to only select those elements that match the selected
-     * types. Do nothing by default.
+     * Update the tree to only select those elements that match the selected types. Do
+     * nothing by default.
      */
     protected void setupSelectionsBasedOnSelectedTypes() {
     }
@@ -433,12 +425,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      */
     protected void updateSelections(final Map<Object, List<Object>> map) {
 
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                selectionGroup.updateSelections(map);
-            }
-        };
+        final Runnable runnable = () -> selectionGroup.updateSelections(map);
 
         BusyIndicator.showWhile(getShell().getDisplay(), runnable);
     }
@@ -510,22 +497,20 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     //
     // }
     /**
-     * Returns the error message for when the source conflicts with the
-     * destination.
+     * Returns the error message for when the source conflicts with the destination.
      */
     protected final String getSourceConflictMessage() {
         return WizardMessages.WizardImportPage_importOnReceiver;
     }
 
     /**
-     * Returns whether or not the source location conflicts with the destination
-     * resource. By default this is not checked, so <code>false</code> is
-     * returned.
+     * Returns whether or not the source location conflicts with the destination resource.
+     * By default this is not checked, so <code>false</code> is returned.
      *
      * @param sourcePath
      *            the path being checked
-     * @return <code>true</code> if the source location conflicts with the
-     *         destination resource, <code>false</code> if not
+     * @return <code>true</code> if the source location conflicts with the destination
+     *         resource, <code>false</code> if not
      */
     protected boolean sourceConflictsWithDestination(final IPath sourcePath) {
         return false;
@@ -566,10 +551,9 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     }
 
     /**
-     * Adds an entry to a history, while taking care of duplicate history items
-     * and excessively long histories. The assumption is made that all histories
-     * should be of length
-     * <code>WizardDataTransferPage.COMBO_HISTORY_LENGTH</code>.
+     * Adds an entry to a history, while taking care of duplicate history items and
+     * excessively long histories. The assumption is made that all histories should be of
+     * length <code>WizardDataTransferPage.COMBO_HISTORY_LENGTH</code>.
      *
      * @param history
      *            the current history
@@ -577,8 +561,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      *            the entry to add to the history
      */
     protected String[] addToHistory(final String[] history, final String newEntry) {
-        final List<String> l = new java.util.ArrayList<>(
-                Arrays.asList(history));
+        final List<String> l = new java.util.ArrayList<>(Arrays.asList(history));
         addToHistory(l, newEntry);
         final String[] r = new String[l.size()];
         l.toArray(r);
@@ -586,10 +569,9 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     }
 
     /**
-     * Adds an entry to a history, while taking care of duplicate history items
-     * and excessively long histories. The assumption is made that all histories
-     * should be of length
-     * <code>WizardDataTransferPage.COMBO_HISTORY_LENGTH</code>.
+     * Adds an entry to a history, while taking care of duplicate history items and
+     * excessively long histories. The assumption is made that all histories should be of
+     * length <code>WizardDataTransferPage.COMBO_HISTORY_LENGTH</code>.
      *
      * @param history
      *            the current history

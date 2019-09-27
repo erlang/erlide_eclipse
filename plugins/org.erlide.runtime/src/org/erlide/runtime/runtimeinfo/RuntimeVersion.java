@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2009 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.runtime.runtimeinfo;
 
@@ -14,12 +12,14 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 public class RuntimeVersion implements Comparable<RuntimeVersion> {
 
     public static final int UNUSED = Integer.MIN_VALUE;
-    public static final RuntimeVersion NO_VERSION = new RuntimeVersion(RuntimeVersion.UNUSED);
+    public static final RuntimeVersion NO_VERSION = new RuntimeVersion(
+            RuntimeVersion.UNUSED);
 
     private final int major;
     private final int minor;
@@ -122,13 +122,7 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
             minor = Serializer.getValue(m, 2);
             micro = Serializer.getValue(m, 3);
             final String extra = m.group(4);
-            if (extra != null) {
-                try {
-                    update_level = extra;
-                } catch (final Exception e) {
-                    update_level = null;
-                }
-            }
+            update_level = extra;
             return new RuntimeVersion(major, minor, micro, update_level);
         }
 
@@ -240,7 +234,8 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
     }
 
     public boolean isReleaseCompatible(final RuntimeVersion other) {
-        return major == RuntimeVersion.UNUSED || other.major == RuntimeVersion.UNUSED || isCompatible(other);
+        return major == RuntimeVersion.UNUSED || other.major == RuntimeVersion.UNUSED
+                || isCompatible(other);
     }
 
     public RuntimeVersion asMinor() {
@@ -253,11 +248,18 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hashCode(major, minor, micro, update_level);
     }
 
     public boolean isStable() {
-        return update_level == null;
+        try {
+            // "rc1" is unstable, but "1" is stable
+            Integer.parseInt(update_level);
+            return true;
+
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     public int getMajor() {

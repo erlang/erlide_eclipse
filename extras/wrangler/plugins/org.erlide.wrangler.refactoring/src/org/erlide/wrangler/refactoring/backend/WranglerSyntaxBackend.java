@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend;
 
@@ -47,8 +45,8 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
 
     protected OtpErlangTuple parseFile(final IFile f) {
         final String filePath = f.getLocation().toOSString();
-        final RpcResult res = backend.call_noexception(WranglerSyntaxBackend.MODULE, WranglerSyntaxBackend.PARSE_FUNCTION, "sax",
-                filePath, "true",
+        final RpcResult res = backend.call_noexception(WranglerSyntaxBackend.MODULE,
+                WranglerSyntaxBackend.PARSE_FUNCTION, "sax", filePath, "true",
                 GlobalParameters.getWranglerSelection().getSearchPath());
         return parseParserResult(res.getValue());
     }
@@ -69,8 +67,10 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
         final OtpErlangInt[] position = new OtpErlangInt[2];
         position[0] = new OtpErlangInt(line);
         position[1] = new OtpErlangInt(col);
-        final RpcResult res = backend.call_noexception(WranglerSyntaxBackend.INTERFACE_MODULE, WranglerSyntaxBackend.VAR_FUNCTION,
-                "xx", syntaxTree, new OtpErlangTuple(position));
+        final RpcResult res = backend.call_noexception(
+                WranglerSyntaxBackend.INTERFACE_MODULE,
+                WranglerSyntaxBackend.VAR_FUNCTION, "xx", syntaxTree,
+                new OtpErlangTuple(position));
         return parseVarInfo(res.getValue());
     }
 

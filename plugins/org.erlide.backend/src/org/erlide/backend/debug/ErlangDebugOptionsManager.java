@@ -5,7 +5,6 @@ import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointsListener;
 import org.eclipse.debug.core.ILaunch;
@@ -49,15 +48,12 @@ public class ErlangDebugOptionsManager
      * Updates message attributes on the given erlang breakpoints.
      */
     private void updateBreakpointsMessages(final IBreakpoint[] breakpoints) {
-        final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-            @Override
-            public void run(final IProgressMonitor monitor) throws CoreException {
-                for (final IBreakpoint breakpoint : breakpoints) {
-                    if (breakpoint instanceof IErlangBreakpoint) {
-                        final IErlangBreakpoint erlangBreakpoint = (IErlangBreakpoint) breakpoint;
-                        final String message = erlangBreakpoint.getMessage();
-                        breakpoint.getMarker().setAttribute(IMarker.MESSAGE, message);
-                    }
+        final IWorkspaceRunnable runnable = monitor -> {
+            for (final IBreakpoint breakpoint : breakpoints) {
+                if (breakpoint instanceof IErlangBreakpoint) {
+                    final IErlangBreakpoint erlangBreakpoint = (IErlangBreakpoint) breakpoint;
+                    final String message = erlangBreakpoint.getMessage();
+                    breakpoint.getMarker().setAttribute(IMarker.MESSAGE, message);
                 }
             }
         };

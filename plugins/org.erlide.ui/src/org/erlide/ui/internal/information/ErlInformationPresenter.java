@@ -238,7 +238,8 @@ public class ErlInformationPresenter
             }
 
             if (line != null) {
-                append(buffer, ErlInformationPresenter.LINE_DELIM, lineFormatted ? presentation : null);
+                append(buffer, ErlInformationPresenter.LINE_DELIM,
+                        lineFormatted ? presentation : null);
             }
             return trim(buffer, presentation);
 

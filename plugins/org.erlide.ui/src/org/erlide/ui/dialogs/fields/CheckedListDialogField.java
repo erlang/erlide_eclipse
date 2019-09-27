@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.dialogs.fields;
 
@@ -16,7 +14,6 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -72,13 +69,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
     protected TableViewer createTableViewer(final Composite parent) {
         final Table table = new Table(parent, SWT.CHECK + getListStyle());
         final CheckboxTableViewer tableViewer = new CheckboxTableViewer(table);
-        tableViewer.addCheckStateListener(new ICheckStateListener() {
-
-            @Override
-            public void checkStateChanged(final CheckStateChangedEvent e) {
-                doCheckStateChanged(e);
-            }
-        });
+        tableViewer.addCheckStateListener(e -> doCheckStateChanged(e));
         return tableViewer;
     }
 

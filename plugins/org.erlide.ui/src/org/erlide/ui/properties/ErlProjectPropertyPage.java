@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.properties;
 
@@ -37,8 +36,10 @@ import org.erlide.backend.BackendCore;
 import org.erlide.core.ErlangCore;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
-/*TODO ...this should implement IworkspacePreferencePage if it's going to be
- * used as "default erlang project" page...*/
+/*
+ * TODO ...this should implement IworkspacePreferencePage if it's going to be used as
+ * "default erlang project" page...
+ */
 public class ErlProjectPropertyPage extends PropertyPage {
 
     public ErlProjectPropertyPage() {

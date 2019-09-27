@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="erlide" uid="org.erlide.product" id="org.erlide.branding.product" application="org.eclipse.ui.ide.workbench" version="0.52.1" useFeatures="true" includeLaunchers="true">
+<product name="erlide" uid="org.erlide.product" id="org.erlide.branding.product" application="org.eclipse.ui.ide.workbench" version="0.56.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.erlide.branding/images/erl-zen-badge-160.png"/>
@@ -26,7 +26,6 @@
       startupMessageRect="3,247,494,20"
       startupForegroundColor="000000" />
    <launcher name="erlide">
-      <solaris/>
       <win useIco="true">
          <bmp/>
       </win>

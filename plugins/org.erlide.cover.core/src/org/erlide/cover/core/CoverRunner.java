@@ -62,7 +62,8 @@ public class CoverRunner extends AbstractCoverRunner {
                 new OtpErlangAtom(
                         CoverBackend.getInstance().getSettings().getFramework()));
 
-        ErlLogger.info(config.getProject().getWorkspaceProject().getLocation().toPortableString());
+        ErlLogger.info(config.getProject().getWorkspaceProject().getLocation()
+                .toPortableString());
         final IPath ppath = config.getProject().getWorkspaceProject().getLocation();
         ErlLogger.info(ppath.append(config.getOutputDir()).toPortableString());
 
@@ -94,11 +95,11 @@ public class CoverRunner extends AbstractCoverRunner {
             for (final String path : testDirs) {
                 ErlLogger.info(path);
 
-                CoverBackend.getInstance().getBackend().getOtpRpc()
-                        .call(TestConstants.TEST_ERL_BACKEND,
-                                TestConstants.FUN_TEST, "ss", CoverBackend.getInstance()
-                                        .getSettings().getType().name().toLowerCase(),
-                                path);
+                CoverBackend.getInstance().getBackend().getOtpRpc().call(
+                        TestConstants.TEST_ERL_BACKEND, TestConstants.FUN_TEST, "ss",
+                        CoverBackend.getInstance().getSettings().getType().name()
+                                .toLowerCase(),
+                        path);
             }
             break;
         default:

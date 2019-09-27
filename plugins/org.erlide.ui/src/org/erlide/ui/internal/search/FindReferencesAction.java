@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2007 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.internal.search;
 
@@ -19,8 +17,8 @@ import org.erlide.engine.services.search.LimitTo;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 
 /**
- * Finds references of the selected element in the workspace. The action is
- * applicable to selections representing a Erlang element.
+ * Finds references of the selected element in the workspace. The action is applicable to
+ * selections representing a Erlang element.
  *
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -31,8 +29,8 @@ import org.erlide.ui.editors.erl.AbstractErlangEditor;
 public class FindReferencesAction extends FindAction {
 
     /**
-     * Creates a new <code>FindReferencesAction</code>. The action requires that
-     * the selection provided by the site's selection provider is of type
+     * Creates a new <code>FindReferencesAction</code>. The action requires that the
+     * selection provided by the site's selection provider is of type
      * <code>org.eclipse.jface.viewers.IStructuredSelection</code>.
      *
      * @param site
@@ -43,8 +41,8 @@ public class FindReferencesAction extends FindAction {
     }
 
     /**
-     * Note: This constructor is for internal use only. Clients should not call
-     * this constructor.
+     * Note: This constructor is for internal use only. Clients should not call this
+     * constructor.
      *
      * @param editor
      *            the Erlang editor

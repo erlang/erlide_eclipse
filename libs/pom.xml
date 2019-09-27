@@ -17,10 +17,8 @@
 
 	<modules>
 		<module>org.incava.util.diff</module>
-		<module>org.fishwife.jrugged</module>
 		<module>org.erlide.annotations</module>
 		<module>com.ericsson.otp.jinterface</module>
 		<module>com.google.truth</module>
-		<module>nl.kii.util</module>
 	</modules>
 </project>

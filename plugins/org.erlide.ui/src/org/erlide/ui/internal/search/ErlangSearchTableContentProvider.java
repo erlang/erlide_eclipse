@@ -32,12 +32,13 @@ public class ErlangSearchTableContentProvider extends ErlangSearchContentProvide
         final TableViewer viewer = getViewer();
         final int elementLimit = getElementLimit();
         final boolean tableLimited = elementLimit != -1;
-        for (Object updatedElement : updatedElements) {
+        for (final Object updatedElement : updatedElements) {
             if (fResult.getMatchCount(updatedElement) > 0) {
                 if (viewer.testFindItem(updatedElement) != null) {
                     viewer.update(updatedElement, null);
                 } else {
-                    if (!tableLimited || viewer.getTable().getItemCount() < elementLimit) {
+                    if (!tableLimited
+                            || viewer.getTable().getItemCount() < elementLimit) {
                         viewer.add(updatedElement);
                     }
                 }

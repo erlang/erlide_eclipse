@@ -9,7 +9,6 @@ import java.util.concurrent.TimeoutException;
 import org.erlide.util.services.Provider;
 
 import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Service;
 
@@ -81,7 +80,7 @@ public class RestartableService implements Service {
     @Override
     public Service startAsync() {
         delegate = factory.get();
-        delegate.addListener(new RestartListener(), MoreExecutors.sameThreadExecutor());
+        delegate.addListener(new RestartListener(), MoreExecutors.directExecutor());
         delegate.startAsync();
         policy.notifyRestart();
         return this;
@@ -136,29 +135,5 @@ public class RestartableService implements Service {
             listeners.put(listener, executor);
         }
     }
-
-	@Deprecated
-	@Override
-	public ListenableFuture<State> start() {
-		return null;
-	}
-
-	@Deprecated
-	@Override
-	public State startAndWait() {
-		return null;
-	}
-
-	@Deprecated
-	@Override
-	public ListenableFuture<State> stop() {
-		return null;
-	}
-
-	@Deprecated
-	@Override
-	public State stopAndWait() {
-		return null;
-	}
 
 }

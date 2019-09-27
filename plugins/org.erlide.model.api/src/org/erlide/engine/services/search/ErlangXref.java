@@ -66,8 +66,8 @@ public class ErlangXref {
     public FunctionRef[] functionUse(final String mod, final String fun,
             final int arity) {
         try {
-            final OtpErlangObject r = backend.call(ErlangXref.ERLIDE_XREF, "function_use", "aai",
-                    mod.substring(0, mod.length() - 4), fun, arity);
+            final OtpErlangObject r = backend.call(ErlangXref.ERLIDE_XREF, "function_use",
+                    "aai", mod.substring(0, mod.length() - 4), fun, arity);
             final OtpBindings bind = OtpErlang.match("{ok, L}", r);
             if (bind == null) {
                 return new FunctionRef[0];

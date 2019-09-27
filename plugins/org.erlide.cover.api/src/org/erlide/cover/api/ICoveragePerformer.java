@@ -15,30 +15,29 @@ public interface ICoveragePerformer {
      *
      * if cover is already started on the given nodes nothing happen
      *
-     * if cover is already started and the node list changed, it is started once
-     * again
+     * if cover is already started and the node list changed, it is started once again
      *
      * @param nodes
      */
-    public void startCover(Collection<String> nodes) throws CoverException;
+    void startCover(Collection<String> nodes) throws CoverException;
 
     /**
      * Sets coverage configuration, and prepares all selected files
      *
      * @param conf
      */
-    public void setCoverageConfiguration(IConfiguration conf) throws CoverException;
+    void setCoverageConfiguration(IConfiguration conf) throws CoverException;
 
     /**
      * Perform cover analises based on present configuration
      */
-    public void analyse() throws CoverException;
+    void analyse() throws CoverException;
 
     /**
      * Enables checking configuration
      *
      * @return
      */
-    public IConfiguration getConfig();
+    IConfiguration getConfig();
 
 }

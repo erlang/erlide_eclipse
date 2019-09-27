@@ -28,11 +28,13 @@ public class VariablePattern extends ErlangSearchPattern {
 
     @Override
     public OtpErlangObject getSearchObject() {
-        final OtpErlangObject t = makeSPatternObject(ErlangSearchPattern.VARIABLE_DEF_ATOM, ErlangSearchPattern.VARIABLE_REF_ATOM,
-                name);
-        return new OtpErlangTuple(new OtpErlangObject[] {ErlangSearchPattern.VARIABLE_PATTERN_ATOM, t,
-                new OtpErlangAtom(functionName), new OtpErlangLong(arity),
-                new OtpErlangString(head) });
+        final OtpErlangObject t = makeSPatternObject(
+                ErlangSearchPattern.VARIABLE_DEF_ATOM,
+                ErlangSearchPattern.VARIABLE_REF_ATOM, name);
+        return new OtpErlangTuple(
+                new OtpErlangObject[] { ErlangSearchPattern.VARIABLE_PATTERN_ATOM, t,
+                        new OtpErlangAtom(functionName), new OtpErlangLong(arity),
+                        new OtpErlangString(head) });
     }
 
     @Override

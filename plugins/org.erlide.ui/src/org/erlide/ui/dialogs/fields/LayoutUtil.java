@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.dialogs.fields;
 
@@ -36,8 +34,7 @@ public final class LayoutUtil {
      * Creates a composite and fills in the given editors.
      *
      * @param labelOnTop
-     *            Defines if the label of all fields should be on top of the
-     *            fields
+     *            Defines if the label of all fields should be on top of the fields
      */
     public static void doDefaultLayout(final Composite parent,
             final DialogField[] editors, final boolean labelOnTop) {
@@ -48,8 +45,7 @@ public final class LayoutUtil {
      * Creates a composite and fills in the given editors.
      *
      * @param labelOnTop
-     *            Defines if the label of all fields should be on top of the
-     *            fields
+     *            Defines if the label of all fields should be on top of the fields
      * @param marginWidth
      *            The margin width to be used by the composite
      * @param marginHeight
@@ -135,8 +131,7 @@ public final class LayoutUtil {
     }
 
     /**
-     * Sets the horizontal grabbing of a control to true. Assumes that GridData
-     * is used.
+     * Sets the horizontal grabbing of a control to true. Assumes that GridData is used.
      */
     public static void setHorizontalGrabbing(final Control control) {
         final Object ld = control.getLayoutData();

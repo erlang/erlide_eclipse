@@ -11,9 +11,9 @@ import org.erlide.util.ErlLogger;
 /**
  * Public API for Cover plug-in
  *
- * Notes: - user should make sure that only one set of tests performs coverage
- * at time, that is: no calls to prepareAnalysis are made between
- * prepareAnalysis() - performAnalysis() call pair.
+ * Notes: - user should make sure that only one set of tests performs coverage at time,
+ * that is: no calls to prepareAnalysis are made between prepareAnalysis() -
+ * performAnalysis() call pair.
  *
  * @author Krzysztof Goj
  */
@@ -51,8 +51,8 @@ public class CoverageAnalysis {
      * Intended to be run before running the tests.
      *
      * @param additionalNodes
-     *            - other nodes (besides Cover's node) that are used to gather
-     *            the coverage info
+     *            - other nodes (besides Cover's node) that are used to gather the
+     *            coverage info
      *
      * @throws UnsupportedOperationException
      *             when Cover plug-in is not installed
@@ -62,7 +62,8 @@ public class CoverageAnalysis {
     public static void prepareAnalysis(final List<String> additionalNodes,
             final IConfiguration configuration) throws CoverException {
         try {
-            final ICoveragePerformer performer = CoverageAnalysis.getCoveragePerformerOrThrow();
+            final ICoveragePerformer performer = CoverageAnalysis
+                    .getCoveragePerformerOrThrow();
             performer.startCover(additionalNodes);
             performer.setCoverageConfiguration(configuration);
         } catch (final CoreException e) {
@@ -71,8 +72,8 @@ public class CoverageAnalysis {
     }
 
     /**
-     * Intended to be run after running the tests. Performs the actual analysis
-     * and displays the results to the user.
+     * Intended to be run after running the tests. Performs the actual analysis and
+     * displays the results to the user.
      *
      * @throws UnsupportedOperationException
      *             when Cover plug-in is not installed
@@ -88,8 +89,8 @@ public class CoverageAnalysis {
     }
 
     /**
-     * Intended to obtain access to Cover node, that coverage analysis could be
-     * performed on.
+     * Intended to obtain access to Cover node, that coverage analysis could be performed
+     * on.
      *
      * @return Cover node
      * @throws CoverException

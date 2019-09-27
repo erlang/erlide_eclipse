@@ -3,8 +3,8 @@ package org.erlide.engine.model.root;
 public interface ProjectConfigurationSerializer {
 
     /**
-     * Encode the project properties in a string (as it would look like in the
-     * config file).
+     * Encode the project properties in a string (as it would look like in the config
+     * file).
      */
     String encodeConfig(ErlangProjectProperties info);
 

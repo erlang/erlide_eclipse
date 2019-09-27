@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Lukas Larsson and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Lukas Larsson and others. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Lukas Larsson
+ * Contributors: Lukas Larsson
  *******************************************************************************/
 
 package org.erlide.ui.wizards;
@@ -41,12 +40,12 @@ import org.eclipse.ui.ide.IDE;
 import org.erlide.engine.util.CommonUtils;
 
 /**
- * This is a sample new wizard. Its role is to create a new file resource in the
- * provided container. If the container resource (a folder or a project) is
- * selected in the workspace when the wizard is opened, it will accept it as the
- * target container. The wizard creates one file with the extension "erl". If a
- * sample multi-page editor (also available as a template) is registered for the
- * same extension, it will be able to open it.
+ * This is a sample new wizard. Its role is to create a new file resource in the provided
+ * container. If the container resource (a folder or a project) is selected in the
+ * workspace when the wizard is opened, it will accept it as the target container. The
+ * wizard creates one file with the extension "erl". If a sample multi-page editor (also
+ * available as a template) is registered for the same extension, it will be able to open
+ * it.
  */
 
 public class ErlangFileWizard extends Wizard implements INewWizard {
@@ -75,26 +74,21 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
     }
 
     /**
-     * This method is called when 'Finish' button is pressed in the wizard. We
-     * will create an operation and run it using wizard as execution context.
+     * This method is called when 'Finish' button is pressed in the wizard. We will create
+     * an operation and run it using wizard as execution context.
      */
     @Override
     public boolean performFinish() {
         final String containerName = fPage.getContainerName();
         final String fileName = fPage.getFileName();
         final String skeleton = fPage.getSkeleton();
-        final IRunnableWithProgress op = new IRunnableWithProgress() {
-
-            @Override
-            public void run(final IProgressMonitor monitor)
-                    throws InvocationTargetException {
-                try {
-                    doFinish(containerName, fileName, skeleton, monitor);
-                } catch (final CoreException e) {
-                    throw new InvocationTargetException(e);
-                } finally {
-                    monitor.done();
-                }
+        final IRunnableWithProgress op = monitor -> {
+            try {
+                doFinish(containerName, fileName, skeleton, monitor);
+            } catch (final CoreException e) {
+                throw new InvocationTargetException(e);
+            } finally {
+                monitor.done();
             }
         };
         try {
@@ -110,9 +104,8 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
     }
 
     /**
-     * The worker method. It will find the container, create the file if missing
-     * or just replace its contents, and open the editor on the newly created
-     * file.
+     * The worker method. It will find the container, create the file if missing or just
+     * replace its contents, and open the editor on the newly created file.
      */
     public void doFinish(final String containerName, final String fileName,
             final String skeleton, final IProgressMonitor monitor) throws CoreException {
@@ -145,16 +138,12 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
         // ErlangCore.getModelManager().create(file, null);
 
         monitor.setTaskName("Opening file for editing...");
-        getShell().getDisplay().asyncExec(new Runnable() {
-
-            @Override
-            public void run() {
-                final IWorkbenchPage page = PlatformUI.getWorkbench()
-                        .getActiveWorkbenchWindow().getActivePage();
-                try {
-                    IDE.openEditor(page, file, true);
-                } catch (final PartInitException e) {
-                }
+        getShell().getDisplay().asyncExec(() -> {
+            final IWorkbenchPage page = PlatformUI.getWorkbench()
+                    .getActiveWorkbenchWindow().getActivePage();
+            try {
+                IDE.openEditor(page, file, true);
+            } catch (final PartInitException e) {
             }
         });
         monitor.worked(1);
@@ -175,8 +164,7 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
     }
 
     /**
-     * We will accept the selection in the workbench to see if we can initialize
-     * from it.
+     * We will accept the selection in the workbench to see if we can initialize from it.
      *
      * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
      */

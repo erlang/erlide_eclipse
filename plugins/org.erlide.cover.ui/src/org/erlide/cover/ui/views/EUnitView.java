@@ -72,25 +72,17 @@ public class EUnitView extends ViewPart implements IEUnitObserver {
 
     @Override
     public void treeChanged() {
-        DisplayUtils.asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                viewer.refresh();
-            }
-        });
+        DisplayUtils.asyncExec(() -> viewer.refresh());
     }
 
     @Override
     public void labelChanged() {
-        Display.getDefault().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                final TestTreeModel model = TestTreeModel.getInstance();
-                resultsLabel.setText(String.format(
-                        "Passed: %d    Failed: %d   Skipped: %d   Canceled: %d",
-                        model.getPass(), model.getFail(), model.getSkip(),
-                        model.getCancel()));
-            }
+        Display.getDefault().asyncExec(() -> {
+            final TestTreeModel model = TestTreeModel.getInstance();
+            resultsLabel.setText(
+                    String.format("Passed: %d    Failed: %d   Skipped: %d   Canceled: %d",
+                            model.getPass(), model.getFail(), model.getSkip(),
+                            model.getCancel()));
         });
     }
 

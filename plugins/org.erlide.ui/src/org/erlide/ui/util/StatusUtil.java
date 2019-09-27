@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2005 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.util;
 
@@ -22,10 +20,9 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 public class StatusUtil {
 
     /**
-     * Compares two instances of <code>IStatus</code>. The more severe is
-     * returned: An error is more severe than a warning, and a warning is more
-     * severe than ok. If the two stati have the same severity, the second is
-     * returned.
+     * Compares two instances of <code>IStatus</code>. The more severe is returned: An
+     * error is more severe than a warning, and a warning is more severe than ok. If the
+     * two stati have the same severity, the second is returned.
      */
     public static IStatus getMoreSevere(final IStatus s1, final IStatus s2) {
         if (s1.getSeverity() > s2.getSeverity()) {
@@ -35,8 +32,8 @@ public class StatusUtil {
     }
 
     /**
-     * Finds the most severe status from a array of stati. An error is more
-     * severe than a warning, and a warning is more severe than ok.
+     * Finds the most severe status from a array of stati. An error is more severe than a
+     * warning, and a warning is more severe than ok.
      */
     public static IStatus getMostSevere(final IStatus[] status) {
         IStatus max = null;

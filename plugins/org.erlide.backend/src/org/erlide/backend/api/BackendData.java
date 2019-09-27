@@ -82,8 +82,8 @@ public final class BackendData extends RuntimeData {
             final List<String> defList = Lists.newArrayList();
             final List<String> intMods = config
                     .getAttribute(ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, defList);
-            initialInterpretedModules = BackendData.addBreakpointProjectsAndModules(getProjects(),
-                    intMods);
+            initialInterpretedModules = BackendData
+                    .addBreakpointProjectsAndModules(getProjects(), intMods);
         } catch (final CoreException e1) {
             ErlLogger.warn(e1);
         }

@@ -53,12 +53,7 @@ public class RestartableServiceTest {
     }
 
     private RestartableService service;
-    private final Provider<Service> dummyFactory = new Provider<Service>() {
-        @Override
-        public Service get() {
-            return new DummyService();
-        }
-    };
+    private final Provider<Service> dummyFactory = () -> new DummyService();
 
     @After
     public void cleanup() {
@@ -193,7 +188,7 @@ public class RestartableServiceTest {
             public void failed(final State from, final Throwable failure) {
                 events.add("failed " + from);
             }
-        }, MoreExecutors.sameThreadExecutor());
+        }, MoreExecutors.directExecutor());
         service.startAsync().awaitRunning();
         Thread.sleep(100);
         DummyService dummy = (DummyService) service.getDelegate();

@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2008 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.views;
 
@@ -56,7 +54,8 @@ public class ErlPatternMatchListenerDelegate implements IPatternMatchListenerDel
                     continue;
                 }
                 try {
-                    res = ErlPatternMatchListenerDelegate.recursiveFindNamedResourceWithReferences(prj, v[0]);
+                    res = ErlPatternMatchListenerDelegate
+                            .recursiveFindNamedResourceWithReferences(prj, v[0]);
                     if (res != null) {
                         break;
                     }
@@ -78,13 +77,15 @@ public class ErlPatternMatchListenerDelegate implements IPatternMatchListenerDel
 
     private static IResource recursiveFindNamedResourceWithReferences(
             final IContainer container, final String name) throws CoreException {
-        final IResource r = ErlPatternMatchListenerDelegate.recursiveFindNamedResource(container, name);
+        final IResource r = ErlPatternMatchListenerDelegate
+                .recursiveFindNamedResource(container, name);
         if (r != null) {
             return r;
         }
         final IProject project = container.getProject();
         for (final IProject p : project.getReferencedProjects()) {
-            final IResource r1 = ErlPatternMatchListenerDelegate.recursiveFindNamedResource(p, name);
+            final IResource r1 = ErlPatternMatchListenerDelegate
+                    .recursiveFindNamedResource(p, name);
             if (r1 != null) {
                 return r1;
             }
@@ -105,7 +106,8 @@ public class ErlPatternMatchListenerDelegate implements IPatternMatchListenerDel
         for (final IResource element : members) {
             r = element;
             if (r instanceof IContainer) {
-                r = ErlPatternMatchListenerDelegate.recursiveFindNamedResource((IContainer) r, name);
+                r = ErlPatternMatchListenerDelegate
+                        .recursiveFindNamedResource((IContainer) r, name);
                 if (r != null) {
                     return r;
                 }

@@ -78,10 +78,10 @@ public class SearchTest {
         // given
         // a module a with an exported function f
         // and a module b which calls a:f()
-        final IErlModule moduleA = ErlideTestUtils.createModule(SearchTest.projects[0], "a.erl",
-                "-module(a).\n-export([f/0]).\nf() ->\n    ok.\n");
-        final IErlModule moduleB = ErlideTestUtils.createModule(SearchTest.projects[0], "b.erl",
-                "-module(b).\n-export([f/0]).\nf() ->\n    a:f().\n");
+        final IErlModule moduleA = ErlideTestUtils.createModule(SearchTest.projects[0],
+                "a.erl", "-module(a).\n-export([f/0]).\nf() ->\n    ok.\n");
+        final IErlModule moduleB = ErlideTestUtils.createModule(SearchTest.projects[0],
+                "b.erl", "-module(b).\n-export([f/0]).\nf() ->\n    a:f().\n");
         moduleA.open(null);
         moduleB.open(null);
         // when
@@ -114,10 +114,10 @@ public class SearchTest {
         // given
         // a module a with an exported function f
         // and a module b which calls a:f()
-        final IErlModule moduleA = ErlideTestUtils.createModule(SearchTest.projects[0], "a.erl",
-                "-module(a).\n-export([f/0]).\nf() ->\n    ok.\n");
-        final IErlModule moduleB = ErlideTestUtils.createModule(SearchTest.projects[0], "b.erl",
-                "-module(b).\n-export([f/0]).\nf() ->\n    #a.b,\n    a:f().\n");
+        final IErlModule moduleA = ErlideTestUtils.createModule(SearchTest.projects[0],
+                "a.erl", "-module(a).\n-export([f/0]).\nf() ->\n    ok.\n");
+        final IErlModule moduleB = ErlideTestUtils.createModule(SearchTest.projects[0],
+                "b.erl", "-module(b).\n-export([f/0]).\nf() ->\n    #a.b,\n    a:f().\n");
         moduleA.open(null);
         moduleB.open(null);
         // when
@@ -144,10 +144,10 @@ public class SearchTest {
         // given
         // a module a with an exported function f
         // and a module b which calls a:f()
-        final IErlModule moduleA = ErlideTestUtils.createModule(SearchTest.projects[0], "a.erl",
-                "-module(a).\n-export([f/1]).\nf(A) ->\n    {A}.\n");
-        final IErlModule moduleB = ErlideTestUtils.createModule(SearchTest.projects[0], "b.erl",
-                "-module(b).\n-export([f/0]).\nf(A) ->\n    [A].\n");
+        final IErlModule moduleA = ErlideTestUtils.createModule(SearchTest.projects[0],
+                "a.erl", "-module(a).\n-export([f/1]).\nf(A) ->\n    {A}.\n");
+        final IErlModule moduleB = ErlideTestUtils.createModule(SearchTest.projects[0],
+                "b.erl", "-module(b).\n-export([f/0]).\nf(A) ->\n    [A].\n");
         moduleA.open(null);
         moduleB.open(null);
         // when

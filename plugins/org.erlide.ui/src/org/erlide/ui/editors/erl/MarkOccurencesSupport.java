@@ -29,7 +29,6 @@ import org.eclipse.jface.viewers.IPostSelectionProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -59,17 +58,15 @@ public class MarkOccurencesSupport implements IDisposable {
 
     private final ErlangEditor editor;
     /**
-     * Tells whether the occurrence annotations are sticky i.e. whether they
-     * stay even if there's no valid erlang element at the current caret
-     * position. Only valid if {@link #markOccurencesHandler.fMarkOccurrenceAnnotations}
-     * is
-     * <code>true</code>.
+     * Tells whether the occurrence annotations are sticky i.e. whether they stay even if
+     * there's no valid erlang element at the current caret position. Only valid if
+     * {@link #markOccurencesHandler.fMarkOccurrenceAnnotations} is <code>true</code>.
      */
     public boolean fStickyOccurrenceAnnotations;
     public Annotation[] fOccurrenceAnnotations;
     /**
-     * Tells whether all occurrences of the element at the current caret
-     * location are automatically marked in this editor.
+     * Tells whether all occurrences of the element at the current caret location are
+     * automatically marked in this editor.
      */
     public boolean fMarkOccurrenceAnnotations;
     /**
@@ -99,14 +96,10 @@ public class MarkOccurencesSupport implements IDisposable {
     protected void installOccurrencesFinder(final boolean forceUpdate) {
         fMarkOccurrenceAnnotations = true;
 
-        fPostSelectionListener = new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(final SelectionChangedEvent event) {
-                final ISelection selection = event.getSelection();
-                editor.markOccurencesHandler.updateOccurrenceAnnotations(
-                        (ITextSelection) selection, editor.getModule());
-            }
+        fPostSelectionListener = event -> {
+            final ISelection selection = event.getSelection();
+            editor.markOccurencesHandler.updateOccurrenceAnnotations(
+                    (ITextSelection) selection, editor.getModule());
         };
         final ISelectionProvider selectionProvider = editor.getSelectionProvider();
         if (selectionProvider != null) {
@@ -236,7 +229,7 @@ public class MarkOccurencesSupport implements IDisposable {
                 ((IAnnotationModelExtension) annotationModel)
                         .replaceAnnotations(fOccurrenceAnnotations, null);
             } else {
-                for (Annotation fOccurrenceAnnotation : fOccurrenceAnnotations) {
+                for (final Annotation fOccurrenceAnnotation : fOccurrenceAnnotations) {
                     annotationModel.removeAnnotation(fOccurrenceAnnotation);
                 }
             }
@@ -364,9 +357,9 @@ public class MarkOccurencesSupport implements IDisposable {
 
         private boolean isCanceled(final IProgressMonitor progressMonitor) {
             return fCanceled || progressMonitor.isCanceled()
-                    || fPostSelectionValidator != null
-                            && !(fPostSelectionValidator.isValid(selection)
-                                    || editor.markOccurencesHandler.fForcedMarkOccurrencesSelection == selection)
+                    || fPostSelectionValidator != null && !(fPostSelectionValidator
+                            .isValid(selection)
+                            || editor.markOccurencesHandler.fForcedMarkOccurrencesSelection == selection)
                     || LinkedModeModel.hasInstalledModel(fDocument);
         }
 

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Cover plugin UI
 Bundle-SymbolicName: org.erlide.cover.ui;singleton:=true
-Bundle-Version: 0.55.0.qualifier
+Bundle-Version: 0.56.0.qualifier
 Bundle-Activator: org.erlide.cover.ui.Activator
 Bundle-Vendor: Erlang Solutions
 Require-Bundle: org.eclipse.ui,
@@ -15,11 +15,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.filesystem;bundle-version="1.2.1",
  org.erlide.util,
  org.erlide.model.api,
- org.fishwife.jrugged,
  org.erlide.cover.core,
  org.erlide.cover.api,
  org.erlide.ui,
- com.google.guava;bundle-version="[15.0.0,16.0.0)",
+ com.google.guava;bundle-version="[21.0.0,28.0.0)",
  javax.inject;bundle-version="1.0.0",
  org.eclipse.xtend.lib;bundle-version="2.14.0",
  org.eclipse.xtend.lib.macro;bundle-version="2.14.0",

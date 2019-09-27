@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.util;
 
@@ -105,7 +103,8 @@ public final class Util {
         }
         // for compatibility with MessageFormat which eliminates double quotes
         // in original message
-        final String messageWithNoDoubleQuotes = message.replace(Util.DOUBLE_QUOTES, Util.SINGLE_QUOTE);
+        final String messageWithNoDoubleQuotes = message.replace(Util.DOUBLE_QUOTES,
+                Util.SINGLE_QUOTE);
 
         if (bindings == null) {
             return new String(messageWithNoDoubleQuotes);
@@ -121,7 +120,8 @@ public final class Util {
                 output.append(messageWithNoDoubleQuotes, start, end - start);
                 if ((start = messageWithNoDoubleQuotes.indexOf('}', end + 1)) > -1) {
                     int index = -1;
-                    final String argId = messageWithNoDoubleQuotes.substring(end + 1, start - end - 1);
+                    final String argId = messageWithNoDoubleQuotes.substring(end + 1,
+                            start - end - 1);
                     try {
                         index = Integer.parseInt(argId);
                         output.append(bindings[index]);
@@ -387,7 +387,7 @@ public final class Util {
         out.write(utflen >>> 8 & 0xFF);
         out.write(utflen & 0xFF);
         if (strlen == utflen) {
-            for (char aStr : str) {
+            for (final char aStr : str) {
                 out.write(aStr);
             }
         } else {

@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2004 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.editors.erl.outline;
 
@@ -38,27 +36,23 @@ class ElementChangedListener implements IElementChangedListener {
 
         final Display d = page.getControl().getDisplay();
         if (d != null) {
-            d.asyncExec(new Runnable() {
+            d.asyncExec(() -> {
+                // IErlModule cu = (IErlModule) fInput;
+                // IErlElement base = cu;
+                // base = getMainType(cu);
+                // if (base == null)
+                // {
+                // if (fOutlineViewer != null)
+                // fOutlineViewer.refresh(true);
+                // return;
+                // }
+                // IErlElementDelta delta = findElement(base,
+                // e.getDelta());
+                // if (delta != null && fOutlineViewer != null)
+                // {
+                // fOutlineViewer.reconcile(delta);
+                // }
 
-                @Override
-                public void run() {
-                    // IErlModule cu = (IErlModule) fInput;
-                    // IErlElement base = cu;
-                    // base = getMainType(cu);
-                    // if (base == null)
-                    // {
-                    // if (fOutlineViewer != null)
-                    // fOutlineViewer.refresh(true);
-                    // return;
-                    // }
-                    // IErlElementDelta delta = findElement(base,
-                    // e.getDelta());
-                    // if (delta != null && fOutlineViewer != null)
-                    // {
-                    // fOutlineViewer.reconcile(delta);
-                    // }
-
-                }
             });
         }
     }

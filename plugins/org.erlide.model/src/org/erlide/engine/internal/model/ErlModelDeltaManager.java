@@ -26,13 +26,12 @@ public class ErlModelDeltaManager {
      */
     public boolean fFire;
     /**
-     * Queue of reconcile deltas on working copies that have yet to be fired.
-     * This is a table form IWorkingCopy to IErlElementDelta
+     * Queue of reconcile deltas on working copies that have yet to be fired. This is a
+     * table form IWorkingCopy to IErlElementDelta
      */
     public Map<IErlModule, IErlElementDelta> reconcileDeltas;
     /**
-     * Queue of deltas created explicitly by the model that have yet to be
-     * fired.
+     * Queue of deltas created explicitly by the model that have yet to be fired.
      */
     public List<IErlElementDelta> erlModelDeltas;
     private final ErlModel model;
@@ -45,8 +44,8 @@ public class ErlModelDeltaManager {
     }
 
     /**
-     * Fire Model deltas, flushing them after the fact. If the firing mode has
-     * been turned off, this has no effect.
+     * Fire Model deltas, flushing them after the fact. If the firing mode has been turned
+     * off, this has no effect.
      */
     protected void fire(final IErlElementDelta customDeltas, final int eventType) {
         if (fFire) {

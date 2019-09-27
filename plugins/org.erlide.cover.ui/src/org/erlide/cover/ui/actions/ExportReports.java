@@ -58,18 +58,14 @@ public class ExportReports extends Action {
             final String lPath) {
 
         final String pathIn = obj.getHtmlPath();
-        final String pathOut = path + File.separator +
-                obj.getLabel() + ".html";
+        final String pathOut = path + File.separator + obj.getLabel() + ".html";
 
         log.info("pathOut");
-        obj.setRelativePath(lPath + File.separator +
-                obj.getLabel() + ".html");
+        obj.setRelativePath(lPath + File.separator + obj.getLabel() + ".html");
 
         if (!obj.getType().equals(ObjectType.MODULE)) {
-            final String linkPath = "." + File.separator +
-                    obj.getLabel();
-            final String dirPath = path + File.separator +
-                    obj.getLabel();
+            final String linkPath = "." + File.separator + obj.getLabel();
+            final String dirPath = path + File.separator + obj.getLabel();
             final File dir = new File(dirPath);
             dir.mkdir();
 

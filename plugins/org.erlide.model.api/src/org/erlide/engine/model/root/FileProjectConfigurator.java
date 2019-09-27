@@ -10,7 +10,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
@@ -73,7 +72,7 @@ public class FileProjectConfigurator
         if (confString != null) {
             final String content = "%% coding: UTF-8\n" + confString;
             try {
-                Files.write(content, confFile, StandardCharsets.UTF_8);
+                Files.asCharSink(confFile, StandardCharsets.UTF_8).write(content);
             } catch (final IOException e) {
                 ErlLogger.error(e);
             }
@@ -88,17 +87,13 @@ public class FileProjectConfigurator
     public void resourceChanged(final IResourceChangeEvent event) {
         final IResourceDelta delta = event.getDelta();
         try {
-            delta.accept(new IResourceDeltaVisitor() {
-
-                @Override
-                public boolean visit(final IResourceDelta aDelta) throws CoreException {
-                    final IResource res = aDelta.getResource();
-                    if (res.getLocation().equals(new Path(filePath))) {
-                        System.out.println("DETECTED " + aDelta.getKind() + " " + res);
-                    }
-                    return false;
-
+            delta.accept(aDelta -> {
+                final IResource res = aDelta.getResource();
+                if (res.getLocation().equals(new Path(filePath))) {
+                    System.out.println("DETECTED " + aDelta.getKind() + " " + res);
                 }
+                return false;
+
             });
         } catch (final CoreException e) {
             ErlLogger.error(e);

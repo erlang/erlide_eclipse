@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2005 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package org.erlide.ui.editors.util;
@@ -56,8 +54,8 @@ import com.google.common.collect.Lists;
  * A number of routines for working with ErlElements in editors.
  *
  * Use 'isOpenInEditor' to test if an element is already open in a editor Use
- * 'openInEditor' to force opening an element in a editor With 'getWorkingCopy'
- * you get the working copy (element in the editor) of an element
+ * 'openInEditor' to force opening an element in a editor With 'getWorkingCopy' you get
+ * the working copy (element in the editor) of an element
  */
 public class EditorUtility {
 
@@ -71,8 +69,7 @@ public class EditorUtility {
     /**
      * Tests if a CU is currently shown in an editor
      *
-     * @return the IEditorPart if shown, null if element is not open in an
-     *         editor
+     * @return the IEditorPart if shown, null if element is not open in an editor
      */
     public static IEditorPart isOpenInEditor(final Object inputElement) {
         final Collection<IEditorPart> allErlangEditors = EditorUtility
@@ -101,8 +98,7 @@ public class EditorUtility {
 
     /**
      * Opens an Erlang editor for an element such as <code>IErlElement</code>,
-     * <code>IFile</code>, or <code>IStorage</code>. The editor is activated by
-     * default.
+     * <code>IFile</code>, or <code>IStorage</code>. The editor is activated by default.
      *
      * @return the IEditorPart or null if wrong element type or opening failed
      */
@@ -209,8 +205,8 @@ public class EditorUtility {
         IEditorDescriptor editorDescriptor;
         try {
             if (input instanceof IFileEditorInput) {
-                editorDescriptor = IDE
-                        .getEditorDescriptor(((IFileEditorInput) input).getFile(), true, true);
+                editorDescriptor = IDE.getEditorDescriptor(
+                        ((IFileEditorInput) input).getFile(), true, true);
             } else {
                 editorDescriptor = IDE.getEditorDescriptor(input.getName(), true, true);
             }
@@ -310,8 +306,7 @@ public class EditorUtility {
     }
 
     /**
-     * If the current active editor edits a erlang element return it, else
-     * return null
+     * If the current active editor edits a erlang element return it, else return null
      */
     public static IErlElement getActiveEditorErlangInput() {
         final IWorkbenchPage page = ErlideUIPlugin.getActivePage();
@@ -329,8 +324,7 @@ public class EditorUtility {
     }
 
     /**
-     * Maps the localized modifier name to a code in the same manner as
-     * #findModifier.
+     * Maps the localized modifier name to a code in the same manner as #findModifier.
      *
      * @param modifierName
      *            the modifier name

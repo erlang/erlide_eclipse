@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Eric Merritt and others. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Eric Merritt
- *     Vlad Dumitrescu
+ * Contributors: Eric Merritt Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.prefs;
 
@@ -28,8 +26,8 @@ public class PreferenceConstants {
     public static final String EDITOR_TEXT_FONT = JFaceResources.TEXT_FONT;
 
     /**
-     * A named preference that controls whether bracket matching highlighting is
-     * turned on or off.
+     * A named preference that controls whether bracket matching highlighting is turned on
+     * or off.
      * <p>
      * Value is of type <code>Boolean</code>.
      * </p>
@@ -38,8 +36,7 @@ public class PreferenceConstants {
 
     // JC: Folding stuff (ripped from JDT)
     /**
-     * A named preference that controls whether folding is enabled in the
-     * editor.
+     * A named preference that controls whether folding is enabled in the editor.
      * <p>
      * Value is of type <code>Boolean</code>.
      * </p>
@@ -55,8 +52,8 @@ public class PreferenceConstants {
     public static final String EDITOR_FOLDING_PROVIDER = "editor_folding_provider"; //$NON-NLS-1$
 
     /**
-     * A named preference that stores the value for function clauses folding for
-     * the default folding provider.
+     * A named preference that stores the value for function clauses folding for the
+     * default folding provider.
      * <p>
      * Value is of type <code>Boolean</code>.
      * </p>
@@ -64,8 +61,8 @@ public class PreferenceConstants {
     public static final String EDITOR_FOLDING_CLAUSES = "editor_folding_default_clauses"; //$NON-NLS-1$
 
     /**
-     * A named preference that stores the value for comment folding for the
-     * default folding provider.
+     * A named preference that stores the value for comment folding for the default
+     * folding provider.
      * <p>
      * Value is of type <code>Boolean</code>.
      * </p>
@@ -73,8 +70,8 @@ public class PreferenceConstants {
     public static final String EDITOR_FOLDING_COMMENTS = "editor_folding_default_comments"; //$NON-NLS-1$
 
     /**
-     * A named preference that stores the value for header comment folding for
-     * the default folding provider.
+     * A named preference that stores the value for header comment folding for the default
+     * folding provider.
      * <p>
      * Value is of type <code>Boolean</code>.
      * </p>
@@ -82,8 +79,8 @@ public class PreferenceConstants {
     public static final String EDITOR_FOLDING_HEADER_COMMENTS = "editor_folding_default_headers"; //$NON-NLS-1$
 
     /**
-     * A named preference that stores the value for header comment folding for
-     * the default folding provider.
+     * A named preference that stores the value for header comment folding for the default
+     * folding provider.
      * <p>
      * Value is of type <code>Boolean</code>.
      * </p>
@@ -91,11 +88,10 @@ public class PreferenceConstants {
     public static final String EDITOR_FOLDING_TYPESPECS = "editor_folding_typespecs"; //$NON-NLS-1$
 
     /**
-     * A named preference that holds the color used to highlight matching
-     * brackets.
+     * A named preference that holds the color used to highlight matching brackets.
      * <p>
-     * Value is of type <code>String</code>. A RGB color value encoded as a
-     * string using class <code>PreferenceConverter</code>
+     * Value is of type <code>String</code>. A RGB color value encoded as a string using
+     * class <code>PreferenceConverter</code>
      * </p>
      *
      * @see org.eclipse.jface.resource.StringConverter
@@ -113,7 +109,7 @@ public class PreferenceConstants {
 
     public static final String OUTLINE_ENABLED_FILTERS = "erlangOutlineEnabledFilters"; //$NON-NLS-1$
 
-    public static enum Color {
+    public enum Color {
         //@formatter:off
         ALICEBLUE(240, 248, 255),
         ANTIQUEWHITE(250, 235, 215),

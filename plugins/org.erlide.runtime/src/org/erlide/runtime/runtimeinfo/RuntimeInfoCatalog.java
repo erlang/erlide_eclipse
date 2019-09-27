@@ -11,7 +11,6 @@ package org.erlide.runtime.runtimeinfo;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -184,15 +183,12 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
 
     private void setDefaultRuntimes() {
         final List<RuntimeInfo> list = new ArrayList<>(getRuntimes());
-        list.sort(new Comparator<RuntimeInfo>() {
-            @Override
-            public int compare(final RuntimeInfo o1, final RuntimeInfo o2) {
-                final int x = o2.getVersion().compareTo(o1.getVersion());
-                if (x != 0) {
-                    return x;
-                }
-                return o2.getName().compareTo(o1.getName());
+        list.sort((o1, o2) -> {
+            final int x = o2.getVersion().compareTo(o1.getVersion());
+            if (x != 0) {
+                return x;
             }
+            return o2.getName().compareTo(o1.getName());
         });
         if (!list.isEmpty()) {
             final String firstName = list.get(0).getName();

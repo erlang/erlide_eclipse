@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.engine.internal.model.erlang;
 
@@ -58,8 +56,7 @@ public abstract class SourceRefElement extends ErlElement implements ISourceRefe
     }
 
     /**
-     * Elements within compilation units and class files have no corresponding
-     * resource.
+     * Elements within compilation units and class files have no corresponding resource.
      *
      * @see IErlElement
      */
@@ -72,8 +69,8 @@ public abstract class SourceRefElement extends ErlElement implements ISourceRefe
     }
 
     /**
-     * Return the first instance of IOpenable in the hierarchy of this type
-     * (going up the hierarchy from this type);
+     * Return the first instance of IOpenable in the hierarchy of this type (going up the
+     * hierarchy from this type);
      */
     @Override
     public IOpenable getOpenableParent() {

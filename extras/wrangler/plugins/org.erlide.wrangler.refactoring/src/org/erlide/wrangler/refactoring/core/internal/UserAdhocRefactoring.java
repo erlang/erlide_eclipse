@@ -7,8 +7,8 @@ import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 
 /**
- * Class for common functionalities of adhoc refactorings ad hoc specific
- * methods should delegate to if
+ * Class for common functionalities of adhoc refactorings ad hoc specific methods should
+ * delegate to if
  *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%

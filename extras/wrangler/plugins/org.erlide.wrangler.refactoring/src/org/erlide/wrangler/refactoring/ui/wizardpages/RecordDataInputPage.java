@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.ui.wizardpages;
 
@@ -14,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -74,14 +71,7 @@ public class RecordDataInputPage extends MultiInputPage {
         gridData.grabExcessHorizontalSpace = true;
         recordName.setLayoutData(gridData);
 
-        final ModifyListener modifyListener = new ModifyListener() {
-
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                isInputValid();
-            }
-
-        };
+        final ModifyListener modifyListener = e -> isInputValid();
 
         recordName.addModifyListener(modifyListener);
 

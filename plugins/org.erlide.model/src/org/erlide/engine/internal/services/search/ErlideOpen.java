@@ -61,8 +61,8 @@ public class ErlideOpen implements OpenService {
     @Override
     @SuppressWarnings("boxing")
     public OpenResult openText(final String text, final int offset) throws RpcException {
-        final OtpErlangObject res = ideBackend.call(ErlideOpen.ERLIDE_OPEN, "open_text", "si", text,
-                offset);
+        final OtpErlangObject res = ideBackend.call(ErlideOpen.ERLIDE_OPEN, "open_text",
+                "si", text, offset);
         return new OpenResult(res);
     }
 
@@ -92,8 +92,8 @@ public class ErlideOpen implements OpenService {
     @Override
     public OtpErlangTuple findFirstVar(final String name, final String source) {
         try {
-            final OtpErlangObject res = ideBackend.call(ErlideOpen.ERLIDE_OPEN, "find_first_var",
-                    "as", name, source);
+            final OtpErlangObject res = ideBackend.call(ErlideOpen.ERLIDE_OPEN,
+                    "find_first_var", "as", name, source);
             if (res instanceof OtpErlangTuple) {
                 return (OtpErlangTuple) res;
             }
@@ -160,8 +160,8 @@ public class ErlideOpen implements OpenService {
     @Override
     public OtpErlangList getOtpLibStructure(final IOtpRpc backend) {
         try {
-            final OtpErlangObject res = backend.call(ErlideOpen.ERLIDE_OPEN, "get_otp_lib_structure",
-                    "s", stateDir);
+            final OtpErlangObject res = backend.call(ErlideOpen.ERLIDE_OPEN,
+                    "get_otp_lib_structure", "s", stateDir);
             if (Util.isOk(res)) {
                 final OtpErlangTuple tres = (OtpErlangTuple) res;
                 final OtpErlangList lot = (OtpErlangList) tres.elementAt(1);
@@ -177,8 +177,8 @@ public class ErlideOpen implements OpenService {
     @Override
     public List<String> getLibFiles(final String entry) {
         try {
-            final OtpErlangObject res = ideBackend.call(ErlideOpen.ERLIDE_OPEN, "get_lib_files",
-                    "ss", entry, stateDir);
+            final OtpErlangObject res = ideBackend.call(ErlideOpen.ERLIDE_OPEN,
+                    "get_lib_files", "ss", entry, stateDir);
             if (Util.isOk(res)) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 final OtpErlangList l = (OtpErlangList) t.elementAt(1);

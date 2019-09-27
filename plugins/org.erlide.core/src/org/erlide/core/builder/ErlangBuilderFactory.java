@@ -7,22 +7,22 @@ import org.erlide.engine.model.builder.BuilderTool;
 
 public class ErlangBuilderFactory {
 
-	public static ErlangBuilder get(final BuilderTool tool) {
-		switch (tool) {
-		case INTERNAL:
-			return new InternalBuilder();
-		case REBAR:
-			return new RebarBuilder();
-		case EMAKE:
-			return new EmakeBuilder();
-		case MAKE:
-			return new MakeBuilder();
-		default:
-			break;
-		}
-		return null;
-	}
+    public static ErlangBuilder get(final BuilderTool tool) {
+        switch (tool) {
+        case INTERNAL:
+            return new InternalBuilder();
+        case REBAR:
+            return new RebarBuilder();
+        case EMAKE:
+            return new EmakeBuilder();
+        case MAKE:
+            return new MakeBuilder();
+        default:
+            break;
+        }
+        return null;
+    }
 
-	private ErlangBuilderFactory() {
-	}
+    private ErlangBuilderFactory() {
+    }
 }

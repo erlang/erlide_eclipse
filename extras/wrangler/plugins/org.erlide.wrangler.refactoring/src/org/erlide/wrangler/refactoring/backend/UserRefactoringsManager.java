@@ -18,8 +18,8 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
- * Class for handling logic of installed user refactorings installed means:
- * currently in repository or added by a user
+ * Class for handling logic of installed user refactorings installed means: currently in
+ * repository or added by a user
  *
  * Singleton
  *
@@ -99,8 +99,7 @@ public class UserRefactoringsManager {
     }
 
     /**
-     * Looks for user defined refactorings (in order to generate menu items for
-     * them)
+     * Looks for user defined refactorings (in order to generate menu items for them)
      */
     @SuppressWarnings("rawtypes")
     private void scanForUserRefactorings() {

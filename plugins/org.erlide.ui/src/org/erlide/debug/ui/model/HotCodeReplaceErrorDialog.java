@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2006 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.debug.ui.model;
 
@@ -25,8 +23,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.erlide.util.ErlLogger;
 
 /**
- * An error dialog reporting a problem with a debug target which gives the user
- * the option to continue or terminate/disconnect or restart the target.
+ * An error dialog reporting a problem with a debug target which gives the user the option
+ * to continue or terminate/disconnect or restart the target.
  */
 public class HotCodeReplaceErrorDialog extends ErrorDialog {
 
@@ -40,13 +38,13 @@ public class HotCodeReplaceErrorDialog extends ErrorDialog {
     protected int RESTART_ID = TERMINATE_ID + 2;
 
     /**
-     * Creates a new dialog which can terminate, disconnect or restart the given
-     * debug target.
+     * Creates a new dialog which can terminate, disconnect or restart the given debug
+     * target.
      *
      * @param target
      *            the debug target
-     * @see ErrorDialogWithToggle#ErrorDialogWithToggle(Shell, String, String,
-     *      IStatus, String, String, IPreferenceStore)
+     * @see ErrorDialogWithToggle#ErrorDialogWithToggle(Shell, String, String, IStatus,
+     *      String, String, IPreferenceStore)
      */
     public HotCodeReplaceErrorDialog(final Shell parentShell, final String dialogTitle,
             final String message, final IStatus status, final IDebugTarget target) {
@@ -75,29 +73,26 @@ public class HotCodeReplaceErrorDialog extends ErrorDialog {
     protected void buttonPressed(final int id) {
         if (id == TERMINATE_ID || id == DISCONNECT_ID || id == RESTART_ID) {
             final String[] operation = new String[1];
-            final Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (id == TERMINATE_ID) {
-                            operation[0] = "Terminate";
-                            target.terminate();
-                        } else if (id == DISCONNECT_ID) {
-                            operation[0] = "Disconnect";
-                            target.disconnect();
-                        } else {
-                            operation[0] = "Restart";
-                            final ILaunch launch = target.getLaunch();
-                            launch.terminate();
-                            final ILaunchConfiguration config = launch
-                                    .getLaunchConfiguration();
-                            if (config != null && config.exists()) {
-                                DebugUITools.launch(config, launch.getLaunchMode());
-                            }
+            final Runnable r = () -> {
+                try {
+                    if (id == TERMINATE_ID) {
+                        operation[0] = "Terminate";
+                        target.terminate();
+                    } else if (id == DISCONNECT_ID) {
+                        operation[0] = "Disconnect";
+                        target.disconnect();
+                    } else {
+                        operation[0] = "Restart";
+                        final ILaunch launch = target.getLaunch();
+                        launch.terminate();
+                        final ILaunchConfiguration config = launch
+                                .getLaunchConfiguration();
+                        if (config != null && config.exists()) {
+                            DebugUITools.launch(config, launch.getLaunchMode());
                         }
-                    } catch (final DebugException e) {
-                        ErlLogger.error(e);
                     }
+                } catch (final DebugException e) {
+                    ErlLogger.error(e);
                 }
             };
             BusyIndicator.showWhile(getShell().getDisplay(), r);

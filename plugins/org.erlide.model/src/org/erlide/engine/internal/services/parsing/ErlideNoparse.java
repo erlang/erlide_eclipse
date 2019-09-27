@@ -22,9 +22,9 @@ public class ErlideNoparse {
             final String initialText, final String stateDir, final boolean updateRefs) {
         OtpErlangTuple res = null;
         try {
-            res = (OtpErlangTuple) b.call(200000, ErlideNoparse.ERLIDE_NOPARSE, "initial_parse",
-                    "asssoo", scannerModuleName, moduleFileName, initialText, stateDir,
-                    true, updateRefs);
+            res = (OtpErlangTuple) b.call(200000, ErlideNoparse.ERLIDE_NOPARSE,
+                    "initial_parse", "asssoo", scannerModuleName, moduleFileName,
+                    initialText, stateDir, true, updateRefs);
         } catch (final RpcTimeoutException e) {
             ErlLogger.warn(e);
         } catch (final RpcException e) {
@@ -37,8 +37,8 @@ public class ErlideNoparse {
             final boolean updateSearchServer) {
         OtpErlangTuple res = null;
         try {
-            res = (OtpErlangTuple) b.call(20000, ErlideNoparse.ERLIDE_NOPARSE, "reparse", "ao",
-                    scannerModuleName, updateSearchServer);
+            res = (OtpErlangTuple) b.call(20000, ErlideNoparse.ERLIDE_NOPARSE, "reparse",
+                    "ao", scannerModuleName, updateSearchServer);
         } catch (final RpcTimeoutException e) {
             ErlLogger.warn(e);
         } catch (final RpcException e) {

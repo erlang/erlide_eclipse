@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2009 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.tests;
 
@@ -42,7 +40,7 @@ public class StringDocument implements IDocument {
 
     @Override
     public String get() {
-        return new String(text);
+        return text;
     }
 
     @Override
@@ -52,7 +50,7 @@ public class StringDocument implements IDocument {
 
     @Override
     public void set(final String text) {
-        this.text = new String(text);
+        this.text = text;
     }
 
     @Override
@@ -271,8 +269,8 @@ public class StringDocument implements IDocument {
     }
 
     /**
-     * @see org.eclipse.jface.text.IDocument#search(int, java.lang.String,
-     *      boolean, boolean, boolean)
+     * @see org.eclipse.jface.text.IDocument#search(int, java.lang.String, boolean,
+     *      boolean, boolean)
      * @deprecated
      */
     @Override

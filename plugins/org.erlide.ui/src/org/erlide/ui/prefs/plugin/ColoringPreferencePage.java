@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Eric Merritt and others. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Eric Merritt
- *     Vlad Dumitrescu
+ * Contributors: Eric Merritt Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.prefs.plugin;
 
@@ -22,11 +20,9 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -206,7 +202,7 @@ public class ColoringPreferencePage extends PreferencePage
     }
 
     public void storeHighlight(final IPreferenceStore store, final TokenHighlight th,
-            HighlightStyle style) {
+            final HighlightStyle style) {
         if (store != null) {
             store.setValue(th.getColorKey(), StringConverter.asString(style.getColor()));
             store.setValue(th.getStylesKey(), style.getStyles());
@@ -399,8 +395,8 @@ public class ColoringPreferencePage extends PreferencePage
         gd.horizontalSpan = 2;
         fUnderlineCheckBox.setLayoutData(gd);
 
-        final String content = ColoringPreferencePage.loadPreviewContentFromFile(getClass(),
-                "ColorSettingPreviewCode.txt"); //$NON-NLS-1$
+        final String content = ColoringPreferencePage
+                .loadPreviewContentFromFile(getClass(), "ColorSettingPreviewCode.txt"); //$NON-NLS-1$
         fPreviewViewer = ErlangSourceViewer.createErlangPreviewer(colorComposite,
                 fColorManager, fOverlayStore, fColors, content);
 
@@ -412,13 +408,8 @@ public class ColoringPreferencePage extends PreferencePage
         gd.grabExcessVerticalSpace = true;
         previewer.setLayoutData(gd);
 
-        fListViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(final SelectionChangedEvent event) {
-                handleSyntaxColorListSelection();
-            }
-        });
+        fListViewer
+                .addSelectionChangedListener(event -> handleSyntaxColorListSelection());
 
         foregroundColorButton.addSelectionListener(new SelectionListener() {
             @Override

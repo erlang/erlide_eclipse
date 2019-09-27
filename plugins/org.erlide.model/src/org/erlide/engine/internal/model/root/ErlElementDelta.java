@@ -35,8 +35,7 @@ public class ErlElementDelta implements IErlElementDelta {
      * @param element
      */
     public ErlElementDelta(final int kind, final int flags, final IErlElement element) {
-        this(kind, flags, element, new ArrayList<>(0),
-                new ArrayList<IResourceDelta>(0));
+        this(kind, flags, element, new ArrayList<>(0), new ArrayList<IResourceDelta>(0));
     }
 
     /**
@@ -71,7 +70,7 @@ public class ErlElementDelta implements IErlElementDelta {
     @Override
     public IErlElementDelta[] getChildren(final int kind) {
         final ArrayList<IErlElementDelta> children = new ArrayList<>(0);
-        for (ErlElementDelta aFChildren : fChildren) {
+        for (final ErlElementDelta aFChildren : fChildren) {
             final IErlElementDelta c = aFChildren;
             if (c.getKind() == kind || kind == IErlElementDelta.ALL) {
                 children.add(c);
@@ -236,7 +235,8 @@ public class ErlElementDelta implements IErlElementDelta {
 
                 // child was changed then changed -> it is changed
                 case IErlElementDelta.CHANGED:
-                    final IErlElementDelta[] children = child.getChildren(IErlElementDelta.ALL);
+                    final IErlElementDelta[] children = child
+                            .getChildren(IErlElementDelta.ALL);
                     for (final IErlElementDelta element : children) {
                         final ErlElementDelta childsChild = (ErlElementDelta) element;
                         ((ErlElementDelta) existingChild).addAffectedChild(childsChild);
@@ -330,7 +330,7 @@ public class ErlElementDelta implements IErlElementDelta {
         if (fElement.equals(element)) {
             return this;
         }
-        for (ErlElementDelta aFChildren : fChildren) {
+        for (final ErlElementDelta aFChildren : fChildren) {
             final IErlElementDelta d = aFChildren.findElement(element);
             if (d != null) {
                 return d;

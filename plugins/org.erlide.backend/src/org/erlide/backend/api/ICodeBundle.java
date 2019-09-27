@@ -18,7 +18,7 @@ import org.osgi.framework.Bundle;
 public interface ICodeBundle {
 
     // common context is always included in the others
-    public static enum CodeContext {
+    public enum CodeContext {
         COMMON, IDE, DEBUGGER, BUILDER
     }
 

@@ -6,9 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -22,7 +20,7 @@ public class DirectoryTreeGroup extends Composite {
 
     // private final Label title;
     private final CheckboxTableViewer checkboxTableViewer;
-    private final Set<String> checkedDirs;
+    private final Set<String> checkedDirs = new HashSet<>();
     private List<String> allDirs;
 
     private class ContentProvider implements IStructuredContentProvider {
@@ -75,18 +73,13 @@ public class DirectoryTreeGroup extends Composite {
 
         });
         checkboxTableViewer.setContentProvider(new ContentProvider());
-        checkboxTableViewer.addCheckStateListener(new ICheckStateListener() {
-
-            @Override
-            public void checkStateChanged(final CheckStateChangedEvent event) {
-                checkedDirs.clear();
-                for (final Object o : checkboxTableViewer.getCheckedElements()) {
-                    checkedDirs.add((String) o);
-                }
+        checkboxTableViewer.addCheckStateListener(event -> {
+            checkedDirs.clear();
+            for (final Object o : checkboxTableViewer.getCheckedElements()) {
+                checkedDirs.add((String) o);
             }
         });
         allDirs = new ArrayList<>();
-        checkedDirs = new HashSet<>();
         checkboxTableViewer.setInput(allDirs);
         // final GridData data = new GridData(GridData.FILL_BOTH);
         // data.horizontalSpan = 2;

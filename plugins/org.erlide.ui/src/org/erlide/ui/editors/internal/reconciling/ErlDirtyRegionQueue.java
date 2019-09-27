@@ -7,9 +7,9 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 /**
- * Queue used by {@link org.eclipse.jface.text.reconciler.Reconciler} to manage
- * dirty regions. When a dirty region is inserted into the queue, the queue
- * tries to fold it into the neighbouring dirty region.
+ * Queue used by {@link org.eclipse.jface.text.reconciler.Reconciler} to manage dirty
+ * regions. When a dirty region is inserted into the queue, the queue tries to fold it
+ * into the neighbouring dirty region.
  *
  * @see org.eclipse.jface.text.reconciler.Reconciler
  * @see org.eclipse.jface.text.reconciler.DirtyRegion

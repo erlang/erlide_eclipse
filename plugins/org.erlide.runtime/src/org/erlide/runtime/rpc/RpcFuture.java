@@ -1,18 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2009-2013 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available
- * at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009-2013 Vlad Dumitrescu and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.runtime.rpc;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.erlide.runtime.internal.rpc.OtpRpc;
 import org.erlide.util.ErlLogger;
@@ -20,9 +17,9 @@ import org.erlide.util.ErlLogger;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpMbox;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.ListenableFuture;
 
-public class RpcFuture implements CheckedFuture<OtpErlangObject, RpcException> {
+public class RpcFuture implements ListenableFuture<OtpErlangObject> {
 
     private final OtpMbox mbox;
     private OtpErlangObject result;
@@ -55,8 +52,6 @@ public class RpcFuture implements CheckedFuture<OtpErlangObject, RpcException> {
     public OtpErlangObject get(final long timeout, final TimeUnit unit) {
         try {
             return checkedGet(timeout, unit);
-        } catch (final TimeoutException e) {
-            return null;
         } catch (final RpcException e) {
             return null;
         }
@@ -81,18 +76,16 @@ public class RpcFuture implements CheckedFuture<OtpErlangObject, RpcException> {
         return false;
     }
 
-    @Override
     public OtpErlangObject checkedGet() throws RpcException {
         try {
             return checkedGet(OtpRpc.INFINITY, TimeUnit.MILLISECONDS);
-        } catch (final TimeoutException e) {
+        } catch (final RpcTimeoutException e) {
             return null;
         }
     }
 
-    @Override
     public OtpErlangObject checkedGet(final long timeout, final TimeUnit unit)
-            throws TimeoutException, RpcException {
+            throws RpcException {
         result = rpc.getRpcResult(mbox, TimeUnit.MILLISECONDS.convert(timeout, unit),
                 env);
         if (isDone()) {

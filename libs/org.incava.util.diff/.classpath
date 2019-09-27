@@ -2,12 +2,14 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
-			<attribute name="annotationpath" value="../../erlide_eclipse/.eea"/>
+			<attribute name="annotationpath" value="/erlide_eclipse/.eea"/>
+			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins">
 		<attributes>
-			<attribute name="annotationpath" value="../../erlide_eclipse/.eea"/>
+			<attribute name="annotationpath" value="/erlide_eclipse/.eea"/>
+			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="java-diff-1.1.jar" sourcepath="java-diff-1.1-sources.jar"/>

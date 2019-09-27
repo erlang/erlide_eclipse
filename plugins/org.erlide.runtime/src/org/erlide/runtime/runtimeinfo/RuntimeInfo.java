@@ -165,10 +165,10 @@ public final class RuntimeInfo {
 
         final boolean hasErl = RuntimeInfo.hasExecutableFile(otpHome + "/bin/erl");
 
-        final File lib = new File(otpHome + "/lib");
-        final boolean hasLib = lib.isDirectory() && lib.exists();
+        // final File lib = new File(otpHome + "/lib");
+        // final boolean hasLib = lib.isDirectory() && lib.exists();
 
-        return hasErl && hasLib;
+        return hasErl; // && hasLib;
     }
 
     private static boolean hasExecutableFile(final String fileName) {
@@ -234,7 +234,7 @@ public final class RuntimeInfo {
     private static String readOtpVersion(final String path) {
         final File file = new File(path + "/OTP_VERSION");
         try {
-            return Files.toString(file, Charsets.US_ASCII).trim();
+            return Files.asCharSource(file, Charsets.US_ASCII).read().trim();
         } catch (final IOException e) {
         }
         return null;
@@ -277,20 +277,16 @@ public final class RuntimeInfo {
 
         // now get micro version from kernel's minor version
         final File lib = new File(path + "/lib");
-        final File[] kernels = lib.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(final File pathname) {
-                try {
-                    boolean r = pathname.isDirectory();
-                    r &= pathname.getName().startsWith("kernel-");
-                    final String canonicalPath = pathname.getCanonicalPath()
-                            .toLowerCase();
-                    final String absolutePath = pathname.getAbsolutePath().toLowerCase();
-                    r &= canonicalPath.equals(absolutePath);
-                    return r;
-                } catch (final IOException e) {
-                    return false;
-                }
+        final File[] kernels = lib.listFiles((FileFilter) pathname -> {
+            try {
+                boolean r = pathname.isDirectory();
+                r &= pathname.getName().startsWith("kernel-");
+                final String canonicalPath = pathname.getCanonicalPath().toLowerCase();
+                final String absolutePath = pathname.getAbsolutePath().toLowerCase();
+                r &= canonicalPath.equals(absolutePath);
+                return r;
+            } catch (final IOException e) {
+                return false;
             }
         });
         if (kernels != null && kernels.length > 0) {

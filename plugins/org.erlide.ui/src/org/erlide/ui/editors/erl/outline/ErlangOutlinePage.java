@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -183,14 +182,10 @@ public class ErlangOutlinePage extends ContentOutlinePage
                 return;
             }
             final Display d = c.getDisplay();
-            d.asyncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (getTreeViewer().getControl() != null
-                            && !getTreeViewer().getControl().isDisposed()) {
-                        getTreeViewer().refresh(fModule);
-                    }
+            d.asyncExec(() -> {
+                if (getTreeViewer().getControl() != null
+                        && !getTreeViewer().getControl().isDisposed()) {
+                    getTreeViewer().refresh(fModule);
                 }
             });
         }
@@ -217,14 +212,7 @@ public class ErlangOutlinePage extends ContentOutlinePage
 
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
-        manager.addMenuListener(new IMenuListener() {
-            @Override
-            public void menuAboutToShow(final IMenuManager m) {
-                // recursive loop?
-                // menuAboutToShow(m);
-                contextMenuAboutToShow(m);
-            }
-        });
+        manager.addMenuListener(m -> contextMenuAboutToShow(m));
         final Menu menu = manager.createContextMenu(tree);
         tree.setMenu(menu);
 

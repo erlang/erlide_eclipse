@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2006 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package org.erlide.ui.editors.erl;
@@ -27,8 +25,8 @@ public class ErlangPresentationReconciler extends PresentationReconciler {
     private IDocument fLastDocument;
 
     /**
-     * Constructs a "repair description" for the given damage and returns this
-     * description as a text presentation.
+     * Constructs a "repair description" for the given damage and returns this description
+     * as a text presentation.
      * <p>
      * NOTE: Should not be used if this reconciler is installed on a viewer.
      * </p>
@@ -41,7 +39,7 @@ public class ErlangPresentationReconciler extends PresentationReconciler {
      */
     public TextPresentation createRepairDescription(final IRegion damage,
             final IDocument document) {
-        if (document != fLastDocument) {
+        if (!document.equals(fLastDocument)) {
             setDocumentToDamagers(document);
             setDocumentToRepairers(document);
             fLastDocument = document;

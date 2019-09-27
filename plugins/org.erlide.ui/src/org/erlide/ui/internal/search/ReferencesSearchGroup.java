@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2006 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.internal.search;
 
@@ -30,8 +28,8 @@ import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 
 /**
- * Action group that adds the search for references actions to a context menu
- * and the global menu bar.
+ * Action group that adds the search for references actions to a context menu and the
+ * global menu bar.
  *
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -55,8 +53,8 @@ public class ReferencesSearchGroup extends ActionGroup {
     private FindAction fFindReferencesInWorkingSetAction;
 
     /**
-     * Creates a new <code>ReferencesSearchGroup</code>. The group requires that
-     * the selection provided by the site's selection provider is of type <code>
+     * Creates a new <code>ReferencesSearchGroup</code>. The group requires that the
+     * selection provided by the site's selection provider is of type <code>
      * org.eclipse.jface.viewers.IStructuredSelection</code> .
      *
      * @param site
@@ -87,8 +85,8 @@ public class ReferencesSearchGroup extends ActionGroup {
     }
 
     /**
-     * Note: This constructor is for internal use only. Clients should not call
-     * this constructor.
+     * Note: This constructor is for internal use only. Clients should not call this
+     * constructor.
      *
      * @param editor
      *            the Erlang editor
@@ -112,8 +110,8 @@ public class ReferencesSearchGroup extends ActionGroup {
         fFindReferencesInWorkingSetAction = new FindReferencesInWorkingSetAction(fEditor);
         fFindReferencesInWorkingSetAction
                 .setActionDefinitionId("org.erlide.ui.search.references.in.workset");
-        fEditor.setAction(
-                "SearchReferencesInWorkingSet", fFindReferencesInWorkingSetAction); //$NON-NLS-1$
+        fEditor.setAction("SearchReferencesInWorkingSet", //$NON-NLS-1$
+                fFindReferencesInWorkingSetAction);
     }
 
     private void registerAction(final SelectionDispatchAction action,
@@ -123,8 +121,7 @@ public class ReferencesSearchGroup extends ActionGroup {
     }
 
     /**
-     * Note: this method is for internal use only. Clients should not call this
-     * method.
+     * Note: this method is for internal use only. Clients should not call this method.
      *
      * @return the menu label
      */
@@ -204,10 +201,9 @@ public class ReferencesSearchGroup extends ActionGroup {
 
     private void updateGlobalActionHandlers() {
         if (fActionBars != null) {
-            fActionBars
-                    .setGlobalActionHandler(
-                            ErlideUIConstants.FIND_REFERENCES_IN_WORKSPACE,
-                            fFindReferencesAction);
+            fActionBars.setGlobalActionHandler(
+                    ErlideUIConstants.FIND_REFERENCES_IN_WORKSPACE,
+                    fFindReferencesAction);
             fActionBars.setGlobalActionHandler(
                     ErlideUIConstants.FIND_REFERENCES_IN_PROJECT,
                     fFindReferencesInProjectAction);

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -31,14 +30,7 @@ public class UserRefacInputPage extends InputPage {
 
     private final String description;
 
-    private final ModifyListener modifyListener = new ModifyListener() {
-
-        @Override
-        public void modifyText(final ModifyEvent e) {
-            isInputValid();
-        }
-
-    };
+    private final ModifyListener modifyListener = e -> isInputValid();
 
     /**
      * Constructor

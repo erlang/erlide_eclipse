@@ -4,8 +4,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -99,13 +97,7 @@ public class CodeAssistPreferencePage extends PreferencePage
         final Text textBox = new Text(parent, SWT.BORDER | SWT.SINGLE);
         textBox.setLayoutData(new GridData());
 
-        textBox.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                validateSettings();
-            }
-        });
+        textBox.addModifyListener(e -> validateSettings());
 
         final GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
         if (modelTextLimit != 0) {

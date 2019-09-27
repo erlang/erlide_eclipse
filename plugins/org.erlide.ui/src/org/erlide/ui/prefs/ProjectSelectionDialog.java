@@ -7,14 +7,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
@@ -124,19 +120,9 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
 
         fTableViewer = new TableViewer(composite,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-        fTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(final SelectionChangedEvent event) {
-                doSelectionChanged(
-                        ((IStructuredSelection) event.getSelection()).toArray());
-            }
-        });
-        fTableViewer.addDoubleClickListener(new IDoubleClickListener() {
-            @Override
-            public void doubleClick(final DoubleClickEvent event) {
-                okPressed();
-            }
-        });
+        fTableViewer.addSelectionChangedListener(event -> doSelectionChanged(
+                ((IStructuredSelection) event.getSelection()).toArray()));
+        fTableViewer.addDoubleClickListener(event -> okPressed());
         final GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
         data.heightHint = ProjectSelectionDialog.SIZING_SELECTION_WIDGET_HEIGHT;
         data.widthHint = ProjectSelectionDialog.SIZING_SELECTION_WIDGET_WIDTH;
@@ -163,7 +149,8 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
         });
         final IDialogSettings dialogSettings = ErlideUIPlugin.getDefault()
                 .getDialogSettingsSection(ProjectSelectionDialog.DIALOG_SETTINGS);
-        final boolean doFilter = !dialogSettings.getBoolean(ProjectSelectionDialog.DIALOG_SETTINGS_SHOW_ALL)
+        final boolean doFilter = !dialogSettings
+                .getBoolean(ProjectSelectionDialog.DIALOG_SETTINGS_SHOW_ALL)
                 && !fProjectsWithSpecifics.isEmpty();
         checkbox.setSelection(doFilter);
         updateFilter(doFilter);

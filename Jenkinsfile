@@ -83,7 +83,7 @@ def compile() {
 		product=""
 	profiles="help${product}"
 	wrap([$class: 'Xvfb', displayNameOffset: 100, installationName: 'xvfb', screen: '1024x768x24']) {
-		sh "PATH=$PATH:~jenkins/erlide_tools && ./mvnw -B -U clean verify -P ${profiles} -Dmaven.test.failure.ignore=true -X"
+		sh "PATH=$PATH:~jenkins/erlide_tools && ./mvnw -B -U clean verify -P ${profiles} -Dmaven.test.failure.ignore=true"
 	}
 	if(env.BRANCH_NAME=="master") {
 		// TODO rename product artifacts
@@ -97,7 +97,7 @@ def analyze() {
 	step([$class: 'TasksPublisher', canComputeNew: false, excludePattern: '', healthy: '', high: 'FIXME,XXX', low: '', normal: 'TODO', pattern: '**/*.java,**/*.?rl,**/*.xtend', unHealthy: ''])
 	step([$class: 'AnalysisPublisher', canComputeNew: false, healthy: '', unHealthy: ''])
 	step([$class: 'JUnitResultArchiver', allowEmptyResults: true, testResults: '**/target/surefire-reports/TEST-*.xml'])
-	step([$class: 'JacocoPublisher', exclusionPattern: '**/*Test*.class,org/erlide/wrangler/**/*,org/erlide/cover/**/*,org/erlide/tracing/**/*,org/incava/**/*,org/fishwife/**/*,com/ericsson/**/*,nl/kii/**/*,org/erlide/annotations/**/*,org/erlide/util/CharOperation,org/erlide/util/Util', sourcePattern: '**/src/'])
+	step([$class: 'JacocoPublisher', exclusionPattern: '**/*Test*.class,org/erlide/wrangler/**/*,org/erlide/cover/**/*,org/erlide/tracing/**/*,org/incava/**/*,com/ericsson/**/*,org/erlide/annotations/**/*,org/erlide/util/CharOperation,org/erlide/util/Util', sourcePattern: '**/src/'])
 }
 
 def archive() {

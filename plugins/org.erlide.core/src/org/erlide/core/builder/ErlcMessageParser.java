@@ -18,8 +18,8 @@ public class ErlcMessageParser implements IMessageParser {
     }
 
     /**
-     * Parses messages from erlc and creates the markers on the appropriate
-     * resource. Returns true if any marker was created.
+     * Parses messages from erlc and creates the markers on the appropriate resource.
+     * Returns true if any marker was created.
      *
      * Format is filename:line: message
      *

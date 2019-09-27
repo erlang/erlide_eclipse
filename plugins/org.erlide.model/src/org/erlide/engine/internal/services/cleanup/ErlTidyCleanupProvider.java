@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2008 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Alain O'Dea
+ * Contributors: Alain O'Dea
  *******************************************************************************/
 package org.erlide.engine.internal.services.cleanup;
 
@@ -20,8 +18,7 @@ import org.erlide.runtime.rpc.RpcFuture;
 /**
  * <p>
  * The {@link ErlTidyCleanupProvider} class provides an implementation of
- * {@link CleanupProvider} that uses <code>erl_tidy</code> to do the heavy
- * lifting.
+ * {@link CleanupProvider} that uses <code>erl_tidy</code> to do the heavy lifting.
  * </p>
  *
  * @author Alain O'Dea [alain dot odea at gmail dot com]
@@ -39,8 +36,8 @@ public class ErlTidyCleanupProvider implements CleanupProvider {
 
     /**
      * <p>
-     * Construct an {@link ErlTidyCleanupProvider} for a particular
-     * {@link IResource} for an Erlang module.
+     * Construct an {@link ErlTidyCleanupProvider} for a particular {@link IResource} for
+     * an Erlang module.
      * </p>
      *
      * @param backend

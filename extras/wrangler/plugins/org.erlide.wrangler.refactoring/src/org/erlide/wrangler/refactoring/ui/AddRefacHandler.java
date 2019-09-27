@@ -207,7 +207,7 @@ public class AddRefacHandler extends AbstractHandler {
                 out.write(buf, 0, len);
             }
             return true;
-        } catch (IOException e1) {
+        } catch (final IOException e1) {
             return false;
         }
     }

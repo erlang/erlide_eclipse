@@ -38,8 +38,8 @@ public class CodeAssistTest {
 
     @Test
     public void getVariables_2() {
-        final Collection<String> result = CodeAssistTest.assist.getVariables("a(X)-> XY=-X, Z=XY, X.",
-                "X");
+        final Collection<String> result = CodeAssistTest.assist
+                .getVariables("a(X)-> XY=-X, Z=XY, X.", "X");
         final Collection<String> expected = Sets.newHashSet("X", "XY");
         assertThat(result).isEqualTo(expected);
     }

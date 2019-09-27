@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2008 IBM Corporation and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
@@ -18,9 +16,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.erlide.ui.actions.SelectionDispatchAction;
 
 /**
- * A simple default implementation of a {@link ISelectionProvider}. It stores
- * the selection and notifies all selection change listeners when the selection
- * is set.
+ * A simple default implementation of a {@link ISelectionProvider}. It stores the
+ * selection and notifies all selection change listeners when the selection is set.
  *
  * Instances of this class can be used as special selection provider for
  * {@link SelectionDispatchAction}s
@@ -48,7 +45,7 @@ public class SimpleSelectionProvider implements ISelectionProvider {
         fSelection = selection;
 
         final Object[] listeners = fSelectionChangedListeners.getListeners();
-        for (Object listener : listeners) {
+        for (final Object listener : listeners) {
             ((ISelectionChangedListener) listener)
                     .selectionChanged(new SelectionChangedEvent(this, selection));
         }

@@ -150,12 +150,10 @@ public final class ErlangCore {
         }
         final String globalTraceValue = Platform
                 .getDebugOption(ErlangCore.ERLIDE_GLOBAL_TRACE_OPTION);
-        final String value = Platform
-                .getDebugOption(ErlangCore.ERLIDE_GLOBAL_TRACE_OPTION + "/" + traceOption);
-        if ("true".equalsIgnoreCase(globalTraceValue) && "true".equalsIgnoreCase(value)) {
-            return true;
-        }
-        return false;
+        final String value = Platform.getDebugOption(
+                ErlangCore.ERLIDE_GLOBAL_TRACE_OPTION + "/" + traceOption);
+        return "true".equalsIgnoreCase(globalTraceValue)
+                && "true".equalsIgnoreCase(value);
     }
 
     private String retrieveAllVersions() {
@@ -184,7 +182,7 @@ public final class ErlangCore {
         return version;
     }
 
-    private String findFeatureVersion(String key,
+    private String findFeatureVersion(final String key,
             final IBundleGroupProvider[] providers) {
         String version = "?";
         for (final IBundleGroupProvider provider : providers) {

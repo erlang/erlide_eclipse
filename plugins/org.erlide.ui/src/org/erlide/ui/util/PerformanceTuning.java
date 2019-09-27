@@ -33,7 +33,8 @@ public class PerformanceTuning {
     }
 
     public void load() {
-        foldingLimit = helper.getInt(PerformanceTuning.FOLDING_DISABLE_LIMIT_KEY, PerformanceTuning.DEFAULT_FOLDING_LIMIT);
+        foldingLimit = helper.getInt(PerformanceTuning.FOLDING_DISABLE_LIMIT_KEY,
+                PerformanceTuning.DEFAULT_FOLDING_LIMIT);
     }
 
     public void store() {

@@ -2,12 +2,10 @@ package org.erlide.engine
 
 import java.io.File
 import java.lang.management.ManagementFactory
-import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IStatus
 import org.eclipse.core.runtime.Platform
 import org.eclipse.core.runtime.Status
-import org.eclipse.lsp4j.ClientCapabilities
 import org.erlide.util.ErlLogger
 import org.erlide.util.services.ExtensionUtils
 import org.osgi.framework.BundleActivator
@@ -31,9 +29,6 @@ class ModelApiActivator implements BundleActivator {
         val modelPlugin = Platform.getBundle("org.erlide.model")
         val params = new ErlangInitializeParamsImpl => [
             stateDir = Platform.getStateLocation(modelPlugin).toPortableString()
-            processId = getProcessId(0)
-            rootUri = '''file://«ResourcesPlugin.workspace.root.location.toPortableString»'''
-            capabilities = new ClientCapabilities
         ]
         engine.initialize(params);
         ErlLogger.debug("Started model api")

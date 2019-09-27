@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Lukas Larsson and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Lukas Larsson and others. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Lukas Larsson
+ * Contributors: Lukas Larsson
  *******************************************************************************/
 
 package org.erlide.ui.wizards;
@@ -31,7 +30,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -55,9 +53,9 @@ import org.erlide.util.SystemConfiguration;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 
 /**
- * The "New" wizard page allows setting the container for the new file as well
- * as the file name. The page will only accept file name without the extension
- * OR with the extension that matches the expected one (erl).
+ * The "New" wizard page allows setting the container for the new file as well as the file
+ * name. The page will only accept file name without the extension OR with the extension
+ * that matches the expected one (erl).
  */
 
 public class ErlangFileWizardPage extends WizardPage {
@@ -87,12 +85,7 @@ public class ErlangFileWizardPage extends WizardPage {
 
         moduleTemplates = ErlideUIPlugin.getDefault().getTemplateStore().getTemplates(
                 ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
-        fModifyListener = new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                dialogChanged();
-            }
-        };
+        fModifyListener = e -> dialogChanged();
     }
 
     /**
@@ -227,8 +220,8 @@ public class ErlangFileWizardPage extends WizardPage {
     }
 
     /**
-     * Uses the standard container selection dialog to choose the new value for
-     * the container field.
+     * Uses the standard container selection dialog to choose the new value for the
+     * container field.
      */
     void handleBrowse() {
         final ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(),

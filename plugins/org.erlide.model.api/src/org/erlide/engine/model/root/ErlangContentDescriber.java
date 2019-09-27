@@ -19,11 +19,12 @@ import org.eclipse.core.runtime.content.ITextContentDescriber;
 import com.google.common.io.Files;
 
 public class ErlangContentDescriber implements ITextContentDescriber {
-    private static final QualifiedName[] SUPPORTED_OPTIONS = { IContentDescription.CHARSET };
-    private static final Pattern LATIN1 = Pattern.compile(
-            "%+[ *-]+coding: *latin-1.*", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
-    private static final Pattern UTF8 = Pattern.compile(
-            "%+[ *-]+coding: *utf-8.*", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
+    private static final QualifiedName[] SUPPORTED_OPTIONS = {
+            IContentDescription.CHARSET };
+    private static final Pattern LATIN1 = Pattern.compile("%+[ *-]+coding: *latin-1.*", //$NON-NLS-1$
+            Pattern.CASE_INSENSITIVE);
+    private static final Pattern UTF8 = Pattern.compile("%+[ *-]+coding: *utf-8.*", //$NON-NLS-1$
+            Pattern.CASE_INSENSITIVE);
     private static final String CHARSET = "ErlangContentDescriber.charset"; //$NON-NLS-1$
     private static final String RESULT = "ErlangContentDescriber.processed"; //$NON-NLS-1$
 
@@ -72,7 +73,8 @@ public class ErlangContentDescriber implements ITextContentDescriber {
 
     public static Charset detectCodingForFile(final File file, final Charset dflt)
             throws IOException {
-        final String line = Files.readFirstLine(file, StandardCharsets.ISO_8859_1);
+        final String line = Files.asCharSource(file, StandardCharsets.ISO_8859_1)
+                .readFirstLine();
         Charset coding = ErlangContentDescriber.detectEncoding(line);
         if (coding == null) {
             coding = dflt;

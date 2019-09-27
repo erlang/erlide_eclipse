@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2004 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.editors.erl.hover;
 
@@ -64,251 +62,268 @@ import org.osgi.framework.Bundle;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlTextHover
-		implements ITextHover, IInformationProviderExtension2, ITextHoverExtension, ITextHoverExtension2 {
+public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
+        ITextHoverExtension, ITextHoverExtension2 {
 
-	private static URL fgStyleSheet;
-	private IInformationControlCreator fHoverControlCreator;
-	private PresenterControlCreator fPresenterControlCreator;
-	private final AbstractErlangEditor fEditor;
+    private static URL fgStyleSheet;
+    private IInformationControlCreator fHoverControlCreator;
+    private PresenterControlCreator fPresenterControlCreator;
+    private final AbstractErlangEditor fEditor;
 
-	public ErlTextHover(final AbstractErlangEditor editor) {
-		fEditor = editor;
-		initStyleSheet();
-	}
+    public ErlTextHover(final AbstractErlangEditor editor) {
+        fEditor = editor;
+        initStyleSheet();
+    }
 
-	@Override
-	public IRegion getHoverRegion(final ITextViewer textViewer, final int offset) {
-		return ErlTextHover.internalGetHoverRegion(offset, fEditor);
-	}
+    @Override
+    public IRegion getHoverRegion(final ITextViewer textViewer, final int offset) {
+        return ErlTextHover.internalGetHoverRegion(offset, fEditor);
+    }
 
-	private static IRegion internalGetHoverRegion(final int offset, final AbstractErlangEditor editor) {
-		if (editor == null) {
-			return null;
-		}
-		editor.reconcileNow();
-		final ErlToken token = editor.getScanner().getTokenAt(offset);
-		if (token == null) {
-			return null;
-		}
-		return new Region(token.getOffset(), token.getLength());
-	}
+    private static IRegion internalGetHoverRegion(final int offset,
+            final AbstractErlangEditor editor) {
+        if (editor == null) {
+            return null;
+        }
+        editor.reconcileNow();
+        final ErlToken token = editor.getScanner().getTokenAt(offset);
+        if (token == null) {
+            return null;
+        }
+        return new Region(token.getOffset(), token.getLength());
+    }
 
-	private void initStyleSheet() {
-		final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
-		if (ErlTextHover.fgStyleSheet != null) {
-			return;
-		}
+    private void initStyleSheet() {
+        final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
+        if (ErlTextHover.fgStyleSheet != null) {
+            return;
+        }
         ErlTextHover.fgStyleSheet = bundle.getEntry("/edoc.css"); //$NON-NLS-1$
-		if (ErlTextHover.fgStyleSheet != null) {
+        if (ErlTextHover.fgStyleSheet != null) {
 
-			try {
-                ErlTextHover.fgStyleSheet = FileLocator.toFileURL(ErlTextHover.fgStyleSheet);
-			} catch (final Exception e) {
-			}
-		}
-	}
+            try {
+                ErlTextHover.fgStyleSheet = FileLocator
+                        .toFileURL(ErlTextHover.fgStyleSheet);
+            } catch (final Exception e) {
+            }
+        }
+    }
 
-	/**
-	 * @param textViewer
-	 * @param offset
-	 * @param length
-	 */
-	private static String makeDebuggerVariableHover(final ITextViewer textViewer, final int offset, final int length) {
-		final IAdaptable adaptable = DebugUITools.getDebugContext();
-		if (adaptable != null) {
-			final IStackFrame frame = adaptable.getAdapter(IStackFrame.class);
-			try {
-				if (frame != null && frame.hasVariables()) {
-					String varName = "";
-					try {
-						varName = textViewer.getDocument().get(offset, length);
-					} catch (final BadLocationException e) {
-					}
-					if (!varName.isEmpty()) {
-						final String firstLetter = varName.substring(0, 1);
-						if (firstLetter.toUpperCase().equals(firstLetter)) {
-							final IVariable[] vars = frame.getVariables();
-							for (final IVariable variable : vars) {
-								if (variable.getName().equals(varName)) {
-									final String value = variable.getValue().getValueString();
-									return ErlTextHover.makeVariablePresentation(varName, value);
-								}
-							}
-						}
-					}
-				}
-			} catch (final DebugException e) {
-			}
-		}
-		return "";
-	}
+    /**
+     * @param textViewer
+     * @param offset
+     * @param length
+     */
+    private static String makeDebuggerVariableHover(final ITextViewer textViewer,
+            final int offset, final int length) {
+        final IAdaptable adaptable = DebugUITools.getDebugContext();
+        if (adaptable != null) {
+            final IStackFrame frame = adaptable.getAdapter(IStackFrame.class);
+            try {
+                if (frame != null && frame.hasVariables()) {
+                    String varName = "";
+                    try {
+                        varName = textViewer.getDocument().get(offset, length);
+                    } catch (final BadLocationException e) {
+                    }
+                    if (!varName.isEmpty()) {
+                        final String firstLetter = varName.substring(0, 1);
+                        if (firstLetter.toUpperCase().equals(firstLetter)) {
+                            final IVariable[] vars = frame.getVariables();
+                            for (final IVariable variable : vars) {
+                                if (variable.getName().equals(varName)) {
+                                    final String value = variable.getValue()
+                                            .getValueString();
+                                    return ErlTextHover.makeVariablePresentation(varName,
+                                            value);
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (final DebugException e) {
+            }
+        }
+        return "";
+    }
 
-	private static String makeVariablePresentation(final String varName, final String value) {
-		return varName + " = " + value;
-	}
+    private static String makeVariablePresentation(final String varName,
+            final String value) {
+        return varName + " = " + value;
+    }
 
-	@Override
-	public IInformationControlCreator getInformationPresenterControlCreator() {
-		if (fPresenterControlCreator == null) {
-			fPresenterControlCreator = new PresenterControlCreator(fEditor);
-		}
-		return fPresenterControlCreator;
-	}
+    @Override
+    public IInformationControlCreator getInformationPresenterControlCreator() {
+        if (fPresenterControlCreator == null) {
+            fPresenterControlCreator = new PresenterControlCreator(fEditor);
+        }
+        return fPresenterControlCreator;
+    }
 
-	@Override
-	public IInformationControlCreator getHoverControlCreator() {
-		if (fHoverControlCreator == null) {
-			fHoverControlCreator = new HoverControlCreator(getInformationPresenterControlCreator());
-		}
-		return fHoverControlCreator;
-	}
+    @Override
+    public IInformationControlCreator getHoverControlCreator() {
+        if (fHoverControlCreator == null) {
+            fHoverControlCreator = new HoverControlCreator(
+                    getInformationPresenterControlCreator());
+        }
+        return fHoverControlCreator;
+    }
 
-	public static final class HoverControlCreator extends AbstractReusableInformationControlCreator {
-		IInformationControlCreator fInformationPresenterControlCreator;
+    public static final class HoverControlCreator
+            extends AbstractReusableInformationControlCreator {
+        IInformationControlCreator fInformationPresenterControlCreator;
 
-		public HoverControlCreator(final IInformationControlCreator informationPresenterControlCreator) {
-			fInformationPresenterControlCreator = informationPresenterControlCreator;
-		}
+        public HoverControlCreator(
+                final IInformationControlCreator informationPresenterControlCreator) {
+            fInformationPresenterControlCreator = informationPresenterControlCreator;
+        }
 
-		@Override
-		protected IInformationControl doCreateInformationControl(final Shell parent) {
-			IInformationControl control;
-			if (ErlangBrowserInformationControl.isAvailable(parent)) {
-				control = new ErlangBrowserInformationControl(parent, JFaceResources.DIALOG_FONT,
-						EditorsUI.getTooltipAffordanceString()) {
-					@Override
-					public IInformationControlCreator getInformationPresenterControlCreator() {
-						return fInformationPresenterControlCreator;
-					}
+        @Override
+        protected IInformationControl doCreateInformationControl(final Shell parent) {
+            IInformationControl control;
+            if (ErlangBrowserInformationControl.isAvailable(parent)) {
+                control = new ErlangBrowserInformationControl(parent,
+                        JFaceResources.DIALOG_FONT,
+                        EditorsUI.getTooltipAffordanceString()) {
+                    @Override
+                    public IInformationControlCreator getInformationPresenterControlCreator() {
+                        return fInformationPresenterControlCreator;
+                    }
 
-					@Override
-					public void setSize(final int width0, final int height0) {
-						// default size is too small
-						final Point bounds = getSizeConstraints();
-						int width = width0;
-						int height = height0;
-						if (bounds != null) {
-							if (bounds.x != SWT.DEFAULT) {
-								width = Math.min(bounds.x, width * 2);
-							}
-							if (bounds.y != SWT.DEFAULT) {
-								height = Math.min(bounds.y, height * 2);
-							}
-						}
-						super.setSize(width, height);
-					}
-				};
-			} else {
-				control = new DefaultInformationControl(parent, EditorsUI.getTooltipAffordanceString(),
-						new ErlInformationPresenter(true));
-			}
-			return control;
-		}
-	}
+                    @Override
+                    public void setSize(final int width0, final int height0) {
+                        // default size is too small
+                        final Point bounds = getSizeConstraints();
+                        int width = width0;
+                        int height = height0;
+                        if (bounds != null) {
+                            if (bounds.x != SWT.DEFAULT) {
+                                width = Math.min(bounds.x, width * 2);
+                            }
+                            if (bounds.y != SWT.DEFAULT) {
+                                height = Math.min(bounds.y, height * 2);
+                            }
+                        }
+                        super.setSize(width, height);
+                    }
+                };
+            } else {
+                control = new DefaultInformationControl(parent,
+                        EditorsUI.getTooltipAffordanceString(),
+                        new ErlInformationPresenter(true));
+            }
+            return control;
+        }
+    }
 
-	public static ErlangBrowserInformationControlInput getHoverInfoForOffset(final int offset,
-			final ErlangEditor editor) {
-		final ITextViewer textViewer = editor.getViewer();
-		final IRegion region = ErlTextHover.internalGetHoverRegion(offset, editor);
-		if (region != null) {
-			return ErlTextHover.internalGetHoverInfo(editor, textViewer, region);
-		}
-		return null;
-	}
+    public static ErlangBrowserInformationControlInput getHoverInfoForOffset(
+            final int offset, final ErlangEditor editor) {
+        final ITextViewer textViewer = editor.getViewer();
+        final IRegion region = ErlTextHover.internalGetHoverRegion(offset, editor);
+        if (region != null) {
+            return ErlTextHover.internalGetHoverInfo(editor, textViewer, region);
+        }
+        return null;
+    }
 
-	@Deprecated
-	@Override
-	public String getHoverInfo(final ITextViewer textViewer, final IRegion hoverRegion) {
-		if (ErlTextHover.isHoverDisabled()) {
-			return null;
-		}
-		final ErlangBrowserInformationControlInput input = (ErlangBrowserInformationControlInput) getHoverInfo2(
-				textViewer, hoverRegion);
-		return input == null ? "" : input.getHtml();
-	}
+    @Deprecated
+    @Override
+    public String getHoverInfo(final ITextViewer textViewer, final IRegion hoverRegion) {
+        if (ErlTextHover.isHoverDisabled()) {
+            return null;
+        }
+        final ErlangBrowserInformationControlInput input = (ErlangBrowserInformationControlInput) getHoverInfo2(
+                textViewer, hoverRegion);
+        return input == null ? "" : input.getHtml();
+    }
 
-	private static boolean isHoverDisabled() {
-		return !EditorPreferencePage.getEnableHover();
-	}
+    private static boolean isHoverDisabled() {
+        return !EditorPreferencePage.getEnableHover();
+    }
 
-	@Override
-	public Object getHoverInfo2(final ITextViewer textViewer, final IRegion hoverRegion) {
-		if (ErlTextHover.isHoverDisabled()) {
-			return null;
-		}
-		return ErlTextHover.internalGetHoverInfo(fEditor, textViewer, hoverRegion);
-	}
+    @Override
+    public Object getHoverInfo2(final ITextViewer textViewer, final IRegion hoverRegion) {
+        if (ErlTextHover.isHoverDisabled()) {
+            return null;
+        }
+        return ErlTextHover.internalGetHoverInfo(fEditor, textViewer, hoverRegion);
+    }
 
-	private static ErlangBrowserInformationControlInput internalGetHoverInfo(final AbstractErlangEditor editor,
-			final ITextViewer textViewer, final IRegion hoverRegion) {
-		if (editor == null) {
-			return null;
-		}
-		final StringBuffer result = new StringBuffer();
-		OpenResult element = null;
-		// TODO our model is too coarse, here we need access to expressions
-		final Collection<OtpErlangObject> fImports = ErlangEngine.getInstance().getModelUtilService()
-				.getImportsAsList(editor.getModule());
+    private static ErlangBrowserInformationControlInput internalGetHoverInfo(
+            final AbstractErlangEditor editor, final ITextViewer textViewer,
+            final IRegion hoverRegion) {
+        if (editor == null) {
+            return null;
+        }
+        final StringBuffer result = new StringBuffer();
+        OpenResult element = null;
+        // TODO our model is too coarse, here we need access to expressions
+        final Collection<OtpErlangObject> fImports = ErlangEngine.getInstance()
+                .getModelUtilService().getImportsAsList(editor.getModule());
 
-		final int offset = hoverRegion.getOffset();
-		final int length = hoverRegion.getLength();
+        final int offset = hoverRegion.getOffset();
+        final int length = hoverRegion.getLength();
 
-		final String debuggerVar = ErlTextHover.makeDebuggerVariableHover(textViewer, offset, length);
-		if (!debuggerVar.isEmpty()) {
-			result.append(debuggerVar);
-		}
-		final IErlProject erlProject = editor.getProject();
+        final String debuggerVar = ErlTextHover.makeDebuggerVariableHover(textViewer,
+                offset, length);
+        if (!debuggerVar.isEmpty()) {
+            result.append(debuggerVar);
+        }
+        final IErlProject erlProject = editor.getProject();
 
-		String docPath = "";
-		String anchor = "";
-		try {
-			if (erlProject == null) {
-				return null;
-			}
-			final IOtpRpc backend = BackendCore.getBuildBackend(erlProject);
-			if (backend == null) {
-				return null;
-			}
+        String docPath = "";
+        String anchor = "";
+        try {
+            if (erlProject == null) {
+                return null;
+            }
+            final IOtpRpc backend = BackendCore.getBuildBackend(erlProject);
+            if (backend == null) {
+                return null;
+            }
 
-			final IErlModel model = ErlangEngine.getInstance().getModel();
-			final String externalModulesString = erlProject.getProperties().getExternalModules();
-			final OtpErlangTuple t = (OtpErlangTuple) ErlangEngine.getInstance().getOtpDocService().getOtpDoc(backend,
-					offset, editor.getScannerName(), fImports, externalModulesString, model.getPathVars());
-			if (Util.isOk(t)) {
-				element = new OpenResult(t.elementAt(2));
-				final String docStr = Util.stringValue(t.elementAt(1));
-				result.append(docStr);
-				if (t.arity() > 4) {
-					docPath = Util.stringValue(t.elementAt(3));
-					anchor = Util.stringValue(t.elementAt(4));
-				}
-			} else {
-				element = new OpenResult(t);
-				final Object found = new OpenUtils().findOpenResult(editor, editor.getModule(), erlProject, element,
-						editor.getElementAt(offset, false));
-				if (found instanceof IErlFunction) {
-					final IErlFunction function = (IErlFunction) found;
-					final String comment = DocumentationFormatter.getDocumentationString(function.getComments(),
-							function.getTypespec());
-					if (comment.isEmpty()) {
-						return null;
-					}
+            final IErlModel model = ErlangEngine.getInstance().getModel();
+            final String externalModulesString = erlProject.getProperties()
+                    .getExternalModules();
+            final OtpErlangTuple t = (OtpErlangTuple) ErlangEngine.getInstance()
+                    .getOtpDocService().getOtpDoc(backend, offset,
+                            editor.getScannerName(), fImports, externalModulesString,
+                            model.getPathVars());
+            if (Util.isOk(t)) {
+                element = new OpenResult(t.elementAt(2));
+                final String docStr = Util.stringValue(t.elementAt(1));
+                result.append(docStr);
+                if (t.arity() > 4) {
+                    docPath = Util.stringValue(t.elementAt(3));
+                    anchor = Util.stringValue(t.elementAt(4));
+                }
+            } else {
+                element = new OpenResult(t);
+                final Object found = new OpenUtils().findOpenResult(editor,
+                        editor.getModule(), erlProject, element,
+                        editor.getElementAt(offset, false));
+                if (found instanceof IErlFunction) {
+                    final IErlFunction function = (IErlFunction) found;
+                    final String comment = DocumentationFormatter.getDocumentationString(
+                            function.getComments(), function.getTypespec());
+                    if (comment.isEmpty()) {
+                        return null;
+                    }
 
-					result.append(comment);
-				} else if (found instanceof IErlPreprocessorDef) {
-					final IErlPreprocessorDef preprocessorDef = (IErlPreprocessorDef) found;
-					result.append(preprocessorDef.getExtra());
-				}
-			}
-		} catch (final Exception e) {
-			ErlLogger.warn(e);
-			return null;
-		}
+                    result.append(comment);
+                } else if (found instanceof IErlPreprocessorDef) {
+                    final IErlPreprocessorDef preprocessorDef = (IErlPreprocessorDef) found;
+                    result.append(preprocessorDef.getExtra());
+                }
+            }
+        } catch (final Exception e) {
+            ErlLogger.warn(e);
+            return null;
+        }
 
-		final String strResult = HoverUtil.getHTML(result);
-		return new ErlangBrowserInformationControlInput(null, editor, element, strResult, 20,
-				HoverUtil.getDocumentationURL(docPath, anchor));
-	}
+        final String strResult = HoverUtil.getHTML(result);
+        return new ErlangBrowserInformationControlInput(null, editor, element, strResult,
+                20, HoverUtil.getDocumentationURL(docPath, anchor));
+    }
 
 }

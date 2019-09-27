@@ -193,8 +193,7 @@ public class ErlangLineBreakpointPropertyPage extends ErlangBreakpointPropertyPa
     // setValid(valid);
     // }
     /**
-     * Creates the controls that allow the user to specify the breakpoint's
-     * condition
+     * Creates the controls that allow the user to specify the breakpoint's condition
      *
      * @param parent
      *            the composite in which the condition editor should be created

@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2008 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.prefs;
 
@@ -154,7 +152,8 @@ public class ReportPreferencePage extends PreferencePage
             public IStatus run(final IProgressMonitor monitor) {
                 final String location = LogUtil.getReportFile();
 
-                final ProblemData data = ReportPreferencePage.gatherProblemData(attach, title, contact, body);
+                final ProblemData data = ReportPreferencePage.gatherProblemData(attach,
+                        title, contact, body);
                 sendToDisk(location, data);
 
                 final Job inner = new UIJob("update report ui") {

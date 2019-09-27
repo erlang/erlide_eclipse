@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2005 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.actions;
 
@@ -48,15 +46,15 @@ public class OpenAction extends SelectionDispatchAction {
     private final OpenUtils helper = new OpenUtils();
 
     /**
-     * Creates a new <code>OpenAction</code>. The action requires that the
-     * selection provided by the site's selection provider is of type <code>
+     * Creates a new <code>OpenAction</code>. The action requires that the selection
+     * provided by the site's selection provider is of type <code>
      * org.eclipse.jface.viewers.IStructuredSelection</code> .
      *
      * @param site
      *            the site providing context information for this action
      * @param externalModules
-     *            the externalModules file that can be searched for references
-     *            to external modules
+     *            the externalModules file that can be searched for references to external
+     *            modules
      */
     public OpenAction(final IWorkbenchSite site) {
         super(site);
@@ -138,8 +136,7 @@ public class OpenAction extends SelectionDispatchAction {
                         .getDocument(textEditor.getEditorInput()).get();
                 openResult = ErlangEngine.getInstance().getOpenService().openText(text,
                         offset);
-                final IFile file = textEditor.getEditorInput()
-                        .getAdapter(IFile.class);
+                final IFile file = textEditor.getEditorInput().getAdapter(IFile.class);
                 if (file != null) {
                     final IProject p = file.getProject();
                     if (p != null) {

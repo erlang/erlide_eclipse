@@ -2,9 +2,7 @@
  * Code borrowed from PyDev
  */
 /*
- * @author Fabio Zadrozny
- * Created: June 2005
- * License: Common Public License v1.0
+ * @author Fabio Zadrozny Created: June 2005 License: Common Public License v1.0
  */
 
 package org.erlide.util;
@@ -56,8 +54,7 @@ public final class StringUtils {
     }
 
     /**
-     * Removes the occurrences of the passed char in the beggining of the
-     * string.
+     * Removes the occurrences of the passed char in the beggining of the string.
      */
     public static String rightTrim(final String input, final char charToTrim) {
         int len = input.length();

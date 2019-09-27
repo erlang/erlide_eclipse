@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.erlide.annotations
 Bundle-Version: 1.1.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.erlide.annotations
-Require-Bundle: com.google.guava;bundle-version="[15.0.0,16.0.0)",
+Require-Bundle: com.google.guava;bundle-version="[21.0.0,28.0.0)",
  javax.inject;bundle-version="1.0.0",
  org.eclipse.xtend.lib;bundle-version="2.14.0",
  org.eclipse.xtend.lib.macro;bundle-version="2.14.0",

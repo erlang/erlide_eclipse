@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui;
 
@@ -121,8 +120,8 @@ public final class ErlideUIConstants {
     public static final String FIND_IMPLEMENTORS_IN_WORKING_SET = "org.erlide.ui.search.actions.ImplementorsInWorkingSet"; //$NON-NLS-1$ ;
 
     /**
-     * A named preference that controls if hover should be enabled in erlang
-     * editor (value <code>"enableHover"</code>).
+     * A named preference that controls if hover should be enabled in erlang editor (value
+     * <code>"enableHover"</code>).
      * <p>
      * The preference value is of type <code>Boolean</code>.
      * </p>

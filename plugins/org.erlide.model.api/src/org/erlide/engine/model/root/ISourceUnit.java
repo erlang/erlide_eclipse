@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009-2013 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available
- * at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009-2013 Vlad Dumitrescu and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.engine.model.root;
 
@@ -45,19 +43,18 @@ public interface ISourceUnit {
     SourceKind getSourceKind();
 
     /**
-     * Returns the smallest element within this module that includes the given
-     * source position (that is, a clause, attribute, etc.), or
-     * <code>null</code> if there is no element other than the compilation unit
-     * itself at the given position, or if the given position is not within the
-     * source range of this compilation unit.
+     * Returns the smallest element within this module that includes the given source
+     * position (that is, a clause, attribute, etc.), or <code>null</code> if there is no
+     * element other than the compilation unit itself at the given position, or if the
+     * given position is not within the source range of this compilation unit.
      *
      * @param position
      *            a source position inside the compilation unit
      * @return the innermost Erlang element enclosing a given source position or
      *         <code>null</code> if none (excluding the compilation unit).
      * @throws ErlModelException
-     *             if the compilation unit does not exist or if an exception
-     *             occurs while accessing its corresponding resource
+     *             if the compilation unit does not exist or if an exception occurs while
+     *             accessing its corresponding resource
      */
     IErlElement getElementAt(int position) throws ErlModelException;
 
@@ -71,13 +68,14 @@ public interface ISourceUnit {
 
     IErlPreprocessorDef findPreprocessorDef(String definedName, ErlElementKind kind);
 
-    public Collection<IErlPreprocessorDef> getPreprocessorDefs(final ErlElementKind kind);
+    Collection<IErlPreprocessorDef> getPreprocessorDefs(final ErlElementKind kind);
 
     Collection<ErlangIncludeFile> getIncludeFiles() throws ErlModelException;
 
     void initialReconcile();
 
-    void reconcileText(int offset, int removeLength, String newText, IProgressMonitor mon);
+    void reconcileText(int offset, int removeLength, String newText,
+            IProgressMonitor mon);
 
     void postReconcile(IProgressMonitor mon);
 
@@ -96,8 +94,8 @@ public interface ISourceUnit {
     Set<ISourceUnit> getAllDependentModules() throws CoreException;
 
     /**
-     * Resets parser so that the next parse will be a full parse, possibly
-     * updating the parser cache
+     * Resets parser so that the next parse will be a full parse, possibly updating the
+     * parser cache
      *
      * @param newText
      * @throws ErlModelException

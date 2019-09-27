@@ -20,7 +20,7 @@
 		<exec executable="bash" searchpath="true" failonerror="true">
 			<arg value="-l"/>
 			<arg value="-c"/>
-			<arg value="bundle install"/>
+			<arg value="bundle install --jobs 3"/>
 		</exec>
 		<exec executable="bash" searchpath="true" failonerror="true">
 			<arg value="-l"/>

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.xtext.xbase.lib.Functions;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 
 public final class PreferencesUtils {
@@ -19,12 +18,7 @@ public final class PreferencesUtils {
 
     public static List<String> unpackList(final String string) {
         List<String> result = ListsUtils.unpackList(string, PreferencesUtils.SEP);
-        result = ListExtensions.map(result, new Functions.Function1<String, String>() {
-            @Override
-            public String apply(final String p) {
-                return p.trim();
-            }
-        });
+        result = ListExtensions.map(result, p -> p.trim());
         return result;
     }
 

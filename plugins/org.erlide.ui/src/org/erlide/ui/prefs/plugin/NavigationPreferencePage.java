@@ -41,12 +41,14 @@ public class NavigationPreferencePage extends ErlidePreferencePage
 
     private static final String NAVIGATION_KEY = "erlangNavigation"; //$NON-NLS-1$
     private static final String CHECK_ALL_PROJECTS_KEY = "checkAllProjects"; //$NON-NLS-1$
-    private static final String[] NAVIGATION_KEYS = {NavigationPreferencePage.CHECK_ALL_PROJECTS_KEY};
+    private static final String[] NAVIGATION_KEYS = {
+            NavigationPreferencePage.CHECK_ALL_PROJECTS_KEY };
     private static final String[] NAVIGATION_DEFAULTS = { "1" };
 
     @Override
     protected void performDefaults() {
-        setToDefaults(NavigationPreferencePage.NAVIGATION_KEYS, NavigationPreferencePage.NAVIGATION_DEFAULTS, buttons);
+        setToDefaults(NavigationPreferencePage.NAVIGATION_KEYS,
+                NavigationPreferencePage.NAVIGATION_DEFAULTS, buttons);
         super.performDefaults();
     }
 
@@ -57,14 +59,18 @@ public class NavigationPreferencePage extends ErlidePreferencePage
     }
 
     private void setToPreferences() {
-        setToPreferences(NavigationPreferencePage.NAVIGATION_KEYS, NavigationPreferencePage.NAVIGATION_DEFAULTS, buttons);
+        setToPreferences(NavigationPreferencePage.NAVIGATION_KEYS,
+                NavigationPreferencePage.NAVIGATION_DEFAULTS, buttons);
     }
 
     public static boolean getCheckAllProjects() {
         if (NavigationPreferencePage.fCachedCheckAllProjects == null) {
             final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
             final boolean checkAllProjects = node
-                    .getBoolean(NavigationPreferencePage.NAVIGATION_KEY + "/" + NavigationPreferencePage.CHECK_ALL_PROJECTS_KEY, true);
+                    .getBoolean(
+                            NavigationPreferencePage.NAVIGATION_KEY + "/"
+                                    + NavigationPreferencePage.CHECK_ALL_PROJECTS_KEY,
+                            true);
             NavigationPreferencePage.fCachedCheckAllProjects = checkAllProjects;
         }
         return NavigationPreferencePage.fCachedCheckAllProjects;

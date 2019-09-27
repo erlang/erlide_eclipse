@@ -74,8 +74,8 @@ public class ErlContentViewer extends Viewer {
     }
 
     /**
-     * A helper method to retrieve the contents of the given object if it
-     * implements the IStreamContentAccessor interface.
+     * A helper method to retrieve the contents of the given object if it implements the
+     * IStreamContentAccessor interface.
      */
     private static String getString(final Object input) {
 

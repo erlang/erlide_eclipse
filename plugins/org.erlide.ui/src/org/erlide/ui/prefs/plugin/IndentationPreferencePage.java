@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.prefs.plugin;
 
@@ -43,7 +42,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage
             ErlEditorMessages.Prefs_Binary_begin, ErlEditorMessages.Prefs_End_paren };
 
     private static final String[] INDENT_KEYS = { "before_binary_op", //$NON-NLS-1$
-            "after_binary_op", "before_arrow",  //$NON-NLS-1$ //$NON-NLS-2$
+            "after_binary_op", "before_arrow", //$NON-NLS-1$ //$NON-NLS-2$
             "after_arrow", "after_unary_op", "clause", "case", "try", "catch", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
             "function_parameters", "fun", "fun_body", "paren", "<<", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
             "end_paren" }; //$NON-NLS-1$
@@ -106,7 +105,8 @@ public class IndentationPreferencePage extends ErlidePreferencePage
     static final String INDENT_KEY = "indentation"; //$NON-NLS-1$
 
     private void setToPreferences() {
-        final List<String> l = getPreferences(IndentationPreferencePage.INDENT_KEYS, IndentationPreferencePage.INDENT_DEFAULTS);
+        final List<String> l = getPreferences(IndentationPreferencePage.INDENT_KEYS,
+                IndentationPreferencePage.INDENT_DEFAULTS);
         for (int i = 0; i < l.size(); ++i) {
             final String s = l.get(i);
             textFields.get(i).setText(s);
@@ -131,7 +131,9 @@ public class IndentationPreferencePage extends ErlidePreferencePage
     }
 
     public static void addKeysAndPrefs(final Map<String, String> map) {
-        ErlidePreferencePage.addKeysAndPrefs(IndentationPreferencePage.INDENT_KEY, IndentationPreferencePage.INDENT_KEYS, IndentationPreferencePage.INDENT_DEFAULTS, map);
+        ErlidePreferencePage.addKeysAndPrefs(IndentationPreferencePage.INDENT_KEY,
+                IndentationPreferencePage.INDENT_KEYS,
+                IndentationPreferencePage.INDENT_DEFAULTS, map);
     }
 
     @Override

@@ -2,9 +2,7 @@
  * Code borrowed from PyDev
  */
 /*
- * @author Fabio Zadrozny
- * Created: June 2005
- * License: Common Public License v1.0
+ * @author Fabio Zadrozny Created: June 2005 License: Common Public License v1.0
  */
 
 package org.erlide.ui.util;

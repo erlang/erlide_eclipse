@@ -23,8 +23,8 @@ public final class DialogUtil {
     }
 
     /**
-     * Open an error style dialog for PartInitException by including any extra
-     * information from the nested CoreException if present.
+     * Open an error style dialog for PartInitException by including any extra information
+     * from the nested CoreException if present.
      */
     public static void openError(final Shell parent, final String title,
             final String message, final PartInitException exception) {
@@ -47,8 +47,8 @@ public final class DialogUtil {
     }
 
     /**
-     * Removes the '&' accelerator indicator from a label, if any. Also removes
-     * the () accelerators which are used in Asian languages.
+     * Removes the '&' accelerator indicator from a label, if any. Also removes the ()
+     * accelerators which are used in Asian languages.
      */
     public static String removeAccel(final String label0) {
         String label = label0;
@@ -73,8 +73,7 @@ public final class DialogUtil {
     }
 
     /**
-     * Return the number of rows available in the current display using the
-     * current font.
+     * Return the number of rows available in the current display using the current font.
      *
      * @param parent
      *            The Composite whose Font will be queried.
@@ -89,14 +88,14 @@ public final class DialogUtil {
     }
 
     /**
-     * Return whether or not the font in the parent is the size of a regular
-     * font. Typically used to know if a font is smaller than the High Contrast
-     * Font. This method is used to make layout decisions based on screen space.
+     * Return whether or not the font in the parent is the size of a regular font.
+     * Typically used to know if a font is smaller than the High Contrast Font. This
+     * method is used to make layout decisions based on screen space.
      *
      * @param parent
      *            The Composite whose Font will be queried.
-     * @return boolean. True if there are more than 50 lines of possible text in
-     *         the display.
+     * @return boolean. True if there are more than 50 lines of possible text in the
+     *         display.
      */
     public static boolean inRegularFontMode(final Composite parent) {
 

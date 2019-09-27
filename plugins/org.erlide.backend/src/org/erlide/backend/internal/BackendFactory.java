@@ -80,8 +80,9 @@ public class BackendFactory implements IBackendFactory {
         result.setConsole(SystemConfiguration.getInstance().isDeveloper());
         result.setManaged(true);
         result.setRestartable(true);
-        result.setLongName(SystemConfiguration.hasFeatureEnabled("erlide.shortname")
-                ? false : HostnameChecker.getInstance().canUseLongNames());
+        result.setLongName(
+                SystemConfiguration.hasFeatureEnabled("erlide.shortname") ? false
+                        : HostnameChecker.getInstance().canUseLongNames());
         result.setInternal(true);
         result.setReportErrors(true);
         result.setContext(CodeContext.IDE);

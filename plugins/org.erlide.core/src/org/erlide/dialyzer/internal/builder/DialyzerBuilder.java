@@ -23,50 +23,54 @@ import org.erlide.util.ErlLogger;
 import com.google.common.collect.Sets;
 
 public class DialyzerBuilder {
-	public static final String BUILDER_ID = "org.erlide.core.builder.dialyzer";
-	private final IProject project;
+    public static final String BUILDER_ID = "org.erlide.core.builder.dialyzer";
+    private final IProject project;
 
-	public DialyzerBuilder(IProject project) {
-		this.project = project;
-	}
+    public DialyzerBuilder(final IProject project) {
+        this.project = project;
+    }
 
-	public void build(final BuildNotifier notifier) throws CoreException {
-		if (project == null) {
-			return;
-		}
-		DialyzerPreferences prefs = null;
-		prefs = DialyzerPreferences.get(project);
-		if (prefs == null || !prefs.getDialyzeOnCompile()) {
-			return;
-		}
-		final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-		final Set<IErlModule> modules = DialyzerUtils.collectModulesFromResource(model, project);
-		final Set<IErlProject> projects = Sets.newHashSet();
-		projects.add(model.findProject(project));
-		DialyzerMarkerUtils.removeDialyzerMarkersFor(project);
-		if (!modules.isEmpty()) {
-			try {
-				final IErlProject eproject = model.findProject(project);
-				if (eproject == null) {
-					return;
-				}
-				final IBackend backend = BackendCore.getBackendManager().getBuildBackend(eproject);
-				DialyzerUtils.doDialyze(notifier.monitor, modules, projects, backend);
-			} catch (final InvocationTargetException e) {
-				ErlLogger.error(e);
-			} catch (final DialyzerErrorException e) {
-				ErlLogger.error(e);
-				final String msg = NLS.bind(BuilderMessages.build_dialyzerProblem, e.getLocalizedMessage());
-				DialyzerMarkerUtils.addProblemMarker(project, null, null, msg, 0, IMarker.SEVERITY_ERROR);
-			}
-		}
-	}
+    public void build(final BuildNotifier notifier) throws CoreException {
+        if (project == null) {
+            return;
+        }
+        DialyzerPreferences prefs = null;
+        prefs = DialyzerPreferences.get(project);
+        if (prefs == null || !prefs.getDialyzeOnCompile()) {
+            return;
+        }
+        final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+        final Set<IErlModule> modules = DialyzerUtils.collectModulesFromResource(model,
+                project);
+        final Set<IErlProject> projects = Sets.newHashSet();
+        projects.add(model.findProject(project));
+        DialyzerMarkerUtils.removeDialyzerMarkersFor(project);
+        if (!modules.isEmpty()) {
+            try {
+                final IErlProject eproject = model.findProject(project);
+                if (eproject == null) {
+                    return;
+                }
+                final IBackend backend = BackendCore.getBackendManager()
+                        .getBuildBackend(eproject);
+                DialyzerUtils.doDialyze(notifier.monitor, modules, projects, backend);
+            } catch (final InvocationTargetException e) {
+                ErlLogger.error(e);
+            } catch (final DialyzerErrorException e) {
+                ErlLogger.error(e);
+                final String msg = NLS.bind(BuilderMessages.build_dialyzerProblem,
+                        e.getLocalizedMessage());
+                DialyzerMarkerUtils.addProblemMarker(project, null, null, msg, 0,
+                        IMarker.SEVERITY_ERROR);
+            }
+        }
+    }
 
-	public void clean(final BuildNotifier notifier) {
-		if (project == null || !project.isAccessible()) {
-			return;
-		}
-		DialyzerMarkerUtils.removeDialyzerMarkersFor(project);
-	}
+    public void clean(final BuildNotifier notifier) {
+        if (project == null || !project.isAccessible()) {
+            return;
+        }
+        DialyzerMarkerUtils.removeDialyzerMarkersFor(project);
+    }
 
 }

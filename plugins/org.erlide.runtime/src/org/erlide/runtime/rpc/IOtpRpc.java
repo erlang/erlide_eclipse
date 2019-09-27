@@ -68,8 +68,8 @@ public interface IOtpRpc {
             throws RpcException;
 
     /**
-     * Calls a function that supports sending progress reports back. The first
-     * argument is implicit and is the pid where the reports are to be sent.
+     * Calls a function that supports sending progress reports back. The first argument is
+     * implicit and is the pid where the reports are to be sent.
      */
     // y
     void async_call_result(final IRpcResultCallback cb, final String m, final String f,

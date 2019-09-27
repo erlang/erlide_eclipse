@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2006 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2006 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.util;
 
@@ -32,13 +30,9 @@ public final class BackendManagerPopup implements IBackendListener {
 
     @Override
     public void runtimeAdded(final IBackend b) {
-        DisplayUtils.asyncExec(new Runnable() {
-
-            @Override
-            public void run() {
-                // PopupDialog.showBalloon("Backend notification", "Added "
-                // + b.getInfo().getName(), DELAY);
-            }
+        DisplayUtils.asyncExec(() -> {
+            // PopupDialog.showBalloon("Backend notification", "Added "
+            // + b.getInfo().getName(), DELAY);
         });
     }
 
@@ -47,13 +41,9 @@ public final class BackendManagerPopup implements IBackendListener {
         ErlLogger.debug("$$ removed backend " + b.getName());
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final Display display = workbench.getDisplay();
-        display.asyncExec(new Runnable() {
-
-            @Override
-            public void run() {
-                // PopupDialog.showBalloon("Backend notification", "Removed "
-                // + b.getInfo().getName(), DELAY);
-            }
+        display.asyncExec(() -> {
+            // PopupDialog.showBalloon("Backend notification", "Removed "
+            // + b.getInfo().getName(), DELAY);
         });
     }
 

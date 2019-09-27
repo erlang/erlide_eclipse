@@ -25,8 +25,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 /**
  * Abstract class for user-defined refactoring handlers
  *
- * This class should be extended by classes dedicated to composite and
- * elementary refactorings
+ * This class should be extended by classes dedicated to composite and elementary
+ * refactorings
  *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%

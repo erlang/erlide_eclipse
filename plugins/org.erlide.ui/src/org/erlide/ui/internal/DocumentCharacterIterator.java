@@ -47,8 +47,8 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
     }
 
     /**
-     * Creates an iterator for the document contents from <code>first</code>
-     * (inclusive) to <code>last</code> (exclusive).
+     * Creates an iterator for the document contents from <code>first</code> (inclusive)
+     * to <code>last</code> (exclusive).
      *
      * @param document
      *            the document backing this iterator
@@ -192,9 +192,9 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
     /**
      * {@inheritDoc}
      * <p>
-     * Note that, if the document is modified concurrently, this method may
-     * return {@link CharacterIterator#DONE} if a {@link BadLocationException}
-     * was thrown when accessing the backing document.
+     * Note that, if the document is modified concurrently, this method may return
+     * {@link CharacterIterator#DONE} if a {@link BadLocationException} was thrown when
+     * accessing the backing document.
      * </p>
      *
      * @param index

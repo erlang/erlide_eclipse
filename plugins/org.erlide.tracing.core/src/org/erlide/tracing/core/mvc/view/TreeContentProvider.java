@@ -25,8 +25,8 @@ public class TreeContentProvider
      * @param treeViewer
      *            tree viewer that will be using this content provider
      * @param hasChildrenValue
-     *            value which should be returned when
-     *            {@link #hasChildren(Object)} is called
+     *            value which should be returned when {@link #hasChildren(Object)} is
+     *            called
      */
     public TreeContentProvider(final TreeViewer treeViewer,
             final boolean hasChildrenValue) {

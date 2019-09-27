@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.util.erlang;
 
@@ -13,9 +12,9 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpOutputStream;
 
 /**
- * Provides a Java representation of a cons cell (works for both lists and
- * tuples!). A list or tuple pattern can end with " | Variable", where the
- * variable is matched against the remaining elements.
+ * Provides a Java representation of a cons cell (works for both lists and tuples!). A
+ * list or tuple pattern can end with " | Variable", where the variable is matched against
+ * the remaining elements.
  * <p>
  * <b>!!! These are to NOT to be sent to an Erlang node !!!!</b> Their use is in
  * formatting only.

@@ -31,11 +31,12 @@ public class OutlineFilterUtils {
                 PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS_ENABLED, false);
         final String userDefinedPatternsString = prefsNode
                 .get(PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS, "");
-        userDefinedPatterns
-                .addAll(ListsUtils.unpackList(userDefinedPatternsString, OutlineFilterUtils.SEPARATOR));
+        userDefinedPatterns.addAll(ListsUtils.unpackList(userDefinedPatternsString,
+                OutlineFilterUtils.SEPARATOR));
         final String enabledFilterIDsString = prefsNode
                 .get(PreferenceConstants.OUTLINE_ENABLED_FILTERS, "");
-        enabledFilterIDs.addAll(ListsUtils.unpackList(enabledFilterIDsString, OutlineFilterUtils.SEPARATOR));
+        enabledFilterIDs.addAll(ListsUtils.unpackList(enabledFilterIDsString,
+                OutlineFilterUtils.SEPARATOR));
         return areUserDefinedPatternsEnabled;
     }
 
@@ -115,7 +116,7 @@ public class OutlineFilterUtils {
             erlangOutlinePage = (ErlangOutlinePage) activePart;
         } else {
             final ContentOutline outline = (ContentOutline) activePart;
-            erlangOutlinePage = outline.getAdapter(ErlangOutlinePage.class); 
+            erlangOutlinePage = outline.getAdapter(ErlangOutlinePage.class);
         }
         if (erlangOutlinePage == null) {
             return;

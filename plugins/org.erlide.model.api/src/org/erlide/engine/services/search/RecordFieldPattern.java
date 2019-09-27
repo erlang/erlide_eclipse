@@ -23,8 +23,8 @@ public class RecordFieldPattern extends ErlangSearchPattern {
 
     @Override
     public OtpErlangObject getSearchObject() {
-        return makeSSPatternObject(ErlangSearchPattern.RECORD_FIELD_DEF_ATOM, ErlangSearchPattern.RECORD_FIELD_REF_ATOM, record,
-                fieldName);
+        return makeSSPatternObject(ErlangSearchPattern.RECORD_FIELD_DEF_ATOM,
+                ErlangSearchPattern.RECORD_FIELD_REF_ATOM, record, fieldName);
     }
 
     @Override

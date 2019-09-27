@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.util;
 
@@ -37,8 +35,8 @@ import org.erlide.wrangler.refactoring.selection.internal.ErlTextMemberSelection
 import com.ericsson.otp.erlang.OtpErlangString;
 
 /**
- * Class which point to singleton objects, like the actual editor, and has
- * functions which are 'global'.
+ * Class which point to singleton objects, like the actual editor, and has functions which
+ * are 'global'.
  *
  * @author Gyorgy Orosz
  * @version %I%, %G%
@@ -96,7 +94,8 @@ public class GlobalParameters {
      */
     public static void setEditor(final IEditorPart _editor) {
         GlobalParameters.editor = _editor;
-        GlobalParameters.wranglerSelection = new ErlTextMemberSelection((ITextEditor) GlobalParameters.editor);
+        GlobalParameters.wranglerSelection = new ErlTextMemberSelection(
+                (ITextEditor) GlobalParameters.editor);
     }
 
     /**
@@ -121,15 +120,18 @@ public class GlobalParameters {
                 final IWorkbench instance = PlatformUI.getWorkbench();
                 final IWorkbenchWindow activeWorkbenchWindow = instance
                         .getActiveWorkbenchWindow();
-                GlobalParameters.editor = activeWorkbenchWindow.getActivePage().getActiveEditor();
+                GlobalParameters.editor = activeWorkbenchWindow.getActivePage()
+                        .getActiveEditor();
             }
             if (selection instanceof ITextSelection) {
                 final IWorkbench instance = PlatformUI.getWorkbench();
                 final IWorkbenchWindow activeWorkbenchWindow = instance
                         .getActiveWorkbenchWindow();
-                GlobalParameters.editor = activeWorkbenchWindow.getActivePage().getActiveEditor();
+                GlobalParameters.editor = activeWorkbenchWindow.getActivePage()
+                        .getActiveEditor();
 
-                GlobalParameters.wranglerSelection = new ErlTextMemberSelection((ITextSelection) selection,
+                GlobalParameters.wranglerSelection = new ErlTextMemberSelection(
+                        (ITextSelection) selection,
                         (ITextEditor) GlobalParameters.editor);
             } else if (selection instanceof ITreeSelection) {
                 final Object firstElement = ((ITreeSelection) selection)
@@ -137,13 +139,14 @@ public class GlobalParameters {
                 if (firstElement instanceof IErlElement) {
                     final IErlElement element = (IErlElement) firstElement;
                     final IFile file = (IFile) element.getResource();
-                    GlobalParameters.wranglerSelection = new ErlMemberSelection(element, file,
-                            WranglerUtils.getDocument(file));
+                    GlobalParameters.wranglerSelection = new ErlMemberSelection(element,
+                            file, WranglerUtils.getDocument(file));
                 } else if (firstElement instanceof IFile) {
                     final IFile file = (IFile) firstElement;
                     final IErlModule module = ErlangEngine.getInstance().getModel()
                             .findModule(file);
-                    GlobalParameters.wranglerSelection = new ErlModuleSelection(module, file);
+                    GlobalParameters.wranglerSelection = new ErlModuleSelection(module,
+                            file);
                 } else {
                     GlobalParameters.wranglerSelection = null;
                     throw new WranglerException("Please select an Erlang element!");
@@ -159,8 +162,7 @@ public class GlobalParameters {
 
         /*
          * System.out.println(wranglerSelection.getStartLine() + "," +
-         * wranglerSelection.getStartCol() + ";" +
-         * wranglerSelection.getEndLine() + "," +
+         * wranglerSelection.getStartCol() + ";" + wranglerSelection.getEndLine() + "," +
          * wranglerSelection.getEndCol());
          */
 

@@ -17,9 +17,9 @@ import org.erlide.tracing.core.mvc.model.TracedNode;
 import org.erlide.util.ErlLogger;
 
 /**
- * Class containing helper methods for managing nodes and trace patterns
- * configurations. It loads loads and saves data in plugins directory (path to
- * this directory is obtained using {@link Plugin#getStateLocation()}).
+ * Class containing helper methods for managing nodes and trace patterns configurations.
+ * It loads loads and saves data in plugins directory (path to this directory is obtained
+ * using {@link Plugin#getStateLocation()}).
  *
  * @author Piotr Dorobisz
  *
@@ -42,7 +42,8 @@ public final class ConfigurationManager {
     public static TracePattern[] loadTPConfig(final String configName) {
         final ArrayList<TracePattern> patterns = new ArrayList<>();
 
-        final Object[] objects = ConfigurationManager.loadConfiguration(configName, ConfigurationManager.TP_DIR);
+        final Object[] objects = ConfigurationManager.loadConfiguration(configName,
+                ConfigurationManager.TP_DIR);
         if (objects != null) {
             for (final Object object : objects) {
                 patterns.add((TracePattern) object);
@@ -61,7 +62,8 @@ public final class ConfigurationManager {
     public static TracedNode[] loadNodesConfig(final String configName) {
         final ArrayList<TracedNode> nodes = new ArrayList<>();
 
-        final Object[] objects = ConfigurationManager.loadConfiguration(configName, ConfigurationManager.NODES_DIR);
+        final Object[] objects = ConfigurationManager.loadConfiguration(configName,
+                ConfigurationManager.NODES_DIR);
         if (objects != null) {
             for (final Object object : objects) {
                 nodes.add((TracedNode) object);
@@ -71,29 +73,28 @@ public final class ConfigurationManager {
     }
 
     /**
-     * Saves trace patterns configuration under given name. If configuration
-     * with this name does not exist it will be created. Otherwise it will be
-     * overwritten.
+     * Saves trace patterns configuration under given name. If configuration with this
+     * name does not exist it will be created. Otherwise it will be overwritten.
      *
      * @param configName
-     * @return <code>true</code> if configuration was saved, <code>false</code>
-     *         otherwise
+     * @return <code>true</code> if configuration was saved, <code>false</code> otherwise
      */
     public static boolean saveTPConfig(final String configName) {
-        return ConfigurationManager.saveConfiguration(configName, ConfigurationManager.TP_DIR,
+        return ConfigurationManager.saveConfiguration(configName,
+                ConfigurationManager.TP_DIR,
                 TraceBackend.getInstance().getTracePatternsArray());
     }
 
     /**
-     * Saves nodes configuration under given name. If configuration with this
-     * name does not exist it will be created. Otherwise it will be overwritten.
+     * Saves nodes configuration under given name. If configuration with this name does
+     * not exist it will be created. Otherwise it will be overwritten.
      *
      * @param configName
-     * @return <code>true</code> if configuration was saved, <code>false</code>
-     *         otherwise
+     * @return <code>true</code> if configuration was saved, <code>false</code> otherwise
      */
     public static boolean saveNodesConfig(final String configName) {
-        return ConfigurationManager.saveConfiguration(configName, ConfigurationManager.NODES_DIR,
+        return ConfigurationManager.saveConfiguration(configName,
+                ConfigurationManager.NODES_DIR,
                 TraceBackend.getInstance().getTracedNodesArray());
     }
 
@@ -102,11 +103,12 @@ public final class ConfigurationManager {
      *
      * @param configName
      *            configuration name
-     * @return <code>true</code> if configuration was deleted,
-     *         <code>false</code> otherwise
+     * @return <code>true</code> if configuration was deleted, <code>false</code>
+     *         otherwise
      */
     public static boolean removeTPConfig(final String configName) {
-        return ConfigurationManager.removeConfiguration(configName, ConfigurationManager.TP_DIR);
+        return ConfigurationManager.removeConfiguration(configName,
+                ConfigurationManager.TP_DIR);
     }
 
     /**
@@ -114,11 +116,12 @@ public final class ConfigurationManager {
      *
      * @param configName
      *            configuration name
-     * @return <code>true</code> if configuration was deleted,
-     *         <code>false</code> otherwise
+     * @return <code>true</code> if configuration was deleted, <code>false</code>
+     *         otherwise
      */
     public static boolean removeNodesConfig(final String configName) {
-        return ConfigurationManager.removeConfiguration(configName, ConfigurationManager.NODES_DIR);
+        return ConfigurationManager.removeConfiguration(configName,
+                ConfigurationManager.NODES_DIR);
     }
 
     /**

@@ -38,9 +38,8 @@ public class OpenViewActionGroup extends ActionGroup {
     private IWorkbenchSite site;
 
     /**
-     * Creates a new <code>OpenActionGroup</code>. The group requires that the
-     * selection provided by the page's selection provider is of type
-     * {@link IStructuredSelection}.
+     * Creates a new <code>OpenActionGroup</code>. The group requires that the selection
+     * provided by the page's selection provider is of type {@link IStructuredSelection}.
      *
      * @param page
      *            the page that owns this action group
@@ -51,27 +50,25 @@ public class OpenViewActionGroup extends ActionGroup {
     }
 
     /**
-     * Creates a new <code>OpenActionGroup</code>. The group requires that the
-     * selection provided by the given selection provider is of type
-     * {@link IStructuredSelection}.
+     * Creates a new <code>OpenActionGroup</code>. The group requires that the selection
+     * provided by the given selection provider is of type {@link IStructuredSelection}.
      *
      * @param page
      *            the page that owns this action group
      * @param selectionProvider
-     *            the selection provider used instead of the page selection
-     *            provider.
+     *            the selection provider used instead of the page selection provider.
      *
      * @since 3.2
      */
-    public OpenViewActionGroup(final Page page, final ISelectionProvider selectionProvider) {
+    public OpenViewActionGroup(final Page page,
+            final ISelectionProvider selectionProvider) {
         site = page.getSite();
         createSiteActions(selectionProvider);
     }
 
     /**
-     * Creates a new <code>OpenActionGroup</code>. The group requires that the
-     * selection provided by the part's selection provider is of type
-     * {@link IStructuredSelection}.
+     * Creates a new <code>OpenActionGroup</code>. The group requires that the selection
+     * provided by the part's selection provider is of type {@link IStructuredSelection}.
      *
      * @param part
      *            the view part that owns this action group
@@ -81,15 +78,13 @@ public class OpenViewActionGroup extends ActionGroup {
     }
 
     /**
-     * Creates a new <code>OpenActionGroup</code>. The group requires that the
-     * selection provided by the given selection provider is of type
-     * {@link IStructuredSelection}.
+     * Creates a new <code>OpenActionGroup</code>. The group requires that the selection
+     * provided by the given selection provider is of type {@link IStructuredSelection}.
      *
      * @param part
      *            the view part that owns this action group
      * @param selectionProvider
-     *            the selection provider used instead of the page selection
-     *            provider.
+     *            the selection provider used instead of the page selection provider.
      *
      * @since 3.2
      */
@@ -99,20 +94,22 @@ public class OpenViewActionGroup extends ActionGroup {
         createSiteActions(selectionProvider);
         // we do a name check here to avoid class loading.
         // final String partName = part.getClass().getName();
-        //		fIsTypeHiararchyViewerOwner= "org.eclipse.jdt.internal.ui.typehierarchy.TypeHierarchyViewPart".equals(partName); //$NON-NLS-1$
-        //		fIsCallHiararchyViewerOwner= "org.eclipse.jdt.internal.ui.callhierarchy.CallHierarchyViewPart".equals(partName); //$NON-NLS-1$
+        // fIsTypeHiararchyViewerOwner=
+        // "org.eclipse.jdt.internal.ui.typehierarchy.TypeHierarchyViewPart".equals(partName);
+        // //$NON-NLS-1$
+        // fIsCallHiararchyViewerOwner=
+        // "org.eclipse.jdt.internal.ui.callhierarchy.CallHierarchyViewPart".equals(partName);
+        // //$NON-NLS-1$
     }
 
     /**
-     * Creates a new <code>OpenActionGroup</code>. The group requires that the
-     * selection provided by the given selection provider is of type
-     * {@link IStructuredSelection}.
+     * Creates a new <code>OpenActionGroup</code>. The group requires that the selection
+     * provided by the given selection provider is of type {@link IStructuredSelection}.
      *
      * @param site
      *            the site that will own the action group.
      * @param selectionProvider
-     *            the selection provider used instead of the page selection
-     *            provider.
+     *            the selection provider used instead of the page selection provider.
      *
      * @since 3.2
      */
@@ -123,14 +120,13 @@ public class OpenViewActionGroup extends ActionGroup {
     }
 
     /**
-     * Note: This constructor is for internal use only. Clients should not call
-     * this constructor.
+     * Note: This constructor is for internal use only. Clients should not call this
+     * constructor.
      *
      * @param part
      *            the editor part
      *
-     * @noreference This constructor is not intended to be referenced by
-     *              clients.
+     * @noreference This constructor is not intended to be referenced by clients.
      */
     public OpenViewActionGroup(final AbstractErlangEditor part) {
         fEditorIsOwner = true;
@@ -138,27 +134,27 @@ public class OpenViewActionGroup extends ActionGroup {
 
         // fOpenSuperImplementation= new OpenSuperImplementationAction(part);
         // fOpenSuperImplementation.setActionDefinitionId(IJavaEditorActionDefinitionIds.OPEN_SUPER_IMPLEMENTATION);
-        //		part.setAction("OpenSuperImplementation", fOpenSuperImplementation); //$NON-NLS-1$
+        // part.setAction("OpenSuperImplementation", fOpenSuperImplementation);
+        // //$NON-NLS-1$
         //
         // fOpenExternalJavadoc= new OpenExternalJavadocAction(part);
         // fOpenExternalJavadoc.setActionDefinitionId(IJavaEditorActionDefinitionIds.OPEN_EXTERNAL_JAVADOC);
-        //		part.setAction("OpenExternalJavadoc", fOpenExternalJavadoc); //$NON-NLS-1$
+        // part.setAction("OpenExternalJavadoc", fOpenExternalJavadoc); //$NON-NLS-1$
         //
         // fOpenTypeHierarchy= new OpenTypeHierarchyAction(part);
         // fOpenTypeHierarchy.setActionDefinitionId(IJavaEditorActionDefinitionIds.OPEN_TYPE_HIERARCHY);
-        //		part.setAction("OpenTypeHierarchy", fOpenTypeHierarchy); //$NON-NLS-1$
+        // part.setAction("OpenTypeHierarchy", fOpenTypeHierarchy); //$NON-NLS-1$
         //
         // fOpenCallHierarchy= new OpenCallHierarchyAction(part);
         // fOpenCallHierarchy.setActionDefinitionId(IJavaEditorActionDefinitionIds.OPEN_CALL_HIERARCHY);
-        //        part.setAction("OpenCallHierarchy", fOpenCallHierarchy); //$NON-NLS-1$
+        // part.setAction("OpenCallHierarchy", fOpenCallHierarchy); //$NON-NLS-1$
 
         initialize(part.getEditorSite().getSelectionProvider());
     }
 
     /**
      * Specifies if this action group also contains the 'Properties' action (
-     * {@link PropertyDialogAction}). By default, the action is contained in the
-     * group.
+     * {@link PropertyDialogAction}). By default, the action is contained in the group.
      *
      * @param enable
      *            If set, the 'Properties' action is part of this action group
@@ -170,8 +166,8 @@ public class OpenViewActionGroup extends ActionGroup {
 
     /**
      * Specifies if this action group also contains the 'Show In' menu (See
-     * {@link ContributionItemFactory#VIEWS_SHOW_IN}). By default, the action is
-     * contained in the group except for editors.
+     * {@link ContributionItemFactory#VIEWS_SHOW_IN}). By default, the action is contained
+     * in the group except for editors.
      *
      * @param enable
      *            If set, the 'Show In' menu is part of this action group
@@ -249,8 +245,8 @@ public class OpenViewActionGroup extends ActionGroup {
         if (fShowShowInMenu) {
             final MenuManager showInSubMenu = new MenuManager(getShowInMenuLabel());
             final IWorkbenchWindow workbenchWindow = getSite().getWorkbenchWindow();
-            showInSubMenu.add(ContributionItemFactory.VIEWS_SHOW_IN
-                    .create(workbenchWindow));
+            showInSubMenu
+                    .add(ContributionItemFactory.VIEWS_SHOW_IN.create(workbenchWindow));
             menu.appendToGroup(IContextMenuConstants.GROUP_OPEN, showInSubMenu);
         }
 
@@ -271,11 +267,11 @@ public class OpenViewActionGroup extends ActionGroup {
     private String getShowInMenuLabel() {
         String keyBinding = null;
 
-        final IBindingService bindingService = PlatformUI
-                .getWorkbench().getAdapter(IBindingService.class);
+        final IBindingService bindingService = PlatformUI.getWorkbench()
+                .getAdapter(IBindingService.class);
         if (bindingService != null) {
-            keyBinding = bindingService
-                    .getBestActiveBindingFormattedFor(OpenViewActionGroup.NAVIGATE_SHOW_IN_QUICK_MENU);
+            keyBinding = bindingService.getBestActiveBindingFormattedFor(
+                    OpenViewActionGroup.NAVIGATE_SHOW_IN_QUICK_MENU);
         }
 
         if (keyBinding == null) {

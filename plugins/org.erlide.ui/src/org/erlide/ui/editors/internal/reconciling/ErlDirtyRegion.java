@@ -47,8 +47,8 @@ public class ErlDirtyRegion {
     }
 
     /**
-     * Modify the receiver so that it encompasses the region specified by the
-     * dirty region.
+     * Modify the receiver so that it encompasses the region specified by the dirty
+     * region.
      *
      * @param dr
      *            the dirty region to merge with

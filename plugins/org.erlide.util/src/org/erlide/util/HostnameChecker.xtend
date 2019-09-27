@@ -189,13 +189,11 @@ class HostnameChecker {
 
     def Properties readErlideHosts() {
         val Properties props = new Properties()
-        var loaded = false
         try {
             val File f = new File(hostsFileName)
             val FileInputStream is = new FileInputStream(f)
             try {
                 props.load(is)
-                loaded = true
             } finally {
                 is.close()
             }

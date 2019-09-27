@@ -18,8 +18,6 @@ import org.eclipse.debug.ui.contexts.DebugContextEvent;
 import org.eclipse.debug.ui.contexts.IDebugContextListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
@@ -136,13 +134,7 @@ public class InterpretedModulesView extends AbstractDebugView
     }
 
     private void refreshList() {
-        getSite().getShell().getDisplay().asyncExec(new Runnable() {
-
-            @Override
-            public void run() {
-                listViewer.refresh();
-            }
-        });
+        getSite().getShell().getDisplay().asyncExec(() -> listViewer.refresh());
     }
 
     @Override
@@ -161,21 +153,15 @@ public class InterpretedModulesView extends AbstractDebugView
         contentProvider = new InterpretedModuleListContentProvider();
         listViewer.setContentProvider(contentProvider);
         getSite().setSelectionProvider(listViewer);
-        listViewer.addDoubleClickListener(new IDoubleClickListener() {
-
-            @Override
-            public void doubleClick(final DoubleClickEvent event) {
-                final IStructuredSelection ss = (IStructuredSelection) event
-                        .getSelection();
-                for (final Object o : ss.toArray()) {
-                    try {
-                        EditorUtility.openInEditor(o);
-                    } catch (final PartInitException e) {
-                        ErlLogger.warn(e);
-                    }
+        listViewer.addDoubleClickListener(event -> {
+            final IStructuredSelection ss = (IStructuredSelection) event.getSelection();
+            for (final Object o : ss.toArray()) {
+                try {
+                    EditorUtility.openInEditor(o);
+                } catch (final PartInitException e) {
+                    ErlLogger.warn(e);
                 }
             }
-
         });
         DebugUITools.getDebugContextManager().addDebugContextListener(this);
         DebugPlugin.getDefault().addDebugEventListener(this);

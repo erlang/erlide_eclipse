@@ -1,13 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2005 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
- *     Jakob C
+ * Contributors: Vlad Dumitrescu Jakob C
  *******************************************************************************/
 package org.erlide.ui.launch;
 
@@ -23,11 +20,9 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -55,10 +50,9 @@ import org.erlide.ui.util.SWTUtil;
 import com.google.common.collect.Lists;
 
 /**
- * A tab in the Launch Config with erlang debugger parameters: the debug flags
- * for attaching and distruibuted debugging a checkbox tree of modules to
- * interpret upon launching. The checkbox tree classes are reused by
- * InterpretedModulesView
+ * A tab in the Launch Config with erlang debugger parameters: the debug flags for
+ * attaching and distruibuted debugging a checkbox tree of modules to interpret upon
+ * launching. The checkbox tree classes are reused by InterpretedModulesView
  *
  */
 public class DebugTab extends AbstractLaunchConfigurationTab {
@@ -132,13 +126,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         // inconvenience!");
 
         listViewer = new ListViewer(interpretedModulesGroup, SWT.BORDER | SWT.MULTI);
-        listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(final SelectionChangedEvent event) {
-                final ISelection selection = event.getSelection();
-                removeButton.setEnabled(!selection.isEmpty());
-            }
+        listViewer.addSelectionChangedListener(event -> {
+            final ISelection selection = event.getSelection();
+            removeButton.setEnabled(!selection.isEmpty());
         });
         // checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
         // @Override
@@ -167,8 +157,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         addButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                final List<IErlModule> result = DebugTab.getModulesFromAddModulesDialog(
-                        getShell());
+                final List<IErlModule> result = DebugTab
+                        .getModulesFromAddModulesDialog(getShell());
                 contentProvider.addModules(result);
                 listViewer.refresh();
                 updateLaunchConfigurationDialog();

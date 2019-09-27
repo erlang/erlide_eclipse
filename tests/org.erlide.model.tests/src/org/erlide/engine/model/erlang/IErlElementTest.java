@@ -15,7 +15,6 @@ import org.eclipse.core.resources.IProject;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.ErlElementKind;
-import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.IErlElement.AcceptFlags;
 import org.erlide.engine.model.IErlElementVisitor;
@@ -218,23 +217,18 @@ public class IErlElementTest extends ErlModelTestBase {
         // ErlLogger.debug(project.getChildren().toString());
         module.open(null);
         final List<IErlElement> elements = Lists.newArrayList();
-        final IErlElementVisitor visitor = new IErlElementVisitor() {
-
-            @Override
-            public boolean visit(final IErlElement element) throws ErlModelException {
-                if (element instanceof IErlExternal) {
-                    return false; // avoid digging through otp
-                }
-                final String name = element.getName();
-                if ("ebin".equals(name)) {
-                    return false; // avoid possible beam-files
-                } else if (name.startsWith(".")) {
-                    return false; // avoid eclipse internals
-                }
-                elements.add(element);
-                return true;
+        final IErlElementVisitor visitor = element -> {
+            if (element instanceof IErlExternal) {
+                return false; // avoid digging through otp
             }
-
+            final String name = element.getName();
+            if ("ebin".equals(name)) {
+                return false; // avoid possible beam-files
+            } else if (name.startsWith(".")) {
+                return false; // avoid eclipse internals
+            }
+            elements.add(element);
+            return true;
         };
         final EnumSet<AcceptFlags> noneOf = EnumSet.noneOf(AcceptFlags.class);
         project.accept(visitor, noneOf, ErlElementKind.MODULE);

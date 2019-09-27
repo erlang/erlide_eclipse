@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2005 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.editors.erl.outline;
 
@@ -29,8 +27,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.ImageDescriptorRegistry;
 
 /**
- * Default strategy of the Erlang plugin for the construction of Erlang element
- * icons.
+ * Default strategy of the Erlang plugin for the construction of Erlang element icons.
  */
 public class ErlangElementImageProvider {
 
@@ -72,9 +69,9 @@ public class ErlangElementImageProvider {
     }
 
     /**
-     * Returns the icon for a given element. The icon depends on the element
-     * type and element properties. If configured, overlay icons are constructed
-     * for <code>ISourceReference</code>s.
+     * Returns the icon for a given element. The icon depends on the element type and
+     * element properties. If configured, overlay icons are constructed for
+     * <code>ISourceReference</code>s.
      *
      * @param flags
      *            Flags as defined by the ErlangImageLabelProvider
@@ -99,7 +96,8 @@ public class ErlangElementImageProvider {
 
     private ImageDescriptor computeDescriptor(final Object element, final int flags) {
         if (element instanceof IErlElement) {
-            return ErlangElementImageProvider.getErlImageDescriptor((IErlElement) element, flags);
+            return ErlangElementImageProvider.getErlImageDescriptor((IErlElement) element,
+                    flags);
         } else if (element instanceof IFile) {
             final IFile file = (IFile) element;
             if ("erl".equals(file.getFileExtension())) { //$NON-NLS-1$
@@ -134,38 +132,42 @@ public class ErlangElementImageProvider {
     }
 
     /**
-     * Returns an image descriptor for a module not on the class path. The
-     * descriptor includes overlays, if specified.
+     * Returns an image descriptor for a module not on the class path. The descriptor
+     * includes overlays, if specified.
      */
     public ImageDescriptor getErlResourceImageDescriptor(final IFile file,
             final int flags) {
-        final Point size = ErlangElementImageProvider.useSmallSize(flags) ? ErlangElementImageProvider.SMALL_SIZE : ErlangElementImageProvider.BIG_SIZE;
+        final Point size = ErlangElementImageProvider.useSmallSize(flags)
+                ? ErlangElementImageProvider.SMALL_SIZE
+                : ErlangElementImageProvider.BIG_SIZE;
         return new ErlangElementImageDescriptor(
                 ErlideImage.MODULE_RESOURCE.getDescriptor(), 0, size);
     }
 
     /**
-     * Returns an image descriptor for an erlang element. The descriptor
-     * includes overlays, if specified.
+     * Returns an image descriptor for an erlang element. The descriptor includes
+     * overlays, if specified.
      */
     public static ImageDescriptor getErlImageDescriptor(final IErlElement element,
             final int flags) {
         final int adornmentFlags = 0; // computeAdornmentFlags(element,
         // flags);
-        final Point size = ErlangElementImageProvider.useSmallSize(flags) ? ErlangElementImageProvider.SMALL_SIZE : ErlangElementImageProvider.BIG_SIZE;
-        return new ErlangElementImageDescriptor(ErlangElementImageProvider.getBaseImageDescriptor(element, flags),
+        final Point size = ErlangElementImageProvider.useSmallSize(flags)
+                ? ErlangElementImageProvider.SMALL_SIZE
+                : ErlangElementImageProvider.BIG_SIZE;
+        return new ErlangElementImageDescriptor(
+                ErlangElementImageProvider.getBaseImageDescriptor(element, flags),
                 adornmentFlags, size);
     }
 
     /**
-     * Returns an image descriptor for a IAdaptable. The descriptor includes
-     * overlays, if specified (only error ticks apply). Returns
-     * <code>null</code> if no image could be found.
+     * Returns an image descriptor for a IAdaptable. The descriptor includes overlays, if
+     * specified (only error ticks apply). Returns <code>null</code> if no image could be
+     * found.
      */
     public ImageDescriptor getWorkbenchImageDescriptor(final IAdaptable adaptable,
             final int flags) {
-        final IWorkbenchAdapter wbAdapter = adaptable
-                .getAdapter(IWorkbenchAdapter.class);
+        final IWorkbenchAdapter wbAdapter = adaptable.getAdapter(IWorkbenchAdapter.class);
         if (wbAdapter == null) {
             return null;
         }
@@ -174,7 +176,9 @@ public class ErlangElementImageProvider {
             return null;
         }
 
-        final Point size = ErlangElementImageProvider.useSmallSize(flags) ? ErlangElementImageProvider.SMALL_SIZE : ErlangElementImageProvider.BIG_SIZE;
+        final Point size = ErlangElementImageProvider.useSmallSize(flags)
+                ? ErlangElementImageProvider.SMALL_SIZE
+                : ErlangElementImageProvider.BIG_SIZE;
         return new ErlangElementImageDescriptor(descriptor, 0, size);
     }
 
@@ -182,8 +186,8 @@ public class ErlangElementImageProvider {
     // -------------------------------------------------
 
     /**
-     * Returns an image descriptor for an Erlang element. This is the base
-     * image, no overlays.
+     * Returns an image descriptor for an Erlang element. This is the base image, no
+     * overlays.
      */
     public static ImageDescriptor getBaseImageDescriptor(final IErlElement element,
             final int renderFlags) {

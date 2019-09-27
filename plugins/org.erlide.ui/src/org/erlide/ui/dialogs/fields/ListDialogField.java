@@ -64,13 +64,14 @@ public class ListDialogField<Element> extends DialogField {
 
         public ColumnsDescription(final ColumnLayoutData[] columns,
                 final String[] headers, final boolean drawLines) {
-            this.fColumns = columns;
-            this.fHeaders = headers;
-            this.fDrawLines = drawLines;
+            fColumns = columns;
+            fHeaders = headers;
+            fDrawLines = drawLines;
         }
 
         public ColumnsDescription(final String[] headers, final boolean drawLines) {
-            this(ColumnsDescription.createColumnWeightData(headers.length), headers, drawLines);
+            this(ColumnsDescription.createColumnWeightData(headers.length), headers,
+                    drawLines);
         }
 
         public ColumnsDescription(final int nColumns, final boolean drawLines) {
@@ -742,13 +743,9 @@ public class ListDialogField<Element> extends DialogField {
     public void postSetSelection(final ISelection selection) {
         if (isOkToUse(fTableControl)) {
             final Display d = fTableControl.getDisplay();
-            d.asyncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (isOkToUse(fTableControl)) {
-                        selectElements(selection);
-                    }
+            d.asyncExec(() -> {
+                if (isOkToUse(fTableControl)) {
+                    selectElements(selection);
                 }
             });
         }

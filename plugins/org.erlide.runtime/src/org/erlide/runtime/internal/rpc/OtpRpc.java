@@ -4,7 +4,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.erlide.runtime.rpc.IOtpRpc;
 import org.erlide.runtime.rpc.IRpcCallback;
@@ -42,7 +41,7 @@ public class OtpRpc implements IOtpRpc {
     public static final boolean CHECK_RPC = Boolean.getBoolean("erlide.checkrpc");
 
     public static long DEFAULT_TIMEOUT;
-    {
+    static {
         OtpRpc.setDefaultTimeout();
     }
 
@@ -117,18 +116,15 @@ public class OtpRpc implements IOtpRpc {
         try {
             final RpcFuture future = sendRpcCall(localNode, nodeName, false, gleader,
                     module, fun, signature, args);
-            final Runnable target = new Runnable() {
-                @Override
-                public void run() {
-                    OtpErlangObject result;
-                    try {
-                        result = future.checkedGet(timeout, TimeUnit.MILLISECONDS);
-                        cb.onSuccess(result);
-                    } catch (final Exception e) {
-                        ErlLogger.error("Could not execute RPC " + module + ":" + fun
-                                + " : " + e.getMessage());
-                        cb.onFailure(e);
-                    }
+            final Runnable target = () -> {
+                OtpErlangObject result;
+                try {
+                    result = future.checkedGet(timeout, TimeUnit.MILLISECONDS);
+                    cb.onSuccess(result);
+                } catch (final Exception e) {
+                    ErlLogger.error("Could not execute RPC " + module + ":" + fun + " : "
+                            + e.getMessage());
+                    cb.onFailure(e);
                 }
             };
             // We can't use jobs here, it's an Eclipse dependency
@@ -156,8 +152,6 @@ public class OtpRpc implements IOtpRpc {
             }
         } catch (final SignatureException e) {
             throw new RpcException(e);
-        } catch (final TimeoutException e) {
-            throw new RpcTimeoutException(e.getMessage());
         }
         return result;
     }

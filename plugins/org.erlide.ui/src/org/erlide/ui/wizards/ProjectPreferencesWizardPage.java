@@ -11,8 +11,6 @@ package org.erlide.ui.wizards;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -85,12 +83,7 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
         }
         output.setText(info.getOutputDir().toString());
         output.setEnabled(false);
-        output.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                info.setOutputDir(new Path(output.getText()));
-            }
-        });
+        output.addModifyListener(e -> info.setOutputDir(new Path(output.getText())));
 
         final Label l1 = new Label(composite, SWT.NONE);
         l1.setAlignment(SWT.RIGHT);
@@ -117,12 +110,8 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
                 "enter a list of folders, using / in paths and ; as list separator");
         source.setText(PathSerializer.packList(info.getSourceDirs()));
         source.setEnabled(false);
-        source.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                info.setSourceDirs(PathSerializer.unpackList(source.getText()));
-            }
-        });
+        source.addModifyListener(
+                e -> info.setSourceDirs(PathSerializer.unpackList(source.getText())));
 
         final Label includesLabel = new Label(composite, SWT.NONE);
         includesLabel.setAlignment(SWT.RIGHT);
@@ -149,12 +138,8 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
                 "enter a list of folders, using / in paths and ; as list separator");
         include.setText(PathSerializer.packList(info.getIncludeDirs()));
         include.setEnabled(false);
-        include.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                info.setIncludeDirs(PathSerializer.unpackList(include.getText()));
-            }
-        });
+        include.addModifyListener(
+                e -> info.setIncludeDirs(PathSerializer.unpackList(include.getText())));
 
         final Label lblTestSources = new Label(composite, SWT.NONE);
         lblTestSources.setEnabled(false);

@@ -72,16 +72,12 @@ public class RegressionResultsView extends ViewPart {
     }
 
     public void addLine(final String line) {
-        DisplayUtils.asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                data.add("" + data.size() + ": " + line);
-                tableViewer.refresh();
-                tableViewer.reveal(data.get(data.size() - 1));
-                // tableViewer.refresh();
-                control.update();
-            }
-
+        DisplayUtils.asyncExec(() -> {
+            data.add("" + data.size() + ": " + line);
+            tableViewer.refresh();
+            tableViewer.reveal(data.get(data.size() - 1));
+            // tableViewer.refresh();
+            control.update();
         });
     }
 

@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2005 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.dialogs.fields;
 
@@ -88,19 +86,13 @@ public class StringDialogField extends DialogField {
      * Creates or returns the created text control.
      *
      * @param parent
-     *            The parent composite or <code>null</code> when the widget has
-     *            already been created.
+     *            The parent composite or <code>null</code> when the widget has already
+     *            been created.
      */
     public Text getTextControl(final Composite parent) {
         if (fTextControl == null) {
             assertCompositeNotNull(parent);
-            fModifyListener = new ModifyListener() {
-
-                @Override
-                public void modifyText(final ModifyEvent e) {
-                    doModifyText(e);
-                }
-            };
+            fModifyListener = e -> doModifyText(e);
 
             fTextControl = new Text(parent, SWT.SINGLE | SWT.BORDER);
             // moved up due to 1GEUNW2

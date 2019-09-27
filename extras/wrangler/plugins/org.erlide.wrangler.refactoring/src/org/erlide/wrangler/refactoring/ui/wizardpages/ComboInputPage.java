@@ -1,20 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.ui.wizardpages;
 
 import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.RowLayout;
@@ -27,8 +23,8 @@ import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
 import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 
 /**
- * Input page which displays a combo input element, and offers to select on of
- * the listed elements
+ * Input page which displays a combo input element, and offers to select on of the listed
+ * elements
  *
  * @author Gyorgy Orosz
  * @version %I%, %G%
@@ -114,21 +110,16 @@ public class ComboInputPage extends InputPage {
 
         final IValidator validator = new AtomValidator();
 
-        selectionList.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                if (validator.isValid(selectionList.getText())) {
-                    ((SimpleWranglerRefactoring) getRefactoring())
-                            .setUserInput(selectionList.getText());
-                    setErrorMessage(null);
-                    setPageComplete(true);
-                } else {
-                    setPageComplete(false);
-                    setErrorMessage("Module name must be a a valid atom!");
-                }
+        selectionList.addModifyListener(e -> {
+            if (validator.isValid(selectionList.getText())) {
+                ((SimpleWranglerRefactoring) getRefactoring())
+                        .setUserInput(selectionList.getText());
+                setErrorMessage(null);
+                setPageComplete(true);
+            } else {
+                setPageComplete(false);
+                setErrorMessage("Module name must be a a valid atom!");
             }
-
         });
 
     }

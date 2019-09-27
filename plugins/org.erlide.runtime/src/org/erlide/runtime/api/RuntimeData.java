@@ -149,7 +149,8 @@ public class RuntimeData {
     }
 
     public static boolean validateNodeName(final String name) {
-        return !Strings.isNullOrEmpty(name) && name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
+        return !Strings.isNullOrEmpty(name)
+                && name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
     }
 
     public boolean hasLongName() {

@@ -17,35 +17,35 @@ public interface ICoverageObject extends Serializable {
      * @param name
      * @return
      */
-    public ICoverageObject findChild(String name);
+    ICoverageObject findChild(String name);
 
     /**
      * Return a path to the html report for the element
      *
      * @return
      */
-    public String getHtmlPath();
+    String getHtmlPath();
 
     /**
      * Return a path relative to reports directory
      *
      * @return
      */
-    public String getRelativePath();
+    String getRelativePath();
 
     /**
      * Sets relative path
      *
      * @param path
      */
-    public void setRelativePath(String path);
+    void setRelativePath(String path);
 
     /**
      * Set a path to the html report for the element
      *
      * @param htmlPath
      */
-    public void setHtmlPath(final String htmlPath);
+    void setHtmlPath(final String htmlPath);
 
     /**
      * Find next sibling to the given child
@@ -53,7 +53,7 @@ public interface ICoverageObject extends Serializable {
      * @param name
      * @return
      */
-    public ICoverageObject getPrevSiblingTo(String name);
+    ICoverageObject getPrevSiblingTo(String name);
 
     /**
      * Find previous sibling to the given child
@@ -61,21 +61,21 @@ public interface ICoverageObject extends Serializable {
      * @param name
      * @return
      */
-    public ICoverageObject getNextSiblingTo(String name);
+    ICoverageObject getNextSiblingTo(String name);
 
     /**
      * Returns element's parent
      *
      * @return
      */
-    public ICoverageObject getParent();
+    ICoverageObject getParent();
 
     /**
      * Set the elements parent
      *
      * @param parent
      */
-    public void setParent(ICoverageObject parent);
+    void setParent(ICoverageObject parent);
 
     /**
      * add a child for the element
@@ -83,103 +83,103 @@ public interface ICoverageObject extends Serializable {
      * @param name
      * @param child
      */
-    public void addChild(String name, ICoverageObject child);
+    void addChild(String name, ICoverageObject child);
 
     /**
      * removes a child by name
      *
      * @param name
      */
-    public void removeChild(String name);
+    void removeChild(String name);
 
     /**
      * remove all children of the element
      */
-    public void removeAllChildren();
+    void removeAllChildren();
 
     /**
      * return children table
      *
      * @return
      */
-    public ICoverageObject[] getChildren();
+    ICoverageObject[] getChildren();
 
     /**
      * check if the element has any children
      *
      * @return
      */
-    public boolean hasChildren();
+    boolean hasChildren();
 
     /**
      * check the element's type
      *
      * @return
      */
-    public ObjectType getType();
+    ObjectType getType();
 
     /**
      * return the element's label
      *
      * @return
      */
-    public String getLabel();
+    String getLabel();
 
     /**
      * set the element's label
      *
      * @param label
      */
-    public void setLabel(String label);
+    void setLabel(String label);
 
     /**
      * return the number of the lines
      *
      * @return
      */
-    public int getLinesCount();
+    int getLinesCount();
 
     /**
      * set the number of the lines (total)
      *
      * @param count
      */
-    public void setLiniesCount(int count);
+    void setLiniesCount(int count);
 
     /**
      * return the number of covered lines
      *
      * @return
      */
-    public int getCoverCount();
+    int getCoverCount();
 
     /**
      * set the number of covered lines
      *
      * @param count
      */
-    public void setCoverCount(int count);
+    void setCoverCount(int count);
 
     /**
      * get coverage ratio
      *
      * @return
      */
-    public double getPercentage();
+    double getPercentage();
 
     /**
      * get coverage ratio as a String (e.g. for html reports)
      *
      * @return
      */
-    public String getPercentageStringified();
+    String getPercentageStringified();
 
     /**
      * get array of children names
      *
      * @return
      */
-    public String[] getStringArray();
+    String[] getStringArray();
 
     /**
      * serch the element's tree to find an element withc specified name
@@ -187,13 +187,13 @@ public interface ICoverageObject extends Serializable {
      * @param name
      * @return
      */
-    public ICoverageObject treeSearch(String name);
+    ICoverageObject treeSearch(String name);
 
     /**
      * Returns all modules from the tree if there are any
      *
      * @return
      */
-    public Collection<ICoverageObject> getModules();
+    Collection<ICoverageObject> getModules();
 
 }

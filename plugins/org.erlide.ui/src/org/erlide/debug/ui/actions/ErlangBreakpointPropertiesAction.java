@@ -7,7 +7,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.IShellProvider;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbench;
@@ -32,14 +31,10 @@ public class ErlangBreakpointPropertiesAction implements IObjectActionDelegate {
             if (fPart != null) {
                 provider = fPart.getSite();
             } else {
-                provider = new IShellProvider() {
-                    @Override
-                    public Shell getShell() {
-                        final IWorkbench workbench = PlatformUI.getWorkbench();
-                        final IWorkbenchWindow window = workbench
-                                .getActiveWorkbenchWindow();
-                        return window == null ? null : window.getShell();
-                    }
+                provider = () -> {
+                    final IWorkbench workbench = PlatformUI.getWorkbench();
+                    final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+                    return window == null ? null : window.getShell();
                 };
             }
             final PropertyDialogAction propertyAction = new PropertyDialogAction(provider,

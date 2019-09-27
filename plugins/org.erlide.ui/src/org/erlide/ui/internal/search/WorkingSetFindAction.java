@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2006 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.internal.search;
 
@@ -20,11 +18,11 @@ import org.erlide.engine.services.search.LimitTo;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 
 /**
- * Wraps a <code>ErlangElementSearchActions</code> to find its results in the
- * specified working set.
+ * Wraps a <code>ErlangElementSearchActions</code> to find its results in the specified
+ * working set.
  * <p>
- * The action is applicable to selections and Search view entries representing a
- * Erlang element.
+ * The action is applicable to selections and Search view entries representing a Erlang
+ * element.
  *
  * <p>
  * Note: This class is for internal use only. Clients should not use this class.
@@ -37,8 +35,8 @@ public class WorkingSetFindAction extends FindAction {
     private FindAction fAction;
 
     /**
-     * Note: This constructor is for internal use only. Clients should not call
-     * this constructor.
+     * Note: This constructor is for internal use only. Clients should not call this
+     * constructor.
      */
     public WorkingSetFindAction(final IWorkbenchSite site, final FindAction action,
             final String workingSetName) {
@@ -47,8 +45,8 @@ public class WorkingSetFindAction extends FindAction {
     }
 
     /**
-     * Note: This constructor is for internal use only. Clients should not call
-     * this constructor.
+     * Note: This constructor is for internal use only. Clients should not call this
+     * constructor.
      */
     public WorkingSetFindAction(final AbstractErlangEditor editor,
             final FindAction action, final String workingSetName) {

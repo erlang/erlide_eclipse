@@ -31,7 +31,8 @@ public class IErlExternalTest extends ErlModelTestBase {
         externalFile = ErlideTestUtils.createTmpFile(externalFileName,
                 "-module(external).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
         final String absolutePath = externalFile.getAbsolutePath();
-        externalsFile = ErlideTestUtils.createTmpFile(IErlExternalTest.XX_ERLIDEX, absolutePath);
+        externalsFile = ErlideTestUtils.createTmpFile(IErlExternalTest.XX_ERLIDEX,
+                absolutePath);
         ((ErlProject) project).setExternalModulesFile(externalsFile.getAbsolutePath());
         project.open(null);
     }

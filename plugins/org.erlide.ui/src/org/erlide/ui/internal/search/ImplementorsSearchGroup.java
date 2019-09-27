@@ -34,8 +34,8 @@ public class ImplementorsSearchGroup extends ActionGroup {
     private FindImplementorsInWorkingSetAction fFindImplementorsInWorkingSetAction;
 
     /**
-     * Creates a new <code>ReferencesSearchGroup</code>. The group requires that
-     * the selection provided by the site's selection provider is of type <code>
+     * Creates a new <code>ReferencesSearchGroup</code>. The group requires that the
+     * selection provided by the site's selection provider is of type <code>
      * org.eclipse.jface.viewers.IStructuredSelection</code> .
      *
      * @param site
@@ -53,7 +53,8 @@ public class ImplementorsSearchGroup extends ActionGroup {
         fFindImplementorsInProjectAction
                 .setActionDefinitionId("org.erlide.ui.search.implementors.in.project");
 
-        fFindImplementorsInWorkingSetAction = new FindImplementorsInWorkingSetAction(site);
+        fFindImplementorsInWorkingSetAction = new FindImplementorsInWorkingSetAction(
+                site);
         fFindImplementorsInWorkingSetAction
                 .setActionDefinitionId("org.erlide.ui.search.implementors.in.workset");
 
@@ -66,8 +67,8 @@ public class ImplementorsSearchGroup extends ActionGroup {
     }
 
     /**
-     * Note: This constructor is for internal use only. Clients should not call
-     * this constructor.
+     * Note: This constructor is for internal use only. Clients should not call this
+     * constructor.
      *
      * @param editor
      *            the Erlang editor
@@ -86,7 +87,8 @@ public class ImplementorsSearchGroup extends ActionGroup {
         fFindImplementorsInProjectAction = new FindImplementorsInProjectAction(fEditor);
         fFindImplementorsInProjectAction
                 .setActionDefinitionId("org.erlide.ui.search.implementors.in.project");
-        fEditor.setAction("SearchImplementorsInProject", fFindImplementorsInProjectAction); //$NON-NLS-1$
+        fEditor.setAction("SearchImplementorsInProject", //$NON-NLS-1$
+                fFindImplementorsInProjectAction);
 
         fFindImplementorsInWorkingSetAction = new FindImplementorsInWorkingSetAction(
                 fEditor);
@@ -103,8 +105,7 @@ public class ImplementorsSearchGroup extends ActionGroup {
     }
 
     /**
-     * Note: this method is for internal use only. Clients should not call this
-     * method.
+     * Note: this method is for internal use only. Clients should not call this method.
      *
      * @return the menu label
      */

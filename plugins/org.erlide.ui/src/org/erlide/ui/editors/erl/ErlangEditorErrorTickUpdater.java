@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2006 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
@@ -40,7 +38,7 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
             final IErlModule module = fErlangEditor.getModule();
             if (module != null) {
                 final IResource resource = module.getResource();
-                for (IResource changedResource : changedResources) {
+                for (final IResource changedResource : changedResources) {
                     if (changedResource.equals(resource)) {
                         updateEditorImage(module);
                     }
@@ -61,7 +59,7 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
         // } else {
         newImage = fLabelProvider.getImage(module);
         // }
-        if (titleImage != newImage) {
+        if (!titleImage.equals(newImage)) {
             postImageChange(newImage);
         }
     }
@@ -69,12 +67,7 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
     private void postImageChange(final Image newImage) {
         final Shell shell = fErlangEditor.getEditorSite().getShell();
         if (shell != null && !shell.isDisposed()) {
-            shell.getDisplay().syncExec(new Runnable() {
-                @Override
-                public void run() {
-                    fErlangEditor.updatedTitleImage(newImage);
-                }
-            });
+            shell.getDisplay().syncExec(() -> fErlangEditor.updatedTitleImage(newImage));
         }
     }
 

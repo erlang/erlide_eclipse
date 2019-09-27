@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2006 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.ui.internal.compare;
 
@@ -84,10 +82,9 @@ class ErlangCompareUtilities {
     }
 
     /**
-     * Reads the contents of the given input stream into a string. The function
-     * assumes that the input stream uses the platform's default encoding (
-     * <code>ResourcesPlugin.getEncoding()</code>). Returns null if an error
-     * occurred.
+     * Reads the contents of the given input stream into a string. The function assumes
+     * that the input stream uses the platform's default encoding (
+     * <code>ResourcesPlugin.getEncoding()</code>). Returns null if an error occurred.
      */
     private static String readString(final InputStream is, final String encoding) {
         if (is == null) {
@@ -143,8 +140,8 @@ class ErlangCompareUtilities {
     }
 
     /**
-     * Returns the contents of the given string as an array of bytes in the
-     * platform's default encoding.
+     * Returns the contents of the given string as an array of bytes in the platform's
+     * default encoding.
      */
     static byte[] getBytes(final String s, final String encoding) {
         try {
@@ -155,10 +152,9 @@ class ErlangCompareUtilities {
     }
 
     /**
-     * Breaks the contents of the given input stream into an array of strings.
-     * The function assumes that the input stream uses the platform's default
-     * encoding (<code>ResourcesPlugin.getEncoding()</code>). Returns null if an
-     * error occurred.
+     * Breaks the contents of the given input stream into an array of strings. The
+     * function assumes that the input stream uses the platform's default encoding
+     * (<code>ResourcesPlugin.getEncoding()</code>). Returns null if an error occurred.
      */
     static String[] readLines(final InputStream is2, final String encoding) {
 
