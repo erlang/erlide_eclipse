@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 public class RuntimeVersion implements Comparable<RuntimeVersion> {
@@ -121,13 +122,7 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
             minor = Serializer.getValue(m, 2);
             micro = Serializer.getValue(m, 3);
             final String extra = m.group(4);
-            if (extra != null) {
-                try {
-                    update_level = extra;
-                } catch (final Exception e) {
-                    update_level = null;
-                }
-            }
+            update_level = extra;
             return new RuntimeVersion(major, minor, micro, update_level);
         }
 
@@ -253,11 +248,18 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hashCode(major, minor, micro, update_level);
     }
 
     public boolean isStable() {
-        return update_level == null;
+        try {
+            // "rc1" is unstable, but "1" is stable
+            Integer.parseInt(update_level);
+            return true;
+
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     public int getMajor() {
