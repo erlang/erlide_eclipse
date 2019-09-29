@@ -252,6 +252,8 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
     }
 
     public boolean isStable() {
+        if (update_level == null)
+            return true;
         try {
             // "rc1" is unstable, but "1" is stable
             Integer.parseInt(update_level);
