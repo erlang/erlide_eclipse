@@ -13,9 +13,9 @@
    <bundle id="com.google.guava" version="15.0.0.v201403281430"/>
    <bundle id="javax.inject" version="1.0.0.v20091030"/>
    <bundle id="com.google.gson" version="2.7.0.v20170129-0911"/>
-   <bundle id="org.eclipse.xtend.lib" version="2.14.0.v20180522-1629"/>
-   <bundle id="org.eclipse.xtend.lib.macro" version="2.14.0.v20180522-1629"/>
-   <bundle id="org.eclipse.xtext.xbase.lib" version="2.14.0.v20180522-1629"/>
+   <bundle id="org.eclipse.xtend.lib"/>
+   <bundle id="org.eclipse.xtend.lib.macro"/>
+   <bundle id="org.eclipse.xtext.xbase.lib"/>
    <category-def name="erlide" label="erlide - Erlang development tools"/>
    <category-def name="extras" label="erlide - optional plugins"/>
    <repository-reference location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/" enabled="true" />
