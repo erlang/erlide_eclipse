@@ -7,6 +7,7 @@ import java.util.Collection
 import java.util.List
 import java.util.Set
 import org.erlide.util.SystemConfiguration
+import org.erlide.util.ErlLogger
 
 class RuntimeFinder {
 
@@ -57,9 +58,9 @@ class RuntimeFinder {
 			}
 		} catch (IOException e) {
 			// ignore, kerl is not available or usable
-			// ErlLogger.warn(e)
+			ErlLogger.warn(e)
 		}
-		return result.map[if(split(" ", 2).length > 2) split(" ", 2).get(1) else null].filterNull
+		return result.map[if(split(" ", 2).length >= 2) split(" ", 2).get(1) else null].filterNull
 	}
 
 	def private static Collection<File> findRuntime(String loc) {
