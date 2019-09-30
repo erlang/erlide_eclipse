@@ -66,7 +66,7 @@ public class AboutHandler extends AbstractHandler {
                 PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                 "Missing Graphviz library",
                 "For using Wrangler code inspection functionalities you must first install the Eclipse GraphViz plugin (and also the original graphviz binaries).\n"
-                        + "Update site: <a src=\"http://download.erlide.org/update/graphviz/\">http://download.erlide.org/update/graphviz/</a>");
+                        + "Update site: <a src=\"https://download.erlide.org/update/graphviz/\">https://download.erlide.org/update/graphviz/</a>");
 
         m.open();
         return null;

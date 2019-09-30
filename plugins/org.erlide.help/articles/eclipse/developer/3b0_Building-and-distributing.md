@@ -8,11 +8,11 @@ part: Developer's guide
 
 There are three update sites:
 
--   `http://download.erlide.org/update` : contains all stable releases
--   `http://download.erlide.org/update/beta` : contains the release the will be
+-   `https://download.erlide.org/update` : contains all stable releases
+-   `https://download.erlide.org/update/beta` : contains the release the will be
     promoted to stable once it passes acceptance tests. May be broken at
     times, but not for long.
--   `http://download.erlide.org/update/nightly` : contains the latest and
+-   `https://download.erlide.org/update/nightly` : contains the latest and
     greatest, but untested code. Use it at your own risk.
 
 ## Building Erlide

@@ -30,7 +30,7 @@
 		<repository>
 			<id>erlide libs</id>
 			<layout>p2</layout>
-			<url>http://download.erlide.org/update/libs</url>
+			<url>https://download.erlide.org/update/libs</url>
 		</repository>
 		<repository>
 			<id>orbit neon</id>
@@ -45,7 +45,7 @@
 		<repository>
 			<id>kernel</id>
 			<layout>p2</layout>
-			<url>http://download.erlide.org/update/kernel/0.115.3</url>
+			<url>https://download.erlide.org/update/kernel/0.115.3</url>
 		</repository>
 	</repositories>
 
@@ -314,7 +314,7 @@
 						<baselineReplace>none</baselineReplace>
 						<baselineRepositories>
 							<repository>
-								<url>http://download.erlide.org/update/</url>
+								<url>https://download.erlide.org/update/</url>
 							</repository>
 						</baselineRepositories>
 					</configuration>

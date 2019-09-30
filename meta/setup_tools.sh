@@ -20,7 +20,7 @@ pushd $DEST_DIR
 # jdk 1.6
 if [ ! -d jdk ] ; then
   if [ ! -f jdk-6u45-linux-x64.bin ] ; then
-      wget http://download.erlide.org/tools/jdk-6u45-linux-x64.bin
+      wget https://download.erlide.org/tools/jdk-6u45-linux-x64.bin
   fi
   chmod u+x jdk-6u45-linux-x64.bin
   ./jdk-6u45-linux-x64.bin
@@ -31,7 +31,7 @@ fi
 # ant 1.9.2
 if [ ! -d ant ] ; then
   if [ ! -f apache-ant-1.9.2-bin.tar.gz ] ; then
-    wget http://download.erlide.org/tools/apache-ant-1.9.2-bin.tar.gz
+    wget https://download.erlide.org/tools/apache-ant-1.9.2-bin.tar.gz
   fi
   tar zxvf apache-ant-1.9.2-bin.tar.gz
   ln -s apache-ant-1.9.2 ant

@@ -19,7 +19,7 @@
    </license>
 
    <url>
-      <update label="erlide update site" url="http://download.erlide.org/update"/>
+      <update label="erlide update site" url="https://download.erlide.org/update"/>
    </url>
 
    <requires>
