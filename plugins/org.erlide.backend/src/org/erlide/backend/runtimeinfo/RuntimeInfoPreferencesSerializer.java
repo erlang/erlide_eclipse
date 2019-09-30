@@ -17,21 +17,7 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
     private static final String ERLIDE_KEY = "erlide";
     private static final String DEFAULT_KEY = "default";
 
-    // TODO remove old key in a few releases
-    @Deprecated
-    private static String rootKeyOld = "org.erlide.core" + "/runtimes";
     private static String rootKey = "org.erlide.backend" + "/runtimes";
-
-    @Deprecated
-    public static IEclipsePreferences getInstanceOldRootNode() {
-        return InstanceScope.INSTANCE
-                .getNode(RuntimeInfoPreferencesSerializer.rootKeyOld);
-    }
-
-    @Deprecated
-    public static IEclipsePreferences getDefaultOldRootNode() {
-        return DefaultScope.INSTANCE.getNode(RuntimeInfoPreferencesSerializer.rootKeyOld);
-    }
 
     public static IEclipsePreferences getInstanceRootNode() {
         return InstanceScope.INSTANCE.getNode(RuntimeInfoPreferencesSerializer.rootKey);
@@ -83,9 +69,7 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
     @Override
     public synchronized RuntimeInfoCatalogData load() {
         RuntimeInfoCatalogData data = new RuntimeInfoCatalogData();
-        data = loadPrefs(data, RuntimeInfoPreferencesSerializer.getDefaultOldRootNode());
         data = loadPrefs(data, defaultRootNode);
-        data = loadPrefs(data, RuntimeInfoPreferencesSerializer.getInstanceOldRootNode());
         data = loadPrefs(data, instanceRootNode);
 
         String dflt = null;
