@@ -252,14 +252,15 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
     }
 
     public boolean isStable() {
-        if (update_level == null)
+        if (update_level == null) {
             return true;
+        }
         try {
-            // "rc1" is unstable, but "1" is stable
-            Integer.parseInt(update_level);
+            // "-rc1" is unstable, but ".15" is stable
+            // The first character is a separator
+            Integer.parseInt(update_level.substring(1));
             return true;
-
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             return false;
         }
     }

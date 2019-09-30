@@ -31,8 +31,6 @@ class RuntimeFinder {
 				result.add(rt)
 			}
 		}
-		println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-		println(result)
 		return result
 	}
 
@@ -58,7 +56,8 @@ class RuntimeFinder {
 			}
 		} catch (IOException e) {
 			// ignore, kerl is not available or usable
-			ErlLogger.warn(e)
+			ErlLogger.info("kerl not found")
+			// ErlLogger.warn(e)
 		}
 		return result.map[if(split(" ", 2).length >= 2) split(" ", 2).get(1) else null].filterNull
 	}

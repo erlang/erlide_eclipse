@@ -203,4 +203,23 @@ public class RuntimeVersionTest {
         assertThat(test1.isCompatible(test2)).isEqualTo(false);
     }
 
+    @Test
+    public void stable_1() {
+        final RuntimeVersion test1 = RuntimeVersion.Serializer.parse("20.1.1");
+        assertThat(test1.isStable());
+    }
+
+    @Test
+    public void stable_2() {
+        final RuntimeVersion test1 = RuntimeVersion.Serializer.parse("20.1.1-rc1");
+        assertThat(!test1.isStable());
+    }
+
+    @Test
+    public void stable_3() {
+        final RuntimeVersion test1 = RuntimeVersion.Serializer.parse("20.1.1.2");
+        assertThat(test1.isStable());
+    }
+
+
 }
