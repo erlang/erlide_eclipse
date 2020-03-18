@@ -1,8 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2004 Chengdong Li : cdli@ccs.uky.edu
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Common Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2004 Chengdong Li : cdli@ccs.uky.edu All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Common Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/cpl-v10.html
  *******************************************************************************/
 package org.erlide.wrangler.refactoring.codeinspection.view;
@@ -97,8 +96,7 @@ public class PushActionDelegate implements IViewActionDelegate {
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action
+     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action
      * .IAction, org.eclipse.jface.viewers.ISelection)
      */
     @Override

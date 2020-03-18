@@ -146,7 +146,7 @@ public class ResourceManager extends SWTResourceManager {
                 @Override
                 protected void drawCompositeImage(final int width, final int height) {
                     drawImage(createCachedImageDataProvider(baseImage), 0, 0);
-                    CachedImageDataProvider data = createCachedImageDataProvider(
+                    final CachedImageDataProvider data = createCachedImageDataProvider(
                             decorator);
                     if (corner == SWTResourceManager.TOP_LEFT) {
                         drawImage(data, 0, 0);

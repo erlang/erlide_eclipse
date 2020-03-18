@@ -248,11 +248,6 @@
 						<showDeprecation>true</showDeprecation>
 						<useProjectSettings>true</useProjectSettings>
 						<strictCompilerTarget>true</strictCompilerTarget>
-						<excludeResources>
-							<excludeResource>*.xtend</excludeResource>
-							<excludeResource>*.xtendbin</excludeResource>
-							<excludeResource>*._trace</excludeResource>
-						</excludeResources>
 						<compilerArgs>
 							<arg>-1.8</arg>
 						</compilerArgs>
@@ -264,25 +259,6 @@
 							<version>${tycho.version}</version>
 						</dependency>
 					</dependencies>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.xtend</groupId>
-					<artifactId>xtend-maven-plugin</artifactId>
-					<version>2.19.0</version>
-					<executions>
-						<execution>
-							<goals>
-								<goal>compile</goal>
-								<goal>xtend-install-debug-info</goal>
-								<goal>testCompile</goal>
-								<goal>xtend-test-install-debug-info</goal>
-							</goals>
-							<configuration>
-								<outputDirectory>${basedir}/xtend-gen</outputDirectory>
-								<testOutputDirectory>${basedir}/xtend-gen</testOutputDirectory>
-							</configuration>
-						</execution>
-					</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>

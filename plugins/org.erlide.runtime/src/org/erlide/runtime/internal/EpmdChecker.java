@@ -14,14 +14,14 @@ public class EpmdChecker {
     private int numAttempts = 0;
     private boolean done = false;
 
-    private String host;
+    private final String host;
 
-    EpmdChecker(String host) {
+    EpmdChecker(final String host) {
         this.host = host;
     }
 
     public void initialize() {
-        Thread thread = new Thread(() -> {
+        final Thread thread = new Thread(() -> {
             while (!done && numAttempts < MAX_RETRIES) {
                 try {
                     numAttempts++;
@@ -29,17 +29,17 @@ public class EpmdChecker {
                         s.close();
                     }
                     done = true;
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     try {
                         Thread.sleep(RETRY_MILLIS);
-                    } catch (InterruptedException ie) {
+                    } catch (final InterruptedException ie) {
                         // nop
                     }
                 }
             }
 
             if (!done && numAttempts >= MAX_RETRIES) {
-                String msg = "Couldn't contact epmd - erlang backend is probably not working."
+                final String msg = "Couldn't contact epmd - erlang backend is probably not working."
                         + " Your host's entry in /etc/hosts is probably wrong (" + host
                         + ").";
                 ErlLogger.error(msg);

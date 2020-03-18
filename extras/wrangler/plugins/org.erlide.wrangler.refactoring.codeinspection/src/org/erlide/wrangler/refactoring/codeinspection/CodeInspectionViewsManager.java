@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.codeinspection;
 
@@ -53,7 +51,8 @@ public class CodeInspectionViewsManager {
      */
     public static void showDotImage(final Image img, final String title,
             final String secondaryID, final File dotFile) {
-        final GraphImageView view = (GraphImageView) CodeInspectionViewsManager.showView(CodeInspectionViewsManager.GRAPH_VIEW, secondaryID);
+        final GraphImageView view = (GraphImageView) CodeInspectionViewsManager
+                .showView(CodeInspectionViewsManager.GRAPH_VIEW, secondaryID);
         view.setViewTitle(title);
         view.setImage(img);
         view.setDotFile(dotFile);
@@ -70,8 +69,8 @@ public class CodeInspectionViewsManager {
     public static void showErlElements(final String title, final ArrayList<IErlElement> e,
             final String secId) {
         try {
-            final CodeInspectionResultsView v = (CodeInspectionResultsView) CodeInspectionViewsManager.showView(
-                    CodeInspectionViewsManager.CODE_INSPECTION_VIEW, secId);
+            final CodeInspectionResultsView v = (CodeInspectionResultsView) CodeInspectionViewsManager
+                    .showView(CodeInspectionViewsManager.CODE_INSPECTION_VIEW, secId);
             v.addElements(e);
             v.setViewTitle(title);
             v.refresh();

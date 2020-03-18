@@ -13,6 +13,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src/"/>
-	<classpathentry kind="src" path="xtend-gen/"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
