@@ -57,7 +57,7 @@
 		<module>releng/org.erlide.target</module>
 		<!-- <module>releng/releng.tools</module> -->
 		<module>features/org.erlide</module>
-		<module>features/org.erlide.product.feature</module>
+		<!--module>features/org.erlide.product.feature</module-->
 		<module>extras/org.erlide.licenses</module>
 
 		<module>plugins/org.erlide.backend</module>
