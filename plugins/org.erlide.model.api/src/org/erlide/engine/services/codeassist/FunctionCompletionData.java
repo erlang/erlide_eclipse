@@ -2,11 +2,8 @@ package org.erlide.engine.services.codeassist;
 
 import java.util.List;
 
-import org.eclipse.xtend.lib.annotations.Data;
-import org.eclipse.xtext.xbase.lib.Pure;
 import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
 
-@Data
 @SuppressWarnings("all")
 public class FunctionCompletionData extends CompletionData {
     private final List<Location> offsetsAndLengths;
@@ -24,7 +21,6 @@ public class FunctionCompletionData extends CompletionData {
     }
 
     @Override
-    @Pure
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
@@ -35,7 +31,6 @@ public class FunctionCompletionData extends CompletionData {
     }
 
     @Override
-    @Pure
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
@@ -68,17 +63,14 @@ public class FunctionCompletionData extends CompletionData {
     }
 
     @Override
-    @Pure
     public String toString() {
         return new ToStringBuilder(this).addAllFields().toString();
     }
 
-    @Pure
     public List<Location> getOffsetsAndLengths() {
         return offsetsAndLengths;
     }
 
-    @Pure
     public String getAdditionalProposalInfo() {
         return additionalProposalInfo;
     }

@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 import org.erlide.util.erlang.OtpErlang;
@@ -118,7 +117,7 @@ public class ErlProblems {
                     final String _plus_3 = _plus_2 + "/";
                     final int _arity_1 = p.getArity();
                     final String _plus_4 = _plus_3 + Integer.valueOf(_arity_1);
-                    InputOutput.<String> println(_plus_4);
+                    System.out.println(_plus_4);
                 }
                 final String _tag_2 = p.getTag();
                 final String _plus_5 = _tag_2 + "/";

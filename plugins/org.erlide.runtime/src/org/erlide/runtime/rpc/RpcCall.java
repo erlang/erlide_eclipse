@@ -2,14 +2,8 @@ package org.erlide.runtime.rpc;
 
 import java.util.concurrent.Callable;
 
-import org.eclipse.xtend.lib.annotations.Accessors;
-import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor;
-import org.eclipse.xtext.xbase.lib.Pure;
-
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-@Accessors
-@FinalFieldsConstructor
 @SuppressWarnings("all")
 public class RpcCall implements Callable<OtpErlangObject> {
     private final IOtpRpc rpc;
@@ -58,42 +52,34 @@ public class RpcCall implements Callable<OtpErlangObject> {
         this.args = args;
     }
 
-    @Pure
     public IOtpRpc getRpc() {
         return rpc;
     }
 
-    @Pure
     public String getModule() {
         return module;
     }
 
-    @Pure
     public String getFunction() {
         return function;
     }
 
-    @Pure
     public String getSignature() {
         return signature;
     }
 
-    @Pure
     public Object[] getArgs() {
         return args;
     }
 
-    @Pure
     public long getTimeout() {
         return timeout;
     }
 
-    @Pure
     public OtpErlangObject getGroupLeader() {
         return groupLeader;
     }
 
-    @Pure
     public IRpcCallback getCallback() {
         return callback;
     }

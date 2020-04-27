@@ -3,7 +3,6 @@ package org.erlide.engine.internal;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
-import org.eclipse.xtend.lib.annotations.Delegate;
 import org.erlide.engine.ErlangInitializeParams;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.root.IErlModel;
@@ -25,7 +24,7 @@ import org.erlide.engine.services.text.IndentService;
 
 @SuppressWarnings("all")
 public class ErlangServerProxy implements IErlangEngine, IExecutableExtension {
-    @Delegate
+
     private final IErlangEngine server;
 
     public ErlangServerProxy() {

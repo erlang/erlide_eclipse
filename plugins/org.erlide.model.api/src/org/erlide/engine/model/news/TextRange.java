@@ -1,10 +1,7 @@
 package org.erlide.engine.model.news;
 
-import org.eclipse.xtend.lib.annotations.Data;
-import org.eclipse.xtext.xbase.lib.Pure;
 import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
 
-@Data
 @SuppressWarnings("all")
 public class TextRange {
     private final int offset;
@@ -18,7 +15,6 @@ public class TextRange {
     }
 
     @Override
-    @Pure
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -27,7 +23,6 @@ public class TextRange {
     }
 
     @Override
-    @Pure
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
@@ -49,7 +44,6 @@ public class TextRange {
     }
 
     @Override
-    @Pure
     public String toString() {
         final ToStringBuilder b = new ToStringBuilder(this);
         b.add("offset", offset);
@@ -57,12 +51,10 @@ public class TextRange {
         return b.toString();
     }
 
-    @Pure
     public int getOffset() {
         return offset;
     }
 
-    @Pure
     public int getLength() {
         return length;
     }

@@ -6,10 +6,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.text.quickassist.IQuickAssistInvocationContext;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IMarkerResolution2;
-import org.eclipse.xtend.lib.annotations.Accessors;
-import org.eclipse.xtext.xbase.lib.Pure;
 
-@Accessors
 @SuppressWarnings("all")
 public class QuickFix implements IMarkerResolution2 {
     private String label;
@@ -48,7 +45,6 @@ public class QuickFix implements IMarkerResolution2 {
     }
 
     @Override
-    @Pure
     public String getLabel() {
         return label;
     }
@@ -58,7 +54,6 @@ public class QuickFix implements IMarkerResolution2 {
     }
 
     @Override
-    @Pure
     public String getDescription() {
         return description;
     }
@@ -68,7 +63,6 @@ public class QuickFix implements IMarkerResolution2 {
     }
 
     @Override
-    @Pure
     public Image getImage() {
         return image;
     }
@@ -77,7 +71,6 @@ public class QuickFix implements IMarkerResolution2 {
         this.image = image;
     }
 
-    @Pure
     public List<String> getTags() {
         return tags;
     }
@@ -86,7 +79,6 @@ public class QuickFix implements IMarkerResolution2 {
         this.tags = tags;
     }
 
-    @Pure
     public QuickFixExecutor getExecutor() {
         return executor;
     }
@@ -95,7 +87,6 @@ public class QuickFix implements IMarkerResolution2 {
         this.executor = executor;
     }
 
-    @Pure
     public List<String> getArgs() {
         return args;
     }

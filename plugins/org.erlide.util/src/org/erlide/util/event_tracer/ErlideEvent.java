@@ -2,11 +2,8 @@ package org.erlide.util.event_tracer;
 
 import java.io.PrintWriter;
 
-import org.eclipse.xtend.lib.annotations.Data;
-import org.eclipse.xtext.xbase.lib.Pure;
 import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
 
-@Data
 @SuppressWarnings("all")
 public abstract class ErlideEvent {
     private final long timestamp;
@@ -25,13 +22,11 @@ public abstract class ErlideEvent {
     }
 
     @Override
-    @Pure
     public int hashCode() {
         return 31 * 1 + (int) (timestamp ^ timestamp >>> 32);
     }
 
     @Override
-    @Pure
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
@@ -50,14 +45,12 @@ public abstract class ErlideEvent {
     }
 
     @Override
-    @Pure
     public String toString() {
         final ToStringBuilder b = new ToStringBuilder(this);
         b.add("timestamp", timestamp);
         return b.toString();
     }
 
-    @Pure
     public long getTimestamp() {
         return timestamp;
     }

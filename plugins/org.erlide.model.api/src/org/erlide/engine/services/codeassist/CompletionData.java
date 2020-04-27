@@ -1,10 +1,7 @@
 package org.erlide.engine.services.codeassist;
 
-import org.eclipse.xtend.lib.annotations.Data;
-import org.eclipse.xtext.xbase.lib.Pure;
 import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
 
-@Data
 @SuppressWarnings("all")
 public class CompletionData {
     private final String displayString;
@@ -39,7 +36,6 @@ public class CompletionData {
     }
 
     @Override
-    @Pure
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -52,7 +48,6 @@ public class CompletionData {
     }
 
     @Override
-    @Pure
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
@@ -91,7 +86,6 @@ public class CompletionData {
     }
 
     @Override
-    @Pure
     public String toString() {
         final ToStringBuilder b = new ToStringBuilder(this);
         b.add("displayString", displayString);
@@ -102,22 +96,18 @@ public class CompletionData {
         return b.toString();
     }
 
-    @Pure
     public String getReplacementString() {
         return replacementString;
     }
 
-    @Pure
     public int getReplacementOffset() {
         return replacementOffset;
     }
 
-    @Pure
     public int getReplacementLength() {
         return replacementLength;
     }
 
-    @Pure
     public int getCursorPosition() {
         return cursorPosition;
     }

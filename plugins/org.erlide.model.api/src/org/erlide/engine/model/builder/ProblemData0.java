@@ -1,10 +1,7 @@
 package org.erlide.engine.model.builder;
 
-import org.eclipse.xtend.lib.annotations.Data;
-import org.eclipse.xtext.xbase.lib.Pure;
 import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
 
-@Data
 @SuppressWarnings("all")
 public class ProblemData0 {
     private final String tag;
@@ -21,7 +18,6 @@ public class ProblemData0 {
     }
 
     @Override
-    @Pure
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -31,7 +27,6 @@ public class ProblemData0 {
     }
 
     @Override
-    @Pure
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
@@ -64,7 +59,6 @@ public class ProblemData0 {
     }
 
     @Override
-    @Pure
     public String toString() {
         final ToStringBuilder b = new ToStringBuilder(this);
         b.add("tag", tag);
@@ -73,17 +67,14 @@ public class ProblemData0 {
         return b.toString();
     }
 
-    @Pure
     public String getTag() {
         return tag;
     }
 
-    @Pure
     public String getMessage() {
         return message;
     }
 
-    @Pure
     public int getArity() {
         return arity;
     }

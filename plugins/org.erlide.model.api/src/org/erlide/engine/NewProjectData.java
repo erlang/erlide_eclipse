@@ -4,12 +4,9 @@ import java.io.File;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.xtend.lib.annotations.Accessors;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
-import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
-import org.eclipse.xtext.xbase.lib.Pure;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IProjectConfigurator;
@@ -22,7 +19,6 @@ import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
 import com.google.common.base.MoreObjects;
 
-@Accessors
 @SuppressWarnings("all")
 public class NewProjectData extends ErlangProjectProperties {
     private String name = null;
@@ -90,12 +86,12 @@ public class NewProjectData extends ErlangProjectProperties {
     public String detectProjectConfig() {
         String _xblockexpression = null;
         {
-            InputOutput.<String> println("» DETECT builder config");
+            System.out.println("» DETECT builder config");
             String _xifexpression = null;
             if (location != null) {
                 String _xblockexpression_1 = null;
                 {
-                    InputOutput.<String> println("DETECT builder config");
+                    System.out.println("DETECT builder config");
                     final String _portableString = location.toPortableString();
                     final File directory = new File(_portableString);
                     String _xifexpression_1 = null;
@@ -104,15 +100,15 @@ public class NewProjectData extends ErlangProjectProperties {
                         {
                             final IProjectConfigurator persister = factory
                                     .getConfig(configType, directory);
-                            InputOutput.<String> println("PERSISTER " + persister);
+                            System.out.println("PERSISTER " + persister);
                             String _xifexpression_2 = null;
                             if (persister != null) {
                                 String _xblockexpression_3 = null;
                                 {
                                     final ErlangProjectProperties props = persister
                                             .getConfiguration();
-                                    _xblockexpression_3 = InputOutput
-                                            .<String> println("detected PROPS: " + props);
+                                    _xblockexpression_3 = "detected PROPS: " + props;
+                                    System.out.println(_xblockexpression_3);
                                 }
                                 _xifexpression_2 = _xblockexpression_3;
                             }
@@ -134,7 +130,6 @@ public class NewProjectData extends ErlangProjectProperties {
                 .getRuntime(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION, null);
     }
 
-    @Pure
     public String getName() {
         return name;
     }
@@ -143,7 +138,6 @@ public class NewProjectData extends ErlangProjectProperties {
         this.name = name;
     }
 
-    @Pure
     public IPath getLocation() {
         return location;
     }
@@ -152,7 +146,6 @@ public class NewProjectData extends ErlangProjectProperties {
         this.location = location;
     }
 
-    @Pure
     public boolean isExistingProject() {
         return existingProject;
     }
@@ -161,7 +154,6 @@ public class NewProjectData extends ErlangProjectProperties {
         this.existingProject = existingProject;
     }
 
-    @Pure
     public BuilderTool getBuilder() {
         return builder;
     }
@@ -170,7 +162,6 @@ public class NewProjectData extends ErlangProjectProperties {
         this.builder = builder;
     }
 
-    @Pure
     public ProjectConfigType getConfigType() {
         return configType;
     }
@@ -179,7 +170,6 @@ public class NewProjectData extends ErlangProjectProperties {
         this.configType = configType;
     }
 
-    @Pure
     public Map<String, String> getBuilderData() {
         return builderData;
     }
@@ -188,7 +178,6 @@ public class NewProjectData extends ErlangProjectProperties {
         this.builderData = builderData;
     }
 
-    @Pure
     public IProjectConfiguratorFactory getFactory() {
         return factory;
     }

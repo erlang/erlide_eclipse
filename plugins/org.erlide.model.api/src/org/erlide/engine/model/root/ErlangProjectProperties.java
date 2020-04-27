@@ -6,13 +6,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.xtend.lib.annotations.Accessors;
-import org.eclipse.xtend.lib.annotations.EqualsHashCode;
-import org.eclipse.xtend.lib.annotations.ToString;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
-import org.eclipse.xtext.xbase.lib.Pure;
 import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.PreferencesUtils;
@@ -21,9 +17,6 @@ import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
-@Accessors
-@EqualsHashCode
-@ToString
 @SuppressWarnings("all")
 public class ErlangProjectProperties {
     private IPath outputDir;
@@ -147,7 +140,6 @@ public class ErlangProjectProperties {
         return PreferencesUtils.packArray(new String[] { projprefs, global });
     }
 
-    @Pure
     public IPath getOutputDir() {
         return outputDir;
     }
@@ -156,22 +148,18 @@ public class ErlangProjectProperties {
         this.outputDir = outputDir;
     }
 
-    @Pure
     public Collection<IPath> getSourceDirs() {
         return sourceDirs;
     }
 
-    @Pure
     public Collection<IPath> getIncludeDirs() {
         return includeDirs;
     }
 
-    @Pure
     public Collection<IPath> getTestDirs() {
         return testDirs;
     }
 
-    @Pure
     public RuntimeVersion getRequiredRuntimeVersion() {
         return requiredRuntimeVersion;
     }
@@ -180,7 +168,6 @@ public class ErlangProjectProperties {
         this.requiredRuntimeVersion = requiredRuntimeVersion;
     }
 
-    @Pure
     public String getExternalIncludesFile() {
         return externalIncludesFile;
     }
@@ -189,7 +176,6 @@ public class ErlangProjectProperties {
         this.externalIncludesFile = externalIncludesFile;
     }
 
-    @Pure
     public String getExternalModulesFile() {
         return externalModulesFile;
     }
@@ -199,7 +185,6 @@ public class ErlangProjectProperties {
     }
 
     @Override
-    @Pure
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
@@ -264,7 +249,6 @@ public class ErlangProjectProperties {
     }
 
     @Override
-    @Pure
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -281,7 +265,6 @@ public class ErlangProjectProperties {
     }
 
     @Override
-    @Pure
     public String toString() {
         final ToStringBuilder b = new ToStringBuilder(this);
         b.add("outputDir", outputDir);

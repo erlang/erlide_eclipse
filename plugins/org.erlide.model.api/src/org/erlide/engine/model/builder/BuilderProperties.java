@@ -2,16 +2,13 @@ package org.erlide.engine.model.builder;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.xtend.lib.annotations.Accessors;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.eclipse.xtext.xbase.lib.Pure;
 
 /**
  * TODO there should be specific properties for each builder tool but we wait until we see
  * if there are many properties that are only relevant for a single tool
  */
-@Accessors
 @SuppressWarnings("all")
 public class BuilderProperties {
     /**
@@ -81,7 +78,6 @@ public class BuilderProperties {
         return _builder.toString();
     }
 
-    @Pure
     public BuilderTool getBuilderTool() {
         return builderTool;
     }
@@ -90,7 +86,6 @@ public class BuilderProperties {
         this.builderTool = builderTool;
     }
 
-    @Pure
     public String getBuildTarget() {
         return buildTarget;
     }
@@ -99,7 +94,6 @@ public class BuilderProperties {
         this.buildTarget = buildTarget;
     }
 
-    @Pure
     public String getCompileTarget() {
         return compileTarget;
     }
@@ -108,7 +102,6 @@ public class BuilderProperties {
         this.compileTarget = compileTarget;
     }
 
-    @Pure
     public String getCleanTarget() {
         return cleanTarget;
     }
@@ -117,7 +110,6 @@ public class BuilderProperties {
         this.cleanTarget = cleanTarget;
     }
 
-    @Pure
     public String getTestTarget() {
         return testTarget;
     }
@@ -126,7 +118,6 @@ public class BuilderProperties {
         this.testTarget = testTarget;
     }
 
-    @Pure
     public String getExtraFlags() {
         return extraFlags;
     }
