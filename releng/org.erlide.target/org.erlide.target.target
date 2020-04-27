@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="erlide target" sequenceNumber="1567869377">
+<target name="erlide target" sequenceNumber="1587979698">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.eclipse.e4.rcp.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.jdt.annotation" version="0.0.0"/>
       <unit id="org.eclipse.sdk.ide" version="0.0.0"/>
-      <repository location="http://download.eclipse.org/releases/photon/"/>
+      <repository location="http://download.eclipse.org/eclipse/updates/4.9/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="com.abstratt.eclipsegraphviz.feature.feature.group" version="0.0.0"/>
       <repository location="https://download.erlide.org/update/libs"/>
-    </location>
-    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
-      <repository location="http://download.eclipse.org/eclipse/updates/4.8/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.eclipse.xtend.lib" version="0.0.0"/>
