@@ -11,6 +11,7 @@
 			<attribute name="annotationpath" value="/erlide_eclipse/.eea"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="truth-0.28.jar" sourcepath="truth-0.28-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="truth-1.0.jar" sourcepath="truth-1.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="truth-java8-extension-1.0.jar" sourcepath="truth-java8-extension-1.0-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

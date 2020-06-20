@@ -29,7 +29,7 @@ public class SimpleParserTest {
         final List<OtpErlangObject> expected = Lists.newArrayList(new OtpErlangAtom("a"),
                 new OtpErlangLong(1), new OtpErlangList(new OtpErlangAtom("c")));
         final List<OtpErlangObject> actual = parser.parse(input);
-        assertThat(actual).containsAllIn(expected).inOrder();
+        assertThat(actual).containsAtLeastElementsIn(expected).inOrder();
     }
 
 }

@@ -8,7 +8,7 @@ Fragment-Host: org.erlide.runtime;bundle-version="0.20.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.erlide.testing.libs;bundle-version="0.54.0",
  org.junit;bundle-version="4.10.0",
- com.google.truth;bundle-version="0.28.0"
+ com.google.truth;bundle-version="1.0.0"
 Export-Package: com.ericson.erlang,
  org.erlide.runtime
 Import-Package: com.google.common.base;version="15.0.0",

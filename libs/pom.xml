@@ -10,7 +10,6 @@
     <relativePath>..</relativePath>
   </parent>
 
-  <groupId>org.erlide</groupId>
   <artifactId>org.erlide.libraries</artifactId>
   <version>1.0.0</version>
   <packaging>pom</packaging>
