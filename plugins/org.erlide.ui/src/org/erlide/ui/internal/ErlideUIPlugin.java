@@ -36,12 +36,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.jface.text.templates.ContextTypeRegistry;
 import org.eclipse.jface.text.templates.persistence.TemplateStore;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.text.templates.ContextTypeRegistry;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -509,8 +509,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         // this is to avoid recursive call when fContextTypeRegistry is null
         getContextTypeRegistry();
         if (fStore == null) {
-            fStore = new ErlideContributionTemplateStore(getContextTypeRegistry(),
-                    getPreferenceStore(), ErlideUIPlugin.CUSTOM_TEMPLATES_KEY);
+            fStore = new ErlideContributionTemplateStore(getPreferenceStore(),
+                    ErlideUIPlugin.CUSTOM_TEMPLATES_KEY);
             try {
                 fStore.load();
             } catch (final IOException e) {

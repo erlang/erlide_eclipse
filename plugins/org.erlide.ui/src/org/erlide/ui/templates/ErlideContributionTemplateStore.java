@@ -9,11 +9,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.templates.ContextTypeRegistry;
 import org.eclipse.jface.text.templates.Template;
 import org.eclipse.jface.text.templates.TemplateException;
-import org.eclipse.jface.text.templates.persistence.TemplatePersistenceData;
-import org.eclipse.jface.text.templates.persistence.TemplateReaderWriter;
+import org.eclipse.text.templates.TemplatePersistenceData;
+import org.eclipse.text.templates.TemplateReaderWriter;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
@@ -31,25 +30,6 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
     public ErlideContributionTemplateStore(final IPreferenceStore store,
             final String key) {
         super(store, key);
-    }
-
-    /**
-     * Creates a new template store with a context type registry. Only templates that
-     * specify a context type contained in the registry will be loaded by this store if
-     * the registry is not <code>null</code>.
-     *
-     * @param registry
-     *            a context type registry, or <code>null</code> if all templates should be
-     *            loaded
-     * @param store
-     *            the preference store in which to store custom templates under
-     *            <code>key</code>
-     * @param key
-     *            the key into <code>store</code> where to store custom templates
-     */
-    public ErlideContributionTemplateStore(final ContextTypeRegistry registry,
-            final IPreferenceStore store, final String key) {
-        super(registry, store, key);
     }
 
     /**

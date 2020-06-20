@@ -44,6 +44,7 @@ public class BeamUtil {
     private static OtpErlangBinary getBeamBinary(final String moduleName,
             final FileInputStream stream) {
         try {
+            @SuppressWarnings("resource")
             final int sz = (int) stream.getChannel().size();
             final byte[] buf = new byte[sz];
             stream.read(buf);
