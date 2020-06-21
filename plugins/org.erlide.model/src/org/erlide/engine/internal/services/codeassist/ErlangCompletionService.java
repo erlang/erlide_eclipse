@@ -429,7 +429,7 @@ public class ErlangCompletionService implements CompletionService {
         return result;
     }
 
-    List<CompletionData> addDeclaredFunctionsCompletions(
+    private List<CompletionData> addDeclaredFunctionsCompletions(
             final Set<@NonNull CompletionFlag> flags, final int offset,
             final String prefix) throws CoreException {
         final List<CompletionData> result = new ArrayList<>();

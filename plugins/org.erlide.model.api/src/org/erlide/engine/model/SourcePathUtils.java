@@ -15,6 +15,8 @@ import com.google.common.collect.Lists;
 
 public class SourcePathUtils {
 
+    private static Collection<@NonNull SourcePathProvider> sourcePathProviders;
+
     private SourcePathUtils() {
     }
 
@@ -72,8 +74,6 @@ public class SourcePathUtils {
         }
         return result;
     }
-
-    private static Collection<@NonNull SourcePathProvider> sourcePathProviders;
 
     public static synchronized Collection<@NonNull SourcePathProvider> getSourcePathProviders() {
         if (SourcePathUtils.sourcePathProviders != null) {
