@@ -49,7 +49,7 @@ public class SourcePathUtils {
     private static Collection<IPath> getExtraSourcePathsGeneric(final IProject project,
             final SPPMethod method) {
         final List<IPath> result = Lists.newArrayList();
-        Collection<SourcePathProvider> spps;
+        Collection<@NonNull SourcePathProvider> spps;
         try {
             spps = SourcePathUtils.getSourcePathProviders();
             for (final SourcePathProvider spp : spps) {

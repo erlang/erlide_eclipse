@@ -3,6 +3,7 @@ package org.erlide.ui.editors.erl.correction;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.quickassist.IQuickAssistInvocationContext;
 import org.erlide.util.services.ExtensionUtils;
@@ -11,7 +12,7 @@ import com.google.common.collect.Lists;
 
 public class QuickFixAssistsGenerator {
 
-    private final List<IErlangAssist> extensions;
+    private final List<@NonNull IErlangAssist> extensions;
 
     public QuickFixAssistsGenerator() {
         extensions = ExtensionUtils.getExtensions("org.erlide.ui.quickfix",

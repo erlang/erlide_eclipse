@@ -107,7 +107,8 @@ public class ErlangDebugTarget extends ErlangDebugElement
         debuggerDaemon.start();
 
         // interpret everything we can
-        final EnumSet<ErlDebugFlags> debugFlags = backend.getData().getDebugFlags();
+        final EnumSet<@NonNull ErlDebugFlags> debugFlags = backend.getData()
+                .getDebugFlags();
         final boolean distributed = debugFlags.contains(ErlDebugFlags.DISTRIBUTED_DEBUG);
         distributeDebuggerCode();
         if (distributed) {

@@ -2,6 +2,8 @@ package org.erlide.engine.services.search;
 
 import java.util.EnumSet;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -37,9 +39,10 @@ public abstract class ErlangSearchPattern {
     protected static final OtpErlangAtom RECORD_FIELD_REF_ATOM = new OtpErlangAtom(
             "record_field_ref");
 
-    public static EnumSet<SearchFor> allSearchFor = EnumSet.allOf(SearchFor.class);
+    public static EnumSet<@NonNull SearchFor> allSearchFor = EnumSet
+            .allOf(SearchFor.class);
 
-    public static EnumSet<LimitTo> allLimitTo = EnumSet.allOf(LimitTo.class);
+    public static EnumSet<@NonNull LimitTo> allLimitTo = EnumSet.allOf(LimitTo.class);
 
     protected final LimitTo limitTo;
 
@@ -64,7 +67,8 @@ public abstract class ErlangSearchPattern {
 
     protected static OtpErlangObject makeIncludePatternObject(final String s) {
         return new OtpErlangTuple(new OtpErlangObject[] {
-                ErlangSearchPattern.INCLUDE_REF_ATOM, new OtpErlangString(s) });
+                ErlangSearchPattern.INCLUDE_REF_ATOM, new OtpErlangString(s)
+        });
     }
 
     protected OtpErlangObject makeMFAPatternObject(final OtpErlangAtom defAtom,
@@ -119,16 +123,24 @@ public abstract class ErlangSearchPattern {
     private OtpErlangObject returnRefsAndOrDefs(final OtpErlangObject refs,
             final OtpErlangObject defs) {
         if (limitTo == LimitTo.ALL_OCCURRENCES) {
-            return new OtpErlangList(new OtpErlangObject[] { refs, defs });
+            return new OtpErlangList(new OtpErlangObject[] {
+                    refs, defs
+            });
         } else if (limitTo == LimitTo.REFERENCES) {
-            return new OtpErlangList(new OtpErlangObject[] { refs });
+            return new OtpErlangList(new OtpErlangObject[] {
+                    refs
+            });
         } else {
-            return new OtpErlangList(new OtpErlangObject[] { defs });
+            return new OtpErlangList(new OtpErlangObject[] {
+                    defs
+            });
         }
     }
 
     private static OtpErlangTuple make2Tuple(final OtpErlangAtom atom, final String s) {
-        return new OtpErlangTuple(new OtpErlangObject[] { atom, new OtpErlangAtom(s) });
+        return new OtpErlangTuple(new OtpErlangObject[] {
+                atom, new OtpErlangAtom(s)
+        });
     }
 
     private static final OtpErlangAtom UNDEFINED = new OtpErlangAtom("undefined");
@@ -136,28 +148,35 @@ public abstract class ErlangSearchPattern {
     private static OtpErlangObject make3Tuple(final OtpErlangAtom atom, final String s,
             final int a) {
         if (a >= 0) {
-            return new OtpErlangTuple(new OtpErlangObject[] { atom, new OtpErlangAtom(s),
-                    new OtpErlangLong(a) });
+            return new OtpErlangTuple(new OtpErlangObject[] {
+                    atom, new OtpErlangAtom(s), new OtpErlangLong(a)
+            });
         }
-        return new OtpErlangTuple(new OtpErlangObject[] { atom, new OtpErlangAtom(s),
-                ErlangSearchPattern.UNDEFINED });
+        return new OtpErlangTuple(new OtpErlangObject[] {
+                atom, new OtpErlangAtom(s), ErlangSearchPattern.UNDEFINED
+        });
 
     }
 
     private static OtpErlangObject make3Tuple(final OtpErlangAtom atom, final String a1,
             final String a2) {
-        return new OtpErlangTuple(new OtpErlangObject[] { atom, new OtpErlangAtom(a1),
-                new OtpErlangAtom(a2) });
+        return new OtpErlangTuple(new OtpErlangObject[] {
+                atom, new OtpErlangAtom(a1), new OtpErlangAtom(a2)
+        });
     }
 
     private static OtpErlangObject make4Tuple(final OtpErlangAtom atom, final String s1,
             final String s2, final int a) {
         if (a >= 0) {
-            return new OtpErlangTuple(new OtpErlangObject[] { atom, new OtpErlangAtom(s1),
-                    new OtpErlangAtom(s2), new OtpErlangLong(a) });
+            return new OtpErlangTuple(new OtpErlangObject[] {
+                    atom, new OtpErlangAtom(s1), new OtpErlangAtom(s2),
+                    new OtpErlangLong(a)
+            });
         }
-        return new OtpErlangTuple(new OtpErlangObject[] { atom, new OtpErlangAtom(s1),
-                new OtpErlangAtom(s2), ErlangSearchPattern.UNDEFINED });
+        return new OtpErlangTuple(new OtpErlangObject[] {
+                atom, new OtpErlangAtom(s1), new OtpErlangAtom(s2),
+                ErlangSearchPattern.UNDEFINED
+        });
     }
 
     public LimitTo getLimitTo() {

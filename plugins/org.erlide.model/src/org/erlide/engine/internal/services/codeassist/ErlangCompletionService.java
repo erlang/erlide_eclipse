@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
@@ -79,7 +80,7 @@ public class ErlangCompletionService implements CompletionService {
         final String prefix = getPrefix(before);
         List<String> fieldsSoFar = null;
         List<CompletionData> result;
-        EnumSet<CompletionFlag> flags = EnumSet.noneOf(CompletionFlag.class);
+        EnumSet<@NonNull CompletionFlag> flags = EnumSet.noneOf(CompletionFlag.class);
         int pos;
         String moduleOrRecord = null;
         IErlElement element = getElementAt(offset);
@@ -374,9 +375,9 @@ public class ErlangCompletionService implements CompletionService {
     }
 
     List<CompletionData> addCompletions(final IOtpRpc backend,
-            final Set<CompletionFlag> flags, final int offset, final String prefix,
-            final String moduleOrRecord, final int pos, final List<String> fieldsSoFar,
-            final boolean inString) throws CoreException {
+            final Set<@NonNull CompletionFlag> flags, final int offset,
+            final String prefix, final String moduleOrRecord, final int pos,
+            final List<String> fieldsSoFar, final boolean inString) throws CoreException {
         final List<CompletionData> result = new ArrayList<>();
         final IErlProject aProject = project;
         if (aProject == null) {
@@ -428,8 +429,9 @@ public class ErlangCompletionService implements CompletionService {
         return result;
     }
 
-    List<CompletionData> addDeclaredFunctionsCompletions(final Set<CompletionFlag> flags,
-            final int offset, final String prefix) throws CoreException {
+    List<CompletionData> addDeclaredFunctionsCompletions(
+            final Set<@NonNull CompletionFlag> flags, final int offset,
+            final String prefix) throws CoreException {
         final List<CompletionData> result = new ArrayList<>();
         if (flags.contains(CompletionFlag.DECLARED_FUNCTIONS)) {
             addSorted(prefix, result,

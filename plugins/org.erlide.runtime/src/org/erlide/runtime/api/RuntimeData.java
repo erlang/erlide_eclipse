@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlangFunctionCall;
@@ -38,7 +39,7 @@ public class RuntimeData {
 
     protected boolean loadOnAllNodes;
     protected boolean debug;
-    protected EnumSet<ErlDebugFlags> debugFlags;
+    protected EnumSet<@NonNull ErlDebugFlags> debugFlags;
     protected Set<String> initialInterpretedModules;
 
     protected boolean reportErrors;
@@ -190,7 +191,7 @@ public class RuntimeData {
         return runtimeInfo;
     }
 
-    public EnumSet<ErlDebugFlags> getDebugFlags() {
+    public EnumSet<@NonNull ErlDebugFlags> getDebugFlags() {
         return debugFlags;
     }
 

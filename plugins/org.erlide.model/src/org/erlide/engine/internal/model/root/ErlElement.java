@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.cache.ErlModelCache;
 import org.erlide.engine.model.ErlElementKind;
@@ -493,7 +494,7 @@ public abstract class ErlElement extends PlatformObject
 
     @Override
     public final void accept(final IErlElementVisitor visitor,
-            final Set<AcceptFlags> flags, final ErlElementKind leafKind)
+            final Set<@NonNull AcceptFlags> flags, final ErlElementKind leafKind)
             throws ErlModelException {
         synchronized (getModelLock()) {
             internalAccept(visitor, flags, leafKind);
@@ -501,7 +502,7 @@ public abstract class ErlElement extends PlatformObject
     }
 
     private final void internalAccept(final IErlElementVisitor visitor,
-            final Set<AcceptFlags> flags, final ErlElementKind leafKind)
+            final Set<@NonNull AcceptFlags> flags, final ErlElementKind leafKind)
             throws ErlModelException {
         if (getKind() == leafKind) {
             visitor.visit(this);

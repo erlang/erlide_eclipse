@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlElement;
@@ -42,7 +43,7 @@ public class ParserDB {
                 ParserDB.out = System.out;
 
                 final IErlModel model = ErlangEngine.getInstance().getModel();
-                final Collection<SourcePathProvider> sourcePathProviders = SourcePathUtils
+                final Collection<@NonNull SourcePathProvider> sourcePathProviders = SourcePathUtils
                         .getSourcePathProviders();
                 final long time = System.currentTimeMillis();
                 ParserDB.db.run(model, sourcePathProviders, false);
@@ -58,7 +59,7 @@ public class ParserDB {
     }
 
     private void run(final IErlModel model,
-            final Collection<SourcePathProvider> sourcePathProviders,
+            final Collection<@NonNull SourcePathProvider> sourcePathProviders,
             final boolean includeTests) throws ErlModelException {
         // we include all projects in workspace - create one for OTP too
 

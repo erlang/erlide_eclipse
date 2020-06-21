@@ -12,6 +12,7 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IDebugTarget;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.backend.api.ErlRuntimeAttributes;
@@ -50,7 +51,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
                 } else {
                     final ILaunchConfiguration launchConfiguration = erlangDebugTarget
                             .getLaunch().getLaunchConfiguration();
-                    final EnumSet<ErlDebugFlags> debugFlags = ErlDebugFlags
+                    final EnumSet<@NonNull ErlDebugFlags> debugFlags = ErlDebugFlags
                             .makeSet(launchConfiguration.getAttribute(
                                     ErlRuntimeAttributes.DEBUG_FLAGS, ErlDebugFlags
                                             .getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS)));
@@ -107,8 +108,8 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
                 IStatus.ERROR, "Can't replace code", null);
         final String title = "Code Replace Failed";
         final String message = MessageFormat.format(
-                "Some code changes cannot be replaced when being debugged.",
-                new Object[] { vmName, launchName });
+                "Some code changes cannot be replaced when being debugged.", vmName,
+                launchName);
         display.asyncExec(() -> {
             if (display.isDisposed()) {
                 return;
