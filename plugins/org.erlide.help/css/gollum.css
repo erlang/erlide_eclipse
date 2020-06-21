@@ -13,7 +13,7 @@ a.absent {
   display: block;
 }
 
-.frame > span {
+.frame>span {
   display: block;
   border: 1px solid #aaa;
   padding: 4px;

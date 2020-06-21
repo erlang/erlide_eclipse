@@ -7,7 +7,8 @@
   padding: 0;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   color: black;
 }
@@ -23,12 +24,19 @@ table {
   font: 100%;
 }
 
-select, input[type=text], input[type=password], input[type=image], textarea {
+select,
+input[type=text],
+input[type=password],
+input[type=image],
+textarea {
   font: 99% helvetica, arial, freesans, sans-serif;
 }
-select, option {
+
+select,
+option {
   padding: 0 .25em;
 }
+
 optgroup {
   margin-top: .5em;
 }
@@ -36,7 +44,9 @@ optgroup {
 input.text {
   padding: 1px 0;
 }
-pre, code {
+
+pre,
+code {
   font: 12px Monaco, "Courier New", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", monospace;
 }
 
@@ -44,7 +54,9 @@ body * {
   line-height: 1.4em;
 }
 
-p{ margin:1em 0; }
+p {
+  margin: 1em 0;
+}
 
 img {
   border: 0;
@@ -55,18 +67,29 @@ abbr {
 }
 
 .clearfix:after {
-    content: ".";
-    display: block;
-    height: 0;
-    clear: both;
-    visibility: hidden;
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
 }
-* html .clearfix {height: 1%;}
-.clearfix {display:inline-block;}
-.clearfix {display: block;}
+
+* html .clearfix {
+  height: 1%;
+}
+
+.clearfix {
+  display: inline-block;
+}
+
+.clearfix {
+  display: block;
+}
 
 /* always show vertical scroll bar to prevent page jitter */
-html {overflow-y: scroll;}
+html {
+  overflow-y: scroll;
+}
 
 .site {
   margin: 2em auto 0 auto;
@@ -78,142 +101,141 @@ html {overflow-y: scroll;}
 /* Guides
 /****************************************************************************/
 
-#guides {
+#guides {}
+
+/* index */
+
+#guides .index {}
+
+#guides h1 {
+  margin-bottom: .5em;
+}
+
+#guides .index ul {
+  list-style-type: none;
+  font-size: 120%;
+}
+
+#guides .index ul li {
+  padding-left: 1.5em;
+  background: white url(/images/modules/guides/book.png) no-repeat;
+}
+
+#guides .index .new {
+  margin-top: 1em;
+  border-top: 1px solid #ccc;
+  padding-top: .5em;
+}
+
+#guides .index .new ul li {
+  background: white url(/images/modules/guides/book_add.png) no-repeat;
+}
+
+#guides .index .new ul li a {
+  color: #c00;
+}
+
+#guides .write .delete_page {
+  float: right;
+}
+
+/* guide */
+
+#guides .guide {
+  overflow: hidden;
+}
+
+/* main */
+
+#guides .guide .main {
+  width: 100%;
+}
+
+/* sidebar */
+
+#guides .guide .sidebar {
+  float: right;
+  width: 15em;
+  border-left: 4px solid #e6e6e6;
+  margin: 2.1em 0 0 0;
+  padding-left: 1em;
+}
+
+#guides .guide .sidebar h3 {
+  margin: 0 0 .5em 0;
+}
+
+#guides .guide .sidebar ul {
+  list-style-type: none;
+  margin: 0;
+  color: #888;
 
 }
 
-  /* index */
+#guides .guide .sidebar ul li {
+  padding-left: 12px;
+  background: white url(/images/modules/guides/sidebar/bullet_blue.png) -4px 0 no-repeat;
+  margin: .2em 0;
+}
 
-  #guides .index {
+/* admin */
 
-  }
+#guides .admin {
+  clear: both;
+  margin-top: 3em;
+  border-top: 4px solid #e6e6e6;
+  padding-top: .3em;
+  overflow: hidden;
+}
 
-    #guides h1 {
-      margin-bottom: .5em;
-    }
+/* write */
 
-    #guides .index ul {
-      list-style-type: none;
-      font-size: 120%;
-    }
+#guides .write {}
 
-      #guides .index ul li {
-        padding-left: 1.5em;
-        background: white url(/images/modules/guides/book.png) no-repeat;
-      }
+#guides .write label {
+  font-size: 110%;
+  color: #666;
+  display: block;
+  margin: 1em 0;
+}
 
-    #guides .index .new {
-      margin-top: 1em;
-      border-top: 1px solid #ccc;
-      padding-top: .5em;
-    }
+#guides .write input.text {
+  padding: 5px;
+  border: 1px solid #888;
+  width: 40em;
+}
 
-      #guides .index .new ul li {
-        background: white url(/images/modules/guides/book_add.png) no-repeat;
-      }
+#guides .write textarea {
+  width: 100%;
+  height: 25em;
+  border: none;
+}
 
-      #guides .index .new ul li a {
-        color: #c00;
-      }
+#guides .write label span.title {
+  color: black;
+  font-weight: bold;
+}
 
-    #guides .write .delete_page {
-      float: right;
-    }
+#guides .write .actions input {
+  margin-right: 1em;
+}
 
-  /* guide */
-
-  #guides .guide {
-    overflow: hidden;
-  }
-
-    /* main */
-
-    #guides .guide .main {
-      width: 100%;
-    }
-
-    /* sidebar */
-
-    #guides .guide .sidebar {
-      float: right;
-      width: 15em;
-      border-left: 4px solid #e6e6e6;
-      margin: 2.1em 0 0 0;
-      padding-left: 1em;
-    }
-
-      #guides .guide .sidebar h3 {
-        margin: 0 0 .5em 0;
-      }
-
-      #guides .guide .sidebar ul {
-        list-style-type: none;
-        margin: 0;
-        color: #888;
-
-      }
-
-      #guides .guide .sidebar ul li {
-        padding-left: 12px;
-        background: white url(/images/modules/guides/sidebar/bullet_blue.png) -4px 0 no-repeat;
-        margin: .2em 0;
-      }
-
-  /* admin */
-
-  #guides .admin {
-    clear: both;
-    margin-top: 3em;
-    border-top: 4px solid #e6e6e6;
-    padding-top: .3em;
-    overflow: hidden;
-  }
-
-  /* write */
-
-  #guides .write {
-
-  }
-
-    #guides .write label {
-      font-size: 110%;
-      color: #666;
-      display: block;
-      margin: 1em 0;
-    }
-
-    #guides .write input.text {
-      padding: 5px;
-      border: 1px solid #888;
-      width: 40em;
-    }
-
-    #guides .write textarea {
-      width: 100%;
-      height: 25em;
-      border: none;
-    }
-
-    #guides .write label span.title {
-      color: black;
-      font-weight: bold;
-    }
-
-    #guides .write .actions input {
-      margin-right: 1em;
-    }
-
-    #guides .write #preview_bucket {
-      border: 1px solid #888;
-      background-color: white;
-      padding: 5px;
-    }
+#guides .write #preview_bucket {
+  border: 1px solid #888;
+  background-color: white;
+  padding: 5px;
+}
 
 /****************************************************************************/
 /* Wiki
 /****************************************************************************/
 
-.wikistyle h1, .wikistyle h2, .wikistyle h3, .wikistyle h4, .wikistyle h5, .wikistyle h6 {
+.wikistyle h1,
+.wikistyle h2,
+.wikistyle h3,
+.wikistyle h4,
+.wikistyle h5,
+.wikistyle h6 {
   border: 0 !important;
 }
 
@@ -277,15 +299,15 @@ html {overflow-y: scroll;}
   margin: 1em 0 !important;
 }
 
-  .wikistyle table th {
-    border-bottom: 1px solid #bbb !important;
-    padding: .2em 1em !important;
-  }
+.wikistyle table th {
+  border-bottom: 1px solid #bbb !important;
+  padding: .2em 1em !important;
+}
 
-  .wikistyle table td {
-    border-bottom: 1px solid #ddd !important;
-    padding: .2em 1em !important;
-  }
+.wikistyle table td {
+  border-bottom: 1px solid #ddd !important;
+  padding: .2em 1em !important;
+}
 
 .wikistyle pre {
   margin: 1em 0 !important;
@@ -298,12 +320,12 @@ html {overflow-y: scroll;}
   overflow: auto !important;
 }
 
-  .wikistyle pre code {
-    padding: 0 !important;
-    font-size: 100% !important;
-    background-color: #f8f8ff !important;
-    border: none !important;
-  }
+.wikistyle pre code {
+  padding: 0 !important;
+  font-size: 100% !important;
+  background-color: #f8f8ff !important;
+  border: none !important;
+}
 
 .wikistyle code {
   font-size: 90% !important;
@@ -324,21 +346,21 @@ html {overflow-y: scroll;}
   color: white !important;
 }
 
-  .wikistyle pre.console code {
-    padding: 0 !important;
-    font-size: 100% !important;
-    background-color: black !important;
-    border: none !important;
-    color: white !important;
-  }
+.wikistyle pre.console code {
+  padding: 0 !important;
+  font-size: 100% !important;
+  background-color: black !important;
+  border: none !important;
+  color: white !important;
+}
 
-  .wikistyle pre.console span {
-    color: #888 !important;
-  }
+.wikistyle pre.console span {
+  color: #888 !important;
+}
 
-  .wikistyle pre.console span.command {
-    color: yellow !important;
-  }
+.wikistyle pre.console span.command {
+  color: yellow !important;
+}
 
 /* Wiki form */
 
@@ -365,13 +387,13 @@ label.wiki-label {
   margin-top: 2em;
 }
 
-.wikistyle.gollum > h1:first-child {
+.wikistyle.gollum>h1:first-child {
   display: none;
 }
 
 /* asciidoc */
 
-.wikistyle.gollum.asciidoc > div#header > h1:first-child {
+.wikistyle.gollum.asciidoc>div#header>h1:first-child {
   display: none;
 }
 
@@ -398,17 +420,17 @@ label.wiki-label {
 
 /* org */
 
-.wikistyle.gollum.org > p.title:first-child {
+.wikistyle.gollum.org>p.title:first-child {
   display: none;
 }
 
-.wikistyle.gollum.org p:first-child + h1 {
+.wikistyle.gollum.org p:first-child+h1 {
   border-top: none !important;
 }
 
 /* pod */
 
-.wikistyle.gollum.pod > a.dummyTopAnchor:first-child + h1 {
+.wikistyle.gollum.pod>a.dummyTopAnchor:first-child+h1 {
   display: none;
 }
 
@@ -419,7 +441,7 @@ label.wiki-label {
 
 /* rest */
 
-.wikistyle.gollum.rest > div.document > div.section > h1:first-child {
+.wikistyle.gollum.rest>div.document>div.section>h1:first-child {
   display: none;
 }
 
@@ -427,66 +449,66 @@ label.wiki-label {
 /* Comment Form
 /****************************************************************************/
 
-.comment-form-error{
-  margin:-15px 0 15px 0;
-  font-weight:bold;
-  color:#aa0000;
+.comment-form-error {
+  margin: -15px 0 15px 0;
+  font-weight: bold;
+  color: #aa0000;
 }
 
-.comment-form{
-  margin:-10px 0 10px 0;
-  padding:5px;
-  background:#eee;
-  -webkit-border-radius:5px;
-  -moz-border-radius:5px;
+.comment-form {
+  margin: -10px 0 10px 0;
+  padding: 5px;
+  background: #eee;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
 }
 
-.comment-form textarea{
-  margin:0;
+.comment-form textarea {
+  margin: 0;
   padding: 5px 0;
-  width:100%;
-  height:100px;
+  width: 100%;
+  height: 100px;
 }
 
-.comment-form p.help{
-  margin:3px 0 0 0;
-  float:right;
-  font-size:11px;
-  color:#666;
+.comment-form p.help {
+  margin: 3px 0 0 0;
+  float: right;
+  font-size: 11px;
+  color: #666;
 }
 
-.comment-form ul.tabs{
-  margin:0 0 5px 0;
+.comment-form ul.tabs {
+  margin: 0 0 5px 0;
 }
 
-.comment-form ul.tabs li{
-  list-style-type:none;
-  margin:0;
-  display:inline-block;
+.comment-form ul.tabs li {
+  list-style-type: none;
+  margin: 0;
+  display: inline-block;
 }
 
-.comment-form ul.tabs a{
-  display:inline-block;
-  padding:2px 8px;
-  font-size:11px;
-  font-weight:bold;
-  text-decoration:none;
-  color:#666;
-  border:1px solid transparent;
-  -webkit-border-radius:10px;
-  -moz-border-radius:10px;
+.comment-form ul.tabs a {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #666;
+  border: 1px solid transparent;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
 }
 
-.comment-form ul.tabs a.selected{
-  color:#333;
-  background:#fff;
-  border-color:#bbb;
+.comment-form ul.tabs a.selected {
+  color: #333;
+  background: #fff;
+  border-color: #bbb;
   border-right-color: #ddd;
   border-bottom-color: #ddd;
 }
 
-.comment-form .comment{
-  margin:5px 0 0 0;
+.comment-form .comment {
+  margin: 5px 0 0 0;
 }
 
 /****************************************************************************/
@@ -501,226 +523,227 @@ table.commits {
   margin-bottom: 2em;
 }
 
-  table.commits tr td {
-    background-color: #eaf2f5;
-  }
+table.commits tr td {
+  background-color: #eaf2f5;
+}
 
-    table.commits tr.selected td {
-      background-color: #FEFFE6;
-    }
+table.commits tr.selected td {
+  background-color: #FEFFE6;
+}
 
-  table.commits th {
-    font-weight: normal;
-    border-bottom: 1px solid #ccc;
-    padding: .3em .6em;
-    background-color: #eee;
-    font-size: 95%;
-    text-align:left;
-  }
+table.commits th {
+  font-weight: normal;
+  border-bottom: 1px solid #ccc;
+  padding: .3em .6em;
+  background-color: #eee;
+  font-size: 95%;
+  text-align: left;
+}
 
-  table.commits td {
-    border-bottom: 1px solid #ccc;
-    padding: .3em .6em;
-  }
+table.commits td {
+  border-bottom: 1px solid #ccc;
+  padding: .3em .6em;
+}
 
-    table.commits td.sha,
-    table.commits td.message {
-      font-family: Monaco, "Courier New", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", monospace;
-      font-size: 80%;
-    }
+table.commits td.sha,
+table.commits td.message {
+  font-family: Monaco, "Courier New", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", monospace;
+  font-size: 80%;
+}
 
-    table.commits td.checkbox {
-      width: 3%;
-    }
+table.commits td.checkbox {
+  width: 3%;
+}
 
-    table.commits td.sha {
-      width: 6%;
-    }
+table.commits td.sha {
+  width: 6%;
+}
 
-    table.commits td.human {
-      font-family: Monaco, "Courier New", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", monospace;
-      font-size: 80%;
-      width: 4%;
-      color: #888;
-    }
+table.commits td.human {
+  font-family: Monaco, "Courier New", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", monospace;
+  font-size: 80%;
+  width: 4%;
+  color: #888;
+}
 
-    table.commits td.author {
-      width: 15%;
-      font-weight: bold;
-    }
+table.commits td.author {
+  width: 15%;
+  font-weight: bold;
+}
 
-      table.commits td.author img {
-        vertical-align: middle;
-        border: 1px solid #ccc;
-        padding: 1px;
-        background-color: white;
-      }
+table.commits td.author img {
+  vertical-align: middle;
+  border: 1px solid #ccc;
+  padding: 1px;
+  background-color: white;
+}
 
-    table.commits td.message a {
-      color: black;
-    }
+table.commits td.message a {
+  color: black;
+}
 
-      table.commits td.message a:hover {
-        text-decoration: underline;
-      }
+table.commits td.message a:hover {
+  text-decoration: underline;
+}
 
-    table.commits td.date {
-      width: 12%;
-      text-align: right;
-    }
+table.commits td.date {
+  width: 12%;
+  text-align: right;
+}
 
 /****************************************************************************/
 /* Files
 /****************************************************************************/
 
-#files {
+#files {}
 
+#files .file {
+  border: 1px solid #ccc;
+  margin-bottom: 1em;
 }
 
-  #files .file {
-    border: 1px solid #ccc;
-    margin-bottom: 1em;
-  }
+#files .file .syntax {
+  border: none;
+  padding: 0;
+}
 
-  #files .file .syntax{
-    border:none;
-    padding:0;
-  }
+#files .file .meta {
+  padding: 0 5px;
+  height: 33px;
+  line-height: 33px;
+  font-size: 12px;
+  color: #333;
+  background: url(/images/modules/commit/file_head.gif) 0 0 repeat-x #eee;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid #ccc;
+  overflow: hidden;
+}
 
-    #files .file .meta {
-      padding:0 5px;
-      height:33px;
-      line-height:33px;
-      font-size:12px;
-      color:#333;
-      background:url(/images/modules/commit/file_head.gif) 0 0 repeat-x #eee;
-      text-shadow:1px 1px 0 rgba(255, 255, 255, 0.5);
-      border-bottom: 1px solid #ccc;
-      overflow: hidden;
-    }
+#files .file .meta .info {
+  float: left;
+  height: 33px;
+  line-height: 33px;
+  font-family: Monaco, "Courier New", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", monospace;
+}
 
-      #files .file .meta .info {
-        float: left;
-        height:33px;
-        line-height:33px;
-        font-family: Monaco, "Courier New", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", monospace;
-      }
+#files .file .meta .info span {
+  padding-left: 9px;
+  margin-left: 5px;
+  background: url(/images/modules/commit/action_separator.png) 0 50% no-repeat;
+}
 
-        #files .file .meta .info span{
-          padding-left:9px;
-          margin-left:5px;
-          background:url(/images/modules/commit/action_separator.png) 0 50% no-repeat;
-        }
+#files .file .meta .info span:first-child,
+#files .file .meta .info .icon+span {
+  background: transparent;
+  margin-left: 0;
+  padding-left: 0;
+}
 
-        #files .file .meta .info span:first-child, #files .file .meta .info .icon + span{
-          background:transparent;
-          margin-left:0;
-          padding-left:0;
-        }
+#files .file .meta .info span.icon {
+  float: left;
+  margin: 5px 5px 0 0;
+  padding: 3px;
+  background: #f7f7f7;
+  border: 1px solid #ccc;
+  border-right-color: #e5e5e5;
+  border-bottom-color: #e5e5e5;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  line-height: 1em;
+}
 
-        #files .file .meta .info span.icon{
-          float:left;
-          margin:5px 5px 0 0;
-          padding:3px;
-          background:#f7f7f7;
-          border:1px solid #ccc;
-          border-right-color:#e5e5e5;
-          border-bottom-color:#e5e5e5;
-          -webkit-border-radius:3px;
-          -moz-border-radius:3px;
-          border-radius:3px;
-          line-height: 1em;
-        }
+#files .file .meta .actions {
+  float: right;
+  height: 33px;
+  line-height: 33px;
+}
 
-    #files .file .meta .actions {
-      float: right;
-      height:33px;
-      line-height:33px;
-    }
+#files .file .meta .actions li {
+  list-style-type: none;
+  float: left;
+  margin: 0 0 0 7px;
+  height: 33px;
+  line-height: 33px;
+  padding-left: 9px;
+  font-size: 11px;
+  background: url(/images/modules/commit/action_separator.png) 0 50% no-repeat;
+}
 
-      #files .file .meta .actions li{
-        list-style-type:none;
-        float:left;
-        margin:0 0 0 7px;
-        height:33px;
-        line-height:33px;
-        padding-left:9px;
-        font-size:11px;
-        background:url(/images/modules/commit/action_separator.png) 0 50% no-repeat;
-      }
+#files .file .meta .actions li:first-child {
+  background: transparent;
+  margin-left: 0;
+  padding-left: 0;
+}
 
-      #files .file .meta .actions li:first-child{
-        background:transparent;
-        margin-left:0;
-        padding-left:0;
-      }
+#files .file .meta .actions li a {
+  font-weight: bold;
+}
 
-        #files .file .meta .actions li a{
-          font-weight:bold;
-        }
+#files .file .meta .actions li code {
+  font-size: 11px;
+}
 
-        #files .file .meta .actions li code{
-          font-size:11px;
-        }
+#files .file .meta .actions li label input {
+  position: relative;
+  top: 1px;
+}
 
-        #files .file .meta .actions li label input{
-          position:relative;
-          top:1px;
-        }
+#files .file .data {
+  font-size: 80%;
+  overflow: auto;
+  background-color: #f8f8ff;
+}
 
-    #files .file .data {
-      font-size: 80%;
-      overflow: auto;
-      background-color: #f8f8ff;
-    }
+#files .file .data.empty {
+  font-size: 90%;
+  padding: 5px 10px;
+  color: #777;
+}
 
-    #files .file .data.empty {
-      font-size: 90%;
-      padding:5px 10px;
-      color:#777;
-    }
+#files .image {
+  padding: 1.2em;
+  text-align: center;
+}
 
-    #files .image {
-      padding: 1.2em;
-      text-align: center;
-    }
+#files .image img {
+  max-width: 60em;
+}
 
-      #files .image img {
-        max-width: 60em;
-      }
+#files .file .data pre,
+#files .file .line-data,
+#files .file .line-number {
+  font-family: 'Bitstream Vera Sans Mono', 'Courier', monospace;
+  font-size: 115%;
+}
 
-      #files .file .data pre, #files .file .line-data, #files .file .line-number {
-        font-family: 'Bitstream Vera Sans Mono', 'Courier', monospace;
-        font-size: 115%;
-      }
+#files .file .data .highlight {
+  padding: 1em 0;
+}
 
-        #files .file .data .highlight {
-          padding: 1em 0;
-        }
+#files .file .data .highlight div {
+  padding-left: 1em;
+}
 
-        #files .file .data .highlight div {
-          padding-left: 1em;
-        }
+#files .file .data .line_numbers {
+  background-color: #ececec;
+  color: #aaa;
+  padding: 1em .5em;
+  border-right: 1px solid #ddd;
+  text-align: right;
+}
 
-        #files .file .data .line_numbers {
-          background-color: #ececec;
-          color: #aaa;
-          padding: 1em .5em;
-          border-right: 1px solid #ddd;
-          text-align: right;
-        }
+#files .file .data td.line_numbers {
+  padding: 0 0.5em;
+  font-family: 'Bitstream Vera Sans Mono', 'Courier', monospace;
+  font-size: 115%;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+}
 
-        #files .file .data td.line_numbers{
-          padding:0 0.5em;
-          font-family: 'Bitstream Vera Sans Mono', 'Courier', monospace;
-          font-size: 115%;
-          -moz-user-select:none;
-          -khtml-user-select:none;
-          user-select:none;
-        }
-
-          #files .file .data .line_numbers span,
-          #files .file .data .line_numbers a {
-            color: #aaa;
-            cursor: pointer;
-          }
+#files .file .data .line_numbers span,
+#files .file .data .line_numbers a {
+  color: #aaa;
+  cursor: pointer;
+}
