@@ -138,15 +138,7 @@ public class GeneraliseFunctionRefactoring
         } else if (state == State.multi_instance) {
             positions = createPositionList((OtpErlangList) message.getParameters()
                     .get(GenFunReturnParameterName.dupsInFun));
-        } else if (state == State.more_than_one_clause) {
-            if (onlyInClause) {
-                positions = createPositionList((OtpErlangList) message.getParameters()
-                        .get(GenFunReturnParameterName.dupsInClause));
-            } else {
-                positions = createPositionList((OtpErlangList) message.getParameters()
-                        .get(GenFunReturnParameterName.dupsInFun));
-            }
-        } else if (state == State.unknown_side_effect) {
+        } else if ((state == State.more_than_one_clause) || (state == State.unknown_side_effect)) {
             if (onlyInClause) {
                 positions = createPositionList((OtpErlangList) message.getParameters()
                         .get(GenFunReturnParameterName.dupsInClause));

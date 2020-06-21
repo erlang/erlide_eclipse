@@ -69,16 +69,22 @@ public class RowLayouter {
     }
 
     public void perform(final Control c1) {
-        perform(new Control[] { c1 }, 0);
+        perform(new Control[] {
+                c1
+        }, 0);
     }
 
     public void perform(final Control c1, final Control c2, final int span) {
-        perform(new Control[] { c1, c2 }, span);
+        perform(new Control[] {
+                c1, c2
+        }, span);
     }
 
     public void perform(final Control c1, final Control c2, final Control c3,
             final int span) {
-        perform(new Control[] { c1, c2, c3 }, span);
+        perform(new Control[] {
+                c1, c2, c3
+        }, span);
     }
 
     public void perform(final Control[] controls, final int spanColumn) {

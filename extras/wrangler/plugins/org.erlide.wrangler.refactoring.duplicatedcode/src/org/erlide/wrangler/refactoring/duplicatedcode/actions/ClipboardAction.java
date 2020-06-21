@@ -37,7 +37,11 @@ public class ClipboardAction extends Action {
     public void run() {
         final Clipboard cb = new Clipboard(display);
         final TextTransfer textTransfer = TextTransfer.getInstance();
-        cb.setContents(new Object[] { text }, new TextTransfer[] { textTransfer });
+        cb.setContents(new Object[] {
+                text
+        }, new TextTransfer[] {
+                textTransfer
+        });
     }
 
     @Override

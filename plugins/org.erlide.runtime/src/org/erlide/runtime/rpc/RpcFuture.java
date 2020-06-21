@@ -91,7 +91,9 @@ public class RpcFuture implements ListenableFuture<OtpErlangObject> {
         if (isDone()) {
             RpcMonitor.recordResponse(ref, result);
             if (logCalls) {
-                final Object[] args0 = { result };
+                final Object[] args0 = {
+                        result
+                };
                 ErlLogger.debug("call <- %s", args0);
             }
         }

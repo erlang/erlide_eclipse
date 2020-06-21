@@ -109,9 +109,9 @@ public class ErlangProjectPropertyPage extends PropertyPage {
             runtimeCombo.setLayoutData(gd_combo);
             runtimeCombo.setEnabled(globalEnable);
             final RuntimeVersion[] runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS;
-            runtimeCombo.setItems(
-                    ListExtensions.map(Arrays.asList(runtimeVersions), p -> p.toString())
-                            .toArray(new String[] {}));
+            runtimeCombo.setItems(ListExtensions
+                    .map(Arrays.asList(runtimeVersions), RuntimeVersion::toString)
+                    .toArray(new String[] {}));
             runtimeCombo.setText(model.getRequiredRuntimeVersion().asMajor().toString());
             runtimeCombo.addSelectionListener(new SelectionListener() {
 

@@ -20,7 +20,8 @@ import com.google.common.io.Files;
 
 public class ErlangContentDescriber implements ITextContentDescriber {
     private static final QualifiedName[] SUPPORTED_OPTIONS = {
-            IContentDescription.CHARSET };
+            IContentDescription.CHARSET
+    };
     private static final Pattern LATIN1 = Pattern.compile("%+[ *-]+coding: *latin-1.*", //$NON-NLS-1$
             Pattern.CASE_INSENSITIVE);
     private static final Pattern UTF8 = Pattern.compile("%+[ *-]+coding: *utf-8.*", //$NON-NLS-1$

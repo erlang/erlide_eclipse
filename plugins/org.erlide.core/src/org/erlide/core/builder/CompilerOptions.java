@@ -38,8 +38,9 @@ public class CompilerOptions {
     public static final BooleanOption ENCRYPT_DEBUG_INFO = new BooleanOption(
             "encrypt_debug_info", false, "Encrypt debug info",
             "Encrypt debug info, the key will be read from .erlang.crypt");
-    public static final DefineOption DEFINE = new DefineOption("d",
-            new String[] { "Name", "Value" }, "", "");
+    public static final DefineOption DEFINE = new DefineOption("d", new String[] {
+            "Name", "Value"
+    }, "", "");
 
     public static final WarningOption WARN_UNUSED_RECORD = new WarningOption(
             "warn_unused_record", true, "Unused records", "Unused records");
@@ -152,14 +153,7 @@ public class CompilerOptions {
                 } else {
                     helper.remove(option.getName());
                 }
-            } else if (option instanceof ModuleOption) {
-                if (value != null) {
-                    final String avalue = (String) value;
-                    helper.putString(option.getName(), avalue);
-                } else {
-                    helper.remove(option.getName());
-                }
-            } else if (option instanceof RawOption) {
+            } else if ((option instanceof ModuleOption) || (option instanceof RawOption)) {
                 if (value != null) {
                     final String avalue = (String) value;
                     helper.putString(option.getName(), avalue);
@@ -190,11 +184,7 @@ public class CompilerOptions {
                 if (!Strings.isNullOrEmpty(value)) {
                     options.put(option, PathsOption.fromString(value));
                 }
-            } else if (option instanceof ModuleOption) {
-                if (!Strings.isNullOrEmpty(value)) {
-                    options.put(option, value);
-                }
-            } else if (option instanceof RawOption) {
+            } else if ((option instanceof ModuleOption) || (option instanceof RawOption)) {
                 if (!Strings.isNullOrEmpty(value)) {
                     options.put(option, value);
                 }

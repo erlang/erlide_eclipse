@@ -23,9 +23,7 @@ public class VersionLocator {
             final List<RuntimeInfo> result = CollectionLiterals
                     .<RuntimeInfo> newArrayList();
             final Comparator<RuntimeInfo> _function = (final RuntimeInfo a,
-                    final RuntimeInfo b) -> {
-                return a.getVersion().compareTo(b.getVersion());
-            };
+                    final RuntimeInfo b) -> a.getVersion().compareTo(b.getVersion());
             final List<RuntimeInfo> _sortWith = IterableExtensions
                     .<RuntimeInfo> sortWith(runtimes, _function);
             for (final RuntimeInfo info : _sortWith) {
@@ -53,9 +51,7 @@ public class VersionLocator {
                 }
             }
             final Function1<RuntimeInfo, Boolean> _function_1 = (
-                    final RuntimeInfo it) -> {
-                return Boolean.valueOf(it.isValid());
-            };
+                    final RuntimeInfo it) -> Boolean.valueOf(it.isValid());
             _xblockexpression = IterableExtensions.<RuntimeInfo> toSet(
                     IterableExtensions.<RuntimeInfo> filter(result, _function_1));
         }

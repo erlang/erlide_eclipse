@@ -254,7 +254,7 @@ public class OtpErlangRef extends OtpErlangObject {
 
         final OtpErlangRef ref = (OtpErlangRef) o;
 
-        if (!(node.equals(ref.node()) && creation == ref.creation())) {
+        if ((!node.equals(ref.node()) || (creation != ref.creation()))) {
             return false;
         }
 

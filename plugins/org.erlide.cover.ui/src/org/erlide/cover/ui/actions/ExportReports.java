@@ -39,7 +39,9 @@ public class ExportReports extends Action {
 
         final FileDialog fd = new FileDialog(shell, SWT.SAVE);
         fd.setText("Select directory to export your HTML reports");
-        fd.setFilterExtensions(new String[] { "*.*" });
+        fd.setFilterExtensions(new String[] {
+                "*.*"
+        });
         final String path = fd.open();
 
         log.info(path);

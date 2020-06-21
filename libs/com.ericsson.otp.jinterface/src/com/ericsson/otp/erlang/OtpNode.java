@@ -431,10 +431,8 @@ public class OtpNode extends OtpLocalNode {
      * the reply: <- SEND {2,'',#Pid<bingo@aule.1.0>} {#Ref<bingo@aule.2>,yes}
      */
     public boolean ping(final String anode, final long timeout) {
-        if (anode.equals(node)) {
-            return true;
-        } else if (anode.indexOf('@', 0) < 0
-                && anode.equals(node.substring(0, node.indexOf('@', 0)))) {
+        if (anode.equals(node) || (anode.indexOf('@', 0) < 0
+                && anode.equals(node.substring(0, node.indexOf('@', 0))))) {
             return true;
         }
 

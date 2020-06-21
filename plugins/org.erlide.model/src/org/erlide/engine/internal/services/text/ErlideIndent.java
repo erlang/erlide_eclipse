@@ -37,7 +37,9 @@ public class ErlideIndent implements IndentService {
                 n = Integer.parseInt(s);
             }
             final OtpErlangLong l = new OtpErlangLong(n);
-            final OtpErlangTuple t = new OtpErlangTuple(new OtpErlangObject[] { a, l });
+            final OtpErlangTuple t = new OtpErlangTuple(new OtpErlangObject[] {
+                    a, l
+            });
             result.add(t);
         }
         return result;

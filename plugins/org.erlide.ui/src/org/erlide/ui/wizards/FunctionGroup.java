@@ -205,7 +205,7 @@ public class FunctionGroup implements SelectionListener {
             }
             // check to see if this is a valid function name
             final int functionNameASCII = functionNameText.getText().charAt(0);
-            if (!(functionNameASCII >= 'a' && functionNameASCII <= 'z')
+            if (((functionNameASCII < 'a') || (functionNameASCII > 'z'))
                     && functionNameASCII != '\'') {
                 updateStatus("Function name has to be a valid erlang atom.");
                 return;

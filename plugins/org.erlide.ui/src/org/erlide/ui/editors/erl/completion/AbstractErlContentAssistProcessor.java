@@ -140,7 +140,7 @@ public abstract class AbstractErlContentAssistProcessor
                     final List<CompletionData> resultData = completionService
                             .computeCompletions(backend, project, module, elementBefore,
                                     offset, before, isInString());
-                    result = Lists.transform(resultData, data -> toProposal(data));
+                    result = Lists.transform(resultData, this::toProposal);
                 }
                 final ErlTemplateCompletionProcessor t = new ErlTemplateCompletionProcessor(
                         doc, offset - before.length(), before.length());
@@ -196,7 +196,9 @@ public abstract class AbstractErlContentAssistProcessor
     }
 
     private ICompletionProposal[] getNoCompletion(final int offset) {
-        return new ICompletionProposal[] { new DummyCompletionProposal(offset) };
+        return new ICompletionProposal[] {
+                new DummyCompletionProposal(offset)
+        };
     }
 
     String getBefore(final ITextViewer viewer, final IDocument doc, final int offset) {

@@ -40,7 +40,9 @@ public class SearchTest {
         final IErlProject erlProject1 = ErlideTestUtils.createErlProject(name1);
         final String name2 = "testproject2";
         final IErlProject erlProject2 = ErlideTestUtils.createErlProject(name2);
-        SearchTest.projects = new IErlProject[] { erlProject1, erlProject2 };
+        SearchTest.projects = new IErlProject[] {
+                erlProject1, erlProject2
+        };
     }
 
     @AfterClass

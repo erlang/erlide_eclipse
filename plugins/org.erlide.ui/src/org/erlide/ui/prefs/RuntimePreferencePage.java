@@ -154,7 +154,9 @@ public class RuntimePreferencePage extends PreferencePage implements
                 if (vm == null) {
                     fRuntimeList.setCheckedElements(new Object[0]);
                 } else {
-                    fRuntimeList.setCheckedElements(new Object[] { vm });
+                    fRuntimeList.setCheckedElements(new Object[] {
+                            vm
+                    });
                     fRuntimeList.reveal(vm);
                 }
                 fireSelectionChanged();
@@ -384,7 +386,9 @@ public class RuntimePreferencePage extends PreferencePage implements
         if (dialog.open() != Window.OK) {
             return;
         }
-        removeRuntimes(new RuntimeInfo[] { vm });
+        removeRuntimes(new RuntimeInfo[] {
+                vm
+        });
         catalog.removeRuntime(vm.getName());
         fRuntimeList.refresh();
     }
@@ -676,7 +680,9 @@ public class RuntimePreferencePage extends PreferencePage implements
             defaultRuntime = RuntimeCore.getRuntimeInfoCatalog().getDefaultRuntime();
         }
         if (defaultRuntime != null) {
-            fRuntimeList.setCheckedElements(new Object[] { defaultRuntime });
+            fRuntimeList.setCheckedElements(new Object[] {
+                    defaultRuntime
+            });
         }
         // by default, sort by name
         sortByName();

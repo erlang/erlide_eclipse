@@ -97,7 +97,7 @@ public class ErlInformationPresenter
             }
             int end = start + 1;
             while (end < str.length()) {
-                if (!(str.charAt(end) == ':')) {
+                if ((str.charAt(end) != ':')) {
                     end++;
                 } else {
                     break;

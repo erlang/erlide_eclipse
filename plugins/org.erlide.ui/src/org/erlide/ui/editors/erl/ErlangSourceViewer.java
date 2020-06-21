@@ -76,9 +76,12 @@ public class ErlangSourceViewer extends ProjectionViewer implements IDisposable 
 
         final IPreferenceStore generalTextStore = EditorsUI.getPreferenceStore();
         final IPreferenceStore store = topStore == null
-                ? new ChainedPreferenceStore(new IPreferenceStore[] { generalTextStore })
-                : new ChainedPreferenceStore(
-                        new IPreferenceStore[] { topStore, generalTextStore });
+                ? new ChainedPreferenceStore(new IPreferenceStore[] {
+                        generalTextStore
+                })
+                : new ChainedPreferenceStore(new IPreferenceStore[] {
+                        topStore, generalTextStore
+                });
 
         final SourceViewer viewer = new SourceViewer(parent, null, null, false,
                 SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);

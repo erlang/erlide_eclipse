@@ -53,9 +53,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult
         for (final Match match : matches) {
             final Object element = match.getElement();
             final int matchCount = getMatchCount(element);
-            if (matchCount == 1) {
-                removeElement(element);
-            } else if (matchCount == countMatches(element, matches)) {
+            if ((matchCount == 1) || (matchCount == countMatches(element, matches))) {
                 removeElement(element);
             }
         }

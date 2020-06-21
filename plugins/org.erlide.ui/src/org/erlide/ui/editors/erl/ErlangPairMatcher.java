@@ -59,7 +59,9 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
      * }</blockquote> For instance:
      *
      * <pre>
-     * char[] chars = new char[] { '(', ')', '{', '}', '[', ']' };
+     * char[] chars = new char[] {
+     *         '(', ')', '{', '}', '[', ']'
+     * };
      * new SimpleCharacterPairMatcher(chars);
      * </pre>
      *
@@ -369,9 +371,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
          */
         public boolean isOpeningString(final String s, final boolean searchForward) {
             for (int i = 0; i < fPairs.length; i += 2) {
-                if (searchForward && getStartString(i).equals(s)) {
-                    return true;
-                } else if (!searchForward && getEndString(i).equals(s)) {
+                if ((searchForward && getStartString(i).equals(s)) || (!searchForward && getEndString(i).equals(s))) {
                     return true;
                 }
             }

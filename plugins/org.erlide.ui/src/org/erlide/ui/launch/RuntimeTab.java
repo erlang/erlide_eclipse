@@ -379,10 +379,10 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         final NodeHostClassifier state = new NodeHostClassifier(
                 nameText.getText().trim());
 
-        longNameButton.setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE)
+        longNameButton.setEnabled((state.mode != NodeType.LOCAL_STANDALONE)
                 && state.host == HostnameType.NONE
                 && HostnameChecker.getInstance().canUseLongNames());
-        shortNameButton.setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE)
+        shortNameButton.setEnabled((state.mode != NodeType.LOCAL_STANDALONE)
                 && state.host == HostnameType.NONE
                 && HostnameChecker.getInstance().canUseShortNames());
 
@@ -416,13 +416,13 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         } else {
             nodeHostLabel.setText("");
         }
-        cookieText.setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE));
-        startNodeCheckbox.setEnabled(!(state.mode == NodeType.REMOTE));
+        cookieText.setEnabled((state.mode != NodeType.LOCAL_STANDALONE));
+        startNodeCheckbox.setEnabled((state.mode != NodeType.REMOTE));
         workingDirText.setEnabled(
-                !(state.mode == NodeType.REMOTE) && startNodeCheckbox.getSelection());
+                (state.mode != NodeType.REMOTE) && startNodeCheckbox.getSelection());
         argsText.setEnabled(
-                !(state.mode == NodeType.REMOTE) && startNodeCheckbox.getSelection());
-        distributedLoadCheck.setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE));
+                (state.mode != NodeType.REMOTE) && startNodeCheckbox.getSelection());
+        distributedLoadCheck.setEnabled((state.mode != NodeType.LOCAL_STANDALONE));
         distributedLoadCheck.setSelection(true);
 
         if (state.mode == NodeType.LOCAL_STANDALONE) {

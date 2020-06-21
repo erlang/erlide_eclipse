@@ -26,7 +26,9 @@ public class Signature {
 
     public Signature(final char crt, final Signature sub) {
         kind = crt;
-        content = new Signature[] { sub };
+        content = new Signature[] {
+                sub
+        };
     }
 
     public Signature(final char crt, final Signature[] sub) {

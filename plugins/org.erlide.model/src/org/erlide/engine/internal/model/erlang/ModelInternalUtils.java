@@ -177,7 +177,8 @@ public class ModelInternalUtils implements ModelUtilService {
                 j++;
             }
             final OtpErlangTuple modFunsT = new OtpErlangTuple(new OtpErlangObject[] {
-                    new OtpErlangAtom(i.getImportModule()), new OtpErlangList(funsT) });
+                    new OtpErlangAtom(i.getImportModule()), new OtpErlangList(funsT)
+            });
             result.add(modFunsT);
         }
         return result;
@@ -224,8 +225,9 @@ public class ModelInternalUtils implements ModelUtilService {
 
     @Override
     public String[] getPredefinedMacroNames() {
-        return new String[] { "MODULE", "LINE", "FILE", "FUNCTION_NAME",
-                "FUNCTION_ARITY" };
+        return new String[] {
+                "MODULE", "LINE", "FILE", "FUNCTION_NAME", "FUNCTION_ARITY"
+        };
     }
 
     @Override

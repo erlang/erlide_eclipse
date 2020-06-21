@@ -7,8 +7,9 @@ public class ErlangSourceLookupDirector extends AbstractSourceLookupDirector {
 
     @Override
     public void initializeParticipants() {
-        addParticipants(
-                new ISourceLookupParticipant[] { new ErlangSourceLookupParticipant() });
+        addParticipants(new ISourceLookupParticipant[] {
+                new ErlangSourceLookupParticipant()
+        });
     }
 
 }

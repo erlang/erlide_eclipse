@@ -35,7 +35,9 @@ public class ErlBreakpointAdapterFactory implements IAdapterFactory {
 
     @Override
     public Class<?>[] getAdapterList() {
-        return new Class[] { IToggleBreakpointsTarget.class };
+        return new Class[] {
+                IToggleBreakpointsTarget.class
+        };
     }
 
 }

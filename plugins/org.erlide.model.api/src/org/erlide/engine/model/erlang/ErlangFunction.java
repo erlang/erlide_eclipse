@@ -87,8 +87,9 @@ public class ErlangFunction {
     }
 
     public OtpErlangTuple getNameArityTuple() {
-        return new OtpErlangTuple(new OtpErlangObject[] { new OtpErlangAtom(name),
-                new OtpErlangLong(arity) });
+        return new OtpErlangTuple(new OtpErlangObject[] {
+                new OtpErlangAtom(name), new OtpErlangLong(arity)
+        });
     }
 
     public static String getNameWithParameters(final String name, final int arity) {

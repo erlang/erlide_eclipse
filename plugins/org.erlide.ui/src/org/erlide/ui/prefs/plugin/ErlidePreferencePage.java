@@ -80,12 +80,16 @@ public abstract class ErlidePreferencePage extends PreferencePage {
                 if (value < 0) {
                     status.setError(MessageFormat.format(
                             ErlEditorMessages.ErlEditorPreferencePage_invalid_input,
-                            (Object[]) new String[] { number }));
+                            (Object[]) new String[] {
+                                    number
+                            }));
                 }
             } catch (final NumberFormatException e) {
                 status.setError(MessageFormat.format(
                         ErlEditorMessages.ErlEditorPreferencePage_invalid_input,
-                        (Object[]) new String[] { number }));
+                        (Object[]) new String[] {
+                                number
+                        }));
             }
         }
         return status;

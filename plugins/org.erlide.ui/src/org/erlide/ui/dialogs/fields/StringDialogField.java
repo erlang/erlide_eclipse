@@ -47,7 +47,9 @@ public class StringDialogField extends DialogField {
         final Text text = getTextControl(parent);
         text.setLayoutData(StringDialogField.gridDataForText(nColumns - 1));
 
-        return new Control[] { label, text };
+        return new Control[] {
+                label, text
+        };
     }
 
     /*
@@ -92,7 +94,7 @@ public class StringDialogField extends DialogField {
     public Text getTextControl(final Composite parent) {
         if (fTextControl == null) {
             assertCompositeNotNull(parent);
-            fModifyListener = e -> doModifyText(e);
+            fModifyListener = this::doModifyText;
 
             fTextControl = new Text(parent, SWT.SINGLE | SWT.BORDER);
             // moved up due to 1GEUNW2

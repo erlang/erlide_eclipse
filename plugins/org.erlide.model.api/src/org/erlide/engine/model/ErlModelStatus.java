@@ -116,7 +116,9 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * Constructs an Erlang model status with the given corresponding element.
      */
     public ErlModelStatus(final int code, final IErlElement element) {
-        this(code, new IErlElement[] { element });
+        this(code, new IErlElement[] {
+                element
+        });
     }
 
     /**
@@ -124,7 +126,9 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      */
     public ErlModelStatus(final int code, final IErlElement element,
             final String string) {
-        this(code, new IErlElement[] { element });
+        this(code, new IErlElement[] {
+                element
+        });
         fString = string;
     }
 
@@ -132,7 +136,9 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * Constructs an Erlang model status with the given corresponding element and path
      */
     public ErlModelStatus(final int code, final IErlElement element, final IPath path) {
-        this(code, new IErlElement[] { element });
+        this(code, new IErlElement[] {
+                element
+        });
         fPath = path;
     }
 
@@ -142,7 +148,9 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      */
     public ErlModelStatus(final int code, final IErlElement element, final IPath path,
             final String string) {
-        this(code, new IErlElement[] { element });
+        this(code, new IErlElement[] {
+                element
+        });
         fPath = path;
         fString = string;
     }

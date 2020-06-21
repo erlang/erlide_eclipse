@@ -18,7 +18,7 @@ public final class PreferencesUtils {
 
     public static List<String> unpackList(final String string) {
         List<String> result = ListsUtils.unpackList(string, PreferencesUtils.SEP);
-        result = ListExtensions.map(result, p -> p.trim());
+        result = ListExtensions.map(result, String::trim);
         return result;
     }
 

@@ -275,12 +275,18 @@ public class SWTImageCanvas extends Canvas {
         final FileDialog fileChooser = new FileDialog(getShell(), SWT.SAVE);
         fileChooser.setText("Save image file");
         fileChooser.setFilterPath(currentDir);
-        fileChooser.setFilterExtensions(new String[] { "*.jpg;*.png" });
-        fileChooser.setFilterNames(new String[] { "Image file " + " (jpeg, png)" });
+        fileChooser.setFilterExtensions(new String[] {
+                "*.jpg;*.png"
+        });
+        fileChooser.setFilterNames(new String[] {
+                "Image file " + " (jpeg, png)"
+        });
         final String filename = fileChooser.open();
         if (filename != null) {
             final ImageLoader imageLoader = new ImageLoader();
-            imageLoader.data = new ImageData[] { sourceImage.getImageData() };
+            imageLoader.data = new ImageData[] {
+                    sourceImage.getImageData()
+            };
             final Path p = new Path(filename);
             if ("jpg".equals(p.getFileExtension())) {
                 imageLoader.save(filename, SWT.IMAGE_JPEG);
@@ -300,10 +306,12 @@ public class SWTImageCanvas extends Canvas {
         final FileDialog fileChooser = new FileDialog(getShell(), SWT.OPEN);
         fileChooser.setText("Open image file");
         fileChooser.setFilterPath(currentDir);
-        fileChooser.setFilterExtensions(
-                new String[] { "*.gif; *.jpg; *.png; *.ico; *.bmp" });
-        fileChooser.setFilterNames(
-                new String[] { "SWT image" + " (gif, jpeg, png, ico, bmp)" });
+        fileChooser.setFilterExtensions(new String[] {
+                "*.gif; *.jpg; *.png; *.ico; *.bmp"
+        });
+        fileChooser.setFilterNames(new String[] {
+                "SWT image" + " (gif, jpeg, png, ico, bmp)"
+        });
         final String filename = fileChooser.open();
         if (filename != null) {
             loadImage(filename);

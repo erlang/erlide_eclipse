@@ -114,8 +114,9 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
 
     public ICharacterPairMatcher getBracketMatcher() {
         if (fBracketMatcher == null) {
-            fBracketMatcher = new ErlangPairMatcher(
-                    new String[] { "(", ")", "{", "}", "[", "]", "<<", ">>" });
+            fBracketMatcher = new ErlangPairMatcher(new String[] {
+                    "(", ")", "{", "}", "[", "]", "<<", ">>"
+            });
         }
         return fBracketMatcher;
     }
@@ -279,7 +280,9 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
     @Override
     public String[] getDefaultPrefixes(final ISourceViewer sourceViewer,
             final String contentType) {
-        return new String[] { "%%", "" };
+        return new String[] {
+                "%%", ""
+        };
     }
 
     @Override

@@ -140,7 +140,8 @@ public class ColoringPreferencePage extends PreferencePage
 
         @Override
         public Object[] getElements(final Object inputElement) {
-            return new String[] { fErlangCategory
+            return new String[] {
+                    fErlangCategory
                     // , fEdocCategory
             };
         }

@@ -87,8 +87,9 @@ public class ConsoleRemoveLaunchAction extends Action
             final ILaunchManager launchManager = DebugPlugin.getDefault()
                     .getLaunchManager();
             launchManager.removeLaunch(launch);
-            ConsolePlugin.getDefault().getConsoleManager()
-                    .removeConsoles(new IConsole[] { fConsole });
+            ConsolePlugin.getDefault().getConsoleManager().removeConsoles(new IConsole[] {
+                    fConsole
+            });
             fConsoleView = null;
             fLaunch = null;
         }

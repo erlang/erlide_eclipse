@@ -85,7 +85,9 @@ public class OtpErlangBitstr extends OtpErlangObject {
      *                Erlang bitstr.
      */
     public OtpErlangBitstr(final OtpInputStream buf) throws OtpErlangDecodeException {
-        final int pbs[] = { 0 }; // This is ugly just to get a value-result
+        final int pbs[] = {
+                0
+        }; // This is ugly just to get a value-result
         // parameter
         bin = buf.read_bitstr(pbs);
         pad_bits = pbs[0];

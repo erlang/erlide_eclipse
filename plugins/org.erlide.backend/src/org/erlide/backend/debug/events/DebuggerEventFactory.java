@@ -111,7 +111,9 @@ public class DebuggerEventFactory {
                 return new IntEvent(cmds);
             }
         } catch (final Exception e) {
-            return new IntEvent(new OtpErlangObject[] { new OtpErlangAtom("nop") });
+            return new IntEvent(new OtpErlangObject[] {
+                    new OtpErlangAtom("nop")
+            });
         }
     }
 

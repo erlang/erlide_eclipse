@@ -122,8 +122,10 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
         fName = new StringDialogField();
         fName.setLabelText(RuntimePreferenceMessages.addDialog_ertsName);
 
-        final String[] buttons = { RuntimePreferenceMessages.addDialog_add,
-                RuntimePreferenceMessages.addDialog_remove, "Move up", "Move down" };
+        final String[] buttons = {
+                RuntimePreferenceMessages.addDialog_add,
+                RuntimePreferenceMessages.addDialog_remove, "Move up", "Move down"
+        };
         fCodePath = new ListDialogField<>(this, buttons, new StringLabelProvider());
         fCodePath.setLabelText("Code path");
         // TODO enable this when it will work (#163)
@@ -189,7 +191,9 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
                         IResource.FILE);
                 if (!s.isOK()) {
                     status.setError(MessageFormat.format("Name is invalid: %s",
-                            (Object[]) new String[] { s.getMessage() }));
+                            (Object[]) new String[] {
+                                    s.getMessage()
+                            }));
                 }
             }
         }

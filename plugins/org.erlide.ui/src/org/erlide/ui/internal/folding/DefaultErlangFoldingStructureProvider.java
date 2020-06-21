@@ -208,14 +208,20 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
                         document.getLineOffset(lastLine) - postOffset);
 
                 if (preRegion == null) {
-                    return new IRegion[] { postRegion };
+                    return new IRegion[] {
+                            postRegion
+                    };
                 }
 
-                return new IRegion[] { preRegion, postRegion };
+                return new IRegion[] {
+                        preRegion, postRegion
+                };
             }
 
             if (preRegion != null) {
-                return new IRegion[] { preRegion };
+                return new IRegion[] {
+                        preRegion
+                };
             }
 
             return null;
@@ -365,14 +371,20 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
                         offset + length - postOffset);
 
                 if (preRegion == null) {
-                    return new IRegion[] { postRegion };
+                    return new IRegion[] {
+                            postRegion
+                    };
                 }
 
-                return new IRegion[] { preRegion, postRegion };
+                return new IRegion[] {
+                        preRegion, postRegion
+                };
             }
 
             if (preRegion != null) {
-                return new IRegion[] { preRegion };
+                return new IRegion[] {
+                        preRegion
+                };
             }
 
             return null;
@@ -469,7 +481,7 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
      */
     private final Filter fCollapseCommentsFilter = new CommentsFilter(false);
 
-    private final Filter fExpandAllFilter = annotation -> annotation.isCollapsed();
+    private final Filter fExpandAllFilter = ErlangProjectionAnnotation::isCollapsed;
 
     public DefaultErlangFoldingStructureProvider() {
     }
@@ -633,13 +645,8 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
                 collapse = fAllowCollapsing && fCollapseComments;
             }
             createProjection = true;
-        } else if (element.getKind() == ErlElementKind.ATTRIBUTE) {
-            createProjection = true;
-        } else if (element.getKind() == ErlElementKind.EXPORT) {
-            createProjection = true;
-        } else if (element.getKind() == ErlElementKind.RECORD_DEF) {
-            createProjection = true;
-        } else if (element.getKind() == ErlElementKind.MACRO_DEF) {
+        } else if ((element.getKind() == ErlElementKind.ATTRIBUTE) || (element.getKind() == ErlElementKind.EXPORT) || (element.getKind() == ErlElementKind.RECORD_DEF)
+                || (element.getKind() == ErlElementKind.MACRO_DEF)) {
             createProjection = true;
         } else if (element.getKind() == ErlElementKind.TYPESPEC) {
             collapse = fAllowCollapsing && fCollapseTypespecs;

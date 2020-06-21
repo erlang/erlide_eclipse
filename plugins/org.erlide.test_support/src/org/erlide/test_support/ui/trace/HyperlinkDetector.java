@@ -47,7 +47,9 @@ public class HyperlinkDetector extends AbstractHyperlinkDetector {
                     r.getOffset() + r.getLength());
             r = new Region(lineInfo.getOffset() + r.getOffset(), r.getLength());
 
-            return new IHyperlink[] { new TraceHyperlink(r, text) };
+            return new IHyperlink[] {
+                    new TraceHyperlink(r, text)
+            };
         }
         return null;
     }
@@ -128,9 +130,7 @@ public class HyperlinkDetector extends AbstractHyperlinkDetector {
                 return n;
             }
             final char c = args.charAt(i++);
-            if (c == '[') {
-                return countArgs(args, i, n, p + 1);
-            } else if (c == '{') {
+            if ((c == '[') || (c == '{')) {
                 return countArgs(args, i, n, p + 1);
             } else if (c == '}') {
                 return countArgs(args, i, n, p - 1);

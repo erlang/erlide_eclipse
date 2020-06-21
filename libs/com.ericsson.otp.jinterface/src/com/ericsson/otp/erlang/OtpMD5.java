@@ -44,8 +44,12 @@ class OtpMD5 {
      * Has to be this large to avoid sign problems
      */
 
-    private final long state[] = { 0x67452301L, 0xefcdab89L, 0x98badcfeL, 0x10325476L };
-    private final long count[] = { 0L, 0L };
+    private final long state[] = {
+            0x67452301L, 0xefcdab89L, 0x98badcfeL, 0x10325476L
+    };
+    private final long count[] = {
+            0L, 0L
+    };
     private final int buffer[];
 
     public OtpMD5() {

@@ -78,28 +78,40 @@ public class TypeConverterTest {
 
     @Test
     public void cvtListOk_1() throws SignatureException {
-        test(new String[] { "a" }, "ls",
-                new OtpErlangList(new OtpErlangObject[] { new OtpErlangString("a") }));
+        test(new String[] {
+                "a"
+        }, "ls", new OtpErlangList(new OtpErlangObject[] {
+                new OtpErlangString("a")
+        }));
     }
 
     @SuppressWarnings("boxing")
     @Test
     public void cvtListOk_2() throws SignatureException {
-        test(new Object[] { "a", 35 }, "lx", new OtpErlangList(new OtpErlangObject[] {
-                new OtpErlangString("a"), new OtpErlangLong(35) }));
+        test(new Object[] {
+                "a", 35
+        }, "lx", new OtpErlangList(new OtpErlangObject[] {
+                new OtpErlangString("a"), new OtpErlangLong(35)
+        }));
     }
 
     @Test(expected = SignatureException.class)
     public void cvtListFail_1() throws SignatureException {
-        test(new String[] { "a" }, "li",
-                new OtpErlangList(new OtpErlangObject[] { new OtpErlangString("a") }));
+        test(new String[] {
+                "a"
+        }, "li", new OtpErlangList(new OtpErlangObject[] {
+                new OtpErlangString("a")
+        }));
     }
 
     @SuppressWarnings("boxing")
     @Test(expected = SignatureException.class)
     public void cvtListFail_2() throws SignatureException {
-        test(new Object[] { "a", 35 }, "ls", new OtpErlangList(new OtpErlangObject[] {
-                new OtpErlangString("a"), new OtpErlangLong(35) }));
+        test(new Object[] {
+                "a", 35
+        }, "ls", new OtpErlangList(new OtpErlangObject[] {
+                new OtpErlangString("a"), new OtpErlangLong(35)
+        }));
     }
 
     @Test
@@ -149,9 +161,11 @@ public class TypeConverterTest {
     public void cvtMapOk_2() throws SignatureException {
         final Map<OtpErlangObject, OtpErlangObject> map = new HashMap<>();
         map.put(new OtpErlangAtom("foo"), new OtpErlangAtom("bar"));
-        test(map, "m",
-                new OtpErlangMap(new OtpErlangObject[] { new OtpErlangAtom("foo") },
-                        new OtpErlangObject[] { new OtpErlangAtom("bar") }));
+        test(map, "m", new OtpErlangMap(new OtpErlangObject[] {
+                new OtpErlangAtom("foo")
+        }, new OtpErlangObject[] {
+                new OtpErlangAtom("bar")
+        }));
     }
 
     @Test

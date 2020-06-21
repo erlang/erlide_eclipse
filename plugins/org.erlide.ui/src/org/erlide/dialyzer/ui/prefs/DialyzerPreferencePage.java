@@ -249,7 +249,7 @@ public class DialyzerPreferencePage extends PropertyPage
         final Label l = new Label(comp, SWT.NONE);
         l.setText("Analyze from ");
         fromCombo = new Combo(comp, SWT.READ_ONLY);
-        fromCombo.setItems(new String[] { "Source", "Binaries" });
+        fromCombo.setItems("Source", "Binaries");
         fromCombo.setText(fromCombo.getItem(prefs.getFromSource() ? 0 : 1));
     }
 
@@ -456,16 +456,17 @@ public class DialyzerPreferencePage extends PropertyPage
     private void openProjectProperties(final IProject project) {
         final String id = DialyzerPreferencePage.getPropertyPageID();
         if (id != null) {
-            PreferencesUtil.createPropertyDialogOn(getShell(), project, id,
-                    new String[] { id }, null).open();
+            PreferencesUtil.createPropertyDialogOn(getShell(), project, id, new String[] {
+                    id
+            }, null).open();
         }
     }
 
     protected final void openWorkspacePreferences(final Object data) {
         final String id = DialyzerPreferencePage.getPreferencePageID();
-        PreferencesUtil
-                .createPreferenceDialogOn(getShell(), id, new String[] { id }, data)
-                .open();
+        PreferencesUtil.createPreferenceDialogOn(getShell(), id, new String[] {
+                id
+        }, data).open();
     }
 
     protected static String getPreferencePageID() {
@@ -561,8 +562,12 @@ public class DialyzerPreferencePage extends PropertyPage
         dialog.setText("Select PLT file");
         dialog.setFileName(s);
         dialog.setFilterPath(s);
-        dialog.setFilterNames(new String[] { "Dialyzer PLT file (*.plt)", "Any File" });
-        dialog.setFilterExtensions(new String[] { "*.plt", "*.*" });
+        dialog.setFilterNames(new String[] {
+                "Dialyzer PLT file (*.plt)", "Any File"
+        });
+        dialog.setFilterExtensions(new String[] {
+                "*.plt", "*.*"
+        });
         final String result = dialog.open();
         return result;
     }

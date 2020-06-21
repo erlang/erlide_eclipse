@@ -341,9 +341,7 @@ public class MarkOccurencesSupport implements IDisposable {
                 ErlLogger.warn(e);
             }
             if (fRefs == null) {
-                if (!editor.markOccurencesHandler.fStickyOccurrenceAnnotations) {
-                    editor.markOccurencesHandler.removeOccurrenceAnnotations();
-                } else if (hasChanged) {
+                if (!editor.markOccurencesHandler.fStickyOccurrenceAnnotations || hasChanged) {
                     editor.markOccurencesHandler.removeOccurrenceAnnotations();
                 }
             }
@@ -357,9 +355,8 @@ public class MarkOccurencesSupport implements IDisposable {
 
         private boolean isCanceled(final IProgressMonitor progressMonitor) {
             return fCanceled || progressMonitor.isCanceled()
-                    || fPostSelectionValidator != null && !(fPostSelectionValidator
-                            .isValid(selection)
-                            || editor.markOccurencesHandler.fForcedMarkOccurrencesSelection == selection)
+                    || fPostSelectionValidator != null && (!fPostSelectionValidator
+                            .isValid(selection) && (editor.markOccurencesHandler.fForcedMarkOccurrencesSelection != selection))
                     || LinkedModeModel.hasInstalledModel(fDocument);
         }
 
@@ -435,7 +432,7 @@ public class MarkOccurencesSupport implements IDisposable {
                     }
                 }
                 editor.markOccurencesHandler.fOccurrenceAnnotations = annotationMap
-                        .keySet().toArray(new Annotation[annotationMap.keySet().size()]);
+                        .keySet().toArray(new Annotation[annotationMap.size()]);
             }
 
             return Status.OK_STATUS;

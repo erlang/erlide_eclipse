@@ -9,7 +9,9 @@ import org.erlide.engine.model.IErlElement;
 public class EditorInputToModuleAdapterFactory implements IAdapterFactory {
 
     @SuppressWarnings("rawtypes")
-    private static final Class[] ADAPTER_LIST = { IErlElement.class };
+    private static final Class[] ADAPTER_LIST = {
+            IErlElement.class
+    };
 
     @Override
     public <T> @Nullable T getAdapter(final Object adaptableObject,

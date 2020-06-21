@@ -194,10 +194,18 @@ public class ModuleLocatorTest {
     public void demoProjectsShouldBeConfiguredProperly() {
         final Path _path = new Path("src");
         final Path _path_1 = new Path("include");
-        checkProjectDirectories(p1, new Object[] { _path }, new Object[] { _path_1 });
+        checkProjectDirectories(p1, new Object[] {
+                _path
+        }, new Object[] {
+                _path_1
+        });
         final Path _path_2 = new Path("src");
         final Path _path_3 = new Path("include");
-        checkProjectDirectories(p2, new Object[] { _path_2 }, new Object[] { _path_3 });
+        checkProjectDirectories(p2, new Object[] {
+                _path_2
+        }, new Object[] {
+                _path_3
+        });
     }
 
     private void checkProjectDirectories(final IErlProject project,
@@ -210,8 +218,12 @@ public class ModuleLocatorTest {
     }
 
     public void demoProjectsShouldHaveRightExternalModules() throws ErlModelException {
-        checkExternalModules(p1, new String[] { "m11.erl" });
-        checkExternalModules(p2, new String[] { "m11.erl" });
+        checkExternalModules(p1, new String[] {
+                "m11.erl"
+        });
+        checkExternalModules(p2, new String[] {
+                "m11.erl"
+        });
         checkExternalIncludes(p1, new String[] {});
         checkExternalIncludes(p2, new String[] {});
     }

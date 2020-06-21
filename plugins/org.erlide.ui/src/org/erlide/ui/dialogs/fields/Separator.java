@@ -51,7 +51,9 @@ public class Separator extends DialogField {
         final Control separator = getSeparator(parent);
         separator.setLayoutData(Separator.gridDataForSeperator(nColumns, height));
 
-        return new Control[] { separator };
+        return new Control[] {
+                separator
+        };
     }
 
     /*

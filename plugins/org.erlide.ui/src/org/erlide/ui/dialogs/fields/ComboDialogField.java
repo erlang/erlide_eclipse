@@ -57,7 +57,9 @@ public class ComboDialogField extends DialogField {
         final Combo combo = getComboControl(parent);
         combo.setLayoutData(ComboDialogField.gridDataForCombo(nColumns - 1));
 
-        return new Control[] { label, combo };
+        return new Control[] {
+                label, combo
+        };
     }
 
     /*
@@ -101,7 +103,7 @@ public class ComboDialogField extends DialogField {
     public Combo getComboControl(final Composite parent) {
         if (fComboControl == null) {
             assertCompositeNotNull(parent);
-            fModifyListener = e -> doModifyText(e);
+            fModifyListener = this::doModifyText;
             final SelectionListener selectionListener = new SelectionListener() {
 
                 @Override

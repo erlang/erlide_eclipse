@@ -70,9 +70,8 @@ public class ErlangNature implements IProjectNature {
     public static void unsetAllErlangBuilders(final IProject prj) throws CoreException {
         final IProjectDescription description = prj.getDescription();
         final ICommand[] old = description.getBuildSpec();
-        final Function1<BuilderTool, String> _function = (final BuilderTool it) -> {
-            return it.getId();
-        };
+        final Function1<BuilderTool, String> _function = (final BuilderTool it) -> it
+                .getId();
         final List<String> allIds = ListExtensions.<BuilderTool, String> map(
                 (List<BuilderTool>) Conversions.doWrapArray(BuilderTool.values()),
                 _function);

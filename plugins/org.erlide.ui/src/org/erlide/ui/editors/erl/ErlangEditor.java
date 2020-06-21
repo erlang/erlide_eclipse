@@ -207,7 +207,8 @@ public class ErlangEditor extends AbstractErlangEditor
     public static IPreferenceStore getErlangEditorPreferenceStore() {
         final IPreferenceStore generalTextStore = EditorsUI.getPreferenceStore();
         return new ChainedPreferenceStore(new IPreferenceStore[] {
-                ErlideUIPlugin.getDefault().getPreferenceStore(), generalTextStore });
+                ErlideUIPlugin.getDefault().getPreferenceStore(), generalTextStore
+        });
     }
 
     public void disposeModule() {
@@ -219,7 +220,9 @@ public class ErlangEditor extends AbstractErlangEditor
 
     @Override
     protected void initializeKeyBindingScopes() {
-        setKeyBindingScopes(new String[] { "org.erlide.ui.erlangEditorScope" }); //$NON-NLS-1$
+        setKeyBindingScopes(new String[] {
+                "org.erlide.ui.erlangEditorScope" //$NON-NLS-1$
+        });
     }
 
     class PreferenceChangeListener implements IPreferenceChangeListener {
@@ -261,9 +264,12 @@ public class ErlangEditor extends AbstractErlangEditor
     protected void createActions() {
         super.createActions();
         ActionGroup esg;
-        fActionGroups = new CompositeActionGroup(
-                new ActionGroup[] { esg = new ErlangSearchActionGroup(this) });
-        fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
+        fActionGroups = new CompositeActionGroup(new ActionGroup[] {
+                esg = new ErlangSearchActionGroup(this)
+        });
+        fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] {
+                esg
+        });
 
         createCommonActions();
 

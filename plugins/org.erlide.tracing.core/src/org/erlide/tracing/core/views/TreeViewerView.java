@@ -99,7 +99,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         treeViewer.setInput(TraceCollections.getTracesList());
 
         // listener
-        treeViewer.addDoubleClickListener(event -> doDoubleClick(event));
+        treeViewer.addDoubleClickListener(this::doDoubleClick);
     }
 
     private void createButtonsPanel(final Composite parent) {
@@ -326,7 +326,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
             task.finish();
         } else {
             // when loading was initialized outside this view
-            Display.getDefault().asyncExec(() -> doAfterLoadingTraces());
+            Display.getDefault().asyncExec(this::doAfterLoadingTraces);
         }
     }
 

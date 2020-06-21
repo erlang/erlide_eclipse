@@ -126,13 +126,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
     @Override
     public void customizeDocumentCommand(final IDocument d, final DocumentCommand c) {
         if (c.length == 0 && c.text != null) {
-            if (TextUtilities.endsWith(d.getLegalLineDelimiters(), c.text) != -1) {
-                autoIndentAfterNewLine(d, c);
-            } else if (c.text.endsWith(",")) {
-                autoIndentAfterNewLine(d, c);
-            } else if (c.text.endsWith(";")) {
-                autoIndentAfterNewLine(d, c);
-            } else if (c.text.endsWith(".")) {
+            if ((TextUtilities.endsWith(d.getLegalLineDelimiters(), c.text) != -1) || c.text.endsWith(",") || c.text.endsWith(";") || c.text.endsWith(".")) {
                 autoIndentAfterNewLine(d, c);
             } else if (c.text.endsWith(">")) {
                 try {

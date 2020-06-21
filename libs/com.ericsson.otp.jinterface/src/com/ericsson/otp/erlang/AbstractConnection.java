@@ -488,7 +488,9 @@ public abstract class AbstractConnection extends Thread {
         OtpInputStream ibuf;
         OtpErlangObject traceobj;
         int len;
-        final byte[] tock = { 0, 0, 0, 0 };
+        final byte[] tock = {
+                0, 0, 0, 0
+        };
 
         try {
             receive_loop:
@@ -990,8 +992,10 @@ public abstract class AbstractConnection extends Thread {
 
     // Used to debug print a message digest
     static String hex0(final byte x) {
-        final char tab[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b',
-                'c', 'd', 'e', 'f' };
+        final char tab[] = {
+                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
+                'f'
+        };
         int uint;
         if (x < 0) {
             uint = x & 0x7F;

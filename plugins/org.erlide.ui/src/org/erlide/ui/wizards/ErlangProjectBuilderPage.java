@@ -59,9 +59,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                     final Procedure1<Combo> _function_2 = (final Combo it_1) -> {
                         final RuntimeVersion[] runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS;
                         final Function1<RuntimeVersion, String> _function_3 = (
-                                final RuntimeVersion it_2) -> {
-                            return it_2.toString();
-                        };
+                                final RuntimeVersion it_2) -> it_2.toString();
                         it_1.setItems((String[]) Conversions
                                 .unwrapArray(ListExtensions.<RuntimeVersion, String> map(
                                         (List<RuntimeVersion>) Conversions

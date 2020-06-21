@@ -70,7 +70,9 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
      *            the elememet to make the list from.
      */
     public OtpErlangList(final OtpErlangObject elem) {
-        elems = new OtpErlangObject[] { elem };
+        elems = new OtpErlangObject[] {
+                elem
+        };
     }
 
     /**

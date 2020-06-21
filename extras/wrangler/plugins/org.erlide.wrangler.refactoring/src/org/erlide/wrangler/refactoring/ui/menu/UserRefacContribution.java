@@ -27,7 +27,9 @@ public class UserRefacContribution extends CompoundContributionItem {
         super(id);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({
+            "rawtypes", "unchecked"
+    })
     @Override
     protected IContributionItem[] getContributionItems() {
 

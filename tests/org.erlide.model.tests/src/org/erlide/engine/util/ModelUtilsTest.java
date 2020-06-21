@@ -57,7 +57,9 @@ public class ModelUtilsTest {
         final IErlProject erlProject1 = ErlideTestUtils.createErlProject("testproject1");
 
         final IErlProject erlProject2 = ErlideTestUtils.createErlProject("testproject2");
-        ModelUtilsTest.projects = new IErlProject[] { erlProject1, erlProject2 };
+        ModelUtilsTest.projects = new IErlProject[] {
+                erlProject1, erlProject2
+        };
     }
 
     @AfterClass
@@ -99,11 +101,11 @@ public class ModelUtilsTest {
         assertEquals(1, imports2.size());
         assertEquals(1, imports.size());
         final OtpErlangAtom listAtom = new OtpErlangAtom("lists");
-        assertEquals(
-                new OtpErlangTuple(new OtpErlangObject[] { listAtom,
-                        new OtpErlangList(new OtpErlangObject[] {
-                                makeTuple2("reverse", 1), makeTuple2("foldl", 3) }) }),
-                imports.get(0));
+        assertEquals(new OtpErlangTuple(new OtpErlangObject[] {
+                listAtom, new OtpErlangList(new OtpErlangObject[] {
+                        makeTuple2("reverse", 1), makeTuple2("foldl", 3)
+                })
+        }), imports.get(0));
     }
 
     @Test
@@ -228,8 +230,9 @@ public class ModelUtilsTest {
     }
 
     private OtpErlangTuple makeTuple2(final String functionName, final int arity) {
-        return new OtpErlangTuple(new OtpErlangObject[] { new OtpErlangAtom(functionName),
-                new OtpErlangLong(arity) });
+        return new OtpErlangTuple(new OtpErlangObject[] {
+                new OtpErlangAtom(functionName), new OtpErlangLong(arity)
+        });
     }
 
     @Test
@@ -376,7 +379,9 @@ public class ModelUtilsTest {
         // an erlang module
         final IProject project = ModelUtilsTest.projects[0].getWorkspaceProject();
         final IProjectDescription description = project.getDescription();
-        final IProject[] refs = { ModelUtilsTest.projects[1].getWorkspaceProject() };
+        final IProject[] refs = {
+                ModelUtilsTest.projects[1].getWorkspaceProject()
+        };
         description.setReferencedProjects(refs);
         project.setDescription(description, null);
         final IErlModule module = ErlideTestUtils.createModule(ModelUtilsTest.projects[1],

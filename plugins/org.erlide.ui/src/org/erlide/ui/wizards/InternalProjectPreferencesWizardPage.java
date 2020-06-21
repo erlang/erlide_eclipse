@@ -230,7 +230,9 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
         final FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
         dialog.setText("Select file with external modules");
         dialog.setFileName(last);
-        dialog.setFilterExtensions(new String[] { "*.erlidex" });
+        dialog.setFilterExtensions(new String[] {
+                "*.erlidex"
+        });
         final String result = dialog.open();
         if (result == null) {
             return;
@@ -248,7 +250,9 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
         final FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
         dialog.setText("Select file with external include files");
         dialog.setFileName(last);
-        dialog.setFilterExtensions(new String[] { "*.erlidex" });
+        dialog.setFilterExtensions(new String[] {
+                "*.erlidex"
+        });
         final String result = dialog.open();
         if (result == null) {
             return;

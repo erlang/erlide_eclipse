@@ -137,7 +137,9 @@ public class ErlangProjectProperties {
             _xifexpression = externalModulesFile;
         }
         final String projprefs = _xifexpression;
-        return PreferencesUtils.packArray(new String[] { projprefs, global });
+        return PreferencesUtils.packArray(new String[] {
+                projprefs, global
+        });
     }
 
     public IPath getOutputDir() {

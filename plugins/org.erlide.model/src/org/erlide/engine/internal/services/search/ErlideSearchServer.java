@@ -38,7 +38,8 @@ public class ErlideSearchServer implements SearchServerService {
 
     private OtpErlangTuple make2Tuple(final String scannerModuleName, final String path) {
         return new OtpErlangTuple(new OtpErlangObject[] {
-                new OtpErlangAtom(scannerModuleName), new OtpErlangString(path) });
+                new OtpErlangAtom(scannerModuleName), new OtpErlangString(path)
+        });
     }
 
     @Override

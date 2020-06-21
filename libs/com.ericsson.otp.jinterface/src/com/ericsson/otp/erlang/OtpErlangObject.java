@@ -126,14 +126,17 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
     }
 
     protected static final class Hash {
-        int abc[] = { 0, 0, 0 };
+        int abc[] = {
+                0, 0, 0
+        };
 
         /*
          * Hash function suggested by Bob Jenkins. The same as in the Erlang VM (beam);
          * utils.c.
          */
 
-        private static final int HASH_CONST[] = { 0, // not used
+        private static final int HASH_CONST[] = {
+                0, // not used
                 0x9e3779b9, // the golden ratio; an arbitrary value
                 0x3c6ef372, // (hashHConst[1] * 2) % (1<<32)
                 0xdaa66d2b, // 1 3

@@ -223,7 +223,7 @@ public class TraceLogView extends ViewPart {
     private void hookContextMenu() {
         final MenuManager menuMgr = new MenuManager("#PopupMenu");
         menuMgr.setRemoveAllWhenShown(true);
-        menuMgr.addMenuListener(manager -> TraceLogView.this.fillContextMenu(manager));
+        menuMgr.addMenuListener(TraceLogView.this::fillContextMenu);
         final Menu menu = menuMgr.createContextMenu(viewer.getControl());
         viewer.getControl().setMenu(menu);
         getSite().registerContextMenu(menuMgr, viewer);

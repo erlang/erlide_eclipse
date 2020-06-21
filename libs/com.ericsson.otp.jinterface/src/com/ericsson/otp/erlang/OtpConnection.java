@@ -386,7 +386,11 @@ public class OtpConnection extends AbstractConnection {
      * the following message and sends it to 'rex' on the remote node:
      *
      * <pre>
-     * { self, { call, Mod, Fun, Args, user } }
+     * {
+     *         self, {
+     *                 call, Mod, Fun, Args, user
+     *         }
+     * }
      * </pre>
      *
      * <p>
@@ -414,7 +418,11 @@ public class OtpConnection extends AbstractConnection {
      * the following message and sends it to 'rex' on the remote node:
      *
      * <pre>
-     * { self, { call, Mod, Fun, Args, user } }
+     * {
+     *         self, {
+     *                 call, Mod, Fun, Args, user
+     *         }
+     * }
      * </pre>
      *
      * <p>
@@ -457,7 +465,9 @@ public class OtpConnection extends AbstractConnection {
      * format:
      *
      * <pre>
-     * { rex, Term }
+     * {
+     *         rex, Term
+     * }
      * </pre>
      *
      * @return the second element of the tuple if the received message is a two-tuple,

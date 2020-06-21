@@ -144,7 +144,9 @@ public class UtilTest {
 
     @Test
     public void stringValue_4() {
-        final OtpErlangObject input = new OtpErlangBinary(new byte[] { 51, 52, 53 });
+        final OtpErlangObject input = new OtpErlangBinary(new byte[] {
+                51, 52, 53
+        });
         final String expected = "345";
         final String actual = Util.stringValue(input);
         Assert.assertEquals(expected, actual);
@@ -152,7 +154,9 @@ public class UtilTest {
 
     @Test
     public void stringValue_5() {
-        final byte[] bytes = { 197 - 256, 246 - 256 };
+        final byte[] bytes = {
+                197 - 256, 246 - 256
+        };
         final OtpErlangObject input = new OtpErlangBinary(bytes);
         final byte[] expected = bytes;
         final String actual = Util.stringValue(input);
@@ -161,7 +165,9 @@ public class UtilTest {
 
     @Test
     public void stringValue_6() {
-        final byte[] bytes = { (byte) 0xE8, (byte) 0x8F, (byte) 0xAF };
+        final byte[] bytes = {
+                (byte) 0xE8, (byte) 0x8F, (byte) 0xAF
+        };
         final OtpErlangObject input = new OtpErlangBinary(bytes);
         final byte[] expected = bytes;
         final String actual = Util.stringValue(input);

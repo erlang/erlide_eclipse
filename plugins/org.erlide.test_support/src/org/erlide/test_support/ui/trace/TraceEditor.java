@@ -92,8 +92,10 @@ public class TraceEditor extends TextEditor {
             if (callMatchingLine != null) {
                 annotationMap.put(callMatchingLine, position);
             }
-            ((IAnnotationModelExtension) annotationModel).replaceAnnotations(
-                    new Annotation[] { oldAnnotation }, annotationMap);
+            ((IAnnotationModelExtension) annotationModel)
+                    .replaceAnnotations(new Annotation[] {
+                            oldAnnotation
+                    }, annotationMap);
         } else {
             annotationModel.addAnnotation(callMatchingLine, position);
         }

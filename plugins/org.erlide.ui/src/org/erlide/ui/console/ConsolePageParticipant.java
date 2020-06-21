@@ -185,20 +185,24 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
         final IDebugTarget target = process.getAdapter(IDebugTarget.class);
         ISelection selection = null;
         if (target == null) {
-            selection = new TreeSelection(new TreePath(
-                    new Object[] { DebugPlugin.getDefault().getLaunchManager(),
-                            process.getLaunch(), process }));
+            selection = new TreeSelection(new TreePath(new Object[] {
+                    DebugPlugin.getDefault().getLaunchManager(), process.getLaunch(),
+                    process
+            }));
         } else {
-            selection = new TreeSelection(new TreePath(
-                    new Object[] { DebugPlugin.getDefault().getLaunchManager(),
-                            target.getLaunch(), target }));
+            selection = new TreeSelection(new TreePath(new Object[] {
+                    DebugPlugin.getDefault().getLaunchManager(), target.getLaunch(),
+                    target
+            }));
         }
         return new ShowInContext(null, selection);
     }
 
     @Override
     public String[] getShowInTargetIds() {
-        return new String[] { IDebugUIConstants.ID_DEBUG_VIEW };
+        return new String[] {
+                IDebugUIConstants.ID_DEBUG_VIEW
+        };
     }
 
     @Override

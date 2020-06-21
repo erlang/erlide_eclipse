@@ -212,14 +212,15 @@ public class ErlangOutlinePage extends ContentOutlinePage
 
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
-        manager.addMenuListener(m -> contextMenuAboutToShow(m));
+        manager.addMenuListener(this::contextMenuAboutToShow);
         final Menu menu = manager.createContextMenu(tree);
         tree.setMenu(menu);
 
         site.registerContextMenu(ErlangCore.PLUGIN_ID + ".outline", manager,
                 fOutlineViewer);
-        fActionGroups = new CompositeActionGroup(
-                new ActionGroup[] { new ErlangSearchActionGroup(this) });
+        fActionGroups = new CompositeActionGroup(new ActionGroup[] {
+                new ErlangSearchActionGroup(this)
+        });
         // register global actions
         final IActionBars actionBars = site.getActionBars();
         actionBars.setGlobalActionHandler(ITextEditorActionConstants.UNDO,

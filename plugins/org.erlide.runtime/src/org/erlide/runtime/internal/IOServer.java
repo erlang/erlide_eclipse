@@ -35,7 +35,7 @@ public class IOServer implements Runnable {
     public IOServer(final OtpMbox box, final IOCallback callback) {
         this.callback = callback;
         mbox = box;
-        Thread thread = new Thread(this, "io_server");
+        final Thread thread = new Thread(this, "io_server");
         thread.start();
     }
 

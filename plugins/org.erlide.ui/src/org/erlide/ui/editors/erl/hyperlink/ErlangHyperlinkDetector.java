@@ -52,7 +52,9 @@ public class ErlangHyperlinkDetector extends AbstractHyperlinkDetector {
             if (!IDocument.DEFAULT_CONTENT_TYPE.equals(region.getType())) {
                 return null;
             }
-            return new IHyperlink[] { new ErlangHyperlink(editor, region) };
+            return new IHyperlink[] {
+                    new ErlangHyperlink(editor, region)
+            };
         } catch (final BadLocationException e) {
             return null;
         }

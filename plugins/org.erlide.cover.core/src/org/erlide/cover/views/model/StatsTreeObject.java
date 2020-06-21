@@ -148,8 +148,10 @@ public class StatsTreeObject implements ICoverageObject {
 
     @Override
     public String[] getStringArray() {
-        return new String[] { label, Integer.toString(all), Integer.toString(covered),
-                String.format("%.2f", getPercentage()) };
+        return new String[] {
+                label, Integer.toString(all), Integer.toString(covered),
+                String.format("%.2f", getPercentage())
+        };
     }
 
     @Override

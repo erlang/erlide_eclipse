@@ -50,7 +50,9 @@ public class ErlConsoleManager
         }
         ErlLogger.debug("console ADDED to " + data);
         final ErlangConsole console = new ErlangConsole(b);
-        conMan.addConsoles(new IConsole[] { console });
+        conMan.addConsoles(new IConsole[] {
+                console
+        });
         consoles.put(b, console);
     }
 
@@ -61,7 +63,9 @@ public class ErlConsoleManager
         if (console == null) {
             return;
         }
-        conMan.removeConsoles(new IConsole[] { console });
+        conMan.removeConsoles(new IConsole[] {
+                console
+        });
     }
 
     public void addPage(final IErlangConsole console, final IErlangConsolePage page) {

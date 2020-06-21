@@ -15,8 +15,10 @@ public class ErlDragAdapterAssistant extends CommonDragAdapterAssistant {
 
     @Override
     public Transfer[] getSupportedTransferTypes() {
-        return new Transfer[] { PluginTransfer.getInstance(), TextTransfer.getInstance(),
-                LocalSelectionTransfer.getTransfer() };
+        return new Transfer[] {
+                PluginTransfer.getInstance(), TextTransfer.getInstance(),
+                LocalSelectionTransfer.getTransfer()
+        };
     }
 
     @Override

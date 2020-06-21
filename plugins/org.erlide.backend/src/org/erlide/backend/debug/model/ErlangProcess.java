@@ -377,7 +377,9 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
                         if (lineBreakpoint.getModule().equals(topFrame.getModule())
                                 && lineBreakpoint.getLineNumber() == topFrame
                                         .getLineNumber()) {
-                            return new IBreakpoint[] { lineBreakpoint };
+                            return new IBreakpoint[] {
+                                    lineBreakpoint
+                            };
                         }
                     } catch (final DebugException e) {
                         ErlLogger.warn(e);

@@ -224,10 +224,14 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
             if (extra == null) {
                 return new ILabelDecorator[] {};
             }
-            return new ILabelDecorator[] { extra };
+            return new ILabelDecorator[] {
+                    extra
+            };
         }
         if (extra != null) {
-            return new ILabelDecorator[] { extra };
+            return new ILabelDecorator[] {
+                    extra
+            };
         }
         return null;
     }

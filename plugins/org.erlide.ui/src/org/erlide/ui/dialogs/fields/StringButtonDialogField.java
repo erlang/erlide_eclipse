@@ -70,7 +70,9 @@ public class StringButtonDialogField extends StringDialogField {
         final Button button = getChangeControl(parent);
         button.setLayoutData(StringButtonDialogField.gridDataForButton(button, 1));
 
-        return new Control[] { label, text, button };
+        return new Control[] {
+                label, text, button
+        };
     }
 
     /*

@@ -131,7 +131,7 @@ public class ErlModule extends Openable implements IErlModule {
                         try (InputStream contentStream = file.getContents()) {
                             initialText = Util.getInputStreamAsString(contentStream,
                                     charset.name());
-                        } catch (IOException e) {
+                        } catch (final IOException e) {
                             // ignore
                         }
                     } catch (final CoreException e) {

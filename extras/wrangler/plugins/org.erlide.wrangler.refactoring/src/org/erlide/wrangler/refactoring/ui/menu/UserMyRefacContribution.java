@@ -19,7 +19,9 @@ import org.erlide.wrangler.refactoring.backend.UserRefactoringsManager;
  */
 public class UserMyRefacContribution extends CompoundContributionItem {
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({
+            "unchecked", "rawtypes"
+    })
     @Override
     protected IContributionItem[] getContributionItems() {
         final List<UserRefactoringInfo> refacs = UserRefactoringsManager.getInstance()
@@ -31,7 +33,9 @@ public class UserMyRefacContribution extends CompoundContributionItem {
                     CommandContributionItem.STYLE_PUSH);
             param.label = "<Empty>";
             final CommandContributionItem item = new CommandContributionItem(param);
-            return new IContributionItem[] { item };
+            return new IContributionItem[] {
+                    item
+            };
         }
         final IContributionItem[] items = new IContributionItem[refacs.size()];
 

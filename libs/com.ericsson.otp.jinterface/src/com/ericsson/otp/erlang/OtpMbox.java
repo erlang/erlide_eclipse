@@ -367,10 +367,8 @@ public class OtpMbox {
     public void send(final String aname, final String node, final OtpErlangObject msg) {
         try {
             final String currentNode = home.node();
-            if (node.equals(currentNode)) {
-                send(aname, msg);
-            } else if (node.indexOf('@', 0) < 0 && node
-                    .equals(currentNode.substring(0, currentNode.indexOf('@', 0)))) {
+            if (node.equals(currentNode) || (node.indexOf('@', 0) < 0 && node
+                    .equals(currentNode.substring(0, currentNode.indexOf('@', 0))))) {
                 send(aname, msg);
             } else {
                 // other node

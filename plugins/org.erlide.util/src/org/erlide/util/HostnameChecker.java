@@ -131,45 +131,27 @@ public class HostnameChecker {
                 return true;
             }
         }
-        final Function0<String> _function = () -> {
-            return longName;
-        };
-        final Function0<String> _function_1 = () -> {
-            return retriever.getErlangHostName(true);
-        };
-        final Function0<String> _function_2 = () -> {
-            return getJavaLongHostName();
-        };
-        final Function0<String> _function_3 = () -> {
-            return HostnameChecker.longNameFallback;
-        };
+        final Function0<String> _function = () -> longName;
+        final Function0<String> _function_1 = () -> retriever.getErlangHostName(true);
+        final Function0<String> _function_2 = () -> getJavaLongHostName();
+        final Function0<String> _function_3 = () -> HostnameChecker.longNameFallback;
         final Iterable<Function0<? extends String>> longValues = Collections
                 .<Function0<? extends String>> unmodifiableList(
                         CollectionLiterals.<Function0<? extends String>> newArrayList(
                                 _function, _function_1, _function_2, _function_3));
-        final Function1<String, Boolean> _function_4 = (final String it) -> {
-            return Boolean.valueOf(it != null && retriever.canConnect(it, true));
-        };
+        final Function1<String, Boolean> _function_4 = (final String it) -> Boolean
+                .valueOf(it != null && retriever.canConnect(it, true));
         longName = findFirstValue(longValues, _function_4);
-        final Function0<String> _function_5 = () -> {
-            return shortName;
-        };
-        final Function0<String> _function_6 = () -> {
-            return retriever.getErlangHostName(false);
-        };
-        final Function0<String> _function_7 = () -> {
-            return getJavaShortHostName();
-        };
-        final Function0<String> _function_8 = () -> {
-            return HostnameChecker.shortNameFallback;
-        };
+        final Function0<String> _function_5 = () -> shortName;
+        final Function0<String> _function_6 = () -> retriever.getErlangHostName(false);
+        final Function0<String> _function_7 = () -> getJavaShortHostName();
+        final Function0<String> _function_8 = () -> HostnameChecker.shortNameFallback;
         final Iterable<Function0<? extends String>> shortValues = Collections
                 .<Function0<? extends String>> unmodifiableList(
                         CollectionLiterals.<Function0<? extends String>> newArrayList(
                                 _function_5, _function_6, _function_7, _function_8));
-        final Function1<String, Boolean> _function_9 = (final String it) -> {
-            return Boolean.valueOf(it != null && retriever.canConnect(it, false));
-        };
+        final Function1<String, Boolean> _function_9 = (final String it) -> Boolean
+                .valueOf(it != null && retriever.canConnect(it, false));
         shortName = findFirstValue(shortValues, _function_9);
         ErlLogger.debug("Detected:: \'%s\' && \'%s\'", shortName, longName);
         return canUseLongNames() || canUseShortNames();
@@ -188,30 +170,15 @@ public class HostnameChecker {
             final Properties p = readErlideHosts();
             final ErlangHostnameRetriever retriever = new ErlangHostnameRetriever(
                     otpHome);
-            final Function0<String> _function = () -> {
-                return p.getProperty("long", "");
-            };
-            final Function0<String> _function_1 = () -> {
-                return retriever.getErlangHostName(true);
-            };
-            final Function0<String> _function_2 = () -> {
-                return getJavaLongHostName();
-            };
-            final Function0<String> _function_3 = () -> {
-                return HostnameChecker.longNameFallback;
-            };
-            final Function0<String> _function_4 = () -> {
-                return p.getProperty("short", "");
-            };
-            final Function0<String> _function_5 = () -> {
-                return retriever.getErlangHostName(false);
-            };
-            final Function0<String> _function_6 = () -> {
-                return getJavaShortHostName();
-            };
-            final Function0<String> _function_7 = () -> {
-                return HostnameChecker.shortNameFallback;
-            };
+            final Function0<String> _function = () -> p.getProperty("long", "");
+            final Function0<String> _function_1 = () -> retriever.getErlangHostName(true);
+            final Function0<String> _function_2 = () -> getJavaLongHostName();
+            final Function0<String> _function_3 = () -> HostnameChecker.longNameFallback;
+            final Function0<String> _function_4 = () -> p.getProperty("short", "");
+            final Function0<String> _function_5 = () -> retriever
+                    .getErlangHostName(false);
+            final Function0<String> _function_6 = () -> getJavaShortHostName();
+            final Function0<String> _function_7 = () -> HostnameChecker.shortNameFallback;
             _xblockexpression = Collections
                     .<List<Function0<? extends String>>> unmodifiableList(
                             CollectionLiterals

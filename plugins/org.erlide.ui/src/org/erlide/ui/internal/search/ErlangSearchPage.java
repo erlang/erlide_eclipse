@@ -391,7 +391,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                 createCheckButton(result, "E&xternals", SearchUtil.SEARCH_IN_EXTERNALS,
                         false),
                 createCheckButton(result, "&OTP libraries",
-                        SearchUtil.SEARCH_IN_OTP_LIBRARIES, false) };
+                        SearchUtil.SEARCH_IN_OTP_LIBRARIES, false)
+        };
         return result;
     }
 
@@ -526,7 +527,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                 createRadioButton(result, "Type", SearchFor.TYPE),
                 createRadioButton(result, "Include", SearchFor.INCLUDE),
                 createRadioButton(result, "Record field", SearchFor.RECORD_FIELD),
-                createRadioButton(result, "Variable", SearchFor.VARIABLE) };
+                createRadioButton(result, "Variable", SearchFor.VARIABLE)
+        };
 
         // Fill with dummy radio buttons
         final Label filler = new Label(result, SWT.NONE);
@@ -543,7 +545,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         fLimitTo = new Button[] {
                 createRadioButton(result, "Definitions", LimitTo.DEFINITIONS),
                 createRadioButton(result, "References", LimitTo.REFERENCES, true),
-                createRadioButton(result, "All occurrences", LimitTo.ALL_OCCURRENCES) };
+                createRadioButton(result, "All occurrences", LimitTo.ALL_OCCURRENCES)
+        };
         return result;
     }
 

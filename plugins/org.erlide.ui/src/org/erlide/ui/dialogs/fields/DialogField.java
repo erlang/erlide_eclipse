@@ -81,7 +81,7 @@ public class DialogField {
      */
     public void postSetFocusOnDialogField(final Display display) {
         if (display != null) {
-            display.asyncExec(() -> setFocus());
+            display.asyncExec(this::setFocus);
         }
     }
 
@@ -99,7 +99,9 @@ public class DialogField {
         final Label label = getLabelControl(parent);
         label.setLayoutData(DialogField.gridDataForLabel(nColumns));
 
-        return new Control[] { label };
+        return new Control[] {
+                label
+        };
     }
 
     /**

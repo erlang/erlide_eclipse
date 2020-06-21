@@ -205,9 +205,7 @@ public class ProblemsLabelDecorator
         }
         fListeners.add(listener);
         if (fProblemChangedListener == null) {
-            fProblemChangedListener = (changedResources,
-                    isMarkerChange) -> fireProblemsChanged(changedResources,
-                            isMarkerChange);
+            fProblemChangedListener = this::fireProblemsChanged;
             ErlideUIPlugin.getDefault().getProblemMarkerManager()
                     .addListener(fProblemChangedListener);
         }

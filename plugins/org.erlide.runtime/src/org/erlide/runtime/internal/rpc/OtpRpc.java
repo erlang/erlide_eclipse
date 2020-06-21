@@ -304,7 +304,9 @@ public class OtpRpc implements IOtpRpc {
         final OtpMbox mbox = node.createMbox();
         res = buildRpcCall(mbox.self(), gleader, module, fun, args);
         if (logCalls) {
-            final Object[] args01 = { module, fun, argString(args) };
+            final Object[] args01 = {
+                    module, fun, argString(args)
+            };
             ErlLogger.debug("call -> %s:%s(%s)", args01);
         }
         //
@@ -401,7 +403,9 @@ public class OtpRpc implements IOtpRpc {
         OtpErlangObject msg = null;
         msg = buildRpcCastMsg(gleader, module, fun, args);
         if (logCalls) {
-            final Object[] args01 = { module, fun, argString(args) };
+            final Object[] args01 = {
+                    module, fun, argString(args)
+            };
             ErlLogger.debug("cast -> %s:%s(%s)", args01);
         }
         send(node, peer, "rex", msg);

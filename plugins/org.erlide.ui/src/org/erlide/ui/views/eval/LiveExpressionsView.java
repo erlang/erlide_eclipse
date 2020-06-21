@@ -313,7 +313,9 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
         colValue.setText("Value");
         colValue.setWidth(t.getSize().x - 50);
 
-        viewer.setColumnProperties(new String[] { "expr", "val" });
+        viewer.setColumnProperties(new String[] {
+                "expr", "val"
+        });
 
         viewer.setContentProvider(new ViewContentProvider());
         viewer.setLabelProvider(new ViewLabelProvider());
@@ -327,7 +329,9 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
         viewer.setInput(exprs);
 
         final TextCellEditor e = new TextCellEditor(t);
-        viewer.setCellEditors(new CellEditor[] { e, null });
+        viewer.setCellEditors(new CellEditor[] {
+                e, null
+        });
         viewer.setCellModifier(new LiveExprCellModifier(this));
 
         makeActions();
@@ -424,8 +428,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
     private void hookContextMenu() {
         final MenuManager menuMgr = new MenuManager("#PopupMenu");
         menuMgr.setRemoveAllWhenShown(true);
-        menuMgr.addMenuListener(
-                manager -> LiveExpressionsView.this.fillContextMenu(manager));
+        menuMgr.addMenuListener(LiveExpressionsView.this::fillContextMenu);
         final Menu menu = menuMgr.createContextMenu(viewer.getControl());
         viewer.getControl().setMenu(menu);
         getSite().registerContextMenu(menuMgr, viewer);

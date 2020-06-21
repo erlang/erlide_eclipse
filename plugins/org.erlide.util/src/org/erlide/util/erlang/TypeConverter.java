@@ -162,7 +162,7 @@ public final class TypeConverter {
             // if the conversion method exists, use it
             try {
                 final Method method = cls.getMethod("fromErlangObject",
-                        new Class<?>[] { OtpErlangObject.class });
+                        OtpErlangObject.class);
                 method.setAccessible(true);
                 final Object o = method.invoke(null, obj);
                 return o;
@@ -371,7 +371,7 @@ public final class TypeConverter {
             if (type.kind == 'm') {
                 @SuppressWarnings("unchecked")
                 final Map<OtpErlangObject, OtpErlangObject> map = (Map<OtpErlangObject, OtpErlangObject>) obj;
-                final int size = map.keySet().size();
+                final int size = map.size();
                 final OtpErlangObject[] keys = map.keySet()
                         .toArray(new OtpErlangObject[size]);
                 final OtpErlangObject[] values = new OtpErlangObject[size];
@@ -560,7 +560,7 @@ public final class TypeConverter {
         if (obj instanceof Map<?, ?>) {
             @SuppressWarnings("unchecked")
             final Map<Object, Object> map = (Map<Object, Object>) obj;
-            final Object[] k = map.keySet().toArray(new Object[map.keySet().size()]);
+            final Object[] k = map.keySet().toArray(new Object[map.size()]);
             final OtpErlangObject[] kk = new OtpErlangObject[k.length];
             final OtpErlangObject[] vv = new OtpErlangObject[k.length];
             for (int i = 0; i < k.length; i++) {

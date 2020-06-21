@@ -51,8 +51,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
         }
         final OtpErlangObject data = event.getEvent();
 
-        if (!(data instanceof OtpErlangTuple
-                && ((OtpErlangTuple) data).elementAt(0) instanceof OtpErlangAtom)) {
+        if ((!(data instanceof OtpErlangTuple) || !(((OtpErlangTuple) data).elementAt(0) instanceof OtpErlangAtom))) {
             return;
         }
 

@@ -223,8 +223,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
                         IWorkingSet workingSet = (IWorkingSet) event.getNewValue();
 
-                        if (workingSet != null && !(workingSet.isAggregateWorkingSet()
-                                && workingSet.isEmpty())) {
+                        if (workingSet != null && (!workingSet.isAggregateWorkingSet() || !workingSet.isEmpty())) {
                             workingSetFilter.setWorkingSet(workingSet);
                             setSubtitle(workingSet.getLabel());
                         } else {
