@@ -30,13 +30,12 @@ public class IOServer implements Runnable {
 
     private final IOCallback callback;
     private final OtpMbox mbox;
-    private final Thread thread;
     private volatile boolean stopped;
 
     public IOServer(final OtpMbox box, final IOCallback callback) {
         this.callback = callback;
         mbox = box;
-        thread = new Thread(this, "io_server");
+        Thread thread = new Thread(this, "io_server");
         thread.start();
     }
 

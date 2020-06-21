@@ -43,7 +43,7 @@ public class EpmdChecker {
                         + " Your host's entry in /etc/hosts is probably wrong (" + host
                         + ").";
                 ErlLogger.error(msg);
-                throw new RuntimeException(msg);
+                throw new EpmdException(msg);
             }
         });
         thread.start();

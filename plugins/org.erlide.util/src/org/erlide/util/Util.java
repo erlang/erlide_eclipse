@@ -71,7 +71,9 @@ public final class Util {
      * substitution locations with the given string.
      */
     public static String bind(final String id, final String binding) {
-        return Util.bind(id, new String[] { binding });
+        return Util.bind(id, new String[] {
+                binding
+        });
     }
 
     /**
@@ -80,7 +82,9 @@ public final class Util {
      */
     public static String bind(final String id, final String binding1,
             final String binding2) {
-        return Util.bind(id, new String[] { binding1, binding2 });
+        return Util.bind(id, new String[] {
+                binding1, binding2
+        });
     }
 
     /**
@@ -107,7 +111,7 @@ public final class Util {
                 Util.SINGLE_QUOTE);
 
         if (bindings == null) {
-            return new String(messageWithNoDoubleQuotes);
+            return messageWithNoDoubleQuotes;
         }
 
         final int length = messageWithNoDoubleQuotes.length();
