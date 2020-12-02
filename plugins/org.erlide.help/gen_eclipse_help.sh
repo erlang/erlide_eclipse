@@ -1,3 +1,14 @@
 #! /bin/bash
 
-ant -file gen_eclipse_help.xml
+rm -rf _site
+mkdir _site
+
+gem install bundler --user-install
+bundle install --jobs 3 --path ${HOME}/.gem
+bundle exec jekyll build
+
+destination=contents
+
+rm -rf ${destination}
+
+cp -r _site/articles/eclipse ${destination}
