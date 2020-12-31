@@ -589,7 +589,11 @@ public class ErlangDebugTarget extends ErlangDebugElement
         final List<String> modules = Lists.newArrayList();
         final String path = ver == null ? "/ebin" : "/ebin/" + ver;
         @SuppressWarnings("rawtypes")
-        final Enumeration beams = bundle.findEntries(path, "*.beam", false);
+        Enumeration beams = bundle.findEntries(path, "*.beam", false);
+        if (beams == null) {
+            ErlLogger.warn("No beams found in %s for version %s, using default!", bundle, ver);
+        }
+        beams = bundle.findEntries("/ebin", "*.beam", false);
         if (beams == null) {
             ErlLogger.error("No beams found in %s!", bundle);
             return modules;

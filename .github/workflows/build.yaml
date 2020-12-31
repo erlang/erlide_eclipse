@@ -1,6 +1,6 @@
 name: Java CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -20,8 +20,11 @@ jobs:
           ${{ runner.os }}-m2-
     - name: erl
       run: erl -version
+    - uses: actions/setup-ruby@v1
+      with:
+        ruby-version: '2.7' 
     - name: Build with Maven
-      run: PATH=$PATH:/home/runner/.gem/ruby/2.5.0/bin xvfb-run ./mvnw -B -U clean verify -P help -Dmaven.test.failure.ignore=true
+      run: PATH=$PATH:/home/runner/.gem/ruby/2.7/bin xvfb-run ./mvnw -B -U clean verify -P help -Dmaven.test.failure.ignore=true
     - uses: actions/upload-artifact@v2
       with:
         name: P2 site
