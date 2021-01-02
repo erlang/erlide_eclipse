@@ -94,9 +94,7 @@ public class AnnotationSupport {
                     || !forward && p.offset + p.getLength() == offset + length) {
                 // || p.includes(offset))
                 if (containingAnnotation == null || containingAnnotationPosition != null
-                        && (forward && p.length >= containingAnnotationPosition.length
-                                || !forward
-                                        && p.length < containingAnnotationPosition.length)) {
+                        && ((forward ? p.length >= containingAnnotationPosition.length : p.length < containingAnnotationPosition.length))) {
                     containingAnnotation = a;
                     containingAnnotationPosition = p;
                     currentAnnotation = p.length == length;

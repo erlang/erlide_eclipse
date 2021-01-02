@@ -280,9 +280,7 @@ public class ErlProject extends Openable
         }
         final List<IPath> sourceDirs = Lists
                 .newArrayList(getProperties().getSourceDirs());
-        for (final IPath s : SourcePathUtils.getExtraSourcePathsForModel(fProject)) {
-            sourceDirs.add(s);
-        }
+        sourceDirs.addAll(SourcePathUtils.getExtraSourcePathsForModel(fProject));
         final List<IErlModule> result = new ArrayList<>(ErlProject.getModulesOrIncludes(
                 fProject, ErlangEngine.getInstance().getModel(), sourceDirs, true));
         ErlModelCache.getDefault().putModulesForProject(this, result);

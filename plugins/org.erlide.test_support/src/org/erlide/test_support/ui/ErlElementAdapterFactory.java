@@ -13,9 +13,7 @@ public class ErlElementAdapterFactory implements IAdapterFactory {
 
     @Override
     public Class<?>[] getAdapterList() {
-        return new Class[] {
-                ILaunchable.class
-        };
+        return new Class[] { ILaunchable.class };
     }
 
 }

@@ -18,7 +18,7 @@ public enum ErlDebugFlags {
 
     private final int flag;
 
-    private ErlDebugFlags(final int flag) {
+    ErlDebugFlags(final int flag) {
         this.flag = flag;
     }
 

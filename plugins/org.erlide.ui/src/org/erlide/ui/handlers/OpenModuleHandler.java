@@ -45,7 +45,6 @@ public final class OpenModuleHandler extends Action
      * Creates a new instance of the class.
      */
     public OpenModuleHandler() {
-        super();
         PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
                 IErlangHelpContextIds.OPEN_MODULE_ACTION);
     }

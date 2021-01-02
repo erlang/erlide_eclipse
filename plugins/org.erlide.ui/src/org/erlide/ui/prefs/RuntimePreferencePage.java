@@ -121,7 +121,6 @@ public class RuntimePreferencePage extends PreferencePage implements
     private ISelection fPrevSelection = new StructuredSelection();
 
     public RuntimePreferencePage() {
-        super();
         setTitle("Installed Erlang runtimes ");
         setDescription("Add, remove or edit runtime definitions.\n"
                 + "The checked one will be used by default in new projects "
@@ -154,9 +153,7 @@ public class RuntimePreferencePage extends PreferencePage implements
                 if (vm == null) {
                     fRuntimeList.setCheckedElements(new Object[0]);
                 } else {
-                    fRuntimeList.setCheckedElements(new Object[] {
-                            vm
-                    });
+                    fRuntimeList.setCheckedElements(new Object[] { vm });
                     fRuntimeList.reveal(vm);
                 }
                 fireSelectionChanged();
@@ -386,9 +383,7 @@ public class RuntimePreferencePage extends PreferencePage implements
         if (dialog.open() != Window.OK) {
             return;
         }
-        removeRuntimes(new RuntimeInfo[] {
-                vm
-        });
+        removeRuntimes(new RuntimeInfo[] { vm });
         catalog.removeRuntime(vm.getName());
         fRuntimeList.refresh();
     }
@@ -680,9 +675,7 @@ public class RuntimePreferencePage extends PreferencePage implements
             defaultRuntime = RuntimeCore.getRuntimeInfoCatalog().getDefaultRuntime();
         }
         if (defaultRuntime != null) {
-            fRuntimeList.setCheckedElements(new Object[] {
-                    defaultRuntime
-            });
+            fRuntimeList.setCheckedElements(new Object[] { defaultRuntime });
         }
         // by default, sort by name
         sortByName();

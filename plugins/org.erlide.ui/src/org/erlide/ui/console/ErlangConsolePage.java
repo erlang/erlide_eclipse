@@ -106,7 +106,6 @@ public class ErlangConsolePage extends Page
 
     public ErlangConsolePage(final IConsoleView view, final ErlangConsole console,
             final IBackend backend) {
-        super();
         fConsole = console;
         fConsoleView = view;
         shell = console.getShell();
@@ -234,9 +233,7 @@ public class ErlangConsolePage extends Page
         consoleInputViewer.configure(
                 new ErlangConsoleSourceViewerConfiguration(store, colorManager, backend));
 
-        sashForm.setWeights(new int[] {
-                2, 1
-        });
+        sashForm.setWeights(new int[] { 2, 1 });
 
         final Label helpLabel = new Label(composite, SWT.NONE);
         helpLabel.setText(
@@ -410,7 +407,8 @@ public class ErlangConsolePage extends Page
 
             if (source.equals(fConsole) && IConsoleConstants.P_FONT.equals(property)) {
                 // consoleOutputViewer.setFont(fConsole.getFont());
-            } else if (IConsoleConstants.P_FONT_STYLE.equals(property) || property.equals(IConsoleConstants.P_STREAM_COLOR)) {
+            } else if (IConsoleConstants.P_FONT_STYLE.equals(property)
+                    || property.equals(IConsoleConstants.P_STREAM_COLOR)) {
                 consoleOutputViewer.getTextWidget().redraw();
             } else if (source.equals(fConsole)
                     && property.equals(IConsoleConstants.P_TAB_SIZE)) {

@@ -223,7 +223,8 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
                         IWorkingSet workingSet = (IWorkingSet) event.getNewValue();
 
-                        if (workingSet != null && (!workingSet.isAggregateWorkingSet() || !workingSet.isEmpty())) {
+                        if (workingSet != null && (!workingSet.isAggregateWorkingSet()
+                                || !workingSet.isEmpty())) {
                             workingSetFilter.setWorkingSet(workingSet);
                             setSubtitle(workingSet.getLabel());
                         } else {
@@ -463,7 +464,6 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
         public ModuleProxyVisitor(final AbstractContentProvider contentProvider,
                 final ModuleFilter moduleFilter, final IProgressMonitor progressMonitor)
                 throws CoreException {
-            super();
             proxyContentProvider = contentProvider;
             this.moduleFilter = moduleFilter;
             this.progressMonitor = progressMonitor;
@@ -580,10 +580,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
                 validPaths.addAll(getFullPaths(project,
                         erlProject.getProperties().getSourceDirs()));
                 final Collection<IPath> extras = Lists.newArrayList();
-                for (final IPath p : SourcePathUtils
-                        .getExtraSourcePathsForModel(project)) {
-                    extras.add(p);
-                }
+                extras.addAll(SourcePathUtils.getExtraSourcePathsForModel(project));
                 validPaths.addAll(getFullPaths(project, extras));
             }
         }
@@ -740,7 +737,6 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
          * Creates new instance of TypeSelectionHistory
          */
         public ModuleSelectionHistory() {
-            super();
         }
 
         @Override

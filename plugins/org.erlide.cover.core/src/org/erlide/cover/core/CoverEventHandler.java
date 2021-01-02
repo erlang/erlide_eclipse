@@ -127,7 +127,6 @@ public class CoverEventHandler extends ErlangEventHandler {
 
                 return true;
             }
-            return false;
         }
         return false;
     }

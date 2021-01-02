@@ -59,7 +59,6 @@ public class ErlElementDelta implements IErlElementDelta {
     public ErlElementDelta(final int kind, final int flags, final IErlElement element,
             final List<ErlElementDelta> children,
             final List<IResourceDelta> resourceDeltas) {
-        super();
         fKind = kind;
         fFlags = flags;
         fElement = element;

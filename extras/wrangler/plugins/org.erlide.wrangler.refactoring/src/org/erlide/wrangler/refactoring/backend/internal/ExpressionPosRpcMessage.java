@@ -71,7 +71,6 @@ public class ExpressionPosRpcMessage extends AbstractRpcMessage {
             } else {
                 final OtpErlangString errorMsg = (OtpErlangString) wranglerResult;
                 setUnsuccessful(errorMsg.stringValue());
-                return;
             }
         } catch (final Exception e) {
             throw new WranglerRpcParsingException(resultTuple.toString());

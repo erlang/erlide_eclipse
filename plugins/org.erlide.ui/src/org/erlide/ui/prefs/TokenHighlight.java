@@ -39,22 +39,22 @@ public enum TokenHighlight {
     int defaultStyle;
     private final String displayName;
 
-    private TokenHighlight(final RGB defaultColor, final int defaultStyle) {
+    TokenHighlight(final RGB defaultColor, final int defaultStyle) {
         this(defaultColor, defaultStyle, null);
     }
 
-    private TokenHighlight(final RGB defaultColor, final int defaultStyle,
+    TokenHighlight(final RGB defaultColor, final int defaultStyle,
             final String displayName) {
         this.defaultColor = defaultColor;
         this.defaultStyle = defaultStyle;
         this.displayName = displayName;
     }
 
-    private TokenHighlight(final String defaultColor, final int defaultStyle) {
+    TokenHighlight(final String defaultColor, final int defaultStyle) {
         this(defaultColor, defaultStyle, null);
     }
 
-    private TokenHighlight(final String defaultColor, final int defaultStyle,
+    TokenHighlight(final String defaultColor, final int defaultStyle,
             final String displayName) {
         this.defaultColor = getRgbFromCss(defaultColor);
         this.defaultStyle = defaultStyle;

@@ -43,7 +43,6 @@ import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 public class ErlProjectPropertyPage extends PropertyPage {
 
     public ErlProjectPropertyPage() {
-        super();
     }
 
     @Override
@@ -188,10 +187,8 @@ public class ErlProjectPropertyPage extends PropertyPage {
         btnWhenCleaningDelete.setLayoutData(fd_btnWhenCleaningDelete);
         btnWhenCleaningDelete
                 .setText("When cleaning, delete the whole output directory (faster)");
-        sourceComposite.setTabList(new Control[] {
-                btnFolder, btnSource, btnEdit, btnRemove, btnAllowOutputFolders,
-                output_text, btnBrowse
-        });
+        sourceComposite.setTabList(new Control[] { btnFolder, btnSource, btnEdit,
+                btnRemove, btnAllowOutputFolders, output_text, btnBrowse });
 
         final TabItem includeTab = new TabItem(tabFolder, SWT.NONE);
         includeTab.setText("Include");
@@ -315,9 +312,7 @@ public class ErlProjectPropertyPage extends PropertyPage {
                 .getRuntimes();
         final List<String[]> vv = new ArrayList<>();
         for (final RuntimeInfo ri : rs) {
-            vv.add(new String[] {
-                    ri.getName(), ri.getName()
-            });
+            vv.add(new String[] { ri.getName(), ri.getName() });
         }
         @SuppressWarnings("unused")
         final String[][] values = vv.toArray(new String[][] {});

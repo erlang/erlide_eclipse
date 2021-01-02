@@ -131,7 +131,7 @@ public class OtpEpmd {
      *                if there was no response from the name server.
      */
     public static boolean publishPort(final OtpLocalNode node) throws IOException {
-        OtpTransport s = null;
+        OtpTransport s;
 
         s = r4_publish(node);
 

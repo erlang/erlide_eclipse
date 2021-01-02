@@ -19,9 +19,8 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class RestartDialog extends MessageDialog {
     private static final int CONTINUE = 2;
-    private static final String[] yesNo = {
-            IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL
-    };
+    private static final String[] yesNo = { IDialogConstants.YES_LABEL,
+            IDialogConstants.NO_LABEL };
 
     private int buttonId;
 

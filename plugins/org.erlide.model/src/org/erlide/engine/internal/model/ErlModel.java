@@ -344,9 +344,7 @@ public class ErlModel extends Openable implements IErlModel {
                 project.create(null);
                 project.open(null);
                 final IProjectDescription description = project.getDescription();
-                description.setNatureIds(new String[] {
-                        ModelPlugin.NATURE_ID
-                });
+                description.setNatureIds(new String[] { ModelPlugin.NATURE_ID });
                 description.setName(name);
                 project.setDescription(description, null);
             }
@@ -389,8 +387,7 @@ public class ErlModel extends Openable implements IErlModel {
             final String name = names[i];
             final String value = URIUtil.toPath(pvm.getURIValue(name)).toPortableString();
             objects[i] = new OtpErlangTuple(new OtpErlangObject[] {
-                    new OtpErlangString(name), new OtpErlangString(value)
-            });
+                    new OtpErlangString(name), new OtpErlangString(value) });
         }
         fCachedPathVars = new OtpErlangList(objects);
         // }

@@ -33,9 +33,8 @@ public class ErlProblems {
     public void load() {
         try {
             final ClassLoader loader = this.getClass().getClassLoader();
-            final InputStream input = loader
-                    .getResourceAsStream("org/erlide/engine/model/builder/errors.data");
-            try {
+            try (InputStream input = loader
+                    .getResourceAsStream("org/erlide/engine/model/builder/errors.data")) {
                 final String src = Util.getInputStreamAsString(input,
                         StandardCharsets.ISO_8859_1.name());
                 try {
@@ -75,8 +74,6 @@ public class ErlProblems {
                         throw Exceptions.sneakyThrow(_t);
                     }
                 }
-            } finally {
-                input.close();
             }
         } catch (final Throwable _e) {
             throw Exceptions.sneakyThrow(_e);

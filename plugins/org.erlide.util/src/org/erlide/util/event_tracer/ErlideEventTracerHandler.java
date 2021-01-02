@@ -95,10 +95,8 @@ public class ErlideEventTracerHandler implements IDisposable {
     public void handle(final ErlideEvent event) {
         if (event instanceof ErlideSessionEvent) {
             _handle((ErlideSessionEvent) event);
-            return;
         } else if (event != null) {
             _handle(event);
-            return;
         } else {
             throw new IllegalArgumentException("Unhandled parameter types: "
                     + Arrays.<Object> asList(event).toString());

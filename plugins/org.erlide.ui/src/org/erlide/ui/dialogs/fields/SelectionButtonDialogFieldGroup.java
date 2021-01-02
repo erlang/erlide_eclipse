@@ -54,8 +54,6 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
      */
     public SelectionButtonDialogFieldGroup(final int buttonsStyle,
             final String[] buttonNames, final int nColumns, final int borderStyle) {
-        super();
-
         fButtonNames = buttonNames;
 
         final int nButtons = buttonNames.length;
@@ -94,18 +92,14 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
             gd.horizontalSpan = nColumns - 1;
             buttonsgroup.setLayoutData(gd);
 
-            return new Control[] {
-                    label, buttonsgroup
-            };
+            return new Control[] { label, buttonsgroup };
         }
         final Composite buttonsgroup = getSelectionButtonsGroup(parent);
         final GridData gd = new GridData();
         gd.horizontalSpan = nColumns;
         buttonsgroup.setLayoutData(gd);
 
-        return new Control[] {
-                buttonsgroup
-        };
+        return new Control[] { buttonsgroup };
     }
 
     /*

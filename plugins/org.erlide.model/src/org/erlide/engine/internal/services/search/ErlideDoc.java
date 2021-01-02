@@ -63,8 +63,7 @@ public class ErlideDoc implements OtpDocService {
                 new OtpErlangAtom("external"),
                 new OtpErlangAtom(functionCall.getModule()),
                 new OtpErlangAtom(functionCall.getName()),
-                new OtpErlangInt(functionCall.getArity()), new OtpErlangString("")
-        });
+                new OtpErlangInt(functionCall.getArity()), new OtpErlangString("") });
         try {
             res = b.call(ErlideDoc.ERLIDE_OTP_DOC, "get_doc", "sxs",
                     functionCall.getModule(), input, stateDir);

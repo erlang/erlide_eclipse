@@ -381,9 +381,8 @@ public class ResourceManager extends SWTResourceManager {
             final Class<?> BundleContextClass = Class
                     .forName("org.osgi.framework.BundleContext"); //$NON-NLS-1$
             if (BundleContextClass.isAssignableFrom(plugin.getClass())) {
-                final Method getBundleMethod = BundleContextClass.getMethod("getBundle", //$NON-NLS-1$
-                        new Class[0]);
-                final Object bundle = getBundleMethod.invoke(plugin, new Object[0]);
+                final Method getBundleMethod = BundleContextClass.getMethod("getBundle");
+                final Object bundle = getBundleMethod.invoke(plugin);
                 //
                 final Class<?> PathClass = Class.forName("org.eclipse.core.runtime.Path"); //$NON-NLS-1$
                 final Constructor<?> pathConstructor = PathClass

@@ -27,7 +27,7 @@ public class BuildQueueProcessor extends Job {
 
     @Override
     protected IStatus run(final IProgressMonitor monitor) {
-        BuildWorkerInfo work = null;
+        BuildWorkerInfo work;
         work = queue.poll();
         while (work != null) {
             MarkerUtils.removeTaskMarkers(work.resource);

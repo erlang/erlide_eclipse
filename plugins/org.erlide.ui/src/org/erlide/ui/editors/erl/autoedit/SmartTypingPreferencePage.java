@@ -22,21 +22,18 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage
         implements IWorkbenchPreferencePage {
 
     public SmartTypingPreferencePage() {
-        super();
         setDescription(ErlEditorMessages.SmartTypingPrefs_Desc);
     }
 
     public static final String SMART_TYPING_KEY = "smartTyping"; //$NON-NLS-1$
 
-    private static final String[] SMART_TYPING_KEYS = {
-            "strings", "atoms", //$NON-NLS-1$ //$NON-NLS-2$
+    private static final String[] SMART_TYPING_KEYS = { "strings", "atoms", //$NON-NLS-1$ //$NON-NLS-2$
             "braces", "brackets", //$NON-NLS-1$ //$NON-NLS-2$
             "parens", "embraceSelection", "pasteReindent" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     };
 
     // public static final String AUTO_NL_KEY = "indentation"; //$NON-NLS-1$
-    public static final String[] AUTO_NL_KEYS = {
-            "semicolon_nl", "dot_nl", "arrow_nl", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    public static final String[] AUTO_NL_KEYS = { "semicolon_nl", "dot_nl", "arrow_nl", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             "comma_nl" //$NON-NLS-1$
     };
 
@@ -49,13 +46,11 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage
 
     public static final int PASTE_REINDENT = 6;
 
-    private static final String[] SMART_TYPING_DEFAULTS = {
-            "1", //$NON-NLS-1$
+    private static final String[] SMART_TYPING_DEFAULTS = { "1", //$NON-NLS-1$
             "0", "1", "1", "1", "1", "1" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
     };
 
-    private static final String[] AUTO_NL_DEFAULTS = {
-            "0", "0", //$NON-NLS-1$ //$NON-NLS-2$
+    private static final String[] AUTO_NL_DEFAULTS = { "0", "0", //$NON-NLS-1$ //$NON-NLS-2$
             "0", "0" //$NON-NLS-1$ //$NON-NLS-2$
     };
 
@@ -124,22 +119,19 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage
     }
 
     private void addAutoclosingSection(final Composite composite) {
-        final String strings[] = {
-                ErlEditorMessages.SmartTypingPrefs_Strings,
+        final String strings[] = { ErlEditorMessages.SmartTypingPrefs_Strings,
                 ErlEditorMessages.SmartTypingPrefs_atoms,
                 ErlEditorMessages.SmartTypingPrefs_Braces,
                 ErlEditorMessages.SmartTypingPrefs_Brackets,
                 ErlEditorMessages.SmartTypingPrefs_Parens,
-                ErlEditorMessages.SmartTypingPrefs_EmbraceSelection
-        };
+                ErlEditorMessages.SmartTypingPrefs_EmbraceSelection };
         addCheckboxes(composite, strings, buttons);
     }
 
     private void addAutoNLSection(final Composite composite) {
-        final String[] nlStrings = {
-                ErlEditorMessages.Prefs_Semicolon_nl, ErlEditorMessages.Prefs_Dot_nl,
-                ErlEditorMessages.Prefs_Arrow_nl, ErlEditorMessages.Prefs_Comma_nl
-        };
+        final String[] nlStrings = { ErlEditorMessages.Prefs_Semicolon_nl,
+                ErlEditorMessages.Prefs_Dot_nl, ErlEditorMessages.Prefs_Arrow_nl,
+                ErlEditorMessages.Prefs_Comma_nl };
         addCheckboxes(composite, nlStrings, autoNLButtons);
     }
 

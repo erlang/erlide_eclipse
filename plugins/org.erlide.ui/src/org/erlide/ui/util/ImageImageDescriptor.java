@@ -22,7 +22,6 @@ public class ImageImageDescriptor extends ImageDescriptor {
      * Constructor for ImagImageDescriptor.
      */
     public ImageImageDescriptor(final Image image) {
-        super();
         fImage = image;
     }
 

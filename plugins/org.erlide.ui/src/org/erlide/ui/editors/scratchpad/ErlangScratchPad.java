@@ -44,7 +44,6 @@ public class ErlangScratchPad extends AbstractErlangEditor implements ISaveableP
      *
      */
     public ErlangScratchPad() {
-        super();
         registerListeners();
     }
 
@@ -107,8 +106,7 @@ public class ErlangScratchPad extends AbstractErlangEditor implements ISaveableP
     public static ChainedPreferenceStore getErlangEditorPreferenceStore() {
         final IPreferenceStore generalTextStore = EditorsUI.getPreferenceStore();
         return new ChainedPreferenceStore(new IPreferenceStore[] {
-                ErlideUIPlugin.getDefault().getPreferenceStore(), generalTextStore
-        });
+                ErlideUIPlugin.getDefault().getPreferenceStore(), generalTextStore });
     }
 
     @Override
@@ -122,12 +120,9 @@ public class ErlangScratchPad extends AbstractErlangEditor implements ISaveableP
     protected void createActions() {
         super.createActions();
         ActionGroup esg;
-        fActionGroups = new CompositeActionGroup(new ActionGroup[] {
-                esg = new ErlangSearchActionGroup(this)
-        });
-        fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] {
-                esg
-        });
+        fActionGroups = new CompositeActionGroup(
+                new ActionGroup[] { esg = new ErlangSearchActionGroup(this) });
+        fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
 
         createCommonActions();
 
@@ -170,8 +165,7 @@ public class ErlangScratchPad extends AbstractErlangEditor implements ISaveableP
 
     @Override
     protected void initializeKeyBindingScopes() {
-        setKeyBindingScopes(new String[] {
-                "org.erlide.ui.erlangEditorScope" //$NON-NLS-1$
+        setKeyBindingScopes(new String[] { "org.erlide.ui.erlangEditorScope" //$NON-NLS-1$
         });
     }
 

@@ -44,7 +44,6 @@ public class RpcCall implements Callable<OtpErlangObject> {
 
     public RpcCall(final IOtpRpc rpc, final String module, final String function,
             final String signature, final Object[] args) {
-        super();
         this.rpc = rpc;
         this.module = module;
         this.function = function;

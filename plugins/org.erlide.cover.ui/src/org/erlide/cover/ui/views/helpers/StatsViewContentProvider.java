@@ -38,9 +38,7 @@ public class StatsViewContentProvider implements ITreeContentProvider {
     @Override
     public Object[] getElements(final Object parent) {
         if (parent.equals(viewSite) && model != null || parent.equals(model)) {
-            return new ICoverageObject[] {
-                    model.getRoot()
-            };
+            return new ICoverageObject[] { model.getRoot() };
         }
 
         return getChildren(parent);

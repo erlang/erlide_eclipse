@@ -20,7 +20,6 @@ public class DummyProcess implements IProcess {
     private final ILaunch fLaunch;
 
     public DummyProcess(final ILaunch launch) {
-        super();
         fLaunch = launch;
     }
 

@@ -32,7 +32,6 @@ public class StringButtonDialogField extends StringDialogField {
     private boolean fButtonEnabled;
 
     public StringButtonDialogField(final IStringButtonAdapter adapter) {
-        super();
         fStringButtonAdapter = adapter;
         fBrowseButtonLabel = "!Browse...!"; //$NON-NLS-1$
         fButtonEnabled = true;
@@ -70,9 +69,7 @@ public class StringButtonDialogField extends StringDialogField {
         final Button button = getChangeControl(parent);
         button.setLayoutData(StringButtonDialogField.gridDataForButton(button, 1));
 
-        return new Control[] {
-                label, text, button
-        };
+        return new Control[] { label, text, button };
     }
 
     /*

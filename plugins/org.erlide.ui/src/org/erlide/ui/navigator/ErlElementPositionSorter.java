@@ -16,7 +16,6 @@ public class ErlElementPositionSorter extends ErlElementSorter {
     }
 
     public ErlElementPositionSorter() {
-        super();
     }
 
     public ErlElementPositionSorter(final Collator collator) {

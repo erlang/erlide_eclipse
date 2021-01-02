@@ -307,10 +307,8 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
             if (thisArity != thatArity || thatTail != null) {
                 return false;
             }
-        } else {
-            if (thisArity > thatArity) {
-                return false;
-            }
+        } else if (thisArity > thatArity) {
+            return false;
         }
         for (int i = 0; i < thisArity; i++) {
             if (!elementAt(i).match(that.elementAt(i), bindings)) {
@@ -452,7 +450,6 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
         private final OtpErlangList parent;
 
         private SubList(final OtpErlangList parent, final int start) {
-            super();
             this.parent = parent;
             this.start = start;
         }

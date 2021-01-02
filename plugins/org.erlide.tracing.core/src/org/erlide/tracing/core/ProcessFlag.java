@@ -24,7 +24,7 @@ public enum ProcessFlag {
     private OtpErlangAtom atom;
     private String name;
 
-    private ProcessFlag(final String name, final OtpErlangAtom atom) {
+    ProcessFlag(final String name, final OtpErlangAtom atom) {
         this.name = name;
         this.atom = atom;
     }

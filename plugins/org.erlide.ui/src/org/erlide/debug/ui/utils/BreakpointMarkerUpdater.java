@@ -65,9 +65,7 @@ public class BreakpointMarkerUpdater implements IMarkerUpdater {
 
     @Override
     public String[] getAttribute() {
-        return new String[] {
-                IMarker.LINE_NUMBER
-        };
+        return new String[] { IMarker.LINE_NUMBER };
     }
 
     @Override

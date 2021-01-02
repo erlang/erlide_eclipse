@@ -154,18 +154,14 @@ public class ToolExecutor {
 
     private static String getUnixToolLocation(final String cmd) {
         final ToolProgressCallback callback = new ToolProgressCallback();
-        final String[] args = {
-                "-c", "which " + cmd
-        };
+        final String[] args = { "-c", "which " + cmd };
         new ToolExecutor().run("/bin/sh", args, null, callback, null);
         return callback.result;
     }
 
     private static String getWindowsToolLocation(final String cmd) {
         final ToolProgressCallback callback = new ToolProgressCallback();
-        final String[] args = {
-                "/c", "where " + cmd
-        };
+        final String[] args = { "/c", "where " + cmd };
         new ToolExecutor().run("c:\\Windows\\System32\\cmd.exe", args, null, callback,
                 null);
         if (callback.result == null) {

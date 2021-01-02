@@ -27,7 +27,6 @@ public abstract class OtpException extends Exception {
      * Provides no message.
      */
     public OtpException() {
-        super();
     }
 
     /**

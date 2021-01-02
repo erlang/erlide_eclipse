@@ -48,7 +48,6 @@ public class ErlangProjectPropertyPage extends PropertyPage {
     private ErlangProjectProperties model;
 
     public ErlangProjectPropertyPage() {
-        super();
         // noDefaultAndApplyButton();
         model = new ErlangProjectProperties();
     }

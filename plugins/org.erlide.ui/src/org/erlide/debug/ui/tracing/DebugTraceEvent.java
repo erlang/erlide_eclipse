@@ -23,7 +23,6 @@ public class DebugTraceEvent {
     private final OtpErlangTuple event;
 
     public DebugTraceEvent(final OtpErlangPid pid, final OtpErlangTuple event) {
-        super();
         this.pid = pid;
         this.event = event;
     }

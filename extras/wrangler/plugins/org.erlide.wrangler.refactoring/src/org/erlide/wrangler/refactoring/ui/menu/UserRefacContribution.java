@@ -20,16 +20,13 @@ import org.erlide.wrangler.refactoring.backend.UserRefactoringsManager;
 public class UserRefacContribution extends CompoundContributionItem {
 
     public UserRefacContribution() {
-        super();
     }
 
     public UserRefacContribution(final String id) {
         super(id);
     }
 
-    @SuppressWarnings({
-            "rawtypes", "unchecked"
-    })
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected IContributionItem[] getContributionItems() {
 

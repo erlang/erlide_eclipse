@@ -1,6 +1,7 @@
 package org.erlide.ui.internal.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -53,7 +54,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult
         for (final Match match : matches) {
             final Object element = match.getElement();
             final int matchCount = getMatchCount(element);
-            if ((matchCount == 1) || (matchCount == countMatches(element, matches))) {
+            if (matchCount == 1 || matchCount == countMatches(element, matches)) {
                 removeElement(element);
             }
         }
@@ -177,9 +178,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult
             final String moduleName = new Path(ese.getModuleName()).lastSegment();
             if (moduleName.equals(name)) {
                 final Match[] matches = getMatches(ese);
-                for (final Match match : matches) {
-                    l.add(match);
-                }
+                Collections.addAll(l, matches);
             }
         }
         return l.toArray(new Match[l.size()]);

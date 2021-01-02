@@ -35,7 +35,6 @@ public class SelectionButtonDialogField extends DialogField {
      * SWT.TOGGLE, SWT.PUSH
      */
     public SelectionButtonDialogField(final int buttonStyle) {
-        super();
         fIsSelected = false;
         fAttachedDialogFields = null;
         fButtonStyle = buttonStyle;
@@ -46,9 +45,7 @@ public class SelectionButtonDialogField extends DialogField {
      * will be disabled if the selection button is not selected.
      */
     public void attachDialogField(final DialogField dialogField) {
-        attachDialogFields(new DialogField[] {
-                dialogField
-        });
+        attachDialogFields(new DialogField[] { dialogField });
     }
 
     /**
@@ -96,9 +93,7 @@ public class SelectionButtonDialogField extends DialogField {
 
         button.setLayoutData(gd);
 
-        return new Control[] {
-                button
-        };
+        return new Control[] { button };
     }
 
     /*

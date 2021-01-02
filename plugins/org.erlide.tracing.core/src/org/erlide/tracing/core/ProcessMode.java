@@ -19,7 +19,7 @@ public enum ProcessMode {
     private OtpErlangAtom atom;
     private String name;
 
-    private ProcessMode(final String name, final OtpErlangAtom atom) {
+    ProcessMode(final String name, final OtpErlangAtom atom) {
         this.name = name;
         this.atom = atom;
     }

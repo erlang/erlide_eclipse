@@ -11,7 +11,6 @@ public class ErlangIncludeFile {
      * @param filename
      */
     public ErlangIncludeFile(final boolean systemInclude, final String filename) {
-        super();
         this.systemInclude = systemInclude;
         this.filename = filename;
     }

@@ -27,7 +27,6 @@ public class OtpErlangException extends OtpException {
      * Provides no message.
      */
     public OtpErlangException() {
-        super();
     }
 
     /**

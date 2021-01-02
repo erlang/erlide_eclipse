@@ -23,7 +23,6 @@ public class BackendException extends Exception {
      * Default constructor
      */
     public BackendException() {
-        super();
     }
 
     /**

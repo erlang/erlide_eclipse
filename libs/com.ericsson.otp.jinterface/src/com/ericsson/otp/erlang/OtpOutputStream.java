@@ -557,26 +557,24 @@ public class OtpOutputStream extends ByteArrayOutputStream {
             // will fit in one byte
             write1(OtpExternal.smallIntTag);
             write1(v);
-        } else {
-            // note that v != 0L
-            if (v < 0 && unsigned || v < OtpExternal.erlMin || v > OtpExternal.erlMax) {
-                // some kind of bignum
-                final long abs = unsigned ? v : v < 0 ? -v : v;
-                final int sign = unsigned ? 0 : v < 0 ? 1 : 0;
-                int n;
-                long mask;
-                for (mask = 0xFFFFffffL, n = 4; (abs & mask) != abs; n++, mask = mask << 8
-                        | 0xffL) {
-                    // count nonzero bytes
-                }
-                write1(OtpExternal.smallBigTag);
-                write1(n); // length
-                write1(sign); // sign
-                writeLE(abs, n); // value. obs! little endian
-            } else {
-                write1(OtpExternal.intTag);
-                write4BE(v);
+        } else // note that v != 0L
+        if (v < 0 && unsigned || v < OtpExternal.erlMin || v > OtpExternal.erlMax) {
+            // some kind of bignum
+            final long abs = unsigned ? v : v < 0 ? -v : v;
+            final int sign = unsigned ? 0 : v < 0 ? 1 : 0;
+            int n;
+            long mask;
+            for (mask = 0xFFFFffffL, n = 4; (abs & mask) != abs; n++, mask = mask << 8
+                    | 0xffL) {
+                // count nonzero bytes
             }
+            write1(OtpExternal.smallBigTag);
+            write1(n); // length
+            write1(sign); // sign
+            writeLE(abs, n); // value. obs! little endian
+        } else {
+            write1(OtpExternal.intTag);
+            write4BE(v);
         }
     }
 

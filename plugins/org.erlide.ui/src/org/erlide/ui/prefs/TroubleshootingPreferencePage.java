@@ -52,7 +52,6 @@ public class TroubleshootingPreferencePage extends PreferencePage
     private final RGB darkGreen = new RGB(0, 145, 0);
 
     public TroubleshootingPreferencePage() {
-        super();
         noDefaultAndApplyButton();
     }
 

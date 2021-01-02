@@ -1,6 +1,7 @@
 package org.erlide.engine.services.codeassist;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
 
@@ -45,18 +46,10 @@ public class FunctionCompletionData extends CompletionData {
             return false;
         }
         final FunctionCompletionData other = (FunctionCompletionData) obj;
-        if (offsetsAndLengths == null) {
-            if (other.offsetsAndLengths != null) {
-                return false;
-            }
-        } else if (!offsetsAndLengths.equals(other.offsetsAndLengths)) {
+        if (!Objects.equals(offsetsAndLengths, other.offsetsAndLengths)) {
             return false;
         }
-        if (additionalProposalInfo == null) {
-            if (other.additionalProposalInfo != null) {
-                return false;
-            }
-        } else if (!additionalProposalInfo.equals(other.additionalProposalInfo)) {
+        if (!Objects.equals(additionalProposalInfo, other.additionalProposalInfo)) {
             return false;
         }
         return true;

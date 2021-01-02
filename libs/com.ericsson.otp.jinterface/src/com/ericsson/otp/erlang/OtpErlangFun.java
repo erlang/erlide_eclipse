@@ -87,10 +87,8 @@ public class OtpErlangFun extends OtpErlangObject {
             if (f.md5 != null) {
                 return false;
             }
-        } else {
-            if (!Arrays.equals(md5, f.md5)) {
-                return false;
-            }
+        } else if (!Arrays.equals(md5, f.md5)) {
+            return false;
         }
         if (index != f.index || uniq != f.uniq) {
             return false;

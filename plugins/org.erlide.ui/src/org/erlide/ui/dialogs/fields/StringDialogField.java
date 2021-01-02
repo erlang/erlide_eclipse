@@ -29,7 +29,6 @@ public class StringDialogField extends DialogField {
     private ModifyListener fModifyListener;
 
     public StringDialogField() {
-        super();
         fText = ""; //$NON-NLS-1$
     }
 
@@ -47,9 +46,7 @@ public class StringDialogField extends DialogField {
         final Text text = getTextControl(parent);
         text.setLayoutData(StringDialogField.gridDataForText(nColumns - 1));
 
-        return new Control[] {
-                label, text
-        };
+        return new Control[] { label, text };
     }
 
     /*

@@ -122,10 +122,8 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
         fName = new StringDialogField();
         fName.setLabelText(RuntimePreferenceMessages.addDialog_ertsName);
 
-        final String[] buttons = {
-                RuntimePreferenceMessages.addDialog_add,
-                RuntimePreferenceMessages.addDialog_remove, "Move up", "Move down"
-        };
+        final String[] buttons = { RuntimePreferenceMessages.addDialog_add,
+                RuntimePreferenceMessages.addDialog_remove, "Move up", "Move down" };
         fCodePath = new ListDialogField<>(this, buttons, new StringLabelProvider());
         fCodePath.setLabelText("Code path");
         // TODO enable this when it will work (#163)
@@ -182,19 +180,15 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
         final String name = fName.getText();
         if (name == null || name.trim().isEmpty()) {
             status.setError("Enter the runtime's name"); //$NON-NLS-1$
+        } else if (fRequestor.isDuplicateName(name)
+                && (fEditedRuntime == null || !name.equals(fEditedRuntime.getName()))) {
+            status.setError("The name is already used"); //$NON-NLS-1$
         } else {
-            if (fRequestor.isDuplicateName(name) && (fEditedRuntime == null
-                    || !name.equals(fEditedRuntime.getName()))) {
-                status.setError("The name is already used"); //$NON-NLS-1$
-            } else {
-                final IStatus s = ResourcesPlugin.getWorkspace().validateName(name,
-                        IResource.FILE);
-                if (!s.isOK()) {
-                    status.setError(MessageFormat.format("Name is invalid: %s",
-                            (Object[]) new String[] {
-                                    s.getMessage()
-                            }));
-                }
+            final IStatus s = ResourcesPlugin.getWorkspace().validateName(name,
+                    IResource.FILE);
+            if (!s.isOK()) {
+                status.setError(MessageFormat.format("Name is invalid: %s",
+                        (Object[]) new String[] { s.getMessage() }));
             }
         }
         return status;

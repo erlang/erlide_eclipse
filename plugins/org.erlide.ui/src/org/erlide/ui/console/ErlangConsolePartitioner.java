@@ -20,8 +20,7 @@ import org.eclipse.ui.console.IConsoleDocumentPartitioner;
 public class ErlangConsolePartitioner implements IConsoleDocumentPartitioner {
 
     private static final String[] LEGAL_CONTENT_TYPES = {
-            IDocument.DEFAULT_CONTENT_TYPE
-    };
+            IDocument.DEFAULT_CONTENT_TYPE };
 
     private final List<ScriptStyleRange> ranges = new ArrayList<>();
 
@@ -131,8 +130,7 @@ public class ErlangConsolePartitioner implements IConsoleDocumentPartitioner {
     @Override
     public ITypedRegion[] computePartitioning(final int offset, final int length) {
         return new TypedRegion[] {
-                new TypedRegion(offset, length, IDocument.DEFAULT_CONTENT_TYPE)
-        };
+                new TypedRegion(offset, length, IDocument.DEFAULT_CONTENT_TYPE) };
     }
 
     @Override

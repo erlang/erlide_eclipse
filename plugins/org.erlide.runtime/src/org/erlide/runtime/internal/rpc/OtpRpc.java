@@ -300,13 +300,11 @@ public class OtpRpc implements IOtpRpc {
             throws SignatureException {
         final OtpErlangObject[] args = convertArgs(signature, args0);
 
-        OtpErlangObject res = null;
+        OtpErlangObject res;
         final OtpMbox mbox = node.createMbox();
         res = buildRpcCall(mbox.self(), gleader, module, fun, args);
         if (logCalls) {
-            final Object[] args01 = {
-                    module, fun, argString(args)
-            };
+            final Object[] args01 = { module, fun, argString(args) };
             ErlLogger.debug("call -> %s:%s(%s)", args01);
         }
         //
@@ -400,12 +398,10 @@ public class OtpRpc implements IOtpRpc {
             final String signature, final Object... args0) throws SignatureException {
         final OtpErlangObject[] args = convertArgs(signature, args0);
 
-        OtpErlangObject msg = null;
+        OtpErlangObject msg;
         msg = buildRpcCastMsg(gleader, module, fun, args);
         if (logCalls) {
-            final Object[] args01 = {
-                    module, fun, argString(args)
-            };
+            final Object[] args01 = { module, fun, argString(args) };
             ErlLogger.debug("cast -> %s:%s(%s)", args01);
         }
         send(node, peer, "rex", msg);

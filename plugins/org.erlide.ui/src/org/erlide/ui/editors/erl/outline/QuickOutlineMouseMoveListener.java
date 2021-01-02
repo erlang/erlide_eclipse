@@ -42,18 +42,14 @@ public class QuickOutlineMouseMoveListener implements MouseMoveListener {
             final Object o = tree.getItem(new Point(e.x, e.y));
             if (o != null && !o.equals(fLastItem)) {
                 fLastItem = (TreeItem) o;
-                tree.setSelection(new TreeItem[] {
-                        fLastItem
-                });
+                tree.setSelection(new TreeItem[] { fLastItem });
             } else if (e.y < tree.getItemHeight() / 4) {
                 // Scroll up
                 final Point p = tree.toDisplay(e.x, e.y);
                 final Item item = fTreeViewer.scrollUp(p.x, p.y);
                 if (item instanceof TreeItem) {
                     fLastItem = (TreeItem) item;
-                    tree.setSelection(new TreeItem[] {
-                            fLastItem
-                    });
+                    tree.setSelection(new TreeItem[] { fLastItem });
                 }
             } else if (e.y > tree.getBounds().height - tree.getItemHeight() / 4) {
                 // Scroll down
@@ -61,9 +57,7 @@ public class QuickOutlineMouseMoveListener implements MouseMoveListener {
                 final Item item = fTreeViewer.scrollDown(p.x, p.y);
                 if (item instanceof TreeItem) {
                     fLastItem = (TreeItem) item;
-                    tree.setSelection(new TreeItem[] {
-                            fLastItem
-                    });
+                    tree.setSelection(new TreeItem[] { fLastItem });
                 }
             }
         }

@@ -164,12 +164,10 @@ public class ErlangCompletionService implements CompletionService {
                 default:
                     break;
                 }
+            } else if (doubleColon) {
+                flags = EnumSet.of(CompletionFlag.TYPES);
             } else {
-                if (doubleColon) {
-                    flags = EnumSet.of(CompletionFlag.TYPES);
-                } else {
-                    flags = EnumSet.of(CompletionFlag.MODULES);
-                }
+                flags = EnumSet.of(CompletionFlag.MODULES);
             }
         }
         // TODO flags = filterFlags(flags);

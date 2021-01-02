@@ -54,9 +54,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     public IAutoEditStrategy[] getAutoEditStrategies(final ISourceViewer sourceViewer,
             final String contentType) {
         if (contentType.equals(IDocument.DEFAULT_CONTENT_TYPE)) {
-            return new IAutoEditStrategy[] {
-                    new AutoIndentStrategy(editor)
-            };
+            return new IAutoEditStrategy[] { new AutoIndentStrategy(editor) };
         }
         return ErlangSourceViewerConfiguration.NO_AUTOEDIT;
     }
@@ -118,9 +116,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         };
     }
 
-    @SuppressWarnings({
-            "rawtypes", "unchecked"
-    })
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected Map getHyperlinkDetectorTargets(final ISourceViewer sourceViewer) {
         final Map map = super.getHyperlinkDetectorTargets(sourceViewer);

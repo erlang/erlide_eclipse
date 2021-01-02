@@ -47,8 +47,9 @@ public class FoldLocalExpressionRefactoring
 
         final IErlSelection selection = GlobalParameters.getWranglerSelection();
 
-        if ((!(selection instanceof IErlMemberSelection)
-                || ((selection.getKind() != SelectionKind.FUNCTION) && (selection.getKind() != SelectionKind.FUNCTION_CLAUSE)))) {
+        if (!(selection instanceof IErlMemberSelection)
+                || selection.getKind() != SelectionKind.FUNCTION
+                        && selection.getKind() != SelectionKind.FUNCTION_CLAUSE) {
             return RefactoringStatus
                     .createFatalErrorStatus("Please select an expression!");
         }

@@ -41,7 +41,6 @@ public class OtpErlangMap extends OtpErlangObject {
         private static final long serialVersionUID = -2666505810905455082L;
 
         public OtpMap() {
-            super();
         }
     }
 

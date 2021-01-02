@@ -103,7 +103,7 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
     @Override
     public IErlRange getMemberRange() {
         if (getErlElement() instanceof IErlMember) {
-            IErlRange range = null;
+            IErlRange range;
             final IErlMember member = (IErlMember) getErlElement();
             int sL;
             int sC;
@@ -143,7 +143,6 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
                 return SelectionKind.VARIABLE;
                 // TODO:: expression checking is not implemented
             }
-            return getKind();
         }
         return getKind();
     }

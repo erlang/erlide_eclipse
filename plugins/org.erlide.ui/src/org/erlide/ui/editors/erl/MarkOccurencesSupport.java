@@ -341,7 +341,8 @@ public class MarkOccurencesSupport implements IDisposable {
                 ErlLogger.warn(e);
             }
             if (fRefs == null) {
-                if (!editor.markOccurencesHandler.fStickyOccurrenceAnnotations || hasChanged) {
+                if (!editor.markOccurencesHandler.fStickyOccurrenceAnnotations
+                        || hasChanged) {
                     editor.markOccurencesHandler.removeOccurrenceAnnotations();
                 }
             }
@@ -355,8 +356,9 @@ public class MarkOccurencesSupport implements IDisposable {
 
         private boolean isCanceled(final IProgressMonitor progressMonitor) {
             return fCanceled || progressMonitor.isCanceled()
-                    || fPostSelectionValidator != null && (!fPostSelectionValidator
-                            .isValid(selection) && (editor.markOccurencesHandler.fForcedMarkOccurrencesSelection != selection))
+                    || fPostSelectionValidator != null
+                            && !fPostSelectionValidator.isValid(selection)
+                            && editor.markOccurencesHandler.fForcedMarkOccurrencesSelection != selection
                     || LinkedModeModel.hasInstalledModel(fDocument);
         }
 
@@ -515,7 +517,6 @@ public class MarkOccurencesSupport implements IDisposable {
 
         public ErlangRef(final ErlangSearchElement element, final int offset,
                 final int length, final boolean def) {
-            super();
             this.element = element;
             this.offset = offset;
             this.length = length;

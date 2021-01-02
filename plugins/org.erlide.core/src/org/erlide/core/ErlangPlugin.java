@@ -36,7 +36,6 @@ public class ErlangPlugin extends Plugin {
     private boolean stopping;
 
     public ErlangPlugin() {
-        super();
         ErlangPlugin.plugin = this;
     }
 

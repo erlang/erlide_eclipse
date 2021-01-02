@@ -98,7 +98,6 @@ public class OtpCookedConnection extends AbstractConnection {
     @Override
     public void deliver(final Exception e) {
         self.deliverError(this, e);
-        return;
     }
 
     /*
@@ -132,8 +131,6 @@ public class OtpCookedConnection extends AbstractConnection {
         case OtpMsg.exit2Tag:
             break;
         }
-
-        return;
     }
 
     /*

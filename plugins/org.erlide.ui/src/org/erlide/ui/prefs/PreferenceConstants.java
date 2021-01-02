@@ -262,7 +262,7 @@ public class PreferenceConstants {
 
         private final RGB color;
 
-        private Color(final int r, final int g, final int b) {
+        Color(final int r, final int g, final int b) {
             color = new RGB(r, g, b);
         }
 

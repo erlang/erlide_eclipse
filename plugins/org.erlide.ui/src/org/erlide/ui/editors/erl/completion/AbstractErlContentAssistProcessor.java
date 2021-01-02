@@ -196,9 +196,7 @@ public abstract class AbstractErlContentAssistProcessor
     }
 
     private ICompletionProposal[] getNoCompletion(final int offset) {
-        return new ICompletionProposal[] {
-                new DummyCompletionProposal(offset)
-        };
+        return new ICompletionProposal[] { new DummyCompletionProposal(offset) };
     }
 
     String getBefore(final ITextViewer viewer, final IDocument doc, final int offset) {

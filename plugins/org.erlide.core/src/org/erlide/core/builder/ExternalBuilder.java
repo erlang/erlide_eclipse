@@ -70,9 +70,9 @@ public abstract class ExternalBuilder extends ErlangBuilder {
                     }
                 }
             };
-            final ToolResults result = ex.run(osCommand, new String[] {
-                    getCompileTarget()
-            }, project.getLocation().toPortableString(), callback, notifier);
+            final ToolResults result = ex.run(osCommand,
+                    new String[] { getCompileTarget() },
+                    project.getLocation().toPortableString(), callback, notifier);
 
             if (result == null || result.isCommandNotFound()) {
                 MarkerUtils.createProblemMarker(project, null,
@@ -122,9 +122,8 @@ public abstract class ExternalBuilder extends ErlangBuilder {
             public void stderr(final String line) {
             }
         };
-        ex.run(getOsCommand(erlProject), new String[] {
-                getCleanTarget()
-        }, project.getLocation().toPortableString(), callback, notifier);
+        ex.run(getOsCommand(erlProject), new String[] { getCleanTarget() },
+                project.getLocation().toPortableString(), callback, notifier);
         notifier.worked(9);
     }
 

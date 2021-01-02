@@ -17,7 +17,6 @@ import org.osgi.service.prefs.BackingStoreException;
 public class ToolbarFilterHandler extends AbstractHandler implements IElementUpdater {
 
     public ToolbarFilterHandler() {
-        super();
     }
 
     @Override

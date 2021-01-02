@@ -1,5 +1,7 @@
 package org.erlide.engine.model.news;
 
+import java.util.Objects;
+
 import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
 
 /**
@@ -10,7 +12,6 @@ public class ErlangApplicationProperties {
     private final String version;
 
     public ErlangApplicationProperties(final String version) {
-        super();
         this.version = version;
     }
 
@@ -31,11 +32,7 @@ public class ErlangApplicationProperties {
             return false;
         }
         final ErlangApplicationProperties other = (ErlangApplicationProperties) obj;
-        if (version == null) {
-            if (other.version != null) {
-                return false;
-            }
-        } else if (!version.equals(other.version)) {
+        if (!Objects.equals(version, other.version)) {
             return false;
         }
         return true;

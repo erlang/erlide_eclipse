@@ -98,10 +98,8 @@ public class SearchCoreUtil {
                         if (!addOtp) {
                             return false;
                         }
-                    } else {
-                        if (!addExternals) {
-                            return false;
-                        }
+                    } else if (!addExternals) {
+                        return false;
                     }
                     theExternal.open(null);
                 }

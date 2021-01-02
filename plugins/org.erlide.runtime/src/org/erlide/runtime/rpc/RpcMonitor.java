@@ -86,7 +86,7 @@ public class RpcMonitor {
             val = val == null ? new OtpErlangAtom("null") : val;
             String resultString = full ? val.toString().replaceAll("\n|\r", " ") : "...";
             if (resultString.length() > 100) {
-                resultString = new String(resultString.substring(0, 99) + "...");
+                resultString = (resultString.substring(0, 99) + "...");
             }
             out.format(
                     "%30s|%25s:%-20s/%d in=%9d, out=%9d, t=%6d, args=%s -> result=%s%n",

@@ -80,16 +80,12 @@ public abstract class ErlidePreferencePage extends PreferencePage {
                 if (value < 0) {
                     status.setError(MessageFormat.format(
                             ErlEditorMessages.ErlEditorPreferencePage_invalid_input,
-                            (Object[]) new String[] {
-                                    number
-                            }));
+                            (Object[]) new String[] { number }));
                 }
             } catch (final NumberFormatException e) {
                 status.setError(MessageFormat.format(
                         ErlEditorMessages.ErlEditorPreferencePage_invalid_input,
-                        (Object[]) new String[] {
-                                number
-                        }));
+                        (Object[]) new String[] { number }));
             }
         }
         return status;
@@ -133,7 +129,6 @@ public abstract class ErlidePreferencePage extends PreferencePage {
             (Text) e.widget);
 
     public ErlidePreferencePage() {
-        super();
     }
 
     public ErlidePreferencePage(final String title) {

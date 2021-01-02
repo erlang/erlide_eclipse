@@ -813,20 +813,18 @@ public class OtpInputStream extends ByteArrayInputStream {
                 while (b[i] == 0) {
                     i++; // Skip leading zero sign bytes
                 }
-            } else {
-                if (c == 0 || c == -1) { // Leading sign byte
-                    i = 1;
-                    // Skip all leading sign bytes
-                    while (i < b.length && b[i] == c) {
-                        i++;
-                    }
-                    if (i < b.length) {
-                        // Check first non-sign byte to see if its sign
-                        // matches the whole number's sign. If not one more
-                        // byte is needed to represent the value.
-                        if (((c ^ b[i]) & 0x80) != 0) {
-                            i--;
-                        }
+            } else if (c == 0 || c == -1) { // Leading sign byte
+                i = 1;
+                // Skip all leading sign bytes
+                while (i < b.length && b[i] == c) {
+                    i++;
+                }
+                if (i < b.length) {
+                    // Check first non-sign byte to see if its sign
+                    // matches the whole number's sign. If not one more
+                    // byte is needed to represent the value.
+                    if (((c ^ b[i]) & 0x80) != 0) {
+                        i--;
                     }
                 }
             }

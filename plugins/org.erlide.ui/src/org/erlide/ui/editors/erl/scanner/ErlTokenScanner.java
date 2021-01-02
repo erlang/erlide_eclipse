@@ -34,7 +34,6 @@ public abstract class ErlTokenScanner extends BufferedRuleBasedScanner {
     protected final IColorManager fColorManager;
 
     public ErlTokenScanner(final IColorManager colorManager) {
-        super();
         fColorManager = colorManager;
         setTokens();
     }

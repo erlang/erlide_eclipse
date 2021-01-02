@@ -218,9 +218,8 @@ public class ErlangOutlinePage extends ContentOutlinePage
 
         site.registerContextMenu(ErlangCore.PLUGIN_ID + ".outline", manager,
                 fOutlineViewer);
-        fActionGroups = new CompositeActionGroup(new ActionGroup[] {
-                new ErlangSearchActionGroup(this)
-        });
+        fActionGroups = new CompositeActionGroup(
+                new ActionGroup[] { new ErlangSearchActionGroup(this) });
         // register global actions
         final IActionBars actionBars = site.getActionBars();
         actionBars.setGlobalActionHandler(ITextEditorActionConstants.UNDO,

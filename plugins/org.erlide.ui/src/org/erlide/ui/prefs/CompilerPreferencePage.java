@@ -69,7 +69,6 @@ public class CompilerPreferencePage extends PropertyPage
     private Text customOptionsText;
 
     public CompilerPreferencePage() {
-        super();
         setTitle("Compiler options");
         setDescription("Select the compiler options to be used.");
         optionButtons = Lists.newArrayList();
@@ -210,10 +209,8 @@ public class CompilerPreferencePage extends PropertyPage
                 fBlockEnableState.restore();
                 fBlockEnableState = null;
             }
-        } else {
-            if (fBlockEnableState == null) {
-                fBlockEnableState = ControlEnableState.disable(prefsComposite);
-            }
+        } else if (fBlockEnableState == null) {
+            fBlockEnableState = ControlEnableState.disable(prefsComposite);
         }
     }
 
@@ -328,17 +325,16 @@ public class CompilerPreferencePage extends PropertyPage
     private void openProjectProperties(final IProject project) {
         final String id = getPropertyPageID();
         if (id != null) {
-            PreferencesUtil.createPropertyDialogOn(getShell(), project, id, new String[] {
-                    id
-            }, null).open();
+            PreferencesUtil.createPropertyDialogOn(getShell(), project, id,
+                    new String[] { id }, null).open();
         }
     }
 
     protected final void openWorkspacePreferences(final Object data) {
         final String id = getPreferencePageID();
-        PreferencesUtil.createPreferenceDialogOn(getShell(), id, new String[] {
-                id
-        }, data).open();
+        PreferencesUtil
+                .createPreferenceDialogOn(getShell(), id, new String[] { id }, data)
+                .open();
     }
 
     protected String getPreferencePageID() {
@@ -429,9 +425,7 @@ public class CompilerPreferencePage extends PropertyPage
             implements IStructuredContentProvider {
         @Override
         public Object[] getElements(final Object inputElement) {
-            return new Object[] {
-                    "aaa", "vvv"
-            };
+            return new Object[] { "aaa", "vvv" };
         }
 
         @Override

@@ -15,9 +15,7 @@ public class OtpErlangTest {
         final String s = "abcdefg";
         final String ss = s.substring(3, 6);
         final int[] cps = OtpErlangString.stringToCodePoints(ss);
-        final int[] expect = {
-                100, 101, 102
-        };
+        final int[] expect = { 100, 101, 102 };
         assertEquals(Arrays.toString(expect), Arrays.toString(cps));
     }
 }

@@ -20,9 +20,7 @@ public class NavigationPreferencePage extends ErlidePreferencePage
     private final List<Button> buttons = new ArrayList<>();
 
     private void addCheckAllSection(final Composite composite) {
-        final String[] ss = {
-                "Consider all projects on open"
-        };
+        final String[] ss = { "Consider all projects on open" };
         addCheckboxes(composite, ss, buttons);
     }
 
@@ -44,11 +42,8 @@ public class NavigationPreferencePage extends ErlidePreferencePage
     private static final String NAVIGATION_KEY = "erlangNavigation"; //$NON-NLS-1$
     private static final String CHECK_ALL_PROJECTS_KEY = "checkAllProjects"; //$NON-NLS-1$
     private static final String[] NAVIGATION_KEYS = {
-            NavigationPreferencePage.CHECK_ALL_PROJECTS_KEY
-    };
-    private static final String[] NAVIGATION_DEFAULTS = {
-            "1"
-    };
+            NavigationPreferencePage.CHECK_ALL_PROJECTS_KEY };
+    private static final String[] NAVIGATION_DEFAULTS = { "1" };
 
     @Override
     protected void performDefaults() {

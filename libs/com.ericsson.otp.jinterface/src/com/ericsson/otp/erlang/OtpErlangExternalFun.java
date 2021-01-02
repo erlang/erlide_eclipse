@@ -27,7 +27,6 @@ public class OtpErlangExternalFun extends OtpErlangObject {
 
     public OtpErlangExternalFun(final String module, final String function,
             final int arity) {
-        super();
         this.module = module;
         this.function = function;
         this.arity = arity;

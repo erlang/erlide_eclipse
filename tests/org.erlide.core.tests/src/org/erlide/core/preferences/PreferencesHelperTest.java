@@ -15,9 +15,8 @@ import org.osgi.service.prefs.BackingStoreException;
 
 public class PreferencesHelperTest {
 
-    private static final IScopeContext[] ALL_SCOPE_CONTEXTS = {
-            InstanceScope.INSTANCE, ConfigurationScope.INSTANCE, DefaultScope.INSTANCE
-    };
+    private static final IScopeContext[] ALL_SCOPE_CONTEXTS = { InstanceScope.INSTANCE,
+            ConfigurationScope.INSTANCE, DefaultScope.INSTANCE };
     private static final String QUALIFIER = "org.erlide.testing";
     private static final String KEY = "key";
 
@@ -142,9 +141,7 @@ public class PreferencesHelperTest {
     public void byteArray_set() {
         final PreferencesHelper helper = PreferencesHelper
                 .getHelper(PreferencesHelperTest.QUALIFIER);
-        final byte[] val = {
-                1, 3, 5, 7
-        };
+        final byte[] val = { 1, 3, 5, 7 };
         helper.putByteArray(PreferencesHelperTest.KEY, val);
         final byte[] res = helper.getByteArray(PreferencesHelperTest.KEY, null);
         Assert.assertEquals(Arrays.toString(val), Arrays.toString(res));

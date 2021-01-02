@@ -47,9 +47,7 @@ public class HyperlinkDetector extends AbstractHyperlinkDetector {
                     r.getOffset() + r.getLength());
             r = new Region(lineInfo.getOffset() + r.getOffset(), r.getLength());
 
-            return new IHyperlink[] {
-                    new TraceHyperlink(r, text)
-            };
+            return new IHyperlink[] { new TraceHyperlink(r, text) };
         }
         return null;
     }
@@ -98,16 +96,14 @@ public class HyperlinkDetector extends AbstractHyperlinkDetector {
                 arity = Integer.parseInt(
                         function.substring(slash + 1, function.indexOf('-', slash)));
                 function = function.substring(2, slash);
+            } else if (slash < 0) {
+                final int pos = function.indexOf('(');
+                arity = countArgs(function.substring(pos + 1, function.length() - 1));
+                function = function.substring(0, pos);
             } else {
-                if (slash < 0) {
-                    final int pos = function.indexOf('(');
-                    arity = countArgs(function.substring(pos + 1, function.length() - 1));
-                    function = function.substring(0, pos);
-                } else {
-                    final String args = function.substring(slash + 1);
-                    arity = Integer.parseInt(args);
-                    function = function.substring(0, slash);
-                }
+                final String args = function.substring(slash + 1);
+                arity = Integer.parseInt(args);
+                function = function.substring(0, slash);
             }
 
             try {
@@ -130,7 +126,7 @@ public class HyperlinkDetector extends AbstractHyperlinkDetector {
                 return n;
             }
             final char c = args.charAt(i++);
-            if ((c == '[') || (c == '{')) {
+            if (c == '[' || c == '{') {
                 return countArgs(args, i, n, p + 1);
             } else if (c == '}') {
                 return countArgs(args, i, n, p - 1);

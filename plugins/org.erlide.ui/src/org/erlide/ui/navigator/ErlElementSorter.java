@@ -32,12 +32,10 @@ public class ErlElementSorter extends ViewerComparator {
 
     @SuppressWarnings("deprecation")
     public ErlElementSorter() {
-        super();
     }
 
     @SuppressWarnings("deprecation")
     public ErlElementSorter(final int how) {
-        super();
         this.how = how;
     }
 

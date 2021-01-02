@@ -59,9 +59,9 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
 
         public static RuntimeVersion parseNew(final String version, final String aMicro) {
             final int major;
-            int minor = 0;
-            int micro = 0;
-            String update_level = null;
+            int minor;
+            int micro;
+            String update_level;
 
             final Pattern p = Pattern.compile("(\\d+)(\\.\\d+)?(\\.\\d+)?([\\._-].+)?");
             final Matcher m = p.matcher(version);

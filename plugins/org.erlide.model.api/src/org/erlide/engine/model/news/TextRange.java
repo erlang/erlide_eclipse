@@ -1,5 +1,7 @@
 package org.erlide.engine.model.news;
 
+import java.util.Objects;
+
 import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
 
 @SuppressWarnings("all")
@@ -9,17 +11,13 @@ public class TextRange {
     private final int length;
 
     public TextRange(final int offset, final int length) {
-        super();
         this.offset = offset;
         this.length = length;
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + offset;
-        return prime * result + length;
+        return Objects.hash(offset, length);
     }
 
     @Override

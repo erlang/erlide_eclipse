@@ -137,7 +137,6 @@ public class ListDialogField<Element> extends DialogField {
      */
     public ListDialogField(final IListAdapter<Element> adapter,
             final String[] buttonLabels, final ILabelProvider lprovider) {
-        super();
         fListAdapter = adapter;
 
         fLabelProvider = lprovider;
@@ -275,9 +274,7 @@ public class ListDialogField<Element> extends DialogField {
         gd.horizontalSpan = 1;
         buttons.setLayoutData(gd);
 
-        return new Control[] {
-                label, list, buttons
-        };
+        return new Control[] { label, list, buttons };
     }
 
     /*
@@ -732,10 +729,8 @@ public class ListDialogField<Element> extends DialogField {
             if (arr.length > 0) {
                 element = arr[0];
             }
-        } else {
-            if (!fElements.isEmpty()) {
-                element = fElements.get(0);
-            }
+        } else if (!fElements.isEmpty()) {
+            element = fElements.get(0);
         }
         if (element != null) {
             selectElements(new StructuredSelection(element));

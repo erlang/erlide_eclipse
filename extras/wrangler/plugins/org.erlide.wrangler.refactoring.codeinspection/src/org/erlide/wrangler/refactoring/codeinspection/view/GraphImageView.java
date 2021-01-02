@@ -111,12 +111,8 @@ public class GraphImageView extends ViewPart {
                     SWT.SAVE);
             fileChooser.setText("Save .dot file");
             fileChooser.setFilterPath("");
-            fileChooser.setFilterExtensions(new String[] {
-                    "*.dot"
-            });
-            fileChooser.setFilterNames(new String[] {
-                    "Graphviz file " + " (dot)"
-            });
+            fileChooser.setFilterExtensions(new String[] { "*.dot" });
+            fileChooser.setFilterNames(new String[] { "Graphviz file " + " (dot)" });
             final String filename = fileChooser.open();
             if (filename != null) {
                 try {

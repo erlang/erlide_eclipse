@@ -360,7 +360,6 @@ public class ErlideDebug {
         } catch (final RpcException e) {
             // ignore, we're already closing
         }
-        return;
     }
 
     public static OtpErlangList nodes(final IOtpRpc backend) {

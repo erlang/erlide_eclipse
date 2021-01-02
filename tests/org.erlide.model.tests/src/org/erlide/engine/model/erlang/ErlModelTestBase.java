@@ -20,9 +20,7 @@ public class ErlModelTestBase {
         final IErlProject project1 = ErlideTestUtils.createErlProject(name1);
         final String name2 = "testproject2";
         final IErlProject project2 = ErlideTestUtils.createErlProject(name2);
-        ErlModelTestBase.projects = new IErlProject[] {
-                project1, project2
-        };
+        ErlModelTestBase.projects = new IErlProject[] { project1, project2 };
     }
 
     @BeforeClass

@@ -1,5 +1,7 @@
 package org.erlide.engine.model.builder;
 
+import java.util.Objects;
+
 import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
 
 @SuppressWarnings("all")
@@ -11,7 +13,6 @@ public class ProblemData0 {
     private final int arity;
 
     public ProblemData0(final String tag, final String message, final int arity) {
-        super();
         this.tag = tag;
         this.message = message;
         this.arity = arity;
@@ -19,11 +20,7 @@ public class ProblemData0 {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (tag == null ? 0 : tag.hashCode());
-        result = prime * result + (message == null ? 0 : message.hashCode());
-        return prime * result + arity;
+        return Objects.hash(tag, message, arity);
     }
 
     @Override
@@ -38,18 +35,10 @@ public class ProblemData0 {
             return false;
         }
         final ProblemData0 other = (ProblemData0) obj;
-        if (tag == null) {
-            if (other.tag != null) {
-                return false;
-            }
-        } else if (!tag.equals(other.tag)) {
+        if (!Objects.equals(tag, other.tag)) {
             return false;
         }
-        if (message == null) {
-            if (other.message != null) {
-                return false;
-            }
-        } else if (!message.equals(other.message)) {
+        if (!Objects.equals(message, other.message)) {
             return false;
         }
         if (other.arity != arity) {

@@ -71,9 +71,7 @@ public final class Util {
      * substitution locations with the given string.
      */
     public static String bind(final String id, final String binding) {
-        return Util.bind(id, new String[] {
-                binding
-        });
+        return Util.bind(id, new String[] { binding });
     }
 
     /**
@@ -82,9 +80,7 @@ public final class Util {
      */
     public static String bind(final String id, final String binding1,
             final String binding2) {
-        return Util.bind(id, new String[] {
-                binding1, binding2
-        });
+        return Util.bind(id, new String[] { binding1, binding2 });
     }
 
     /**
@@ -431,7 +427,6 @@ public final class Util {
                 return l.stringValue();
             } catch (final OtpErlangException e) {
                 ErlLogger.error(e);
-                return null;
             }
         } else if (o instanceof OtpErlangBinary) {
             final OtpErlangBinary b = (OtpErlangBinary) o;

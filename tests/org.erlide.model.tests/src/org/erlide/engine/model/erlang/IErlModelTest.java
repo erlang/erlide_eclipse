@@ -286,9 +286,8 @@ public class IErlModelTest extends ErlModelTestBase {
             final IErlModule z3 = model.findIncludeFromModule(module, zz, null,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IProjectDescription description = workspaceProject.getDescription();
-            description.setReferencedProjects(new IProject[] {
-                    project1.getWorkspaceProject()
-            });
+            description.setReferencedProjects(
+                    new IProject[] { project1.getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
             myProject.open(null);
             final IErlModule z4 = model.findIncludeFromModule(module, zz, null,
@@ -394,9 +393,8 @@ public class IErlModelTest extends ErlModelTestBase {
             final IErlModule z3 = model.findModuleFromProject(aProject, zz, null,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IProjectDescription description = workspaceProject.getDescription();
-            description.setReferencedProjects(new IProject[] {
-                    project1.getWorkspaceProject()
-            });
+            description.setReferencedProjects(
+                    new IProject[] { project1.getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
             aProject.open(null);
             final IErlModule z4 = model.findModuleFromProject(aProject, zz, null,
@@ -474,9 +472,8 @@ public class IErlModelTest extends ErlModelTestBase {
             final IErlModule zz3 = model.findModuleFromProject(aProject, zz, null,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IProjectDescription description = workspaceProject.getDescription();
-            description.setReferencedProjects(new IProject[] {
-                    project1.getWorkspaceProject()
-            });
+            description.setReferencedProjects(
+                    new IProject[] { project1.getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
             aProject.open(null);
             final IErlModule zz4 = model.findModuleFromProject(aProject, zz, null,
@@ -569,9 +566,8 @@ public class IErlModelTest extends ErlModelTestBase {
             final IErlModule z3 = model.findIncludeFromProject(aProject, zz, null,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IProjectDescription description = workspaceProject.getDescription();
-            description.setReferencedProjects(new IProject[] {
-                    project1.getWorkspaceProject()
-            });
+            description.setReferencedProjects(
+                    new IProject[] { project1.getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
             aProject.open(null);
             final IErlModule z4 = model.findIncludeFromProject(aProject, zz, null,
@@ -644,9 +640,8 @@ public class IErlModelTest extends ErlModelTestBase {
             final IErlModule x3 = model.findIncludeFromProject(aProject, xx, null,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IProjectDescription description = workspaceProject.getDescription();
-            description.setReferencedProjects(new IProject[] {
-                    project1.getWorkspaceProject()
-            });
+            description.setReferencedProjects(
+                    new IProject[] { project1.getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
             aProject.open(null);
             final IErlModule x4 = model.findIncludeFromProject(aProject, xx, null,

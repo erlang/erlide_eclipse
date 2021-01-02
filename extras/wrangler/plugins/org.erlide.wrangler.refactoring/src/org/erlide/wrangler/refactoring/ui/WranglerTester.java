@@ -31,7 +31,6 @@ public class WranglerTester extends PropertyTester {
     public boolean test(final Object receiver, final String property, final Object[] args,
             final Object expectedValue) {
         if ("hasQuickCheck".equals(property) || "hasGraphViz".equals(property)) {
-            return true;// GlobalParameters.hasQuickCheck();
         }
 
         return true;

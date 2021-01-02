@@ -239,9 +239,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
             final byte[] bytes = b.binaryValue();
             CharBuffer cb = null;
             if (IndexedErlangValue.looksLikeAscii(bytes)) {
-                final Charset[] css = {
-                        Charsets.UTF_8, Charsets.ISO_8859_1
-                };
+                final Charset[] css = { Charsets.UTF_8, Charsets.ISO_8859_1 };
                 final Charset[] tryCharsets = css;
                 for (final Charset cset : tryCharsets) {
                     final CharsetDecoder cd = cset.newDecoder();

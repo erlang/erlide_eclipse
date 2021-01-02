@@ -137,9 +137,7 @@ public class ErlangProjectProperties {
             _xifexpression = externalModulesFile;
         }
         final String projprefs = _xifexpression;
-        return PreferencesUtils.packArray(new String[] {
-                projprefs, global
-        });
+        return PreferencesUtils.packArray(new String[] { projprefs, global });
     }
 
     public IPath getOutputDir() {
@@ -198,53 +196,26 @@ public class ErlangProjectProperties {
             return false;
         }
         final ErlangProjectProperties other = (ErlangProjectProperties) obj;
-        if (outputDir == null) {
-            if (other.outputDir != null) {
-                return false;
-            }
-        } else if (!outputDir.equals(other.outputDir)) {
+        if (!java.util.Objects.equals(outputDir, other.outputDir)) {
             return false;
         }
-        if (sourceDirs == null) {
-            if (other.sourceDirs != null) {
-                return false;
-            }
-        } else if (!sourceDirs.equals(other.sourceDirs)) {
+        if (!java.util.Objects.equals(sourceDirs, other.sourceDirs)) {
             return false;
         }
-        if (includeDirs == null) {
-            if (other.includeDirs != null) {
-                return false;
-            }
-        } else if (!includeDirs.equals(other.includeDirs)) {
+        if (!java.util.Objects.equals(includeDirs, other.includeDirs)) {
             return false;
         }
-        if (testDirs == null) {
-            if (other.testDirs != null) {
-                return false;
-            }
-        } else if (!testDirs.equals(other.testDirs)) {
+        if (!java.util.Objects.equals(testDirs, other.testDirs)) {
             return false;
         }
-        if (requiredRuntimeVersion == null) {
-            if (other.requiredRuntimeVersion != null) {
-                return false;
-            }
-        } else if (!requiredRuntimeVersion.equals(other.requiredRuntimeVersion)) {
+        if (!java.util.Objects.equals(requiredRuntimeVersion,
+                other.requiredRuntimeVersion)) {
             return false;
         }
-        if (externalIncludesFile == null) {
-            if (other.externalIncludesFile != null) {
-                return false;
-            }
-        } else if (!externalIncludesFile.equals(other.externalIncludesFile)) {
+        if (!java.util.Objects.equals(externalIncludesFile, other.externalIncludesFile)) {
             return false;
         }
-        if (externalModulesFile == null) {
-            if (other.externalModulesFile != null) {
-                return false;
-            }
-        } else if (!externalModulesFile.equals(other.externalModulesFile)) {
+        if (!java.util.Objects.equals(externalModulesFile, other.externalModulesFile)) {
             return false;
         }
         return true;
@@ -252,18 +223,8 @@ public class ErlangProjectProperties {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (outputDir == null ? 0 : outputDir.hashCode());
-        result = prime * result + (sourceDirs == null ? 0 : sourceDirs.hashCode());
-        result = prime * result + (includeDirs == null ? 0 : includeDirs.hashCode());
-        result = prime * result + (testDirs == null ? 0 : testDirs.hashCode());
-        result = prime * result + (requiredRuntimeVersion == null ? 0
-                : requiredRuntimeVersion.hashCode());
-        result = prime * result
-                + (externalIncludesFile == null ? 0 : externalIncludesFile.hashCode());
-        return prime * result
-                + (externalModulesFile == null ? 0 : externalModulesFile.hashCode());
+        return java.util.Objects.hash(outputDir, sourceDirs, includeDirs, testDirs, requiredRuntimeVersion,
+                externalIncludesFile, externalModulesFile);
     }
 
     @Override

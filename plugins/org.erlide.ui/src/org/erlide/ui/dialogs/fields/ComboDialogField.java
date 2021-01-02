@@ -36,7 +36,6 @@ public class ComboDialogField extends DialogField {
     private final int fFlags;
 
     public ComboDialogField(final int flags) {
-        super();
         fText = ""; //$NON-NLS-1$
         fItems = new String[0];
         fFlags = flags;
@@ -57,9 +56,7 @@ public class ComboDialogField extends DialogField {
         final Combo combo = getComboControl(parent);
         combo.setLayoutData(ComboDialogField.gridDataForCombo(nColumns - 1));
 
-        return new Control[] {
-                label, combo
-        };
+        return new Control[] { label, combo };
     }
 
     /*
@@ -209,12 +206,10 @@ public class ComboDialogField extends DialogField {
         if (isOkToUse(fComboControl)) {
             fComboControl.select(index);
             success = fComboControl.getSelectionIndex() == index;
-        } else {
-            if (index >= 0 && index < fItems.length) {
-                fText = fItems[index];
-                fSelectionIndex = index;
-                success = true;
-            }
+        } else if (index >= 0 && index < fItems.length) {
+            fText = fItems[index];
+            fSelectionIndex = index;
+            success = true;
         }
         if (success) {
             dialogFieldChanged();

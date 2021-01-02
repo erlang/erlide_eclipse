@@ -1,5 +1,7 @@
 package org.erlide.engine.services.codeassist;
 
+import java.util.Objects;
+
 import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
 
 @SuppressWarnings("all")
@@ -27,7 +29,6 @@ public class CompletionData {
     public CompletionData(final String displayString, final String replacementString,
             final int replacementOffset, final int replacementLength,
             final int cursorPosition) {
-        super();
         this.displayString = displayString;
         this.replacementString = replacementString;
         this.replacementOffset = replacementOffset;
@@ -37,14 +38,7 @@ public class CompletionData {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (displayString == null ? 0 : displayString.hashCode());
-        result = prime * result
-                + (replacementString == null ? 0 : replacementString.hashCode());
-        result = prime * result + replacementOffset;
-        result = prime * result + replacementLength;
-        return prime * result + cursorPosition;
+        return Objects.hash(displayString, replacementString, replacementOffset, replacementLength, cursorPosition);
     }
 
     @Override
@@ -59,18 +53,10 @@ public class CompletionData {
             return false;
         }
         final CompletionData other = (CompletionData) obj;
-        if (displayString == null) {
-            if (other.displayString != null) {
-                return false;
-            }
-        } else if (!displayString.equals(other.displayString)) {
+        if (!Objects.equals(displayString, other.displayString)) {
             return false;
         }
-        if (replacementString == null) {
-            if (other.replacementString != null) {
-                return false;
-            }
-        } else if (!replacementString.equals(other.replacementString)) {
+        if (!Objects.equals(replacementString, other.replacementString)) {
             return false;
         }
         if (other.replacementOffset != replacementOffset) {

@@ -50,7 +50,7 @@ public enum Images {
 
     private String fileName;
 
-    private Images(final String fileName) {
+    Images(final String fileName) {
         this.fileName = fileName;
     }
 

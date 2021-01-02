@@ -17,7 +17,7 @@ public enum ProcessColumn {
     private final String name;
     private final int width;
 
-    private ProcessColumn(final String name, final int width) {
+    ProcessColumn(final String name, final int width) {
         this.name = name;
         this.width = width;
     }

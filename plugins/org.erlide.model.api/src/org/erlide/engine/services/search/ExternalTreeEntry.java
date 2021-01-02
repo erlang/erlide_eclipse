@@ -9,7 +9,6 @@ public class ExternalTreeEntry {
 
     public ExternalTreeEntry(final IPath parentPath, final IPath path,
             final boolean isModule) {
-        super();
         this.parentPath = parentPath;
         this.path = path;
         this.isModule = isModule;

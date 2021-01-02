@@ -46,9 +46,7 @@ public class VersionLocator {
                 }
             }
             if (!strict) {
-                for (final RuntimeInfo info_2 : runtimes) {
-                    result.add(info_2);
-                }
+                result.addAll(runtimes);
             }
             final Function1<RuntimeInfo, Boolean> _function_1 = (
                     final RuntimeInfo it) -> Boolean.valueOf(it.isValid());

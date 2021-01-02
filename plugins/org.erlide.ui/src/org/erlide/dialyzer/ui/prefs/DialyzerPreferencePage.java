@@ -154,7 +154,6 @@ public class DialyzerPreferencePage extends PropertyPage
     private final List<String> shownPLTFiles;
 
     public DialyzerPreferencePage() {
-        super();
         setTitle("Dialyzer options");
         setDescription("Select the options for dialyzer.");
         shownPLTFiles = Lists.newArrayList();
@@ -356,10 +355,8 @@ public class DialyzerPreferencePage extends PropertyPage
                 fBlockEnableState.restore();
                 fBlockEnableState = null;
             }
-        } else {
-            if (fBlockEnableState == null) {
-                fBlockEnableState = ControlEnableState.disable(prefsComposite);
-            }
+        } else if (fBlockEnableState == null) {
+            fBlockEnableState = ControlEnableState.disable(prefsComposite);
         }
     }
 
@@ -456,17 +453,16 @@ public class DialyzerPreferencePage extends PropertyPage
     private void openProjectProperties(final IProject project) {
         final String id = DialyzerPreferencePage.getPropertyPageID();
         if (id != null) {
-            PreferencesUtil.createPropertyDialogOn(getShell(), project, id, new String[] {
-                    id
-            }, null).open();
+            PreferencesUtil.createPropertyDialogOn(getShell(), project, id,
+                    new String[] { id }, null).open();
         }
     }
 
     protected final void openWorkspacePreferences(final Object data) {
         final String id = DialyzerPreferencePage.getPreferencePageID();
-        PreferencesUtil.createPreferenceDialogOn(getShell(), id, new String[] {
-                id
-        }, data).open();
+        PreferencesUtil
+                .createPreferenceDialogOn(getShell(), id, new String[] { id }, data)
+                .open();
     }
 
     protected static String getPreferencePageID() {
@@ -562,12 +558,8 @@ public class DialyzerPreferencePage extends PropertyPage
         dialog.setText("Select PLT file");
         dialog.setFileName(s);
         dialog.setFilterPath(s);
-        dialog.setFilterNames(new String[] {
-                "Dialyzer PLT file (*.plt)", "Any File"
-        });
-        dialog.setFilterExtensions(new String[] {
-                "*.plt", "*.*"
-        });
+        dialog.setFilterNames(new String[] { "Dialyzer PLT file (*.plt)", "Any File" });
+        dialog.setFilterExtensions(new String[] { "*.plt", "*.*" });
         final String result = dialog.open();
         return result;
     }

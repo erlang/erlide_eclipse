@@ -191,7 +191,6 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
         private List<LiveExpr> exprlist;
 
         public ViewContentProvider() {
-            super();
         }
 
         @Override
@@ -313,9 +312,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
         colValue.setText("Value");
         colValue.setWidth(t.getSize().x - 50);
 
-        viewer.setColumnProperties(new String[] {
-                "expr", "val"
-        });
+        viewer.setColumnProperties(new String[] { "expr", "val" });
 
         viewer.setContentProvider(new ViewContentProvider());
         viewer.setLabelProvider(new ViewLabelProvider());
@@ -329,9 +326,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
         viewer.setInput(exprs);
 
         final TextCellEditor e = new TextCellEditor(t);
-        viewer.setCellEditors(new CellEditor[] {
-                e, null
-        });
+        viewer.setCellEditors(new CellEditor[] { e, null });
         viewer.setCellModifier(new LiveExprCellModifier(this));
 
         makeActions();
@@ -403,7 +398,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
 
         @Override
         public Object getValue(final Object element, final String property) {
-            Object result = null;
+            Object result;
             final LiveExpr el = (LiveExpr) element;
             result = el.fExpr;
             return result;

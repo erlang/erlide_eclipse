@@ -200,8 +200,6 @@ public class ErlangFileContentProvider
     @Override
     public <T> @Nullable T getAdapter(final Class<T> adapter) {
         if (SaveablesProvider.class.equals(adapter)) {
-            // TODO return something useful
-            return null;
         }
         return null;
     }

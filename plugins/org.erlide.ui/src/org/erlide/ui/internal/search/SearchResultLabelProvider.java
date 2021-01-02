@@ -186,8 +186,9 @@ public class SearchResultLabelProvider extends LabelProvider
     @Override
     public StyledString getStyledText(final Object element) {
         final StyledString result = new StyledString();
-        if ((fOrder == SearchResultLabelProvider.SHOW_LABEL_PATH
-                || element instanceof String && isInTree()) || !(fOrder == SearchResultLabelProvider.SHOW_LABEL)) {
+        if (fOrder == SearchResultLabelProvider.SHOW_LABEL_PATH
+                || element instanceof String && isInTree()
+                || (fOrder != SearchResultLabelProvider.SHOW_LABEL)) {
             result.append(getElementText(element));
             result.append(' ');
             result.append(getMatchCountText(element));

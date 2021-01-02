@@ -115,7 +115,7 @@ public class RefactoringHandler extends AbstractHandler {
             return null;
         }
 
-        DefaultWranglerRefactoringWizard wizard = null;
+        DefaultWranglerRefactoringWizard wizard;
         WranglerRefactoring refactoring = null;
         final String actionId = event.getCommand().getId();
 
@@ -457,7 +457,6 @@ public class RefactoringHandler extends AbstractHandler {
 
                     }
                 }
-                return true;
             }
         }
         return true;

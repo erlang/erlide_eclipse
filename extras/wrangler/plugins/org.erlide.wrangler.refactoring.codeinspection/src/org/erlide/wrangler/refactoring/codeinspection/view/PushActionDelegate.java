@@ -54,13 +54,10 @@ public class PushActionDelegate implements IViewActionDelegate {
         }
         if ("toolbar.zoomin".equals(myId)) {
             imageCanvas.zoomIn();
-            return;
         } else if ("toolbar.zoomout".equals(myId)) {
             imageCanvas.zoomOut();
-            return;
         } else if ("toolbar.fit".equals(myId)) {
             imageCanvas.fitCanvas();
-            return;
         } else if ("toolbar.rotate".equals(myId)) {
             /* rotate image anti-clockwise */
             final ImageData src = imageCanvas.getImageData();
@@ -86,10 +83,8 @@ public class PushActionDelegate implements IViewActionDelegate {
                 }
             }
             imageCanvas.setImageData(dest);
-            return;
         } else if ("toolbar.original".equals(myId)) {
             imageCanvas.showOriginal();
-            return;
         }
     }
 

@@ -165,10 +165,8 @@ public class TraceBackend {
                                 final OtpErlangAtom cookie = new OtpErlangAtom(
                                         tracedNode.getCookie());
 
-                                erlangObjects
-                                        .add(new OtpErlangTuple(new OtpErlangObject[] {
-                                                name, cookie
-                                        }));
+                                erlangObjects.add(new OtpErlangTuple(
+                                        new OtpErlangObject[] { name, cookie }));
                                 notActivatedNodes.add(tracedNode.getNodeName());
                             }
                         }

@@ -206,9 +206,7 @@ public class ErlideTestUtils {
         }
         final IPath stateDir = new Path(ErlangEngine.getInstance().getStateDir());
         // FIXME this code should not know about caches!
-        final String cacheExts[] = {
-                ".noparse", ".refs", ".scan"
-        };
+        final String cacheExts[] = { ".noparse", ".refs", ".scan" };
         for (final String ext : cacheExts) {
             final IPath p = stateDir.append(scannerName + ext);
             final File f = new File(p.toOSString());
@@ -232,9 +230,7 @@ public class ErlideTestUtils {
         project.create(null);
         project.open(null);
         final IProjectDescription description = project.getDescription();
-        description.setNatureIds(new String[] {
-                nature
-        });
+        description.setNatureIds(new String[] { nature });
         description.setName(name);
         project.setDescription(description, null);
 
@@ -448,9 +444,7 @@ public class ErlideTestUtils {
     public static IPath[] splitPathAfter(final int i, final IPath p) {
         final IPath last = p.removeFirstSegments(i);
         final IPath first = p.removeLastSegments(p.segmentCount() - i);
-        return new IPath[] {
-                first, last
-        };
+        return new IPath[] { first, last };
     }
 
     public static void refreshProjects() {

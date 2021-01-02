@@ -596,7 +596,8 @@ public class ErlangDebugTarget extends ErlangDebugElement
         @SuppressWarnings("rawtypes")
         Enumeration beams = bundle.findEntries(path, "*.beam", false);
         if (beams == null) {
-            ErlLogger.warn("No beams found in %s for version %s, using default!", bundle, ver);
+            ErlLogger.warn("No beams found in %s for version %s, using default!", bundle,
+                    ver);
         }
         beams = bundle.findEntries("/ebin", "*.beam", false);
         if (beams == null) {

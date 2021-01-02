@@ -90,9 +90,7 @@ public class ProjectCreator {
                 op1.execute(monitor, notifier);
 
                 newProjectHandle.open(monitor);
-                description.setNatureIds(new String[] {
-                        ErlangCore.NATURE_ID
-                });
+                description.setNatureIds(new String[] { ErlangCore.NATURE_ID });
                 newProjectHandle.setDescription(description, null);
 
                 final BuilderTool builder = info.getBuilder();

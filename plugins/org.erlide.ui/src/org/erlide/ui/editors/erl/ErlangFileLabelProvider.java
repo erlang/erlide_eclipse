@@ -16,7 +16,6 @@ public class ErlangFileLabelProvider extends LabelProvider
     private final NavigatorProblemsDecorator fProblemDecorator;
 
     public ErlangFileLabelProvider() {
-        super();
         fProblemDecorator = new NavigatorProblemsDecorator();
     }
 

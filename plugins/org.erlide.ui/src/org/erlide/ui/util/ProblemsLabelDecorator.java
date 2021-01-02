@@ -99,7 +99,6 @@ public class ProblemsLabelDecorator
             }
         } catch (final CoreException e) {
             if (e.getStatus().getCode() == IResourceStatus.MARKER_NOT_FOUND) {
-                return 0;
             }
         }
         return 0;

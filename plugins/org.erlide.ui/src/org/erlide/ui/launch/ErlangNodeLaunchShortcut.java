@@ -162,7 +162,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         final ILaunchConfigurationType launchConfigurationType = launchManager
                 .getLaunchConfigurationType(
                         IErlangLaunchDelegateConstants.CONFIGURATION_TYPE);
-        ILaunchConfigurationWorkingCopy wc = null;
+        ILaunchConfigurationWorkingCopy wc;
         wc = launchConfigurationType.newInstance(null, name);
         wc.setAttribute(ErlRuntimeAttributes.PROJECTS, ListsUtils.packList(projectNames,
                 ErlangNodeLaunchShortcut.PROJECT_NAME_SEPARATOR));

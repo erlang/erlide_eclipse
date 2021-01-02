@@ -214,8 +214,8 @@ public class OtpErlangRef extends OtpErlangObject {
     public String toString() {
         String s = "#Ref<" + node;
 
-        for (int i = 0; i < ids.length; i++) {
-            s += "." + ids[i];
+        for (final int id : ids) {
+            s += "." + id;
         }
 
         s += ">";
@@ -252,7 +252,7 @@ public class OtpErlangRef extends OtpErlangObject {
 
         final OtpErlangRef ref = (OtpErlangRef) o;
 
-        if (!(node.equals(ref.node()) && creation == ref.creation())) {
+        if ((!node.equals(ref.node()) || (creation != ref.creation()))) {
             return false;
         }
 

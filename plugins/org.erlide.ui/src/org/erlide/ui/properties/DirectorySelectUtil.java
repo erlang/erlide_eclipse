@@ -29,9 +29,7 @@ public class DirectorySelectUtil {
             final String labelText, final IProject project2, final String outputLocation,
             final Shell shell) {
         final IWorkspaceRoot root = project2.getWorkspace().getRoot();
-        final Class<?>[] acceptedClasses = new Class[] {
-                IProject.class, IFolder.class
-        };
+        final Class<?>[] acceptedClasses = new Class[] { IProject.class, IFolder.class };
         final IProject[] allProjects = root.getProjects();
         final List<IProject> rejectedElements = new ArrayList<>(allProjects.length);
         for (final IProject allProject : allProjects) {

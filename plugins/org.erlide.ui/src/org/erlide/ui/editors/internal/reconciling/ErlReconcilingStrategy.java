@@ -37,7 +37,6 @@ public class ErlReconcilingStrategy
     @Override
     public void setDocument(final IDocument document) {
         if (fEditor == null) {
-            return;
         }
         // fDoc = document;
     }

@@ -18,13 +18,11 @@ public class ErlangFunction {
      * @param arity
      */
     public ErlangFunction(final String name, final int arity) {
-        super();
         this.name = name;
         this.arity = arity;
     }
 
     public ErlangFunction(final String name) {
-        super();
         this.name = name;
         arity = ErlangFunction.ANY_ARITY;
     }
@@ -87,9 +85,8 @@ public class ErlangFunction {
     }
 
     public OtpErlangTuple getNameArityTuple() {
-        return new OtpErlangTuple(new OtpErlangObject[] {
-                new OtpErlangAtom(name), new OtpErlangLong(arity)
-        });
+        return new OtpErlangTuple(new OtpErlangObject[] { new OtpErlangAtom(name),
+                new OtpErlangLong(arity) });
     }
 
     public static String getNameWithParameters(final String name, final int arity) {

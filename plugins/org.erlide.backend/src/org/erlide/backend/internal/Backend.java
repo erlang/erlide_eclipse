@@ -150,7 +150,8 @@ public class Backend implements IStreamListener, IBackend {
     @Override
     public void streamAppended(final String text, final IStreamMonitor monitor) {
         final IStreamsProxy proxy = getStreamsProxy();
-        if ((monitor == proxy.getOutputStreamMonitor()) || (monitor == proxy.getErrorStreamMonitor())) {
+        if (monitor == proxy.getOutputStreamMonitor()
+                || monitor == proxy.getErrorStreamMonitor()) {
             // System.out.println(getName() + " OUT " + text);
         } else {
             // System.out.println("???" + text);

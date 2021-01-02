@@ -34,7 +34,7 @@ public class DialyzerBuilder {
         if (project == null) {
             return;
         }
-        DialyzerPreferences prefs = null;
+        DialyzerPreferences prefs;
         prefs = DialyzerPreferences.get(project);
         if (prefs == null || !prefs.getDialyzeOnCompile()) {
             return;

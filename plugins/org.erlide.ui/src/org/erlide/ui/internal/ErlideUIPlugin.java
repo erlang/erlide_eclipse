@@ -104,7 +104,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     private static final String CUSTOM_TEMPLATES_KEY = "org.erlide.ui.editor.customtemplates"; //$NON-NLS-1$
 
     public ErlideUIPlugin() {
-        super();
         ErlideUIPlugin.plugin = this;
         try {
             resourceBundle = ResourceBundle

@@ -133,7 +133,7 @@ public class HostnameChecker {
         }
         final Function0<String> _function = () -> longName;
         final Function0<String> _function_1 = () -> retriever.getErlangHostName(true);
-        final Function0<String> _function_2 = () -> getJavaLongHostName();
+        final Function0<String> _function_2 = this::getJavaLongHostName;
         final Function0<String> _function_3 = () -> HostnameChecker.longNameFallback;
         final Iterable<Function0<? extends String>> longValues = Collections
                 .<Function0<? extends String>> unmodifiableList(
@@ -144,7 +144,7 @@ public class HostnameChecker {
         longName = findFirstValue(longValues, _function_4);
         final Function0<String> _function_5 = () -> shortName;
         final Function0<String> _function_6 = () -> retriever.getErlangHostName(false);
-        final Function0<String> _function_7 = () -> getJavaShortHostName();
+        final Function0<String> _function_7 = this::getJavaShortHostName;
         final Function0<String> _function_8 = () -> HostnameChecker.shortNameFallback;
         final Iterable<Function0<? extends String>> shortValues = Collections
                 .<Function0<? extends String>> unmodifiableList(
@@ -172,12 +172,12 @@ public class HostnameChecker {
                     otpHome);
             final Function0<String> _function = () -> p.getProperty("long", "");
             final Function0<String> _function_1 = () -> retriever.getErlangHostName(true);
-            final Function0<String> _function_2 = () -> getJavaLongHostName();
+            final Function0<String> _function_2 = this::getJavaLongHostName;
             final Function0<String> _function_3 = () -> HostnameChecker.longNameFallback;
             final Function0<String> _function_4 = () -> p.getProperty("short", "");
             final Function0<String> _function_5 = () -> retriever
                     .getErlangHostName(false);
-            final Function0<String> _function_6 = () -> getJavaShortHostName();
+            final Function0<String> _function_6 = this::getJavaShortHostName;
             final Function0<String> _function_7 = () -> HostnameChecker.shortNameFallback;
             _xblockexpression = Collections
                     .<List<Function0<? extends String>>> unmodifiableList(
@@ -263,12 +263,9 @@ public class HostnameChecker {
             boolean loaded = false;
             try {
                 final File f = new File(hostsFileName);
-                final FileInputStream is = new FileInputStream(f);
-                try {
+                try (FileInputStream is = new FileInputStream(f)) {
                     props.load(is);
                     loaded = true;
-                } finally {
-                    is.close();
                 }
             } catch (final Throwable _t) {
                 if (_t instanceof Exception) {
@@ -290,11 +287,8 @@ public class HostnameChecker {
             try {
                 final String _hostsFileName = getHostsFileName();
                 final File f = new File(_hostsFileName);
-                final FileInputStream is = new FileInputStream(f);
-                try {
+                try (FileInputStream is = new FileInputStream(f)) {
                     props.load(is);
-                } finally {
-                    is.close();
                 }
             } catch (final Throwable _t) {
                 if (_t instanceof Exception) {
@@ -314,11 +308,8 @@ public class HostnameChecker {
             props.put("short", shortName);
             final String _hostsFileName = getHostsFileName();
             final File f = new File(_hostsFileName);
-            final OutputStream out = new FileOutputStream(f);
-            try {
+            try (OutputStream out = new FileOutputStream(f)) {
                 props.store(out, null);
-            } finally {
-                out.close();
             }
             ErlLogger.debug("  # written to %s", getHostsFileName());
         } catch (final Throwable _t) {

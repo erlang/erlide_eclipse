@@ -9,7 +9,7 @@ public enum ErlangCoreOptions {
 
     private String value;
 
-    private ErlangCoreOptions(final String value) {
+    ErlangCoreOptions(final String value) {
         this.value = value;
     }
 

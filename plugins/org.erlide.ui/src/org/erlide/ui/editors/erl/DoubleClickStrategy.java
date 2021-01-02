@@ -53,10 +53,8 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
         final IRegion region = fPairMatcher.match(document, offset);
         if (region != null && region.getLength() >= 2) {
             part.setSelectedRange(region.getOffset(), region.getLength());
-        } else {
-            if (!selectComment(offset)) {
-                selectWord(offset);
-            }
+        } else if (!selectComment(offset)) {
+            selectWord(offset);
         }
     }
 

@@ -37,9 +37,7 @@ public class CompositeActionGroup extends ActionGroup {
 
     public void addGroup(final ActionGroup group) {
         if (fGroups == null) {
-            fGroups = new ActionGroup[] {
-                    group
-            };
+            fGroups = new ActionGroup[] { group };
         } else {
             final ActionGroup[] newGroups = new ActionGroup[fGroups.length + 1];
             System.arraycopy(fGroups, 0, newGroups, 0, fGroups.length);

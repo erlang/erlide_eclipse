@@ -44,11 +44,8 @@ public class FileUtils {
     public static void copy(final File src, final File dest) {
         try {
             final byte[] srcBytes = FileUtils.read(src);
-            final FileOutputStream out = new FileOutputStream(dest);
-            try {
+            try (FileOutputStream out = new FileOutputStream(dest)) {
                 out.write(srcBytes);
-            } finally {
-                out.close();
             }
         } catch (final Throwable _e) {
             throw Exceptions.sneakyThrow(_e);

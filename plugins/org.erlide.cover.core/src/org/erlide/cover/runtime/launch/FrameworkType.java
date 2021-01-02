@@ -16,7 +16,7 @@ public enum FrameworkType {
 
     private final String fullRepr;
 
-    private FrameworkType(final String str) {
+    FrameworkType(final String str) {
         fullRepr = str;
     }
 

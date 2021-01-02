@@ -17,7 +17,6 @@ public abstract class ErlideEvent {
     public abstract String print();
 
     public ErlideEvent(final long timestamp) {
-        super();
         this.timestamp = timestamp;
     }
 
