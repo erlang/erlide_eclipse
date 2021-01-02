@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 BASE=$(dirname $0)
 ROOT=$1
@@ -59,6 +59,6 @@ CRTVER=${CRTVER%$suffix}
 
 NEWVER=$(inc_version $CRTVER $BUMP)
 
-releng/set-versions.sh $ROOT $NEWVER
+$BASE/set-versions.sh $ROOT $NEWVER
 
 popd > /dev/null
