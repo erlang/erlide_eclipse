@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -24,9 +24,8 @@ public class OtpErlangPort extends OtpErlangObject {
     // don't change this!
     private static final long serialVersionUID = 4037115468007644704L;
 
-    private final int tag;
     private final String node;
-    private final int id;
+    private final long id;
     private final int creation;
 
     /*
@@ -41,7 +40,6 @@ public class OtpErlangPort extends OtpErlangObject {
     private OtpErlangPort(final OtpSelf self) {
         final OtpErlangPort p = self.createPort();
 
-        tag = p.tag;
         id = p.id;
         creation = p.creation;
         node = p.node;
@@ -61,7 +59,6 @@ public class OtpErlangPort extends OtpErlangObject {
     public OtpErlangPort(final OtpInputStream buf) throws OtpErlangDecodeException {
         final OtpErlangPort p = buf.read_port();
 
-        tag = p.tag;
         node = p.node();
         id = p.id();
         creation = p.creation();
@@ -79,7 +76,7 @@ public class OtpErlangPort extends OtpErlangObject {
      * @param creation
      *            another arbitrary number. Only the low order 2 bits will be used.
      */
-    public OtpErlangPort(final String node, final int id, final int creation) {
+    public OtpErlangPort(final String node, final long id, final int creation) {
         this(OtpExternal.portTag, node, id, creation);
     }
 
@@ -100,9 +97,8 @@ public class OtpErlangPort extends OtpErlangObject {
      * @param creation
      *            another arbitrary number.
      */
-    public OtpErlangPort(final int tag, final String node, final int id,
+    public OtpErlangPort(final int tag, final String node, final long id,
             final int creation) {
-        this.tag = tag;
         this.node = node;
         if (tag == OtpExternal.portTag) {
             this.id = id & 0xfffffff; // 28 bits
@@ -114,7 +110,7 @@ public class OtpErlangPort extends OtpErlangObject {
     }
 
     protected int tag() {
-        return tag;
+        return OtpExternal.newPortTag;
     }
 
     /**
@@ -122,7 +118,7 @@ public class OtpErlangPort extends OtpErlangObject {
      *
      * @return the id number from the port.
      */
-    public int id() {
+    public long id() {
         return id;
     }
 
@@ -190,7 +186,8 @@ public class OtpErlangPort extends OtpErlangObject {
     protected int doHashCode() {
         final OtpErlangObject.Hash hash = new OtpErlangObject.Hash(6);
         hash.combine(creation);
-        hash.combine(id, node.hashCode());
+        hash.combine(id);
+        hash.combine(node.hashCode());
         return hash.valueOf();
     }
 }

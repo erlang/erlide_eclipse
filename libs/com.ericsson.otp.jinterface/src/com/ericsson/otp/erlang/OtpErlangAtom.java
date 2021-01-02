@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2013. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -45,9 +45,9 @@ public class OtpErlangAtom extends OtpErlangObject {
             throw new java.lang.IllegalArgumentException("null string value");
         }
 
-        if (atom.codePointCount(0, atom.length()) > OtpErlangAtom.maxAtomLength) {
-            throw new java.lang.IllegalArgumentException("Atom may not exceed "
-                    + OtpErlangAtom.maxAtomLength + " characters: " + atom);
+        if (atom.codePointCount(0, atom.length()) > maxAtomLength) {
+            throw new java.lang.IllegalArgumentException(
+                    "Atom may not exceed " + maxAtomLength + " characters: " + atom);
         }
         this.atom = atom;
     }
@@ -94,7 +94,7 @@ public class OtpErlangAtom extends OtpErlangObject {
      *
      */
     public boolean booleanValue() {
-        return Boolean.valueOf(atomValue());
+        return Boolean.valueOf(atomValue()).booleanValue();
     }
 
     /**
@@ -170,7 +170,7 @@ public class OtpErlangAtom extends OtpErlangObject {
     private boolean atomNeedsQuoting(final String s) {
         char c;
 
-        if (s.isEmpty()) {
+        if (s.length() == 0) {
             return true;
         }
         if (!isErlangLower(s.charAt(0))) {

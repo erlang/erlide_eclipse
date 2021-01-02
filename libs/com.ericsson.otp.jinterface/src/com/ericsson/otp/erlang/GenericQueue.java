@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -41,7 +41,7 @@ public class GenericQueue {
     /** Create an empty queue */
     public GenericQueue() {
         init();
-        status = GenericQueue.open;
+        status = open;
     }
 
     /** Clear a queue */
@@ -50,7 +50,7 @@ public class GenericQueue {
     }
 
     public void close() {
-        status = GenericQueue.closing;
+        status = closing;
     }
 
     /**
@@ -105,7 +105,7 @@ public class GenericQueue {
      * @return The object at the head of the queue, or null if none arrived in time.
      */
     public synchronized Object get(final long timeout) throws InterruptedException {
-        if (status == GenericQueue.closed) {
+        if (status == closed) {
             return null;
         }
 

@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -386,11 +386,7 @@ public class OtpConnection extends AbstractConnection {
      * the following message and sends it to 'rex' on the remote node:
      *
      * <pre>
-     * {
-     *         self, {
-     *                 call, Mod, Fun, Args, user
-     *         }
-     * }
+     * { self, { call, Mod, Fun, Args, user } }
      * </pre>
      *
      * <p>
@@ -418,11 +414,7 @@ public class OtpConnection extends AbstractConnection {
      * the following message and sends it to 'rex' on the remote node:
      *
      * <pre>
-     * {
-     *         self, {
-     *                 call, Mod, Fun, Args, user
-     *         }
-     * }
+     * { self, { call, Mod, Fun, Args, user } }
      * </pre>
      *
      * <p>
@@ -465,9 +457,7 @@ public class OtpConnection extends AbstractConnection {
      * format:
      *
      * <pre>
-     * {
-     *         rex, Term
-     * }
+     * { rex, Term }
      * </pre>
      *
      * @return the second element of the tuple if the received message is a two-tuple,

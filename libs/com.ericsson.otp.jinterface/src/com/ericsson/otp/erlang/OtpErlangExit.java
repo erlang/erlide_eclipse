@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -33,8 +33,8 @@ package com.ericsson.otp.erlang;
 public class OtpErlangExit extends OtpErlangException {
     private static final long serialVersionUID = 1L;
 
-    OtpErlangObject reason;
-    OtpErlangPid pid;
+    OtpErlangObject reason = null;
+    OtpErlangPid pid = null;
 
     /**
      * Create an OtpErlangExit exception with the given reason.

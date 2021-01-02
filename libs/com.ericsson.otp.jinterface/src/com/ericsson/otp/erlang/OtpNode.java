@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2012. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * <p>
@@ -56,22 +55,22 @@ import java.util.Map;
  * </p>
  */
 public class OtpNode extends OtpLocalNode {
-    private boolean initDone;
+    private boolean initDone = false;
 
     // thread to manage incoming connections
-    private Acceptor acceptor;
+    private Acceptor acceptor = null;
 
     // keep track of all connections
-    Map<String, OtpCookedConnection> connections;
+    Hashtable<String, OtpCookedConnection> connections = null;
 
     // keep track of all mailboxes
-    Mailboxes mboxes;
+    Mailboxes mboxes = null;
 
     // handle status changes
     OtpNodeStatus handler;
 
     // flags
-    private int connFlags;
+    private int connFlags = 0;
 
     /**
      * <p>
@@ -222,7 +221,7 @@ public class OtpNode extends OtpLocalNode {
 
     private synchronized void init(final int aport) throws IOException {
         if (!initDone) {
-            connections = new Hashtable<>(17, 0.95f);
+            connections = new Hashtable<>(17, (float) 0.95);
             mboxes = new Mailboxes();
             acceptor = new Acceptor(aport);
             initDone = true;
@@ -431,8 +430,10 @@ public class OtpNode extends OtpLocalNode {
      * the reply: <- SEND {2,'',#Pid<bingo@aule.1.0>} {#Ref<bingo@aule.2>,yes}
      */
     public boolean ping(final String anode, final long timeout) {
-        if (anode.equals(node) || (anode.indexOf('@', 0) < 0
-                && anode.equals(node.substring(0, node.indexOf('@', 0))))) {
+        if (anode.equals(node)) {
+            return true;
+        } else if (anode.indexOf('@', 0) < 0
+                && anode.equals(node.substring(0, node.indexOf('@', 0)))) {
             return true;
         }
 
@@ -512,7 +513,7 @@ public class OtpNode extends OtpLocalNode {
             if (t == OtpMsg.regSendTag) {
                 final String name = m.getRecipientName();
                 /* special case for netKernel requests */
-                if ("net_kernel".equals(name)) {
+                if (name.equals("net_kernel")) {
                     return netKernel(m);
                 }
                 mbox = mboxes.get(name);
@@ -623,13 +624,13 @@ public class OtpNode extends OtpLocalNode {
      */
     public class Mailboxes {
         // mbox pids here
-        private final Map<OtpErlangPid, WeakReference<OtpMbox>> byPid;
+        private Hashtable<OtpErlangPid, WeakReference<OtpMbox>> byPid = null;
         // mbox names here
-        private final Hashtable<String, WeakReference<OtpMbox>> byName;
+        private Hashtable<String, WeakReference<OtpMbox>> byName = null;
 
         public Mailboxes() {
-            byPid = new Hashtable<>(17, 0.95f);
-            byName = new Hashtable<>(17, 0.95f);
+            byPid = new Hashtable<>(17, (float) 0.95);
+            byName = new Hashtable<>(17, (float) 0.95);
         }
 
         public OtpMbox create(final String name) {
@@ -743,7 +744,7 @@ public class OtpNode extends OtpLocalNode {
     public class Acceptor extends Thread {
         private final OtpServerTransport sock;
         private final int acceptorPort;
-        private volatile boolean done;
+        private volatile boolean done = false;
 
         Acceptor(final int port) throws IOException {
             sock = createServerTransport(port);
@@ -834,10 +835,18 @@ public class OtpNode extends OtpLocalNode {
                         addConnection(conn);
                     }
                 } catch (final OtpAuthException e) {
-                    connAttempt("unknown", true, e);
+                    if (conn != null && conn.name != null) {
+                        connAttempt(conn.name, true, e);
+                    } else {
+                        connAttempt("unknown", true, e);
+                    }
                     closeSock(newsock);
                 } catch (final IOException e) {
-                    connAttempt("unknown", true, e);
+                    if (conn != null && conn.name != null) {
+                        connAttempt(conn.name, true, e);
+                    } else {
+                        connAttempt("unknown", true, e);
+                    }
                     closeSock(newsock);
                 } catch (final Exception e) {
                     closeSock(newsock);

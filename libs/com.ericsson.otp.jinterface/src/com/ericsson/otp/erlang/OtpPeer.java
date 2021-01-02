@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -25,10 +25,10 @@ import java.net.UnknownHostException;
  * node-specific information that is needed by the {@link OtpConnection} class.
  */
 public class OtpPeer extends AbstractNode {
-    int distChoose; /*
-                     * this is set by OtpConnection and is the highest common protocol
-                     * version we both support
-                     */
+    int distChoose = 0; /*
+                         * this is set by OtpConnection and is the highest common protocol
+                         * version we both support
+                         */
 
     OtpPeer(final OtpTransportFactory transportFactory) {
         super(transportFactory);

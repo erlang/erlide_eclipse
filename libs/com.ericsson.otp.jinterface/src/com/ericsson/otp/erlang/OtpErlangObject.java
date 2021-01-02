@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -24,7 +24,7 @@ import java.io.Serializable;
  * arbitrary Erlang term.
  */
 public abstract class OtpErlangObject implements Serializable, Cloneable {
-    protected int hashCodeValue;
+    protected int hashCodeValue = 0;
 
     // don't change this!
     static final long serialVersionUID = -8435938572339430044L;
@@ -125,18 +125,15 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
         }
     }
 
-    protected static final class Hash {
-        int abc[] = {
-                0, 0, 0
-        };
+    protected final static class Hash {
+        int abc[] = { 0, 0, 0 };
 
         /*
          * Hash function suggested by Bob Jenkins. The same as in the Erlang VM (beam);
          * utils.c.
          */
 
-        private static final int HASH_CONST[] = {
-                0, // not used
+        private final static int HASH_CONST[] = { 0, // not used
                 0x9e3779b9, // the golden ratio; an arbitrary value
                 0x3c6ef372, // (hashHConst[1] * 2) % (1<<32)
                 0xdaa66d2b, // 1 3
@@ -155,7 +152,7 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
         };
 
         protected Hash(final int i) {
-            abc[0] = abc[1] = Hash.HASH_CONST[i];
+            abc[0] = abc[1] = HASH_CONST[i];
             abc[2] = 0;
         }
 
@@ -209,8 +206,7 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
         }
 
         protected void combine(final byte b[]) {
-            int j;
-            int k;
+            int j, k;
             for (j = 0, k = 0; j + 4 < b.length; j += 4, k += 1, k %= 3) {
                 abc[k] += (b[j + 0] & 0xFF) + (b[j + 1] << 8 & 0xFF00)
                         + (b[j + 2] << 16 & 0xFF0000) + (b[j + 3] << 24);

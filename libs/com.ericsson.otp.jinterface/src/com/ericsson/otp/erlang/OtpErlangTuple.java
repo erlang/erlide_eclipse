@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2013. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -31,7 +31,7 @@ public class OtpErlangTuple extends OtpErlangObject {
 
     private static final OtpErlangObject[] NO_ELEMENTS = new OtpErlangObject[0];
 
-    private OtpErlangObject[] elems = OtpErlangTuple.NO_ELEMENTS;
+    private OtpErlangObject[] elems = NO_ELEMENTS;
 
     /**
      * Create a unary tuple containing the given element.
@@ -46,9 +46,7 @@ public class OtpErlangTuple extends OtpErlangObject {
         if (elem == null) {
             throw new java.lang.IllegalArgumentException("Tuple element cannot be null");
         }
-        elems = new OtpErlangObject[] {
-                elem
-        };
+        elems = new OtpErlangObject[] { elem };
     }
 
     /**
@@ -82,7 +80,7 @@ public class OtpErlangTuple extends OtpErlangObject {
         if (elems == null) {
             throw new java.lang.IllegalArgumentException("Tuple content can't be null");
         } else if (count < 1) {
-            this.elems = OtpErlangTuple.NO_ELEMENTS;
+            this.elems = NO_ELEMENTS;
         } else {
             this.elems = new OtpErlangObject[count];
             for (int i = 0; i < count; i++) {
@@ -116,7 +114,7 @@ public class OtpErlangTuple extends OtpErlangObject {
                 elems[i] = buf.read_any();
             }
         } else {
-            elems = OtpErlangTuple.NO_ELEMENTS;
+            elems = NO_ELEMENTS;
         }
     }
 
@@ -164,7 +162,7 @@ public class OtpErlangTuple extends OtpErlangObject {
     @Override
     public String toString() {
         int i;
-        final StringBuilder s = new StringBuilder();
+        final StringBuffer s = new StringBuffer();
         final int arity = elems.length;
 
         s.append("{");
@@ -193,8 +191,8 @@ public class OtpErlangTuple extends OtpErlangObject {
 
         buf.write_tuple_head(arity);
 
-        for (final OtpErlangObject elem : elems) {
-            buf.write_any(elem);
+        for (int i = 0; i < arity; i++) {
+            buf.write_any(elems[i]);
         }
     }
 

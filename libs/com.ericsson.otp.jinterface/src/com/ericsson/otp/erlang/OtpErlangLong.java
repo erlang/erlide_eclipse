@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -32,7 +32,7 @@ public class OtpErlangLong extends OtpErlangObject {
     private static final long serialVersionUID = 1610466859236755096L;
 
     private long val;
-    private BigInteger bigVal;
+    private BigInteger bigVal = null;
 
     /**
      * Create an Erlang integer from the given value.
