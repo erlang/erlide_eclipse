@@ -1,8 +1,13 @@
 package org.erlide.engine.model.erlang.configuration;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ErlideTestUtils;
@@ -43,7 +48,12 @@ public abstract class AbstractProjectConfigurationTest {
         if (!res.exists()) {
             return "";
         }
-        return Util.getInputStreamAsString(res.getContents(), Charsets.ISO_8859_1.name());
+        try (InputStream content = res.getContents()) {
+            return Util.getInputStreamAsString(content, Charsets.ISO_8859_1.name());
+        } catch (final IOException e) {
+            throw new CoreException(new Status(IStatus.ERROR, "org.erlide.model.tests",
+                    "Could not read file content: " + res.getName(), e));
+        }
     }
 
     public abstract void configCanBeParsed() throws CoreException;
