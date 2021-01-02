@@ -8,7 +8,6 @@
  *******************************************************************************/
 package org.erlide.ui.internal;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
@@ -513,7 +512,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                     ErlideUIPlugin.CUSTOM_TEMPLATES_KEY);
             try {
                 fStore.load();
-            } catch (final IOException e) {
+            } catch (final Exception e) {
                 getLog().log(new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
                         IStatus.OK, "", e)); //$NON-NLS-1$
             }

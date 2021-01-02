@@ -14,6 +14,7 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 public class DebuggerEventFactory {
 
     public static DebuggerEvent parse(final OtpErlangObject message) {
+        ErlLogger.info("debugger: %s", message);
         // TODO More events from dbg_mon...
         try {
             OtpBindings b = OtpErlang.match("{started, Pid:p}", message);

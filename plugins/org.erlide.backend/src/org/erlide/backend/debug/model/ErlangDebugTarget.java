@@ -258,6 +258,11 @@ public class ErlangDebugTarget extends ErlangDebugElement
 
     @Override
     public void breakpointAdded(final IBreakpoint breakpoint) {
+        try {
+            ErlLogger.debug("breakpointAdded " + breakpoint.getMarker().toString()
+                    + breakpoint.getMarker().getAttribute(IMarker.LINE_NUMBER));
+        } catch (final CoreException e) {
+        }
         if (supportsBreakpoint(breakpoint)) {
             try {
                 if (breakpoint.isEnabled()
