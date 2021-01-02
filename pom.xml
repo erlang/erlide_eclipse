@@ -54,7 +54,6 @@
 		<module>releng/org.erlide.target</module>
 		<!-- <module>releng/releng.tools</module> -->
 		<module>features/org.erlide</module>
-		<!--module>features/org.erlide.product.feature</module -->
 		<module>extras/org.erlide.licenses</module>
 
 		<module>plugins/org.erlide.backend</module>
@@ -152,15 +151,6 @@
 					</plugin>
 				</plugins>
 			</build>
-		</profile>
-		<profile>
-			<id>build-product</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<modules>
-				<module>releng/org.erlide.product.site</module>
-			</modules>
 		</profile>
 	</profiles>
 

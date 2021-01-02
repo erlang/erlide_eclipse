@@ -1,5 +1,0 @@
-instructions.configure=org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(location:http${#58}//erlide.org/update/,type:0,name:Erlide site,enabled:true); \
-  org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(location:http${#58}//erlide.org/update/,type:1,name:Erlide site,enabled:true); \
-  org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(location:http${#58}//download.eclipse.org/releases/photon/,type:0,name:Eclipse photon,enabled:true); \
-  org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(location:http${#58}//download.eclipse.org/releases/photon/,type:1,name:Eclipse photon,enabled:true);
-
