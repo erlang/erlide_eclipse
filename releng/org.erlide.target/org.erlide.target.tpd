@@ -21,7 +21,7 @@ location "https://download.erlide.org/update/kernel/0.115.3" {
   org.erlide.kernel.feature.feature.group lazy
 }
 
-location "http://download.eclipse.org/tools/orbit/R-builds/R20170307180635/repository"{
+location "http://download.eclipse.org/tools/orbit/downloads/drops/R20190602212107/repository"{
   com.google.gson [2.7.0, 3.0.0)
-  com.google.guava [18.0.0, 28.0.0)
+  com.google.guava [27.0.0, 28.0.0)
 }
