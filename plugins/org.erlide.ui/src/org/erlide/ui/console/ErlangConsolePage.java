@@ -106,7 +106,6 @@ public class ErlangConsolePage extends Page
 
     public ErlangConsolePage(final IConsoleView view, final ErlangConsole console,
             final IBackend backend) {
-        super();
         fConsole = console;
         fConsoleView = view;
         shell = console.getShell();
@@ -325,7 +324,7 @@ public class ErlangConsolePage extends Page
         // }
         fMenuManager = new MenuManager("#ContextMenu", id); //$NON-NLS-1$
         fMenuManager.setRemoveAllWhenShown(true);
-        fMenuManager.addMenuListener(m -> contextMenuAboutToShow(m));
+        fMenuManager.addMenuListener(this::contextMenuAboutToShow);
         final Menu menu = fMenuManager.createContextMenu(getControl());
         getControl().setMenu(menu);
 
@@ -408,9 +407,8 @@ public class ErlangConsolePage extends Page
 
             if (source.equals(fConsole) && IConsoleConstants.P_FONT.equals(property)) {
                 // consoleOutputViewer.setFont(fConsole.getFont());
-            } else if (IConsoleConstants.P_FONT_STYLE.equals(property)) {
-                consoleOutputViewer.getTextWidget().redraw();
-            } else if (property.equals(IConsoleConstants.P_STREAM_COLOR)) {
+            } else if (IConsoleConstants.P_FONT_STYLE.equals(property)
+                    || property.equals(IConsoleConstants.P_STREAM_COLOR)) {
                 consoleOutputViewer.getTextWidget().redraw();
             } else if (source.equals(fConsole)
                     && property.equals(IConsoleConstants.P_TAB_SIZE)) {

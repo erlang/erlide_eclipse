@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.ui.navigator.CommonDropAdapter;
@@ -32,9 +33,9 @@ public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
             final DropTargetEvent dropTargetEvent, final Object target) {
         status = Status.CANCEL_STATUS;
         try {
-            final List<INavigatorDropHandler> handlers = ExtensionUtils.getExtensions(
-                    ErlCommonDropAdapterAssistant.EXTENSION_POINT_ID,
-                    INavigatorDropHandler.class);
+            final List<@NonNull INavigatorDropHandler> handlers = ExtensionUtils
+                    .getExtensions(ErlCommonDropAdapterAssistant.EXTENSION_POINT_ID,
+                            INavigatorDropHandler.class);
             for (final INavigatorDropHandler handler : handlers) {
                 final ISafeRunnable runnable = new ISafeRunnable() {
 

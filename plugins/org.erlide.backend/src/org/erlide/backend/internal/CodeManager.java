@@ -48,10 +48,8 @@ public class CodeManager {
             if (addPath(pathZ, path)) {
                 ErlangCode.addPathZ(site, path);
             }
-        } else {
-            if (addPath(pathA, path)) {
-                ErlangCode.addPathA(site, path);
-            }
+        } else if (addPath(pathA, path)) {
+            ErlangCode.addPathA(site, path);
         }
     }
 

@@ -212,7 +212,7 @@ public class ErlangOutlinePage extends ContentOutlinePage
 
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
-        manager.addMenuListener(m -> contextMenuAboutToShow(m));
+        manager.addMenuListener(this::contextMenuAboutToShow);
         final Menu menu = manager.createContextMenu(tree);
         tree.setMenu(menu);
 

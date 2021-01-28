@@ -18,7 +18,6 @@ public class NavigatorProblemsDecorator extends ProblemsLabelDecorator {
     protected int computeFolderAdornmentFlags(final IFolder folder) {
         // if (!fIsFlatLayout && !(folder instanceof IProject)) {
         if (!fIsFlatLayout) {
-            return super.computeAdornmentFlags(folder);
         }
         return super.computeAdornmentFlags(folder);
     }

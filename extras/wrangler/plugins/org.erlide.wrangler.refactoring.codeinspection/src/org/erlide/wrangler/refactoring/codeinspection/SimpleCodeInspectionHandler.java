@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.codeinspection;
 
@@ -91,25 +89,33 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
         final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                 .getShell();
 
-        if ("org.erlide.wrangler.refactoring.codeinspection.largemodules".equals(actionId)) {
+        if ("org.erlide.wrangler.refactoring.codeinspection.largemodules"
+                .equals(actionId)) {
             handleLargeModulesCall(wranglerSelection, shell);
 
-        } else if ("org.erlide.wrangler.refactoring.codeinspection.dependencies".equals(actionId)) {
+        } else if ("org.erlide.wrangler.refactoring.codeinspection.dependencies"
+                .equals(actionId)) {
             handleDepenenciesCall(wranglerSelection, shell);
-        } else if ("org.erlide.wrangler.refactoring.codeinspection.nontailrecursive".equals(actionId)) {
+        } else if ("org.erlide.wrangler.refactoring.codeinspection.nontailrecursive"
+                .equals(actionId)) {
             handleNonTailRecursiveCall(wranglerSelection, shell);
-        } else if ("org.erlide.wrangler.refactoring.codeinspection.notflush".equals(actionId)) {
+        } else if ("org.erlide.wrangler.refactoring.codeinspection.notflush"
+                .equals(actionId)) {
             handleNotFlushUnknownMessages(wranglerSelection, shell);
-        } else if ("org.erlide.wrangler.refactoring.codeinspection.nestedif".equals(actionId)) {
+        } else if ("org.erlide.wrangler.refactoring.codeinspection.nestedif"
+                .equals(actionId)) {
             handleNested(wranglerSelection, shell, "if");
 
-        } else if ("org.erlide.wrangler.refactoring.codeinspection.nestedcase".equals(actionId)) {
+        } else if ("org.erlide.wrangler.refactoring.codeinspection.nestedcase"
+                .equals(actionId)) {
             handleNested(wranglerSelection, shell, "case");
 
-        } else if ("org.erlide.wrangler.refactoring.codeinspection.nestedreceive".equals(actionId)) {
+        } else if ("org.erlide.wrangler.refactoring.codeinspection.nestedreceive"
+                .equals(actionId)) {
             handleNested(wranglerSelection, shell, "receive");
 
-        } else if ("org.erlide.wrangler.refactoring.codeinspection.longfunctions".equals(actionId)) {
+        } else if ("org.erlide.wrangler.refactoring.codeinspection.longfunctions"
+                .equals(actionId)) {
             handleLongFunctions(wranglerSelection, shell);
         }
 
@@ -119,7 +125,8 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
     private void handleLongFunctions(final IErlSelection wranglerSelection,
             final Shell shell) {
         try {
-            CodeInspectionViewsManager.hideView(SimpleCodeInspectionHandler.LONG_FUNCTIONS);
+            CodeInspectionViewsManager
+                    .hideView(SimpleCodeInspectionHandler.LONG_FUNCTIONS);
             // call inputdialog
             final InputDialogWithCheckbox dialog = new InputDialogWithCheckbox(shell,
                     "Search for long functions", "Number of lines:",
@@ -165,7 +172,8 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
     private void handleNested(final IErlSelection wranglerSelection, final Shell shell,
             final String type) {
         try {
-            CodeInspectionViewsManager.hideView(SimpleCodeInspectionHandler.NESTED_EXPRESSIONS + type);
+            CodeInspectionViewsManager
+                    .hideView(SimpleCodeInspectionHandler.NESTED_EXPRESSIONS + type);
             // call inputdialog
             final InputDialogWithCheckbox dialog = new InputDialogWithCheckbox(shell,
                     "Search for nested expression", "Nest level:",
@@ -213,7 +221,8 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             final Shell shell) {
         final String inFile = "not_flush_unknown_messages_in_file_eclipse";
         final String inProject = "not_flush_unknown_messages_in_dirs_eclipse";
-        CodeInspectionViewsManager.hideView(SimpleCodeInspectionHandler.NOT_FLUSH_UNKNOWN_MESSAGES);
+        CodeInspectionViewsManager
+                .hideView(SimpleCodeInspectionHandler.NOT_FLUSH_UNKNOWN_MESSAGES);
         final Boolean answer = MessageDialog.openQuestion(shell,
                 "Find incomplete receive patterns",
                 "Would you like to run the scan in the whole project?");
@@ -279,7 +288,8 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
 
     private void handleNonTailRecursiveCall(final IErlSelection wranglerSelection,
             final Shell shell) {
-        CodeInspectionViewsManager.hideView(SimpleCodeInspectionHandler.NON_TAIL_RECURSIVE_VIEW_ID);
+        CodeInspectionViewsManager
+                .hideView(SimpleCodeInspectionHandler.NON_TAIL_RECURSIVE_VIEW_ID);
 
         try {
             final String inFile = "non_tail_recursive_servers_in_file_eclipse";
@@ -334,9 +344,11 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             final Shell shell) {
         // hiding the views
         CodeInspectionViewsManager.hideView(
-                CodeInspectionViewsManager.CODE_INSPECTION_VIEW, SimpleCodeInspectionHandler.DEPENECIES_1_VIEW_ID);
+                CodeInspectionViewsManager.CODE_INSPECTION_VIEW,
+                SimpleCodeInspectionHandler.DEPENECIES_1_VIEW_ID);
         CodeInspectionViewsManager.hideView(
-                CodeInspectionViewsManager.CODE_INSPECTION_VIEW, SimpleCodeInspectionHandler.DEPENECIES_2_VIEW_ID);
+                CodeInspectionViewsManager.CODE_INSPECTION_VIEW,
+                SimpleCodeInspectionHandler.DEPENECIES_2_VIEW_ID);
 
         // run the rpc
         try {
@@ -370,10 +382,11 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
                         modules1, SimpleCodeInspectionHandler.DEPENECIES_1_VIEW_ID);
             }
             if (!modules2.isEmpty()) {
-                CodeInspectionViewsManager.showErlElements("Modules, on which "
-                        + wranglerSelection.getErlElement()
+                CodeInspectionViewsManager.showErlElements(
+                        "Modules, on which " + wranglerSelection.getErlElement()
                                 .getAncestorOfKind(ErlElementKind.MODULE).getName()
-                        + " depends", modules2, SimpleCodeInspectionHandler.DEPENECIES_2_VIEW_ID);
+                                + " depends",
+                        modules2, SimpleCodeInspectionHandler.DEPENECIES_2_VIEW_ID);
             } else {
                 MessageDialog.openInformation(shell, "No result",
                         "There is no large module with the specified parameter!");
@@ -414,7 +427,8 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
     private void handleLargeModulesCall(final IErlSelection wranglerSelection,
             final Shell shell) {
         CodeInspectionViewsManager.hideView(
-                CodeInspectionViewsManager.CODE_INSPECTION_VIEW, SimpleCodeInspectionHandler.LARGE_MODULES_VIEW_ID);
+                CodeInspectionViewsManager.CODE_INSPECTION_VIEW,
+                SimpleCodeInspectionHandler.LARGE_MODULES_VIEW_ID);
 
         final InputDialog dialog = new InputDialog(shell, "Lines of a large module",
                 "Lines of a large module:", "", new IntegerInputValidator());

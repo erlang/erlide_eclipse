@@ -43,7 +43,6 @@ import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 public class ErlProjectPropertyPage extends PropertyPage {
 
     public ErlProjectPropertyPage() {
-        super();
     }
 
     @Override

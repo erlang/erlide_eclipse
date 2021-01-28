@@ -30,23 +30,7 @@ public class WranglerTester extends PropertyTester {
     @Override
     public boolean test(final Object receiver, final String property, final Object[] args,
             final Object expectedValue) {
-        if ("hasQuickCheck".equals(property)) {
-            return true;// GlobalParameters.hasQuickCheck();
-        } else if ("hasGraphViz".equals(property)) {
-
-            // Bundle[] bs = Platform
-            // .getFragments(Platform
-            // .getBundle(org.erlide.wrangler.refactoring.Activator.PLUGIN_ID));
-            //
-            // for (int i = 0; i < bs.length; ++i) {
-            // if (bs[i].getSymbolicName().equals(
-            // "org.erlide.wrangler.refactoring.codeinspection")) {
-            //
-            // return true;
-            // }
-            // }
-
-            return true;
+        if ("hasQuickCheck".equals(property) || "hasGraphViz".equals(property)) {
         }
 
         return true;

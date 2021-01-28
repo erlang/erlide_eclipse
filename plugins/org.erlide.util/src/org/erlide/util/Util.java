@@ -107,7 +107,7 @@ public final class Util {
                 Util.SINGLE_QUOTE);
 
         if (bindings == null) {
-            return new String(messageWithNoDoubleQuotes);
+            return messageWithNoDoubleQuotes;
         }
 
         final int length = messageWithNoDoubleQuotes.length();
@@ -427,7 +427,6 @@ public final class Util {
                 return l.stringValue();
             } catch (final OtpErlangException e) {
                 ErlLogger.error(e);
-                return null;
             }
         } else if (o instanceof OtpErlangBinary) {
             final OtpErlangBinary b = (OtpErlangBinary) o;

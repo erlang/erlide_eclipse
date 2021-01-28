@@ -59,12 +59,10 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
             if (wranglerResult instanceof OtpErlangList) {
                 changedFiles = parseFileList((OtpErlangList) wranglerResult);
                 setSuccessful();
-                return;
             }
         } else if ("error".equals(state)) {
             final OtpErlangString msg = (OtpErlangString) wranglerResult;
             setUnsuccessful(msg.stringValue());
-            return;
 
         } else if ("multiple_instances".equals(state)) {
             parameters = new HashMap<>();

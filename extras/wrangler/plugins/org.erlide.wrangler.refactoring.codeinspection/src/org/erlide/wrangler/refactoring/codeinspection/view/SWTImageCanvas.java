@@ -12,8 +12,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.GC;
@@ -68,12 +66,7 @@ public class SWTImageCanvas extends Canvas {
                 syncScrollBars();
             }
         });
-        addPaintListener(new PaintListener() { /* paint listener. */
-            @Override
-            public void paintControl(final PaintEvent event) {
-                paint(event.gc);
-            }
-        });
+        addPaintListener(event -> paint(event.gc));
         initScrollBars();
     }
 

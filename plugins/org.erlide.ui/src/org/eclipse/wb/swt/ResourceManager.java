@@ -89,7 +89,7 @@ public class ResourceManager extends SWTResourceManager {
             return null;
         }
         final Image image = ResourceManager.descriptorImageMap.computeIfAbsent(descriptor,
-                d -> d.createImage());
+                ImageDescriptor::createImage);
         return image;
     }
 
@@ -146,7 +146,7 @@ public class ResourceManager extends SWTResourceManager {
                 @Override
                 protected void drawCompositeImage(final int width, final int height) {
                     drawImage(createCachedImageDataProvider(baseImage), 0, 0);
-                    CachedImageDataProvider data = createCachedImageDataProvider(
+                    final CachedImageDataProvider data = createCachedImageDataProvider(
                             decorator);
                     if (corner == SWTResourceManager.TOP_LEFT) {
                         drawImage(data, 0, 0);
@@ -381,22 +381,21 @@ public class ResourceManager extends SWTResourceManager {
             final Class<?> BundleContextClass = Class
                     .forName("org.osgi.framework.BundleContext"); //$NON-NLS-1$
             if (BundleContextClass.isAssignableFrom(plugin.getClass())) {
-                final Method getBundleMethod = BundleContextClass.getMethod("getBundle", //$NON-NLS-1$
-                        new Class[0]);
-                final Object bundle = getBundleMethod.invoke(plugin, new Object[0]);
+                final Method getBundleMethod = BundleContextClass.getMethod("getBundle");
+                final Object bundle = getBundleMethod.invoke(plugin);
                 //
                 final Class<?> PathClass = Class.forName("org.eclipse.core.runtime.Path"); //$NON-NLS-1$
                 final Constructor<?> pathConstructor = PathClass
-                        .getConstructor(new Class[] { String.class });
-                final Object path = pathConstructor.newInstance(new Object[] { name });
+                        .getConstructor(String.class);
+                final Object path = pathConstructor.newInstance(name);
                 //
                 final Class<?> IPathClass = Class
                         .forName("org.eclipse.core.runtime.IPath"); //$NON-NLS-1$
                 final Class<?> PlatformClass = Class
                         .forName("org.eclipse.core.runtime.Platform"); //$NON-NLS-1$
-                final Method findMethod = PlatformClass.getMethod("find", //$NON-NLS-1$
-                        new Class[] { bundleClass, IPathClass });
-                return (URL) findMethod.invoke(null, new Object[] { bundle, path });
+                final Method findMethod = PlatformClass.getMethod("find", bundleClass,
+                        IPathClass);
+                return (URL) findMethod.invoke(null, bundle, path);
             }
         } catch (final Throwable e) {
             // Ignore any exceptions
@@ -408,14 +407,13 @@ public class ResourceManager extends SWTResourceManager {
                 //
                 final Class<?> pathClass = Class.forName("org.eclipse.core.runtime.Path"); //$NON-NLS-1$
                 final Constructor<?> pathConstructor = pathClass
-                        .getConstructor(new Class[] { String.class });
-                final Object path = pathConstructor.newInstance(new Object[] { name });
+                        .getConstructor(String.class);
+                final Object path = pathConstructor.newInstance(name);
                 //
                 final Class<?> iPathClass = Class
                         .forName("org.eclipse.core.runtime.IPath"); //$NON-NLS-1$
-                final Method findMethod = pluginClass.getMethod("find", //$NON-NLS-1$
-                        new Class[] { iPathClass });
-                return (URL) findMethod.invoke(plugin, new Object[] { path });
+                final Method findMethod = pluginClass.getMethod("find", iPathClass);
+                return (URL) findMethod.invoke(plugin, path);
             }
         }
         return null;

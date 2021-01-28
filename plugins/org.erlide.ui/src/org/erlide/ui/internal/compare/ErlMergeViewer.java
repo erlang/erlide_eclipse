@@ -44,7 +44,7 @@ public class ErlMergeViewer extends TextMergeViewer {
         super(parent, styles, mp);
         fPreferenceStore = ErlangEditor.getErlangEditorPreferenceStore();
         if (fPreferenceStore != null) {
-            fPreferenceChangeListener = event -> handlePropertyChange(event);
+            fPreferenceChangeListener = this::handlePropertyChange;
             fPreferenceStore.addPropertyChangeListener(fPreferenceChangeListener);
 
             fUseSystemColors = fPreferenceStore.getBoolean(

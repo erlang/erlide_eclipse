@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2013. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -41,7 +41,6 @@ public class OtpErlangMap extends OtpErlangObject {
         private static final long serialVersionUID = -2666505810905455082L;
 
         public OtpMap() {
-            super();
         }
     }
 
@@ -97,8 +96,7 @@ public class OtpErlangMap extends OtpErlangObject {
                     "Map keys and values must have same arity");
         }
         map = new OtpMap();
-        OtpErlangObject key;
-        OtpErlangObject val;
+        OtpErlangObject key, val;
         for (int i = 0; i < vcount; i++) {
             if ((key = keys[kstart + i]) == null) {
                 throw new java.lang.IllegalArgumentException(
@@ -128,8 +126,7 @@ public class OtpErlangMap extends OtpErlangObject {
         if (arity > 0) {
             map = new OtpMap();
             for (int i = 0; i < arity; i++) {
-                OtpErlangObject key;
-                OtpErlangObject val;
+                OtpErlangObject key, val;
                 key = buf.read_any();
                 val = buf.read_any();
                 put(key, val);
@@ -219,7 +216,7 @@ public class OtpErlangMap extends OtpErlangObject {
      */
     @Override
     public String toString() {
-        final StringBuilder s = new StringBuilder();
+        final StringBuffer s = new StringBuffer();
 
         s.append("#{");
 
@@ -283,8 +280,7 @@ public class OtpErlangMap extends OtpErlangObject {
             return true;
         }
 
-        OtpErlangObject key;
-        OtpErlangObject val;
+        OtpErlangObject key, val;
         for (final Map.Entry<OtpErlangObject, OtpErlangObject> e : entrySet()) {
             key = e.getKey();
             val = e.getValue();
@@ -313,8 +309,7 @@ public class OtpErlangMap extends OtpErlangObject {
             return true;
         }
 
-        OtpErlangObject key;
-        OtpErlangObject val;
+        OtpErlangObject key, val;
         for (final Map.Entry<OtpErlangObject, OtpErlangObject> e : entrySet()) {
             key = e.getKey();
             val = e.getValue();
@@ -331,8 +326,7 @@ public class OtpErlangMap extends OtpErlangObject {
     public <T> OtpErlangObject bind(final T binds) throws OtpErlangException {
         final OtpErlangMap ret = new OtpErlangMap();
 
-        OtpErlangObject key;
-        OtpErlangObject val;
+        OtpErlangObject key, val;
         for (final Map.Entry<OtpErlangObject, OtpErlangObject> e : entrySet()) {
             key = e.getKey();
             val = e.getValue();

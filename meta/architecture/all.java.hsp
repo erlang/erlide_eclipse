@@ -1,34 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<local-project language="java" version="4.1.5350" xml-version="3" flavor="j2se">
+<local-project language="java" version="5.0.14443" xml-version="3" flavor="j2se">
+  <property name="show-as-module" value="false" />
+  <property name="publish-architecture-artifacts" value="true" />
+  <property name="force-classpath" value="false" />
+  <property name="project-type" value="classpath" />
+  <property name="hide-externals" value="false" />
   <property name="parse-archive-in-archive" value="false" />
   <property name="include-injected-dependency" value="true" />
-  <property name="show-as-module" value="false" />
   <property name="relative-to" value="const(THIS_FILE)" />
   <property name="action-set-mod" value="1" />
   <property name="detail-mode" value="true" />
   <property name="hide-deprecated" value="false" />
+  <property name="resolve-name-clashes" value="true" />
   <property name="project-excluded" />
   <property name="show-needs-to-compile" value="false" />
-  <property name="project-type" value="classpath" />
-  <property name="hide-externals" value="true" />
   <classpath>
-    <classpathentry kind="lib" path="../../erlide/org.erlide.backend/bin" />
-    <classpathentry kind="lib" path="../../erlide/org.erlide.core/bin" />
-    <classpathentry kind="lib" path="../../erlide/org.erlide.libs/bin" />
-    <classpathentry kind="lib" path="../../erlide/org.erlide.model/bin" />
-    <classpathentry kind="lib" path="../../erlide/org.erlide.model.api/bin" />
-    <classpathentry kind="lib" path="../../erlide/org.erlide.runtime/bin" />
-    <classpathentry kind="lib" path="../../erlide/org.erlide.test_support/bin" />
-    <classpathentry kind="lib" path="../../erlide/org.erlide.ui/bin" />
-    <classpathentry kind="lib" path="../../erlide/org.erlide.util/bin" />
-    <classpathentry kind="lib" path="../../erlide/org.erlide.util_eclipse/bin" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.backend/bin" module="org___erlide___backend" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.core/bin" module="org___erlide___core" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.libs/bin" module="org___erlide___libs" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.model/bin" module="org___erlide___model" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.model.api/bin" module="org___erlide___model___api" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.runtime/bin" module="org___erlide___runtime" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.test_support/bin" module="org___erlide___test_support" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.ui/bin" module="org___erlide___ui" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.util/bin" module="org___erlide___util" />
+    <classpathentry kind="lib" path="../../erlide/org.erlide.util_eclipse/bin" module="org___erlide___util_eclipse" />
+    <classpathentry kind="lib" path="../../libs/com.ericsson.otp.jinterface/target/classes" module="com___ericsson___otp___jinterface" />
+    <classpathentry kind="lib" path="../../plugins/org.erlide.backend/target/classes" module="org___erlide___backend" />
+    <classpathentry kind="lib" path="../../plugins/org.erlide.branding/target/classes" module="org___erlide___branding" />
+    <classpathentry kind="lib" path="../../plugins/org.erlide.core/target/classes" module="org___erlide___core" />
+    <classpathentry kind="lib" path="../../plugins/org.erlide.cover.api/target/classes" module="org___erlide___cover___api" />
+    <classpathentry kind="lib" path="../../plugins/org.erlide.cover.core/target/classes" module="org___erlide___cover___core" />
+    <classpathentry kind="lib" path="../../plugins/org.erlide.cover.ui/target/classes" module="org___erlide___cover___ui" />
+    <classpathentry kind="lib" path="../../plugins/org.erlide.model/target/classes" module="org___erlide___model" />
+    <classpathentry kind="lib" path="../../plugins/org.erlide.model.api/target/classes" module="org___erlide___model___api" />
+    <classpathentry kind="lib" path="../../plugins/org.erlide.runtime/target/classes" module="org___erlide___runtime" />
+    <classpathentry kind="lib" path="../../plugins/org.erlide.test_support/target/classes" module="org___erlide___test_support" />
+    <classpathentry kind="lib" path="../../plugins/org.erlide.tracing.core/target/classes" module="org___erlide___tracing___core" />
+    <classpathentry kind="lib" path="../../plugins/org.erlide.ui/target/classes" module="org___erlide___ui" />
+    <classpathentry kind="lib" path="../../plugins/org.erlide.util/target/classes" module="org___erlide___util" />
+    <classpathentry kind="lib" path="../../tests/org.erlide.backend.tests/target/classes" module="org___erlide___backend___tests" />
+    <classpathentry kind="lib" path="../../tests/org.erlide.core.tests/target/classes" module="org___erlide___core___tests" />
+    <classpathentry kind="lib" path="../../tests/org.erlide.model.tests/target/classes" module="org___erlide___model___tests" />
+    <classpathentry kind="lib" path="../../tests/org.erlide.runtime.tests/target/classes" module="org___erlide___runtime___tests" />
+    <classpathentry kind="lib" path="../../tests/org.erlide.testing.libs/target/classes" module="org___erlide___testing___libs" />
+    <classpathentry kind="lib" path="../../tests/org.erlide.test_support.tests/target/classes" module="org___erlide___test_support___tests" />
+    <classpathentry kind="lib" path="../../tests/org.erlide.ui.tests/target/classes" module="org___erlide___ui___tests" />
+    <classpathentry kind="lib" path="../../tests/org.erlide.util.tests/target/classes" module="org___erlide___util___tests" />
   </classpath>
   <pom-root-files />
-  <transformations>
-    <transformation in="*" out="{jar}.*" />
-  </transformations>
+  <modules-in-scope />
   <restructuring>
     <set version="3" name="Model 1" hiview="Codemap" active="true" todo="false" list="0" />
   </restructuring>
+  <grid-set sep="." version="5.0.14443" />
 </local-project>
-

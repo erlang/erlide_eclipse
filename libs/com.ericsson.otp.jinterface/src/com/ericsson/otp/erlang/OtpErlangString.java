@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2012. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -49,7 +49,7 @@ public class OtpErlangString extends OtpErlangObject {
         final int n = s.length();
         for (int i = 0; i < n; i = s.offsetByCodePoints(i, 1)) {
             final int cp = s.codePointAt(i);
-            if (!OtpErlangString.isValidCodePoint(cp)) {
+            if (!isValidCodePoint(cp)) {
                 throw new OtpErlangRangeException("Invalid CodePoint: " + cp);
             }
         }

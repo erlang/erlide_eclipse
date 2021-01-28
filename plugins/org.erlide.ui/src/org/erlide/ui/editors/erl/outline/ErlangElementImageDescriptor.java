@@ -133,7 +133,7 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
     }
 
     private CachedImageDataProvider getImageData(final ImageDescriptor descriptor) {
-        CachedImageDataProvider data = createCachedImageDataProvider(descriptor);
+        final CachedImageDataProvider data = createCachedImageDataProvider(descriptor);
         return data;
     }
 
@@ -147,13 +147,13 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
         final Point size = getSize();
         int x = 0;
         if ((fFlags & ErlangElementImageDescriptor.ERROR) != 0) {
-            CachedImageDataProvider data = createCachedImageDataProvider(
+            final CachedImageDataProvider data = createCachedImageDataProvider(
                     ErlideImage.OVR_ERROR.getDescriptor());
             drawImage(data, x, size.y - data.getHeight());
             x += data.getWidth();
         }
         if ((fFlags & ErlangElementImageDescriptor.WARNING) != 0) {
-            CachedImageDataProvider data = createCachedImageDataProvider(
+            final CachedImageDataProvider data = createCachedImageDataProvider(
                     ErlideImage.OVR_WARNING.getDescriptor());
             drawImage(data, x, size.y - data.getHeight());
             x += data.getWidth();

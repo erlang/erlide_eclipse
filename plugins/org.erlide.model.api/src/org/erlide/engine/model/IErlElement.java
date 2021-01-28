@@ -13,6 +13,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.util.IDisposable;
 
 /**
@@ -165,7 +166,7 @@ public interface IErlElement extends IAdaptable, IDisposable {
      * @param leafKind
      * @throws ErlModelException
      */
-    void accept(IErlElementVisitor visitor, Set<AcceptFlags> flags,
+    void accept(IErlElementVisitor visitor, Set<@NonNull AcceptFlags> flags,
             ErlElementKind leafKind) throws ErlModelException;
 
     /**

@@ -27,7 +27,7 @@ public class ErlProblemsTest {
         final ProblemData data = ErlProblems.parse("circular macro 'alfa/beta'");
         assertThat(data).isNotNull();
         final List<String> args = data.getMessageArgs("circular macro 'alfa/beta'");
-        assertThat(args).containsAllOf("alfa", "beta");
+        assertThat(args).containsAtLeast("alfa", "beta");
     }
 
     @Test

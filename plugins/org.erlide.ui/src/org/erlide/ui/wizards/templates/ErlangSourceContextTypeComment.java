@@ -13,10 +13,10 @@ import java.io.IOException;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.text.templates.ContextTypeRegistry;
 import org.eclipse.jface.text.templates.GlobalTemplateVariables;
 import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.jface.text.templates.persistence.TemplateStore;
+import org.eclipse.text.templates.ContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -77,7 +77,7 @@ public class ErlangSourceContextTypeComment extends TemplateContextType {
      */
     public TemplateStore getTemplateStore() {
         if (fStore == null) {
-            fStore = new ContributionTemplateStore(getContextTypeRegistry(),
+            fStore = new ContributionTemplateStore(
                     ErlideUIPlugin.getDefault().getPreferenceStore(),
                     ErlangSourceContextTypeComment.ERLANGSOURCE_TEMPLATES_KEY);
             try {

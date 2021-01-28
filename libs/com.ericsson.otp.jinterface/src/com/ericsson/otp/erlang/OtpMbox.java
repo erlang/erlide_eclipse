@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2012. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2017. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -149,7 +149,7 @@ public class OtpMbox {
      *         next message waiting in this mailbox.
      *
      * @exception OtpErlangDecodeException
-     *                if the message can not be decoded.
+     *                if the message cannot be decoded.
      *
      * @exception OtpErlangExit
      *                if a linked {@link OtpErlangPid pid} has exited or has sent an exit
@@ -175,7 +175,7 @@ public class OtpMbox {
      *         next message waiting in this mailbox.
      *
      * @exception OtpErlangDecodeException
-     *                if the message can not be decoded.
+     *                if the message cannot be decoded.
      *
      * @exception OtpErlangExit
      *                if a linked {@link OtpErlangPid pid} has exited or has sent an exit
@@ -696,8 +696,10 @@ public class OtpMbox {
         final Link[] l = links.clearLinks();
 
         if (l != null) {
-            for (final Link aL : l) {
-                exit(1, aL.remote(), reason);
+            final int len = l.length;
+
+            for (int i = 0; i < len; i++) {
+                exit(1, l[i].remote(), reason);
             }
         }
     }

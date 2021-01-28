@@ -370,7 +370,6 @@ public final class ErlParser {
         try {
             setNamePos(f, namePos);
         } catch (final OtpErlangRangeException e) {
-            return f;
         }
         return f;
     }

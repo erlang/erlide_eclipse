@@ -95,7 +95,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         final Label testLabel = new Label(comp, SWT.NONE);
         testLabel.setText("Testing framework: ");
         testCombo = new Combo(comp, SWT.NONE);
-        testCombo.setItems(new String[] { FrameworkType.EUNIT.getRepr() });
+        testCombo.setItems(FrameworkType.EUNIT.getRepr());
         testCombo.addModifyListener(basicModifyListener);
 
         Collection<IErlProject> projects;

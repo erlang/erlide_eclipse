@@ -32,7 +32,6 @@ public class StringButtonDialogField extends StringDialogField {
     private boolean fButtonEnabled;
 
     public StringButtonDialogField(final IStringButtonAdapter adapter) {
-        super();
         fStringButtonAdapter = adapter;
         fBrowseButtonLabel = "!Browse...!"; //$NON-NLS-1$
         fButtonEnabled = true;

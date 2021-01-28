@@ -2,7 +2,7 @@
 <feature
       id="org.erlide"
       label="Erlang language tools IDE"
-      version="0.56.0.qualifier"
+      version="0.57.0.qualifier"
       provider-name="%vendorName"
       plugin="org.erlide.branding"
       image="erlang-64.gif"
@@ -32,7 +32,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
    </license>
 
    <url>
-      <update label="Erlide main update site" url="http://download.erlide.org/update/"/>
+      <update label="Erlide main update site" url="https://download.erlide.org/update/"/>
    </url>
 
    <includes

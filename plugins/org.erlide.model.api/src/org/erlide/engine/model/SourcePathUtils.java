@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.engine.model.root.SourcePathProvider;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.services.ExtensionUtils;
@@ -13,6 +14,8 @@ import org.erlide.util.services.ExtensionUtils;
 import com.google.common.collect.Lists;
 
 public class SourcePathUtils {
+
+    private static Collection<@NonNull SourcePathProvider> sourcePathProviders;
 
     private SourcePathUtils() {
     }
@@ -48,7 +51,7 @@ public class SourcePathUtils {
     private static Collection<IPath> getExtraSourcePathsGeneric(final IProject project,
             final SPPMethod method) {
         final List<IPath> result = Lists.newArrayList();
-        Collection<SourcePathProvider> spps;
+        Collection<@NonNull SourcePathProvider> spps;
         try {
             spps = SourcePathUtils.getSourcePathProviders();
             for (final SourcePathProvider spp : spps) {
@@ -72,9 +75,7 @@ public class SourcePathUtils {
         return result;
     }
 
-    private static Collection<SourcePathProvider> sourcePathProviders;
-
-    public static synchronized Collection<SourcePathProvider> getSourcePathProviders() {
+    public static synchronized Collection<@NonNull SourcePathProvider> getSourcePathProviders() {
         if (SourcePathUtils.sourcePathProviders != null) {
             return SourcePathUtils.sourcePathProviders;
         }

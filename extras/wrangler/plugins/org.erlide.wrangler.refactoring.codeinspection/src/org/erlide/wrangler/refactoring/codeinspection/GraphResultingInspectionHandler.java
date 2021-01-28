@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.codeinspection;
 
@@ -67,31 +65,38 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
             final IErlSelection wranglerSelection = GlobalParameters
                     .getWranglerSelection();
 
-            if ("org.erlide.wrangler.refactoring.codeinspection.cyclicdependencies".equals(actionId)) {
+            if ("org.erlide.wrangler.refactoring.codeinspection.cyclicdependencies"
+                    .equals(actionId)) {
                 final Boolean answer = MessageDialog.openQuestion(
                         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Labels", "Label edges with function names called?");
-                runInspection("Cyclic module dependency", GraphResultingInspectionHandler.CYCLYC_VIEW_ID,
+                runInspection("Cyclic module dependency",
+                        GraphResultingInspectionHandler.CYCLYC_VIEW_ID,
                         "There is no cyclic dependent modules in the project!", tmpFile,
                         "cyclic_dependent_modules", "ssx", tmpFile.getAbsolutePath(),
                         wranglerSelection.getSearchPath(), new OtpErlangBoolean(answer));
-            } else if ("org.erlide.wrangler.refactoring.codeinspection.generatefunctioncallgraph".equals(actionId)) {
-                runInspection("Function callgraph", GraphResultingInspectionHandler.FUNCTION_CALL_GRAPH_VIEW_ID,
+            } else if ("org.erlide.wrangler.refactoring.codeinspection.generatefunctioncallgraph"
+                    .equals(actionId)) {
+                runInspection("Function callgraph",
+                        GraphResultingInspectionHandler.FUNCTION_CALL_GRAPH_VIEW_ID,
                         "There is no dependent functions in the module!", tmpFile,
                         "gen_function_callgraph", "sss", tmpFile.getAbsolutePath(),
                         wranglerSelection.getFilePath(),
                         wranglerSelection.getSearchPath());
 
-            } else if ("org.erlide.wrangler.refactoring.codeinspection.generatemodulegraph".equals(actionId)) {
+            } else if ("org.erlide.wrangler.refactoring.codeinspection.generatemodulegraph"
+                    .equals(actionId)) {
                 final Boolean answer = MessageDialog.openQuestion(
                         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Labels", "Label edges with function names called?");
-                runInspection("Module dependency graph", GraphResultingInspectionHandler.MODULE_GRAPH_VIEW_ID,
+                runInspection("Module dependency graph",
+                        GraphResultingInspectionHandler.MODULE_GRAPH_VIEW_ID,
                         "There is no dependent modules in the project!", tmpFile,
                         "gen_module_graph", "ssx", tmpFile.getAbsolutePath(),
                         wranglerSelection.getSearchPath(), new OtpErlangBoolean(answer));
 
-            } else if ("org.erlide.wrangler.refactoring.codeinspection.improperdependecies".equals(actionId)) {
+            } else if ("org.erlide.wrangler.refactoring.codeinspection.improperdependecies"
+                    .equals(actionId)) {
                 runInspection("Improper module dependencies",
                         GraphResultingInspectionHandler.IMPROPER_DEPENDECIES_VIEW_ID,
                         "There is no improper module dependecies!", tmpFile,
@@ -134,9 +139,10 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
             if (b) {
                 try (final FileInputStream fis = new FileInputStream(tmpFile)) {
                     if (fis.available() > 0) {
-                        byte[] data = GraphViz.load(fis, "png", 0, 0);
-                        ImageData imageData = new ImageData(new ByteArrayInputStream(data));
-                        Image img = new Image(Display.getCurrent(), imageData);
+                        final byte[] data = GraphViz.load(fis, "png", 0, 0);
+                        final ImageData imageData = new ImageData(
+                                new ByteArrayInputStream(data));
+                        final Image img = new Image(Display.getCurrent(), imageData);
                         CodeInspectionViewsManager.showDotImage(img, viewtTitle,
                                 secondaryID, tmpFile);
                     } else {

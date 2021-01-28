@@ -81,7 +81,7 @@ public class DialogField {
      */
     public void postSetFocusOnDialogField(final Display display) {
         if (display != null) {
-            display.asyncExec(() -> setFocus());
+            display.asyncExec(this::setFocus);
         }
     }
 

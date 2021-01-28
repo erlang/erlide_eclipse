@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -22,7 +22,7 @@ package com.ericsson.otp.erlang;
  * {@link OtpNode OtpNode} and {@link OtpSelf OtpSelf}.
  */
 public class OtpLocalNode extends AbstractNode {
-    private int serial;
+    private int serial = 0;
     private int pidCount = 1;
     private int portCount = 1;
     private int refId[];

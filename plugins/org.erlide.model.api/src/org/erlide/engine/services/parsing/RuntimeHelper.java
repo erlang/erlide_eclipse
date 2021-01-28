@@ -46,7 +46,6 @@ public class RuntimeHelper {
         try {
             r1 = target.call("erlide_backend", "parse_string", "s", string);
         } catch (final Exception e) {
-            ErlLogger.error(e);
             throw new ParserException(
                     "Could not parse string \"" + string + "\": " + e.getMessage());
         }

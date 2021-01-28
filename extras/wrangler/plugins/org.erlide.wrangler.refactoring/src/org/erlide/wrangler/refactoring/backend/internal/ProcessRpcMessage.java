@@ -42,7 +42,6 @@ public class ProcessRpcMessage extends AbstractRefactoringRpcMessage {
         }
         final OtpErlangString errorMsg = (OtpErlangString) wranglerResult;
         setUnsuccessful(errorMsg.stringValue());
-        return;
 
     }
 

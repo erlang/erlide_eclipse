@@ -25,8 +25,7 @@ public class CoverTabGroup extends AbstractLaunchConfigurationTabGroup {
     public void createTabs(final ILaunchConfigurationDialog dialog, final String mode) {
         final List<ILaunchConfigurationTab> tabs = new ArrayList<>(
                 createMyTabs(dialog, mode));
-        tabs.addAll(Arrays.asList(
-                new ILaunchConfigurationTab[] { new EnvironmentTab(), new CommonTab() }));
+        tabs.addAll(Arrays.asList(new EnvironmentTab(), new CommonTab()));
         setTabs(tabs.toArray(new ILaunchConfigurationTab[0]));
 
     }

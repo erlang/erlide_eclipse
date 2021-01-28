@@ -2,6 +2,8 @@ package org.erlide.engine.services.search;
 
 import java.util.EnumSet;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -37,9 +39,10 @@ public abstract class ErlangSearchPattern {
     protected static final OtpErlangAtom RECORD_FIELD_REF_ATOM = new OtpErlangAtom(
             "record_field_ref");
 
-    public static EnumSet<SearchFor> allSearchFor = EnumSet.allOf(SearchFor.class);
+    public static EnumSet<@NonNull SearchFor> allSearchFor = EnumSet
+            .allOf(SearchFor.class);
 
-    public static EnumSet<LimitTo> allLimitTo = EnumSet.allOf(LimitTo.class);
+    public static EnumSet<@NonNull LimitTo> allLimitTo = EnumSet.allOf(LimitTo.class);
 
     protected final LimitTo limitTo;
 

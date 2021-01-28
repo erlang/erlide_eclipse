@@ -44,7 +44,6 @@ public class ErlangScratchPad extends AbstractErlangEditor implements ISaveableP
      *
      */
     public ErlangScratchPad() {
-        super();
         registerListeners();
     }
 
@@ -166,7 +165,8 @@ public class ErlangScratchPad extends AbstractErlangEditor implements ISaveableP
 
     @Override
     protected void initializeKeyBindingScopes() {
-        setKeyBindingScopes(new String[] { "org.erlide.ui.erlangEditorScope" }); //$NON-NLS-1$
+        setKeyBindingScopes(new String[] { "org.erlide.ui.erlangEditorScope" //$NON-NLS-1$
+        });
     }
 
     @Override

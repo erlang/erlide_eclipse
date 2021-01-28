@@ -147,7 +147,6 @@ public class ErlangEditor extends AbstractErlangEditor
             null, IDocumentExtension4.UNKNOWN_MODIFICATION_STAMP);
 
     public ErlangEditor() {
-        super();
         fErlangEditorErrorTickUpdater = new ErlangEditorErrorTickUpdater(this);
 
         annotationSupport = new AnnotationSupport(this, getAnnotationPreferenceLookup());
@@ -219,7 +218,8 @@ public class ErlangEditor extends AbstractErlangEditor
 
     @Override
     protected void initializeKeyBindingScopes() {
-        setKeyBindingScopes(new String[] { "org.erlide.ui.erlangEditorScope" }); //$NON-NLS-1$
+        setKeyBindingScopes(new String[] { "org.erlide.ui.erlangEditorScope" //$NON-NLS-1$
+        });
     }
 
     class PreferenceChangeListener implements IPreferenceChangeListener {
@@ -830,7 +830,7 @@ public class ErlangEditor extends AbstractErlangEditor
 
         if (reference != null) {
 
-            StyledText textWidget = null;
+            StyledText textWidget;
 
             final ISourceViewer sourceViewer = getSourceViewer();
             if (sourceViewer == null) {
@@ -843,7 +843,7 @@ public class ErlangEditor extends AbstractErlangEditor
             }
 
             try {
-                ISourceRange range = null;
+                ISourceRange range;
                 range = reference.getSourceRange();
 
                 if (range == null) {
@@ -1222,7 +1222,6 @@ public class ErlangEditor extends AbstractErlangEditor
                 if (sourceViewer instanceof ProjectionViewer) {
                     new ToggleFoldingRunner().runWhenNextVisible();
                 }
-                return;
             }
         } finally {
             super.handlePreferenceStoreChanged(event);

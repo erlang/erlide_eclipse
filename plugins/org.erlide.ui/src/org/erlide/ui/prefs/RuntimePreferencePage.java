@@ -121,7 +121,6 @@ public class RuntimePreferencePage extends PreferencePage implements
     private ISelection fPrevSelection = new StructuredSelection();
 
     public RuntimePreferencePage() {
-        super();
         setTitle("Installed Erlang runtimes ");
         setDescription("Add, remove or edit runtime definitions.\n"
                 + "The checked one will be used by default in new projects "

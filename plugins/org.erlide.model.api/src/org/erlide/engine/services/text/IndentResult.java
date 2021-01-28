@@ -15,7 +15,6 @@ public class IndentResult {
 
     public IndentResult(final String text, final int removeNext,
             final boolean addNewLine) {
-        super();
         this.text = text;
         this.removeNext = removeNext;
         this.addNewLine = addNewLine;

@@ -54,7 +54,7 @@
         name="org.eclipse.xtend.sdk.feature.group"
         versionRange="[2.8.3,2.9.0)"/>
     <repository
-        url="http://download.erlide.org/update"/>
+        url="https://download.erlide.org/update"/>
     <repository
         url="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
     <description>Install the tools needed in the IDE to work with the source code for ${scope.project.label}</description>

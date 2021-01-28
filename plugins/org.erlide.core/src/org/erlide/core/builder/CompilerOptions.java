@@ -2,6 +2,7 @@ package org.erlide.core.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -152,28 +153,19 @@ public class CompilerOptions {
                 } else {
                     helper.remove(option.getName());
                 }
-            } else if (option instanceof ModuleOption) {
+            } else if (option instanceof ModuleOption || option instanceof RawOption) {
                 if (value != null) {
                     final String avalue = (String) value;
                     helper.putString(option.getName(), avalue);
                 } else {
                     helper.remove(option.getName());
                 }
-            } else if (option instanceof RawOption) {
-                if (value != null) {
-                    final String avalue = (String) value;
-                    helper.putString(option.getName(), avalue);
-                } else {
-                    helper.remove(option.getName());
-                }
+            } else if (value != null) {
+                @SuppressWarnings("unchecked")
+                final Collection<Pair<String, String>> val = (Collection<Pair<String, String>>) value;
+                helper.putString(option.getName(), val.toString());
             } else {
-                if (value != null) {
-                    @SuppressWarnings("unchecked")
-                    final Collection<Pair<String, String>> val = (Collection<Pair<String, String>>) value;
-                    helper.putString(option.getName(), val.toString());
-                } else {
-                    helper.remove(option.getName());
-                }
+                helper.remove(option.getName());
             }
         }
         helper.flush();
@@ -190,19 +182,13 @@ public class CompilerOptions {
                 if (!Strings.isNullOrEmpty(value)) {
                     options.put(option, PathsOption.fromString(value));
                 }
-            } else if (option instanceof ModuleOption) {
+            } else if (option instanceof ModuleOption || option instanceof RawOption) {
                 if (!Strings.isNullOrEmpty(value)) {
                     options.put(option, value);
                 }
-            } else if (option instanceof RawOption) {
-                if (!Strings.isNullOrEmpty(value)) {
-                    options.put(option, value);
-                }
-            } else {
-                if (value != null) {
-                    final String[] str = value.split(",");
-                    options.put(option, new Pair<>(str[0], str[1]));
-                }
+            } else if (value != null) {
+                final String[] str = value.split(",");
+                options.put(option, new Pair<>(str[0], str[1]));
             }
         }
         options.put(CompilerOptions.DEBUG_INFO, true);
@@ -224,9 +210,7 @@ public class CompilerOptions {
                     final Iterable<String> value = (Iterable<String>) optionValue;
                     final OtpErlangList val = (OtpErlangList) ((PathsOption) option)
                             .toTerm(value);
-                    for (final OtpErlangObject inc : val.elements()) {
-                        result.add(inc);
-                    }
+                    Collections.addAll(result, val.elements());
                 } else if (option instanceof ModuleOption) {
                     final String value = (String) optionValue;
                     final OtpErlangObject val = ((ModuleOption) option).toTerm(value);
@@ -235,9 +219,7 @@ public class CompilerOptions {
                     final String value = (String) optionValue;
                     final OtpErlangList val = (OtpErlangList) ((RawOption) option)
                             .toTerm(value);
-                    for (final OtpErlangObject item : val.elements()) {
-                        result.add(item);
-                    }
+                    Collections.addAll(result, val.elements());
                 } else {
                     try {
                         final OtpErlangList val = ((DefineOption) option)

@@ -12,6 +12,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.ErlElementKind;
@@ -222,15 +223,13 @@ public class IErlElementTest extends ErlModelTestBase {
                 return false; // avoid digging through otp
             }
             final String name = element.getName();
-            if ("ebin".equals(name)) {
+            if ("ebin".equals(name) || name.startsWith(".")) {
                 return false; // avoid possible beam-files
-            } else if (name.startsWith(".")) {
-                return false; // avoid eclipse internals
             }
             elements.add(element);
             return true;
         };
-        final EnumSet<AcceptFlags> noneOf = EnumSet.noneOf(AcceptFlags.class);
+        final EnumSet<@NonNull AcceptFlags> noneOf = EnumSet.noneOf(AcceptFlags.class);
         project.accept(visitor, noneOf, ErlElementKind.MODULE);
         final List<IErlElement> kindModuleElementsVisited = Lists.newArrayList(elements);
         elements.clear();

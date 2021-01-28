@@ -22,21 +22,7 @@ public final class ErlangEditorMessages extends NLS {
     private static final ResourceBundle fgBundleForConstructedKeys = ResourceBundle
             .getBundle(ErlangEditorMessages.BUNDLE_FOR_CONSTRUCTED_KEYS);
 
-    /**
-     * Returns the message bundle which contains constructed keys.
-     *
-     * @since 3.1
-     * @return the message bundle
-     */
-    public static ResourceBundle getBundleForConstructedKeys() {
-        return ErlangEditorMessages.fgBundleForConstructedKeys;
-    }
-
     private static final String BUNDLE_NAME = ErlangEditorMessages.class.getName();
-
-    private ErlangEditorMessages() {
-        // Do not instantiate
-    }
 
     public static String AddImportOnSelection_label;
     public static String AddImportOnSelection_tooltip;
@@ -135,6 +121,20 @@ public final class ErlangEditorMessages extends NLS {
     public static String ContentAssistProposal_label;
     public static String ContentAssistProposal_tooltip;
     public static String ContentAssistProposal_description;
+
+    /**
+     * Returns the message bundle which contains constructed keys.
+     *
+     * @since 3.1
+     * @return the message bundle
+     */
+    public static ResourceBundle getBundleForConstructedKeys() {
+        return ErlangEditorMessages.fgBundleForConstructedKeys;
+    }
+
+    private ErlangEditorMessages() {
+        // Do not instantiate
+    }
 
     static {
         NLS.initializeMessages(ErlangEditorMessages.BUNDLE_NAME,

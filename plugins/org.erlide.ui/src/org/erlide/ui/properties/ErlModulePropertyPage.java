@@ -17,7 +17,6 @@ public class ErlModulePropertyPage extends PropertyPage {
     private Text text;
 
     public ErlModulePropertyPage() {
-        super();
     }
 
     @Override

@@ -19,7 +19,7 @@ public enum TracePatternColumn {
     private final String name;
     private final int width;
 
-    private TracePatternColumn(final String name, final int width) {
+    TracePatternColumn(final String name, final int width) {
         this.name = name;
         this.width = width;
     }

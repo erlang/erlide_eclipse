@@ -175,10 +175,9 @@ public class ErlangSearchTreeContentProvider extends ErlangSearchContentProvider
             if (fResult.getMatchCount(element) > 0) {
                 if (viewer.testFindItem(element) != null) {
                     toUpdate.add(element);
-                } else {
-                    if (!treeLimited || viewer.getTree().getItemCount() < elementLimit) {
-                        toAdd.add(element);
-                    }
+                } else if (!treeLimited
+                        || viewer.getTree().getItemCount() < elementLimit) {
+                    toAdd.add(element);
                 }
             } else {
                 toRemove.add(element);

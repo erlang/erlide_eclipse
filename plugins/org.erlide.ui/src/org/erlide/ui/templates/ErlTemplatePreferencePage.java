@@ -39,7 +39,7 @@ public class ErlTemplatePreferencePage extends TemplatePreferencePage {
     public ErlTemplatePreferencePage() {
         setPreferenceStore(ErlideUIPlugin.getDefault().getPreferenceStore());
         setTemplateStore(ErlideUIPlugin.getDefault().getTemplateStore());
-        setContextTypeRegistry(ErlideUIPlugin.getDefault().getContextTypeRegistry());
+        // setContextTypeRegistry(ErlideUIPlugin.getDefault().getContextTypeRegistry());
     }
 
     @Override

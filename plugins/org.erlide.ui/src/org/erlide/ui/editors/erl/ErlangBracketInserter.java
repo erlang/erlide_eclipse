@@ -79,9 +79,7 @@ class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
             try {
                 final Position[] positions = event.getDocument().getPositions(fCategory);
 
-                for (int i = 0; i != positions.length; i++) {
-
-                    final Position position = positions[i];
+                for (final Position position : positions) {
 
                     if (position.isDeleted()) {
                         continue;

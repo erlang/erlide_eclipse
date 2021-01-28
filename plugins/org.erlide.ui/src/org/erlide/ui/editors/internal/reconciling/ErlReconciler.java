@@ -44,7 +44,6 @@ public class ErlReconciler implements IReconciler {
             final boolean isIncremental, final boolean chunkReconciler, final String path,
             final IErlModule module, final ITextEditor editor) {
 
-        super();
         Assert.isNotNull(strategy);
 
         setIsIncrementalReconciler(isIncremental);

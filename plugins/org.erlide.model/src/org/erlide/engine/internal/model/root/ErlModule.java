@@ -11,6 +11,7 @@ package org.erlide.engine.internal.model.root;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -127,8 +128,12 @@ public class ErlModule extends Openable implements IErlModule {
                 if (file.isAccessible() && file.isSynchronized(0)) {
                     try {
                         charset = Charset.forName(file.getCharset());
-                        initialText = Util.getInputStreamAsString(file.getContents(),
-                                charset.name());
+                        try (InputStream contentStream = file.getContents()) {
+                            initialText = Util.getInputStreamAsString(contentStream,
+                                    charset.name());
+                        } catch (final IOException e) {
+                            // ignore
+                        }
                     } catch (final CoreException e) {
                         charset = Charsets.UTF_8;
                         ErlLogger.warn(e);

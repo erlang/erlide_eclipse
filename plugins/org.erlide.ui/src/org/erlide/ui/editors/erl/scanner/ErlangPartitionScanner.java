@@ -15,7 +15,6 @@ import com.google.common.collect.Lists;
 public class ErlangPartitionScanner extends RuleBasedPartitionScanner {
 
     public ErlangPartitionScanner() {
-        super();
         final IToken character = new Token(IErlangPartitions.ERLANG_CHARACTER);
         final IToken string = new Token(IErlangPartitions.ERLANG_STRING);
         final IToken comment = new Token(IErlangPartitions.ERLANG_COMMENT);

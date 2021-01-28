@@ -227,7 +227,6 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 
     private void addSortActions(final IMenuManager mgr) {
         if (getLayout() != FLAG_LAYOUT_FLAT) {
-            return;
         }
         // final MenuManager sortMenu = new MenuManager(
         // "Sort by");

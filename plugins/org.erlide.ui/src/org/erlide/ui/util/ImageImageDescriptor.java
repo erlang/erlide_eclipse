@@ -22,12 +22,11 @@ public class ImageImageDescriptor extends ImageDescriptor {
      * Constructor for ImagImageDescriptor.
      */
     public ImageImageDescriptor(final Image image) {
-        super();
         fImage = image;
     }
 
     @Override
-    public ImageData getImageData(int zoom) {
+    public ImageData getImageData(final int zoom) {
         return fImage.getImageData(zoom);
     }
 

@@ -10,6 +10,7 @@ package org.erlide.ui.dialogs.fields;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -112,9 +113,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
             // workaround for bug 53853
             final Object[] checked = ((CheckboxTableViewer) fTable).getCheckedElements();
             final List<Object> res = new ArrayList<>(checked.length);
-            for (final Object element : checked) {
-                res.add(element);
-            }
+            Collections.addAll(res, checked);
             return res;
         }
 
@@ -213,9 +212,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
      */
     @Override
     protected boolean getManagedButtonState(final ISelection sel, final int index) {
-        if (index == fCheckAllButtonIndex) {
-            return !fElements.isEmpty();
-        } else if (index == fUncheckAllButtonIndex) {
+        if (index == fCheckAllButtonIndex || index == fUncheckAllButtonIndex) {
             return !fElements.isEmpty();
         }
         return super.getManagedButtonState(sel, index);

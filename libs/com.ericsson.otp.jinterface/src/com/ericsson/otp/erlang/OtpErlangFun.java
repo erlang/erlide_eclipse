@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2009. All Rights Reserved.
+ * Copyright Ericsson AB 2009-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -87,10 +87,8 @@ public class OtpErlangFun extends OtpErlangObject {
             if (f.md5 != null) {
                 return false;
             }
-        } else {
-            if (!Arrays.equals(md5, f.md5)) {
-                return false;
-            }
+        } else if (!Arrays.equals(md5, f.md5)) {
+            return false;
         }
         if (index != f.index || uniq != f.uniq) {
             return false;

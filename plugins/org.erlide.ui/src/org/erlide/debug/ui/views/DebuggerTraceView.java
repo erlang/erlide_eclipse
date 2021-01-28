@@ -471,7 +471,7 @@ public class DebuggerTraceView extends AbstractDebugView
             ErlLogger.error(e);
             return;
         }
-        IEditorInput input = null;
+        IEditorInput input;
         input = EditorUtility.getEditorInput(module);
         if (input != null) {
             final String editorId = EditorUtility.getEditorID(input, module);
@@ -510,8 +510,8 @@ public class DebuggerTraceView extends AbstractDebugView
         final TableLayout layout = new TableLayout();
         TreeViewerColumn column;
         final String[] names = { "Kind", "Function", //$NON-NLS-1$ //$NON-NLS-2$
-                org.erlide.debug.ui.views.ActionMessages
-                        .getString("DebuggerTraceView.5") }; //$NON-NLS-1$
+                org.erlide.debug.ui.views.ActionMessages.getString("DebuggerTraceView.5") //$NON-NLS-1$
+        };
         for (final String name : names) {
             column = new TreeViewerColumn(viewer, SWT.NONE);
             final TreeColumn treeColumn = column.getColumn();

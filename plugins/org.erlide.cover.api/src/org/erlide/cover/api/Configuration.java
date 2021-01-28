@@ -58,7 +58,7 @@ public class Configuration implements IConfiguration {
         if (project == null) {
             throw new CoverException("no project set");
         }
-        IErlModule module = null;
+        IErlModule module;
         module = project.getModule(name);
         modules.put(name, module);
     }

@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -243,7 +244,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                 new ArrayList<>());
         contentProvider.addModules(interpret);
 
-        EnumSet<ErlDebugFlags> debugFlags;
+        EnumSet<@NonNull ErlDebugFlags> debugFlags;
         try {
             final int attribute = config.getAttribute(ErlRuntimeAttributes.DEBUG_FLAGS,
                     ErlDebugFlags.getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS));
@@ -283,7 +284,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
      * @param debugFlags
      *            flags
      */
-    private void setFlagCheckboxes(final EnumSet<ErlDebugFlags> debugFlags) {
+    private void setFlagCheckboxes(final EnumSet<@NonNull ErlDebugFlags> debugFlags) {
         if (attachOnFirstCallCheck == null) {
             // I don't know why these are null sometimes...
             return;
@@ -302,8 +303,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
      *
      * @return flags as int
      */
-    private EnumSet<ErlDebugFlags> getFlagCheckboxes() {
-        final EnumSet<ErlDebugFlags> result = EnumSet.noneOf(ErlDebugFlags.class);
+    private EnumSet<@NonNull ErlDebugFlags> getFlagCheckboxes() {
+        final EnumSet<@NonNull ErlDebugFlags> result = EnumSet
+                .noneOf(ErlDebugFlags.class);
         if (attachOnFirstCallCheck.getSelection()) {
             result.add(ErlDebugFlags.ATTACH_ON_FIRST_CALL);
         }

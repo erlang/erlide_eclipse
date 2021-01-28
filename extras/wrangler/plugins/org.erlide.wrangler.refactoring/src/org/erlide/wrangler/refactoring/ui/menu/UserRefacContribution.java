@@ -20,7 +20,6 @@ import org.erlide.wrangler.refactoring.backend.UserRefactoringsManager;
 public class UserRefacContribution extends CompoundContributionItem {
 
     public UserRefacContribution() {
-        super();
     }
 
     public UserRefacContribution(final String id) {

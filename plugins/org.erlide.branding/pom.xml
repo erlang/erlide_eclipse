@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>org.erlide.branding</artifactId>
-  <version>0.56.0-SNAPSHOT</version>
+  <version>0.57.0-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 
     <build>
@@ -27,10 +27,6 @@
                     </filesets>
                 </configuration>
             </plugin>
-<!--             <plugin> -->
-<!--                 <groupId>org.eclipse.xtend</groupId> -->
-<!--                 <artifactId>xtend-maven-plugin</artifactId> -->
-<!--                 </plugin> -->
         </plugins>
     </build>
 

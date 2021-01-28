@@ -27,8 +27,6 @@ public final class ErlConsoleDocument extends Document implements BackendShellLi
     private final IBackendShell shell;
 
     public ErlConsoleDocument(final IBackendShell shell) {
-        super();
-
         if (ErlConsoleDocument.LEGAL_CONTENT_TYPES == null) {
             final IoRequestKind[] values = IoRequestKind.values();
             final String[] ss = new String[values.length];

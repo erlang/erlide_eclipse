@@ -30,10 +30,7 @@ public class RuntimeCore {
     }
 
     public static IRuntimeInfoCatalog getRuntimeInfoCatalog() {
-        if (RuntimeCore.runtimeInfoCatalog != null) {
-            return RuntimeCore.runtimeInfoCatalog;
-        }
-        return null;
+        return RuntimeCore.runtimeInfoCatalog;
     }
 
 }

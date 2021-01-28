@@ -21,7 +21,7 @@ public enum ErlideImagePrefix {
 
     private String prefix;
 
-    private ErlideImagePrefix(final String prefix) {
+    ErlideImagePrefix(final String prefix) {
         this.prefix = prefix;
     }
 

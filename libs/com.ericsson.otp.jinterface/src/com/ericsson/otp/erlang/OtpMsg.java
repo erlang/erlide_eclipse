@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2010. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -68,7 +68,7 @@ public class OtpMsg {
 
     // send has receiver pid but no sender information
     OtpMsg(final OtpErlangPid to, final OtpInputStream paybuf) {
-        tag = OtpMsg.sendTag;
+        tag = sendTag;
         from = null;
         this.to = to;
         toName = null;
@@ -78,7 +78,7 @@ public class OtpMsg {
 
     // send has receiver pid but no sender information
     OtpMsg(final OtpErlangPid to, final OtpErlangObject payload) {
-        tag = OtpMsg.sendTag;
+        tag = sendTag;
         from = null;
         this.to = to;
         toName = null;
@@ -88,7 +88,7 @@ public class OtpMsg {
 
     // send_reg has sender pid and receiver name
     OtpMsg(final OtpErlangPid from, final String toName, final OtpInputStream paybuf) {
-        tag = OtpMsg.regSendTag;
+        tag = regSendTag;
         this.from = from;
         this.toName = toName;
         to = null;
@@ -98,7 +98,7 @@ public class OtpMsg {
 
     // send_reg has sender pid and receiver name
     OtpMsg(final OtpErlangPid from, final String toName, final OtpErlangObject payload) {
-        tag = OtpMsg.regSendTag;
+        tag = regSendTag;
         this.from = from;
         this.toName = toName;
         to = null;

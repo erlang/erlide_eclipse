@@ -13,8 +13,7 @@ Export-Package: org.erlide.core,
  org.erlide.engine.services.parsing
 Require-Bundle: org.erlide.testing.libs,
  org.junit,
- com.google.truth;bundle-version="0.28.0"
- 
+ com.google.truth;bundle-version="1.0.0"
 Import-Package: org.erlide.engine.internal,
  org.eclipse.jdt.annotation;resolution:=optional
 Automatic-Module-Name: org.erlide.core.tests

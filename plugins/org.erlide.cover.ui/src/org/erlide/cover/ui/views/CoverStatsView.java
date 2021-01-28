@@ -206,7 +206,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     private void hookContextMenu() {
         final MenuManager menuMgr = new MenuManager("#PopupMenu");
         menuMgr.setRemoveAllWhenShown(true);
-        menuMgr.addMenuListener(manager -> CoverStatsView.this.fillContextMenu(manager));
+        menuMgr.addMenuListener(CoverStatsView.this::fillContextMenu);
         final Menu menu = menuMgr.createContextMenu(viewer.getControl());
         viewer.getControl().setMenu(menu);
         getSite().registerContextMenu(menuMgr, viewer);

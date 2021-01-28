@@ -39,29 +39,29 @@ public enum TokenHighlight {
     int defaultStyle;
     private final String displayName;
 
-    private TokenHighlight(final RGB defaultColor, final int defaultStyle) {
+    TokenHighlight(final RGB defaultColor, final int defaultStyle) {
         this(defaultColor, defaultStyle, null);
     }
 
-    private TokenHighlight(final RGB defaultColor, final int defaultStyle,
+    TokenHighlight(final RGB defaultColor, final int defaultStyle,
             final String displayName) {
         this.defaultColor = defaultColor;
         this.defaultStyle = defaultStyle;
         this.displayName = displayName;
     }
 
-    private TokenHighlight(String defaultColor, int defaultStyle) {
+    TokenHighlight(final String defaultColor, final int defaultStyle) {
         this(defaultColor, defaultStyle, null);
     }
 
-    private TokenHighlight(String defaultColor, int defaultStyle,
+    TokenHighlight(final String defaultColor, final int defaultStyle,
             final String displayName) {
         this.defaultColor = getRgbFromCss(defaultColor);
         this.defaultStyle = defaultStyle;
         this.displayName = displayName;
     }
 
-    public static RGB getRgbFromCss(String color) {
+    public static RGB getRgbFromCss(final String color) {
         int i;
         int s;
         int f;
@@ -90,20 +90,22 @@ public enum TokenHighlight {
             throw new IllegalArgumentException(
                     "Unrecognizable CSS color string: '" + color + "'");
         }
-        Integer r = Integer.valueOf(color.substring(i, i + s), 16) * f;
-        Integer g = Integer.valueOf(color.substring(i + s, i + 2 * s), 16) * f;
-        Integer b = Integer.valueOf(color.substring(i + 2 * s, i + 3 * s), 16) * f;
+        final Integer r = Integer.valueOf(color.substring(i, i + s), 16) * f;
+        final Integer g = Integer.valueOf(color.substring(i + s, i + 2 * s), 16) * f;
+        final Integer b = Integer.valueOf(color.substring(i + 2 * s, i + 3 * s), 16) * f;
         return new RGB(r, g, b);
     }
 
-    public static String getValueFromCss(String css, String key, String kind) {
-        Pattern pattern = Pattern.compile(
+    public static String getValueFromCss(final String css, final String key,
+            final String kind) {
+        final Pattern pattern = Pattern.compile(
                 ".*'editor_colors_" + key + "_" + kind + " = ([^']+)'.*", Pattern.DOTALL);
         System.out.println(pattern);
         System.out.println(css);
-        Matcher m = pattern.matcher(css);
-        if (m.matches())
+        final Matcher m = pattern.matcher(css);
+        if (m.matches()) {
             return m.group(1);
+        }
         return null;
     }
 
@@ -116,7 +118,7 @@ public enum TokenHighlight {
                 Scanner s = new Scanner(is)) {
             s.useDelimiter("\\A");
             return s.hasNext() ? s.next() : "";
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             return "";
         }

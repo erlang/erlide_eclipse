@@ -125,12 +125,10 @@ public class EdocView extends AbstractInfoView {
         public void run() {
             if (fControl instanceof StyledText) {
                 ((StyledText) fControl).selectAll();
-            } else {
-                // https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
-                // ((Browser)fControl).selectAll();
-                if (fSelectionProvider != null) {
-                    fSelectionProvider.fireSelectionChanged();
-                }
+            } else // https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
+            // ((Browser)fControl).selectAll();
+            if (fSelectionProvider != null) {
+                fSelectionProvider.fireSelectionChanged();
             }
         }
     }

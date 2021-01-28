@@ -14,6 +14,9 @@ import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+/*
+ * Disabled for now, possibly causes an infinite loop (end of 'changing')
+ */
 public class HandleEdocLinksLocationListener implements LocationListener {
     /**
      *
@@ -87,7 +90,8 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                     control.setInput(input);
                 }
             } else if (edocView != null) {
-                edocView.setInfo(input);
+                // This might cause an infinite event loop
+                // edocView.setInfo(input);
             }
         }
     }

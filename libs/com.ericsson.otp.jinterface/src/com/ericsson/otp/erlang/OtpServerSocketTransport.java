@@ -52,7 +52,6 @@ public class OtpServerSocketTransport implements OtpServerTransport {
     /**
      * @see ServerSocket#accept()
      */
-    @SuppressWarnings("resource")
     @Override
     public OtpTransport accept() throws IOException {
         final Socket sock = socket.accept();

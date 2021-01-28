@@ -154,7 +154,6 @@ public class DialyzerPreferencePage extends PropertyPage
     private final List<String> shownPLTFiles;
 
     public DialyzerPreferencePage() {
-        super();
         setTitle("Dialyzer options");
         setDescription("Select the options for dialyzer.");
         shownPLTFiles = Lists.newArrayList();
@@ -249,7 +248,7 @@ public class DialyzerPreferencePage extends PropertyPage
         final Label l = new Label(comp, SWT.NONE);
         l.setText("Analyze from ");
         fromCombo = new Combo(comp, SWT.READ_ONLY);
-        fromCombo.setItems(new String[] { "Source", "Binaries" });
+        fromCombo.setItems("Source", "Binaries");
         fromCombo.setText(fromCombo.getItem(prefs.getFromSource() ? 0 : 1));
     }
 
@@ -356,10 +355,8 @@ public class DialyzerPreferencePage extends PropertyPage
                 fBlockEnableState.restore();
                 fBlockEnableState = null;
             }
-        } else {
-            if (fBlockEnableState == null) {
-                fBlockEnableState = ControlEnableState.disable(prefsComposite);
-            }
+        } else if (fBlockEnableState == null) {
+            fBlockEnableState = ControlEnableState.disable(prefsComposite);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2007-2009. All Rights Reserved.
+ * Copyright Ericsson AB 2007-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -61,7 +61,7 @@ public class OtpErlangBitstr extends OtpErlangObject {
     }
 
     private void check_bitstr(final byte[] abin, final int a_pad_bits) {
-        if (a_pad_bits < 0 || a_pad_bits > 7) {
+        if (a_pad_bits < 0 || 7 < a_pad_bits) {
             throw new java.lang.IllegalArgumentException("Padding must be in range 0..7");
         }
         if (a_pad_bits != 0 && abin.length == 0) {
@@ -102,7 +102,7 @@ public class OtpErlangBitstr extends OtpErlangObject {
      */
     public OtpErlangBitstr(final Object o) {
         try {
-            bin = OtpErlangBitstr.toByteArray(o);
+            bin = toByteArray(o);
             pad_bits = 0;
         } catch (final IOException e) {
             throw new java.lang.IllegalArgumentException(
@@ -190,7 +190,7 @@ public class OtpErlangBitstr extends OtpErlangObject {
         if (pad_bits != 0) {
             return null;
         }
-        return OtpErlangBitstr.fromByteArray(bin);
+        return fromByteArray(bin);
     }
 
     /**

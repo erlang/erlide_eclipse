@@ -35,7 +35,6 @@ public class EscapeRule implements IPredicateRule {
                         scanner.unread();
                         scanner.unread();
                     }
-                    return token;
                 } else if (c != ICharacterScanner.EOF) {
                     int hex = 0;
                     while (isHexChar(c)) {
@@ -49,7 +48,6 @@ public class EscapeRule implements IPredicateRule {
                     if (hex > 0 && c != ICharacterScanner.EOF) {
                         scanner.unread();
                     }
-                    return token;
                 }
                 return token;
             } else if (c != ICharacterScanner.EOF) {

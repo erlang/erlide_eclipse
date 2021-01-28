@@ -167,7 +167,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         treeViewer.setInput(TraceCollections.getFilesList());
 
         // listener
-        treeViewer.addSelectionChangedListener(event -> doSelection(event));
+        treeViewer.addSelectionChangedListener(this::doSelection);
     }
 
     /**
@@ -232,7 +232,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
             task.finish();
         } else {
             // when loading was initialized outside this view
-            Display.getDefault().asyncExec(() -> doAfterLoadingFile());
+            Display.getDefault().asyncExec(this::doAfterLoadingFile);
         }
     }
 

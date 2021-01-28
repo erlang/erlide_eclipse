@@ -69,7 +69,6 @@ public class CompilerPreferencePage extends PropertyPage
     private Text customOptionsText;
 
     public CompilerPreferencePage() {
-        super();
         setTitle("Compiler options");
         setDescription("Select the compiler options to be used.");
         optionButtons = Lists.newArrayList();
@@ -210,10 +209,8 @@ public class CompilerPreferencePage extends PropertyPage
                 fBlockEnableState.restore();
                 fBlockEnableState = null;
             }
-        } else {
-            if (fBlockEnableState == null) {
-                fBlockEnableState = ControlEnableState.disable(prefsComposite);
-            }
+        } else if (fBlockEnableState == null) {
+            fBlockEnableState = ControlEnableState.disable(prefsComposite);
         }
     }
 

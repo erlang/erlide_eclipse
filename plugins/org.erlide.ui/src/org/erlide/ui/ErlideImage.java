@@ -68,7 +68,7 @@ public enum ErlideImage {
                 .getEntry("/icons/full/"); //$NON-NLS-1$
     }
 
-    private ErlideImage(final ErlideImagePrefix prefix, final String path) {
+    ErlideImage(final ErlideImagePrefix prefix, final String path) {
         this.prefix = prefix.getPrefix();
         this.path = path;
     }

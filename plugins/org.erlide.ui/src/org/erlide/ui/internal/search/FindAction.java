@@ -83,9 +83,8 @@ public abstract class FindAction extends SelectionDispatchAction {
     }
 
     boolean canOperateOn(final IErlElement element) {
-        if (element instanceof IErlFunctionClause) {
-            return true;
-        } else if (element instanceof IErlPreprocessorDef) {
+        if (element instanceof IErlFunctionClause
+                || element instanceof IErlPreprocessorDef) {
             return true;
         } else if (element instanceof IErlAttribute) {
             final IErlAttribute a = (IErlAttribute) element;

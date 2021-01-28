@@ -8,12 +8,10 @@
  *******************************************************************************/
 package org.erlide.runtime.runtimeinfo;
 
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
 
 public class RuntimeVersion implements Comparable<RuntimeVersion> {
 
@@ -55,62 +53,15 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
 
     public static class Serializer {
 
-        private static final char[] minorMap = { 'A', 'B', 'C' };
-
         public static RuntimeVersion parse(final String version) {
             return Serializer.parse(version, null);
         }
 
-        public static RuntimeVersion parseOld(final String version, final String aMicro) {
-            int major;
-            int minor = RuntimeVersion.UNUSED;
-            int micro = RuntimeVersion.UNUSED;
-            String update_level = null;
-
-            Preconditions.checkArgument(version.charAt(0) == 'R');
-            int i = 1;
-            char c;
-            do {
-                c = version.charAt(i);
-                if (c >= '0' && c <= '9') {
-                    i++;
-                }
-            } while (c >= '0' && c <= '9' && i < version.length());
-            final String substring = version.substring(1, i);
-            major = Integer.parseInt(substring);
-            if (i < version.length()) {
-                c = version.charAt(i);
-                minor = Arrays.binarySearch(Serializer.minorMap, c);
-                i++;
-                if (i < version.length()) {
-                    final int n1 = version.indexOf('-');
-                    final int n2 = version.indexOf('_');
-                    int n;
-                    if (n1 == -1) {
-                        n = n2;
-                    } else if (n2 == -1) {
-                        n = n1;
-                    } else {
-                        n = Math.min(n1, n2);
-                    }
-                    if (n == -1) {
-                        micro = Integer.parseInt(version.substring(i));
-                    } else {
-                        micro = Integer.parseInt(version.substring(i, n));
-                        update_level = version.substring(n);
-                    }
-                } else {
-                    micro = 0;
-                }
-            }
-            return new RuntimeVersion(major, minor, micro, update_level);
-        }
-
         public static RuntimeVersion parseNew(final String version, final String aMicro) {
             final int major;
-            int minor = 0;
-            int micro = 0;
-            String update_level = null;
+            int minor;
+            int micro;
+            String update_level;
 
             final Pattern p = Pattern.compile("(\\d+)(\\.\\d+)?(\\.\\d+)?([\\._-].+)?");
             final Matcher m = p.matcher(version);
@@ -138,45 +89,7 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
             if (version == null || version.isEmpty()) {
                 return RuntimeVersion.NO_VERSION;
             }
-
-            if (version.charAt(0) == 'R') {
-                return Serializer.parseOld(version, aMicro);
-            }
             return Serializer.parseNew(version, aMicro);
-        }
-
-        public static String toStringOld(final RuntimeVersion version) {
-            String result = "R" + Integer.toString(version.major);
-            if (version.minor != RuntimeVersion.UNUSED) {
-                result += Serializer.minorMap[version.minor];
-                if (version.micro != RuntimeVersion.UNUSED) {
-                    String m = Integer.toString(version.micro);
-                    if (version.micro != 0) {
-                        if (m.length() == 1) {
-                            m = "0" + m;
-                        }
-                        result += m;
-                        if (version.update_level != null) {
-                            result += version.update_level;
-                        }
-                    }
-                }
-            }
-            return result;
-        }
-
-        public static String toStringNew(final RuntimeVersion version) {
-            String result = Integer.toString(version.major);
-            if (version.minor != RuntimeVersion.UNUSED) {
-                result += "." + Integer.toString(version.minor);
-            }
-            if (version.micro != RuntimeVersion.UNUSED) {
-                result += "." + Integer.toString(version.micro);
-            }
-            if (version.update_level != null) {
-                result += version.update_level;
-            }
-            return result;
         }
 
     }
@@ -186,10 +99,17 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
         if (major == RuntimeVersion.UNUSED) {
             return "";
         }
-        if (major < 17) {
-            return Serializer.toStringOld(this);
+        String result = Integer.toString(major);
+        if (minor != RuntimeVersion.UNUSED) {
+            result += "." + Integer.toString(minor);
         }
-        return Serializer.toStringNew(this);
+        if (micro != RuntimeVersion.UNUSED) {
+            result += "." + Integer.toString(micro);
+        }
+        if (update_level != null) {
+            result += update_level;
+        }
+        return result;
     }
 
     @Override
@@ -204,17 +124,16 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
     @Override
     public int compareTo(final RuntimeVersion o) {
         if (major == o.major) {
-            final int isNew = major >= 17 ? -1 : 1;
             if (minor == o.minor) {
                 if (micro == o.micro) {
                     if (update_level == o.update_level) {
                         return 0;
                     }
                     if (update_level == null) {
-                        return -1 * isNew;
+                        return 1;
                     }
                     if (o.update_level == null) {
-                        return 1 * isNew;
+                        return -1;
                     }
                     return update_level.compareTo(o.update_level);
                 }

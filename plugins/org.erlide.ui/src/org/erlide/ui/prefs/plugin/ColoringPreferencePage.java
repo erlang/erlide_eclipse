@@ -309,7 +309,6 @@ public class ColoringPreferencePage extends PreferencePage
             public int category(final Object element) {
                 // don't sort the top level categories
                 if (fErlangCategory.equals(element)) {
-                    return 0;
                 }
                 // if (fEdocCategory.equals(element)) {
                 // return 1;

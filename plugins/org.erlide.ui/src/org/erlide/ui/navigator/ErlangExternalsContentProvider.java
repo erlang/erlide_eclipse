@@ -27,7 +27,6 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
     ErlangFileContentProvider erlangFileContentProvider = new ErlangFileContentProvider();
 
     public ErlangExternalsContentProvider() {
-        super();
     }
 
     private static final Object[] NO_CHILDREN = new Object[0];

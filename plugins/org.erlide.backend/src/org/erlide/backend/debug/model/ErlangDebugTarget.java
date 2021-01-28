@@ -107,7 +107,8 @@ public class ErlangDebugTarget extends ErlangDebugElement
         debuggerDaemon.start();
 
         // interpret everything we can
-        final EnumSet<ErlDebugFlags> debugFlags = backend.getData().getDebugFlags();
+        final EnumSet<@NonNull ErlDebugFlags> debugFlags = backend.getData()
+                .getDebugFlags();
         final boolean distributed = debugFlags.contains(ErlDebugFlags.DISTRIBUTED_DEBUG);
         distributeDebuggerCode();
         if (distributed) {
@@ -257,6 +258,11 @@ public class ErlangDebugTarget extends ErlangDebugElement
 
     @Override
     public void breakpointAdded(final IBreakpoint breakpoint) {
+        try {
+            ErlLogger.debug("breakpointAdded " + breakpoint.getMarker().toString()
+                    + breakpoint.getMarker().getAttribute(IMarker.LINE_NUMBER));
+        } catch (final CoreException e) {
+        }
         if (supportsBreakpoint(breakpoint)) {
             try {
                 if (breakpoint.isEnabled()
@@ -588,7 +594,12 @@ public class ErlangDebugTarget extends ErlangDebugElement
         final List<String> modules = Lists.newArrayList();
         final String path = ver == null ? "/ebin" : "/ebin/" + ver;
         @SuppressWarnings("rawtypes")
-        final Enumeration beams = bundle.findEntries(path, "*.beam", false);
+        Enumeration beams = bundle.findEntries(path, "*.beam", false);
+        if (beams == null) {
+            ErlLogger.warn("No beams found in %s for version %s, using default!", bundle,
+                    ver);
+        }
+        beams = bundle.findEntries("/ebin", "*.beam", false);
         if (beams == null) {
             ErlLogger.error("No beams found in %s!", bundle);
             return modules;

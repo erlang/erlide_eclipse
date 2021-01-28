@@ -35,10 +35,6 @@ public class BeamLoader {
             if (((OtpErlangAtom) t.elementAt(0)).atomValue().compareTo("module") == 0) {
                 return true;
             }
-            // code couldn't be loaded
-            // TODO throw exception?
-            ErlLogger.error("Could not load " + moduleName + ": " + r);
-            return false;
         }
         // binary couldn't be extracted
         ErlLogger.error("Could not load " + moduleName + ": " + r);

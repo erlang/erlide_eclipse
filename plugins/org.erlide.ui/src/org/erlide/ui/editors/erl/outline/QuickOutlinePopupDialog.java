@@ -448,11 +448,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
                 if (e.keyCode == 0x0D) {
                     // Return key was pressed
                     gotoSelectedElement();
-                } else if (e.keyCode == SWT.ARROW_DOWN) {
+                } else if (e.keyCode == SWT.ARROW_DOWN || e.keyCode == SWT.ARROW_UP) {
                     // Down key was pressed
-                    fTreeViewer.getTree().setFocus();
-                } else if (e.keyCode == SWT.ARROW_UP) {
-                    // Up key was pressed
                     fTreeViewer.getTree().setFocus();
                 } else if (e.character == 0x1B) {
                     // Escape key was pressed

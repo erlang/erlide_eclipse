@@ -271,7 +271,10 @@ public final class PresenterControlCreator
             }
             tbm.update(true);
 
-            control.addLocationListener(new HandleEdocLinksLocationListener(control));
+            // There are issues witht he implementation for this listener, need
+            // investigation
+            // (it sets webkit process to run at 100% indefinitely; probably a loop?)
+            // control.addLocationListener(new HandleEdocLinksLocationListener(control));
 
             return control;
         }

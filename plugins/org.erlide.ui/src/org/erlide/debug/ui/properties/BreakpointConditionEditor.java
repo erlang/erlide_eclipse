@@ -178,7 +178,7 @@ public class BreakpointConditionEditor {
             fPage.removeErrorMessage(fErrorMessage);
         } else {
             final String text = fViewer.getDocument().get();
-            if (!(text != null && !text.trim().isEmpty())) {
+            if (text == null || text.trim().isEmpty()) {
                 fPage.addErrorMessage(fErrorMessage);
             } else {
                 fPage.removeErrorMessage(fErrorMessage);

@@ -7,7 +7,6 @@ import org.erlide.backend.debug.model.ErlangStackFrame;
 public class ErlangSourceLookupParticipant extends AbstractSourceLookupParticipant {
 
     public ErlangSourceLookupParticipant() {
-        super();
     }
 
     @Override

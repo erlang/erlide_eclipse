@@ -18,7 +18,7 @@ public enum NodeColumn {
     private final String name;
     private final int width;
 
-    private NodeColumn(final String name, final int width) {
+    NodeColumn(final String name, final int width) {
         this.name = name;
         this.width = width;
     }

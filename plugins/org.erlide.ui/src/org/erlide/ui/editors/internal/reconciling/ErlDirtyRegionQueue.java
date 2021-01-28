@@ -23,7 +23,6 @@ public class ErlDirtyRegionQueue {
      * Creates a new empty dirty region.
      */
     public ErlDirtyRegionQueue() {
-        super();
     }
 
     /**

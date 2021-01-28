@@ -134,7 +134,6 @@ class ErlangCompareUtilities {
                 return ErlangCompareUtilities.readString(is, encoding);
             }
         } catch (final IOException e1) {
-            return null;
         }
         return null;
     }

@@ -155,10 +155,8 @@ public final class StringUtils {
             try {
                 if (c == null) {
                     c = s.charAt(i);
-                } else {
-                    if (c != s.charAt(i)) {
-                        return null;
-                    }
+                } else if (c != s.charAt(i)) {
+                    return null;
                 }
             } catch (final StringIndexOutOfBoundsException e) {
                 return null;

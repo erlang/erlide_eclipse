@@ -236,7 +236,7 @@ public class ProcessListView extends ViewPart {
         viewer.getControl().setMenu(menu);
         getSite().registerContextMenu(menuMgr, viewer);
         menuMgr.setRemoveAllWhenShown(true);
-        menuMgr.addMenuListener(manager -> ProcessListView.this.fillContextMenu(manager));
+        menuMgr.addMenuListener(ProcessListView.this::fillContextMenu);
     }
 
     private void contributeToActionBars() {

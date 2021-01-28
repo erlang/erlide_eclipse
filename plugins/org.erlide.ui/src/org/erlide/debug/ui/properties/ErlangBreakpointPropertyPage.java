@@ -219,7 +219,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
                     public void shellActivated(final ShellEvent e) {
                         final Shell shell = (Shell) e.getSource();
                         shell.setText(MessageFormat.format("Create Breakpoint for {0}",
-                                new Object[] { getName(getBreakpoint()) }));
+                                getName(getBreakpoint())));
                         shell.removeShellListener(this);
                     }
 

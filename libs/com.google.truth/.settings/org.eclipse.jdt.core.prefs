@@ -1,4 +1,3 @@
-#Sat Dec 10 21:34:43 CET 2011
 eclipse.preferences.version=1
 org.eclipse.jdt.core.compiler.annotation.inheritNullAnnotations=enabled
 org.eclipse.jdt.core.compiler.annotation.missingNonNullByDefaultAnnotation=ignore
@@ -97,4 +96,5 @@ org.eclipse.jdt.core.compiler.problem.unusedPrivateMember=warning
 org.eclipse.jdt.core.compiler.problem.unusedTypeParameter=ignore
 org.eclipse.jdt.core.compiler.problem.unusedWarningToken=ignore
 org.eclipse.jdt.core.compiler.problem.varargsArgumentNeedCast=warning
+org.eclipse.jdt.core.compiler.release=disabled
 org.eclipse.jdt.core.compiler.source=1.8

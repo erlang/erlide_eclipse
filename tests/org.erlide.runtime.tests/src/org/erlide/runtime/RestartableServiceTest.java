@@ -53,7 +53,7 @@ public class RestartableServiceTest {
     }
 
     private RestartableService service;
-    private final Provider<Service> dummyFactory = () -> new DummyService();
+    private final Provider<Service> dummyFactory = DummyService::new;
 
     @After
     public void cleanup() {

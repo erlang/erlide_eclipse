@@ -35,7 +35,6 @@ public class SelectionButtonDialogField extends DialogField {
      * SWT.TOGGLE, SWT.PUSH
      */
     public SelectionButtonDialogField(final int buttonStyle) {
-        super();
         fIsSelected = false;
         fAttachedDialogFields = null;
         fButtonStyle = buttonStyle;

@@ -191,7 +191,6 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
         private List<LiveExpr> exprlist;
 
         public ViewContentProvider() {
-            super();
         }
 
         @Override
@@ -399,7 +398,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
 
         @Override
         public Object getValue(final Object element, final String property) {
-            Object result = null;
+            Object result;
             final LiveExpr el = (LiveExpr) element;
             result = el.fExpr;
             return result;
@@ -424,8 +423,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
     private void hookContextMenu() {
         final MenuManager menuMgr = new MenuManager("#PopupMenu");
         menuMgr.setRemoveAllWhenShown(true);
-        menuMgr.addMenuListener(
-                manager -> LiveExpressionsView.this.fillContextMenu(manager));
+        menuMgr.addMenuListener(LiveExpressionsView.this::fillContextMenu);
         final Menu menu = menuMgr.createContextMenu(viewer.getControl());
         viewer.getControl().setMenu(menu);
         getSite().registerContextMenu(menuMgr, viewer);

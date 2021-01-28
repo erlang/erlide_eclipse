@@ -10,6 +10,7 @@ package org.erlide.ui.views;
 
 import java.util.Collection;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.backend.BackendCore;
@@ -31,7 +32,8 @@ public class BackendContentProvider implements IStructuredContentProvider {
 
     @Override
     public Object[] getElements(final Object inputElement) {
-        final Collection<IBackend> bs = BackendCore.getBackendManager().getAllBackends();
+        final Collection<@NonNull IBackend> bs = BackendCore.getBackendManager()
+                .getAllBackends();
         return bs.toArray(new IBackend[bs.size()]);
     }
 }

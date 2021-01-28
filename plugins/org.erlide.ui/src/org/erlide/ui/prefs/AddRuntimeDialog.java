@@ -180,17 +180,15 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
         final String name = fName.getText();
         if (name == null || name.trim().isEmpty()) {
             status.setError("Enter the runtime's name"); //$NON-NLS-1$
+        } else if (fRequestor.isDuplicateName(name)
+                && (fEditedRuntime == null || !name.equals(fEditedRuntime.getName()))) {
+            status.setError("The name is already used"); //$NON-NLS-1$
         } else {
-            if (fRequestor.isDuplicateName(name) && (fEditedRuntime == null
-                    || !name.equals(fEditedRuntime.getName()))) {
-                status.setError("The name is already used"); //$NON-NLS-1$
-            } else {
-                final IStatus s = ResourcesPlugin.getWorkspace().validateName(name,
-                        IResource.FILE);
-                if (!s.isOK()) {
-                    status.setError(MessageFormat.format("Name is invalid: %s",
-                            (Object[]) new String[] { s.getMessage() }));
-                }
+            final IStatus s = ResourcesPlugin.getWorkspace().validateName(name,
+                    IResource.FILE);
+            if (!s.isOK()) {
+                status.setError(MessageFormat.format("Name is invalid: %s",
+                        (Object[]) new String[] { s.getMessage() }));
             }
         }
         return status;

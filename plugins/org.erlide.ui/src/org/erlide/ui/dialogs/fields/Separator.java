@@ -32,7 +32,6 @@ public class Separator extends DialogField {
      *            of the separator. See <code>Label</code> for possible styles.
      */
     public Separator(final int style) {
-        super();
         fStyle = style;
     }
 

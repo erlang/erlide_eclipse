@@ -187,22 +187,17 @@ public class SearchResultLabelProvider extends LabelProvider
     public StyledString getStyledText(final Object element) {
         final StyledString result = new StyledString();
         if (fOrder == SearchResultLabelProvider.SHOW_LABEL_PATH
-                || element instanceof String && isInTree()) {
+                || element instanceof String && isInTree()
+                || (fOrder != SearchResultLabelProvider.SHOW_LABEL)) {
             result.append(getElementText(element));
             result.append(' ');
             result.append(getMatchCountText(element));
             result.append(" - ", StyledString.QUALIFIER_STYLER);
             result.append(getPathText(element));
-        } else if (fOrder == SearchResultLabelProvider.SHOW_LABEL) {
+        } else {
             result.append(getElementText(element));
             result.append(' ');
             result.append(getMatchCountText(element));
-        } else { // SHOW_PATH_LABEL
-            result.append(getElementText(element));
-            result.append(' ');
-            result.append(getMatchCountText(element));
-            result.append(" - ", StyledString.QUALIFIER_STYLER);
-            result.append(getPathText(element));
         }
         return result;
     }

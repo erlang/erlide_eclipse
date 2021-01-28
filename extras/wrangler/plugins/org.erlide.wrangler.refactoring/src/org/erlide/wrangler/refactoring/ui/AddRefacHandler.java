@@ -229,7 +229,7 @@ public class AddRefacHandler extends AbstractHandler {
 
         private final String dir;
 
-        private RefacType(final String dir) {
+        RefacType(final String dir) {
             this.dir = dir;
         }
 

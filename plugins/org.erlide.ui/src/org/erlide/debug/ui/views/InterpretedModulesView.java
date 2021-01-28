@@ -16,6 +16,7 @@ import org.eclipse.debug.ui.AbstractDebugView;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.contexts.DebugContextEvent;
 import org.eclipse.debug.ui.contexts.IDebugContextListener;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
@@ -92,7 +93,7 @@ public class InterpretedModulesView extends AbstractDebugView
                     .getLaunchConfiguration();
             setViewerInput(launchConfiguration);
             try {
-                final EnumSet<ErlDebugFlags> debugFlags = ErlDebugFlags.makeSet(
+                final EnumSet<@NonNull ErlDebugFlags> debugFlags = ErlDebugFlags.makeSet(
                         launchConfiguration.getAttribute(ErlRuntimeAttributes.DEBUG_FLAGS,
                                 ErlDebugFlags
                                         .getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS)));

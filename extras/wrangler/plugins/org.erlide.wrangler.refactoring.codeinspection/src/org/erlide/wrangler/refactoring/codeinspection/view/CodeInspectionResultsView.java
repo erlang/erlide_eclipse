@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 György Orosz.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2010 György Orosz. All rights reserved. This program and the accompanying
+ * materials are made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     György Orosz - initial API and implementation
+ * Contributors: György Orosz - initial API and implementation
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.codeinspection.view;
 
@@ -14,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -36,8 +32,8 @@ import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 /**
- * View which handles textual data referencing to an Erlang element, got from
- * code inspection functions
+ * View which handles textual data referencing to an Erlang element, got from code
+ * inspection functions
  *
  * @author Gyorgy Orosz
  *
@@ -106,21 +102,15 @@ public class CodeInspectionResultsView extends ViewPart {
         viewer.setContentProvider(new ViewContentProvider());
         viewer.setLabelProvider(new ViewLabelProvider());
         viewer.setInput(getViewSite());
-        viewer.addDoubleClickListener(new IDoubleClickListener() {
+        viewer.addDoubleClickListener(event -> {
 
-            @Override
-            public void doubleClick(final DoubleClickEvent event) {
-
-                final IStructuredSelection s = (IStructuredSelection) event
-                        .getSelection();
-                final Object o = s.getFirstElement();
-                if (o instanceof IErlModule) {
-                    final IErlModule m = (IErlModule) o;
-                    WranglerUtils.openFile((IFile) m.getResource());
-                } else if (o instanceof IErlFunctionClause) {
-                    WranglerUtils.highlightSelection((IErlFunctionClause) o);
-                }
-
+            final IStructuredSelection s = (IStructuredSelection) event.getSelection();
+            final Object o = s.getFirstElement();
+            if (o instanceof IErlModule) {
+                final IErlModule m = (IErlModule) o;
+                WranglerUtils.openFile((IFile) m.getResource());
+            } else if (o instanceof IErlFunctionClause) {
+                WranglerUtils.highlightSelection((IErlFunctionClause) o);
             }
 
         });

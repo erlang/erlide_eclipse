@@ -1,36 +1,37 @@
-
-.informaltable
-{
+.informaltable {
     margin-left: 5em;
     margin-right: 5em;
 }
-.sect1, .sect2, .sect3, .sect4
-{
+
+.sect1,
+.sect2,
+.sect3,
+.sect4 {
     padding-left: 1em;
 }
-DIV.mediaobject
-{
+
+DIV.mediaobject {
     margin-left: 5em;
 }
-SPAN.guilabel
-{
+
+SPAN.guilabel {
     outline: thin solid #E0E5AE;
 }
-.command
-{
+
+.command {
     font-family: monospace;
 }
-.screen
-{
+
+.screen {
     border: 1px dotted #0000DD;
 }
-.toc DL
-{
+
+.toc DL {
     margin-top: 0;
     margin-bottom: 0;
 }
-.toc
-{
+
+.toc {
     border: 1px dotted;
     background-color: #EFF3F5;
     margin-left: 2em;
@@ -38,18 +39,18 @@ SPAN.guilabel
     padding-left: 1em;
     padding-right: 1em;
 }
-.term
-{
+
+.term {
     font-weight: bold;
 }
-DIV.ABSTRACT
-{
+
+DIV.ABSTRACT {
     /*[disabled]border:2px solid;*/
     /*[disabled]padding-left:10;*/
     /*[disabled]padding-right:10;*/
 }
-PRE.SCREEN
-{
+
+PRE.SCREEN {
     /*[disabled]font-family:monospace;*/
     /*[disabled]white-space:pre;*/
     /*[disabled]width:100%;*/
@@ -57,8 +58,8 @@ PRE.SCREEN
     /*[disabled]border:1px dotted #009999;*/
     /*[disabled]padding-left:15pt;*/
 }
-PRE.PROGRAMLISTING
-{
+
+PRE.PROGRAMLISTING {
     /*[disabled]font-family:monospace;*/
     /*[disabled]white-space:pre;*/
     /*[disabled]width:100%;*/
@@ -67,52 +68,60 @@ PRE.PROGRAMLISTING
     /*[disabled]border:1px dashed #2F6FAB;*/
     /*[disabled]padding-left:15pt;*/
 }
-.note, .warning, .important
-{
+
+.note,
+.warning,
+.important {
     border: 1px dashed #000000;
 }
-.important TABLE, .important TH, .important TD
-{
+
+.important TABLE,
+.important TH,
+.important TD {
     border-style: none;
     vertical-align: middle;
 }
-.note TABLE, .note TD, .note TH
-{
+
+.note TABLE,
+.note TD,
+.note TH {
     border-style: none;
     vertical-align: middle;
 }
-.warning TABLE, .warning TD, .warning TH
-{
+
+.warning TABLE,
+.warning TD,
+.warning TH {
     border-style: none;
     vertical-align: middle;
 }
-.bold
-{
+
+.bold {
     font-weight: bold;
 }
-TABLE.TIP
-{
+
+TABLE.TIP {
     /*[disabled]font-style:italic;*/
     /*[disabled]border:1px solid #000000;*/
     /*[disabled]width:70%;*/
     /*[disabled]margin-left:15%;*/
 }
-TABLE.WARNING
-{
+
+TABLE.WARNING {
     /*[disabled]font-style:italic;*/
     /*[disabled]font-weight:bold;*/
     /*[disabled]border:4px ridge #FF0000;*/
     /*[disabled]width:70%;*/
     /*[disabled]margin-left:15%;*/
 }
-DIV.VARIABLELIST
-{
+
+DIV.VARIABLELIST {
     /*[disabled]font-style:normal;*/
     /*[disabled]font-weight:normal;*/
     /*[disabled]padding-left:20px;*/
 }
-.VARLISTENTRY
-{
+
+.VARLISTENTRY {
     /*[disabled]font-weight:bold;*/
     /*[disabled]margin-top:10px;*/
     /*[disabled]color:#FFFFFF;*/
@@ -120,31 +129,31 @@ DIV.VARIABLELIST
     /*[disabled]border:1px solid #606090;*/
     /*[disabled]padding:1px;*/
 }
-A.link
-{
+
+A.link {
     background: transparent url(../images/external.png) no-repeat right center;
     padding-right: 12px;
 }
-DIV.imagelink A.link
-{
+
+DIV.imagelink A.link {
     background: transparent;
-    padding-right: 0px;
+    padding-right: 0;
 }
-CODE
-{
+
+CODE {
     background-color: #E3E3BE;
 }
-CODE.prompt
-{
+
+CODE.prompt {
     font-weight: bolder;
     color: #2F0FCB;
 }
-CODE.filename
-{
+
+CODE.filename {
     background-color: white;
 }
-.screen
-{
+
+.screen {
     background-color: #F3F3DE;
     padding-left: 1em;
     padding-top: 0.5em;
@@ -152,17 +161,19 @@ CODE.filename
     margin-left: 1em;
     margin-right: 1em;
 }
-.userinput
-{
+
+.userinput {
     color: #0D0DA9;
 }
-.guimenu, .guisubmenu, .guimenuitem
-{
+
+.guimenu,
+.guisubmenu,
+.guimenuitem {
     font-family: monospace;
     outline: thin dashed #BDBD90;
 }
-DIV.author
-{
+
+DIV.author {
     margin-left: 27px;
     font-size: small;
 }

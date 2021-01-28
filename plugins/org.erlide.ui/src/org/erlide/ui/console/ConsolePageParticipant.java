@@ -171,7 +171,6 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IShowInS
             if (launch != null) {
                 return required.cast(launch.getLaunchConfiguration());
             }
-            return null;
         }
         return null;
     }

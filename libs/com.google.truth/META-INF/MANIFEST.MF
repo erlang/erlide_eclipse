@@ -2,10 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Testing Support Libraries
 Bundle-SymbolicName: com.google.truth
-Bundle-Version: 0.28.0
+Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-ClassPath: truth-0.28.jar
-Export-Package: com.google.common.truth
-Require-Bundle: com.google.guava;bundle-version="15.0.0",
+Bundle-ClassPath: truth-1.0.jar,
+ truth-java8-extension-1.0.jar
+Require-Bundle: com.google.guava;bundle-version="[21.0.0,28.0.0)",
  org.junit;bundle-version="4.12.0"
 Automatic-Module-Name: com.google.truth
+Export-Package: com.google.common.truth

@@ -129,7 +129,6 @@ public abstract class ErlidePreferencePage extends PreferencePage {
             (Text) e.widget);
 
     public ErlidePreferencePage() {
-        super();
     }
 
     public ErlidePreferencePage(final String title) {

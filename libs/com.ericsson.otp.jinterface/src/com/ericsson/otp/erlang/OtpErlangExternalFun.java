@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2009. All Rights Reserved.
+ * Copyright Ericsson AB 2009-2016. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -27,7 +27,6 @@ public class OtpErlangExternalFun extends OtpErlangObject {
 
     public OtpErlangExternalFun(final String module, final String function,
             final int arity) {
-        super();
         this.module = module;
         this.function = function;
         this.arity = arity;

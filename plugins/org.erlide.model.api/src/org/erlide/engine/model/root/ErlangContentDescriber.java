@@ -180,7 +180,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     public String readLine(final InputStream in) throws IOException {
         final int _CR = 13;
         final int _LF = 10;
-        int _ch = -1; // currently read char
+        int _ch; // currently read char
 
         final StringBuffer sb = new StringBuffer("");
         _ch = in.read();

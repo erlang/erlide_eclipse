@@ -29,7 +29,6 @@ public class StringDialogField extends DialogField {
     private ModifyListener fModifyListener;
 
     public StringDialogField() {
-        super();
         fText = ""; //$NON-NLS-1$
     }
 
@@ -92,7 +91,7 @@ public class StringDialogField extends DialogField {
     public Text getTextControl(final Composite parent) {
         if (fTextControl == null) {
             assertCompositeNotNull(parent);
-            fModifyListener = e -> doModifyText(e);
+            fModifyListener = this::doModifyText;
 
             fTextControl = new Text(parent, SWT.SINGLE | SWT.BORDER);
             // moved up due to 1GEUNW2

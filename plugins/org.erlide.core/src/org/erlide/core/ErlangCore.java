@@ -177,8 +177,7 @@ public final class ErlangCore {
                 .getVersion();
 
         version = version + "~" + coreVersion.toString() + " (model api="
-                + modelVersion.toString() + ")" + " (kernel=" + kernelVersion.toString()
-                + ")";
+                + modelVersion.toString() + ")" + " (kernel=" + kernelVersion + ")";
         return version;
     }
 

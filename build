@@ -1,3 +1,3 @@
 #! /bin/bash
 
-./mvnw -B -U clean verify -P help -Dmaven.test.failure.ignore=true
+./mvnw -B -U enforcer:display-info clean verify -P help -Dmaven.test.failure.ignore=true

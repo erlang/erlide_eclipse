@@ -99,7 +99,6 @@ public class ProblemsLabelDecorator
             }
         } catch (final CoreException e) {
             if (e.getStatus().getCode() == IResourceStatus.MARKER_NOT_FOUND) {
-                return 0;
             }
         }
         return 0;
@@ -205,9 +204,7 @@ public class ProblemsLabelDecorator
         }
         fListeners.add(listener);
         if (fProblemChangedListener == null) {
-            fProblemChangedListener = (changedResources,
-                    isMarkerChange) -> fireProblemsChanged(changedResources,
-                            isMarkerChange);
+            fProblemChangedListener = this::fireProblemsChanged;
             ErlideUIPlugin.getDefault().getProblemMarkerManager()
                     .addListener(fProblemChangedListener);
         }

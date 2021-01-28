@@ -54,8 +54,6 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
      */
     public SelectionButtonDialogFieldGroup(final int buttonsStyle,
             final String[] buttonNames, final int nColumns, final int borderStyle) {
-        super();
-
         fButtonNames = buttonNames;
 
         final int nButtons = buttonNames.length;

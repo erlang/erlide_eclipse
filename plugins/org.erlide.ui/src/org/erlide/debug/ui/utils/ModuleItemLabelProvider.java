@@ -25,7 +25,6 @@ public class ModuleItemLabelProvider extends LabelProvider
     protected WorkbenchLabelProvider provider = new WorkbenchLabelProvider();
 
     public ModuleItemLabelProvider() {
-        super();
         provider.addListener(this);
     }
 

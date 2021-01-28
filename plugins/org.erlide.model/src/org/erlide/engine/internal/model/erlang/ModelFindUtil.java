@@ -106,10 +106,7 @@ public class ModelFindUtil implements ModelFindService {
             if (module2 != null) {
                 module2.open(null);
                 final IErlFunction function = module2.findFunction(erlangFunction);
-                if (function != null) {
-                    return function;
-                }
-                return null;
+                return function;
             }
         }
         return null;

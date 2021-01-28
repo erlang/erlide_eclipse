@@ -4,6 +4,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.engine.ErlangEngine;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,10 +27,11 @@ public class SimpleParserTest {
     @Test
     public void parse_1() {
         final String input = "a. 1. [c].";
-        final List<OtpErlangObject> expected = Lists.newArrayList(new OtpErlangAtom("a"),
-                new OtpErlangLong(1), new OtpErlangList(new OtpErlangAtom("c")));
+        final List<@NonNull OtpErlangObject> expected = Lists.newArrayList(
+                new OtpErlangAtom("a"), new OtpErlangLong(1),
+                new OtpErlangList(new OtpErlangAtom("c")));
         final List<OtpErlangObject> actual = parser.parse(input);
-        assertThat(actual).containsAllIn(expected).inOrder();
+        assertThat(actual).containsAtLeastElementsIn(expected).inOrder();
     }
 
 }

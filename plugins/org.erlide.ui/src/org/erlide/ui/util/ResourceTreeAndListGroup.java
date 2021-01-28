@@ -2,6 +2,7 @@ package org.erlide.ui.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -397,21 +398,17 @@ public class ResourceTreeAndListGroup extends EventManager
 
         if (addAll) {
             filter.filterElements(listContentProvider.getElements(treeElement), monitor);
-        } else { // Add what we have stored
-            if (checkedStateStore.containsKey(treeElement)) {
-                filter.filterElements(checkedStateStore.get(treeElement), monitor);
-            }
+        } else if (checkedStateStore.containsKey(treeElement)) {
+            filter.filterElements(checkedStateStore.get(treeElement), monitor);
         }
 
         final Object[] treeChildren = treeContentProvider.getChildren(treeElement);
         for (final Object child : treeChildren) {
             if (addAll) {
                 findAllSelectedListElements(child, fullLabel, true, filter, monitor);
-            } else { // Only continue for those with checked state
-                if (checkedStateStore.containsKey(child)) {
-                    findAllSelectedListElements(child, fullLabel,
-                            whiteCheckedTreeItems.contains(child), filter, monitor);
-                }
+            } else if (checkedStateStore.containsKey(child)) {
+                findAllSelectedListElements(child, fullLabel,
+                        whiteCheckedTreeItems.contains(child), filter, monitor);
             }
 
         }
@@ -491,9 +488,7 @@ public class ResourceTreeAndListGroup extends EventManager
             @Override
             public void filterElements(final Object[] elements,
                     final IProgressMonitor monitor) {
-                for (final Object element : elements) {
-                    returnValue.add(element);
-                }
+                Collections.addAll(returnValue, elements);
             }
         };
 
@@ -847,9 +842,7 @@ public class ResourceTreeAndListGroup extends EventManager
 
         final Object[] listItems = listContentProvider.getElements(treeElement);
         final List<Object> listItemsChecked = new ArrayList<>();
-        for (final Object listItem : listItems) {
-            listItemsChecked.add(listItem);
-        }
+        Collections.addAll(listItemsChecked, listItems);
 
         checkedStateStore.put(treeElement, listItemsChecked);
     }

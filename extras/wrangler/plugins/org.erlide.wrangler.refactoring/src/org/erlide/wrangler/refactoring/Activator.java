@@ -62,8 +62,7 @@ public class Activator extends AbstractUIPlugin {
      */
     private void initWrangler() throws CoreException {
         final IOtpRpc mb = getBackend();
-        RpcResult res = mb.call_noexception("wrangler_refacs", "init_eclipse", "",
-                new Object[0]);
+        RpcResult res = mb.call_noexception("wrangler_refacs", "init_eclipse", "");
         ErlLogger.debug("Wrangler app started:\n" + res);
         res = mb.call_noexception("wrangler_error_logger", "init", "x",
                 new OtpErlangList());

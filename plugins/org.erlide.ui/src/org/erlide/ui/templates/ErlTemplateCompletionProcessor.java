@@ -24,7 +24,6 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
 
     public ErlTemplateCompletionProcessor(final IDocument doc, final int offset,
             final int length) {
-        super();
         fDocument = doc;
         this.offset = offset;
         this.length = length;

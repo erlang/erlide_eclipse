@@ -4,29 +4,24 @@ with source configurePhase requirements
 
 environment JavaSE-1.8
 
-location "http://download.eclipse.org/releases/photon/" {
-	org.eclipse.e4.rcp.feature.group lazy
-	org.eclipse.jdt.annotation lazy
-	org.eclipse.sdk.ide lazy
+location "http://download.eclipse.org/eclipse/updates/4.9/" {
+  org.eclipse.e4.rcp.feature.group lazy
+  org.eclipse.jdt.annotation lazy
+  org.eclipse.sdk.ide lazy
 }
-location "http://download.erlide.org/update/libs" {
-	com.abstratt.eclipsegraphviz.feature.feature.group lazy //[2.2.0, 3.0.0)
-}
-
-location "http://download.eclipse.org/eclipse/updates/4.8/" {
+location "https://download.erlide.org/update/libs" {
+  com.abstratt.eclipsegraphviz.feature.feature.group lazy //[2.2.0, 3.0.0)
 }
 
 location "http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.19.0/"{
-	org.eclipse.xtend.lib lazy
-	org.eclipse.xtend.lib.macro lazy
-	org.eclipse.xtext.xbase.lib lazy
+  org.eclipse.xtext.xbase.lib lazy
 }
 
-location "http://download.erlide.org/update/kernel/0.115.3" {
-	org.erlide.kernel.feature.feature.group lazy
+location "https://download.erlide.org/update/kernel/0.115.3" {
+  org.erlide.kernel.feature.feature.group lazy
 }
 
-location "http://download.eclipse.org/tools/orbit/R-builds/R20170307180635/repository"{
-	com.google.gson [2.7.0, 3.0.0)
-	com.google.guava [18.0.0, 28.0.0)
+location "http://download.eclipse.org/tools/orbit/downloads/drops/R20190602212107/repository"{
+  com.google.gson [2.7.0, 3.0.0)
+  com.google.guava [27.0.0, 28.0.0)
 }

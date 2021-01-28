@@ -259,7 +259,7 @@ public final class BackendManager implements IBackendManager {
 
     @Override
     public IOtpRpc getByName(final String nodeName) {
-        final Collection<IBackend> list = getAllBackends();
+        final Collection<@NonNull IBackend> list = getAllBackends();
         for (final IBackend b : list) {
             if (b.getName().equals(nodeName)) {
                 return b.getOtpRpc();
@@ -275,7 +275,7 @@ public final class BackendManager implements IBackendManager {
         if (info == null) {
             return null;
         }
-        final Collection<IBackend> list = getAllBackends();
+        final Collection<@NonNull IBackend> list = getAllBackends();
         for (final IBackend b : list) {
             if (b.getRuntime().getVersion().equals(version)) {
                 return b.getOtpRpc();
@@ -394,7 +394,7 @@ public final class BackendManager implements IBackendManager {
     @Override
     public synchronized void removeBackend(final IBackend backend) {
         allBackends.remove(backend);
-        if (buildBackends.values().contains(backend)) {
+        if (buildBackends.containsValue(backend)) {
             buildBackends.values().remove(backend);
         }
     }

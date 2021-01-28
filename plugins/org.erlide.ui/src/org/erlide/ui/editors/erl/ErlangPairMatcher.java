@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -349,9 +350,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
         private Set<String> getAllCharacters() {
             if (fStringsCache == null) {
                 final Set<String> set = new HashSet<>();
-                for (final String fPair : fPairs) {
-                    set.add(fPair);
-                }
+                Collections.addAll(set, fPairs);
                 fStringsCache = set;
             }
             return fStringsCache;
@@ -369,9 +368,8 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
          */
         public boolean isOpeningString(final String s, final boolean searchForward) {
             for (int i = 0; i < fPairs.length; i += 2) {
-                if (searchForward && getStartString(i).equals(s)) {
-                    return true;
-                } else if (!searchForward && getEndString(i).equals(s)) {
+                if (searchForward && getStartString(i).equals(s)
+                        || !searchForward && getEndString(i).equals(s)) {
                     return true;
                 }
             }

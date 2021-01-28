@@ -179,7 +179,7 @@ public class ContentAssistTest {
                 .computeCompletionProposals(sourceViewer, offset);
 
         assertThat(ListExtensions.map(Lists.newArrayList(completionProposals),
-                cp -> cp.getDisplayString())).isEqualTo(expected);
+                ICompletionProposal::getDisplayString)).isEqualTo(expected);
     }
 
     // http://www.assembla.com/spaces/erlide/tickets/947

@@ -18,6 +18,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -55,7 +56,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
     private IWorkbench workbench;
 
     private NewProjectData info;
-    private Map<ProjectConfigType, ProjectPreferencesWizardPage> buildPages;
+    private Map<@NonNull ProjectConfigType, ProjectPreferencesWizardPage> buildPages;
     private ErlangNewProjectCreationPage mainPage;
     private ErlangProjectBuilderPage builderPage;
     private WizardNewProjectReferencePage referencePage;

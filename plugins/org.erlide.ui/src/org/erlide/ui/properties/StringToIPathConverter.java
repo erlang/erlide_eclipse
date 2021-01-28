@@ -4,7 +4,7 @@ import org.eclipse.core.databinding.conversion.IConverter;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
-public class StringToIPathConverter implements IConverter {
+public class StringToIPathConverter implements IConverter<String, IPath> {
     @Override
     public Object getToType() {
         return IPath.class;
@@ -16,7 +16,7 @@ public class StringToIPathConverter implements IConverter {
     }
 
     @Override
-    public Object convert(final Object fromObject) {
-        return new Path((String) fromObject);
+    public IPath convert(final String fromObject) {
+        return new Path(fromObject);
     }
 }

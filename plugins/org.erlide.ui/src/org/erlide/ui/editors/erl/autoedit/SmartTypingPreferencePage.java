@@ -22,7 +22,6 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage
         implements IWorkbenchPreferencePage {
 
     public SmartTypingPreferencePage() {
-        super();
         setDescription(ErlEditorMessages.SmartTypingPrefs_Desc);
     }
 
@@ -30,11 +29,13 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage
 
     private static final String[] SMART_TYPING_KEYS = { "strings", "atoms", //$NON-NLS-1$ //$NON-NLS-2$
             "braces", "brackets", //$NON-NLS-1$ //$NON-NLS-2$
-            "parens", "embraceSelection", "pasteReindent" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            "parens", "embraceSelection", "pasteReindent" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    };
 
     // public static final String AUTO_NL_KEY = "indentation"; //$NON-NLS-1$
     public static final String[] AUTO_NL_KEYS = { "semicolon_nl", "dot_nl", "arrow_nl", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            "comma_nl" }; //$NON-NLS-1$
+            "comma_nl" //$NON-NLS-1$
+    };
 
     public static final int STRINGS = 0;
     public static final int ATOMS = 1;
@@ -46,10 +47,12 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage
     public static final int PASTE_REINDENT = 6;
 
     private static final String[] SMART_TYPING_DEFAULTS = { "1", //$NON-NLS-1$
-            "0", "1", "1", "1", "1", "1" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            "0", "1", "1", "1", "1", "1" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+    };
 
     private static final String[] AUTO_NL_DEFAULTS = { "0", "0", //$NON-NLS-1$ //$NON-NLS-2$
-            "0", "0" }; //$NON-NLS-1$ //$NON-NLS-2$
+            "0", "0" //$NON-NLS-1$ //$NON-NLS-2$
+    };
 
     private final List<Button> buttons = new ArrayList<>();
     private final List<Button> autoNLButtons = new ArrayList<>();

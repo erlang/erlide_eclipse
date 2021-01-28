@@ -1,8 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2004 Chengdong Li : cdli@ccs.uky.edu
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Common Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2004 Chengdong Li : cdli@ccs.uky.edu All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Common Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/cpl-v10.html
  *******************************************************************************/
 package org.erlide.wrangler.refactoring.codeinspection.view;
@@ -26,8 +25,8 @@ public class SWT2Dutil {
     }
 
     /**
-     * Given an arbitrary rectangle, get the rectangle with the given transform.
-     * The result rectangle is positive width and positive height.
+     * Given an arbitrary rectangle, get the rectangle with the given transform. The
+     * result rectangle is positive width and positive height.
      *
      * @param af
      *            AffineTransform
@@ -49,8 +48,8 @@ public class SWT2Dutil {
     }
 
     /**
-     * Given an arbitrary rectangle, get the rectangle with the inverse given
-     * transform. The result rectangle is positive width and positive height.
+     * Given an arbitrary rectangle, get the rectangle with the inverse given transform.
+     * The result rectangle is positive width and positive height.
      *
      * @param af
      *            AffineTransform
@@ -110,8 +109,8 @@ public class SWT2Dutil {
     }
 
     /**
-     * Given arbitrary rectangle, return a rectangle with upper-left start and
-     * positive width and height.
+     * Given arbitrary rectangle, return a rectangle with upper-left start and positive
+     * width and height.
      *
      * @param src
      *            source rectangle

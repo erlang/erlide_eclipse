@@ -101,9 +101,7 @@ public class DirectoryTreeGroup extends Composite {
 
     public void setCheckedDirs(final List<String> checkedDirs) {
         this.checkedDirs.clear();
-        for (final String i : checkedDirs) {
-            this.checkedDirs.add(i);
-        }
+        this.checkedDirs.addAll(checkedDirs);
         setChecked();
         checkboxTableViewer.refresh();
     }

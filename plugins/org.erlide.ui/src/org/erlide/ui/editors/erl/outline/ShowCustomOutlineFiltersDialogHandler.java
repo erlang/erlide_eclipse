@@ -22,7 +22,6 @@ import com.google.common.collect.Sets;
 public class ShowCustomOutlineFiltersDialogHandler extends AbstractHandler {
 
     public ShowCustomOutlineFiltersDialogHandler() {
-        super();
     }
 
     @Override

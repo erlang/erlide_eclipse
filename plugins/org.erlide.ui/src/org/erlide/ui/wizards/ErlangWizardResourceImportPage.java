@@ -2,6 +2,7 @@ package org.erlide.ui.wizards;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -369,9 +370,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
         final Object[] newSelectedTypes = dialog.getResult();
         if (newSelectedTypes != null) { // ie.- did not press Cancel
             selectedTypes = new ArrayList<>(newSelectedTypes.length);
-            for (final Object newSelectedType : newSelectedTypes) {
-                selectedTypes.add(newSelectedType);
-            }
+            Collections.addAll(selectedTypes, newSelectedTypes);
             setupSelectionsBasedOnSelectedTypes();
         }
     }
