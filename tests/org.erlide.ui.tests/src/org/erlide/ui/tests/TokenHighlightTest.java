@@ -50,18 +50,5 @@ public class TokenHighlightTest {
         public void detectBadColorValue() {
             TokenHighlight.getRgbFromCss("#1234");
         }
-
-        @Test
-        public void shouldGetValuesFromCss() {
-            final String css = "'editor_colors_keyword_color = 137,89,168' \n"
-                    + "'editor_colors_keyword_style = 1'\n"
-                    + "'editor_colors_atom_color = 77,77,76' \n"
-                    + "'editor_colors_atom_style = 0'\n";
-            assertThat(TokenHighlight.getValueFromCss(css, "keyword", "color"),
-                    is("137,89,168"));
-            assertThat(TokenHighlight.getValueFromCss(css, "keyword", "style"), is("1"));
-            assertThat(TokenHighlight.getValueFromCss(css, "atom", "color"),
-                    is("77,77,76"));
-        }
     }
 }

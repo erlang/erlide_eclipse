@@ -13,5 +13,5 @@ b(X, 16#cafe) ->
         $A ->
             $", "ABC\012\"hello~nthere";
         _ ->
-            a(?X);
+            a(?X) + <<0:4>>;
     end.
