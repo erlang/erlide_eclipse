@@ -1,38 +1,29 @@
 package org.erlide.ui.prefs;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
 import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
-import org.osgi.service.prefs.Preferences;
 
 public enum TokenHighlight {
+    // TODO do we keep the defaults? The css theme is always used.
     //@formatter:off
-    DEFAULT("4271ae", 0),
-    KEYWORD("8959a8", 1),
-    ATOM(new RGB(77,77,76), 0),
-    MACRO(new RGB(234,183,0), 0),
-    ARROW(new RGB(66,113,174), 1),
-    CHAR(new RGB(113,140,0), 0),
-    VARIABLE(new RGB(200,40,41), 0),
-    INTEGER(new RGB( 245,135,31), 0),
-    FLOAT(new RGB( 245,135,31), 0),
+    DEFAULT("004fc7", 0), // Function
+    KEYWORD("7d00ce", 1), // Keyword
+    ATOM("4d4d4c", 0), // Real Foreground
+    MACRO("9c7900", 0), // Class/Operator ?
+    ARROW("004fc7", 1), // Function
+    CHAR("178080", 0),  // Foreground
+    VARIABLE("c70000", 0), // Variable
+    INTEGER("ee6e00", 0), // Number
+    FLOAT("ee6e00", 0), // Number
 
-    COMMENT(new RGB(142,144,140), 0),
-    EDOC_TAG(new RGB(142,144,140), 1, "EDoc tag (in comments)"),
-    HTML_TAG(new RGB(142,144,140), 2, "HTML tag (in comments)"),
+    COMMENT("d13131", 0), // Comment
+    EDOC_TAG("d13131", 1, "EDoc tag (in comments)"), // Comment
+    HTML_TAG("d13131", 2, "HTML tag (in comments)"), // Comment
 
-    STRING(new RGB(113,140,0), 0),
-    ESCAPE_TAG(new RGB(113,140,0), 1, "Escaped chars (in strings)"),
-    TILDE_TAG(new RGB(113,140,0), 1, "Format specifiers (in strings)");
+    STRING("475a00", 0), // String
+    ESCAPE_TAG("475a00", 1, "Escaped chars (in strings)"), // String
+    TILDE_TAG("475a00", 1, "Format specifiers (in strings)"); // String
     //@formatter:on
 
     private final RGB defaultColor;
@@ -96,34 +87,6 @@ public enum TokenHighlight {
         return new RGB(r, g, b);
     }
 
-    public static String getValueFromCss(final String css, final String key,
-            final String kind) {
-        final Pattern pattern = Pattern.compile(
-                ".*'editor_colors_" + key + "_" + kind + " = ([^']+)'.*", Pattern.DOTALL);
-        System.out.println(pattern);
-        System.out.println(css);
-        final Matcher m = pattern.matcher(css);
-        if (m.matches()) {
-            return m.group(1);
-        }
-        return null;
-    }
-
-    public static String getCssTheme() {
-        // IWorkbench workbench = PlatformUI.getWorkbench();
-        // ITheme theme = workbench.getThemeManager().getCurrentTheme();
-        // System.out.println(theme.getColorRegistry().getKeySet());
-        try (InputStream is = TokenHighlight.class
-                .getResourceAsStream("/css/light_highlighting.css");
-                Scanner s = new Scanner(is)) {
-            s.useDelimiter("\\A");
-            return s.hasNext() ? s.next() : "";
-        } catch (final IOException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
     public String getName() {
         return toString().toLowerCase();
     }
@@ -146,31 +109,11 @@ public enum TokenHighlight {
     }
 
     public HighlightStyle getStyle(final IPreferenceStore store) {
-        final IEclipsePreferences node = InstanceScope.INSTANCE
-                .getNode(ColoringPreferencePage.OLD_COLORS_QUALIFIER + "/" + getName());
-        if (node != null) {
-            final String colorString = node.get(ColoringPreferencePage.COLOR_KEY, null);
-            if (colorString != null) {
-                store.setValue(getColorKey(), colorString);
-            }
-            final int styles = node.getInt(ColoringPreferencePage.STYLE_KEY, -1);
-            if (styles != -1) {
-                store.setValue(getStylesKey(), styles);
-            }
-            try {
-                final Preferences parent = node.parent();
-                node.removeNode();
-                parent.sync();
-            } catch (final Exception e) {
-                // ignore
-            }
-        }
-
         final String colorString = store.getString(getColorKey());
         RGB color;
         int styles;
         try {
-            color = StringConverter.asRGB(colorString);
+            color = getRgbFromCss(colorString);
             styles = store.getInt(getStylesKey());
         } catch (final Exception e) {
             color = defaultColor;
