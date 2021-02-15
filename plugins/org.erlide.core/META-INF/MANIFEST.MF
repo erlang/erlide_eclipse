@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.core; singleton:=true
-Bundle-Version: 0.58.0.qualifier
+Bundle-Version: 0.59.0.qualifier
 Bundle-Activator: org.erlide.core.ErlangPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -34,4 +34,3 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: .
 Import-Package: org.eclipse.jdt.annotation;resolution:=optional
 Automatic-Module-Name: org.erlide.core
-

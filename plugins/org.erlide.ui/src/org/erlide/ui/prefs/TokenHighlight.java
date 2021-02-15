@@ -7,23 +7,23 @@ import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
 public enum TokenHighlight {
     // TODO do we keep the defaults? The css theme is always used.
     //@formatter:off
-    DEFAULT("004fc7", 0), // Function
-    KEYWORD("7d00ce", 1), // Keyword
-    ATOM("4d4d4c", 0), // Real Foreground
-    MACRO("9c7900", 0), // Class/Operator ?
-    ARROW("004fc7", 1), // Function
-    CHAR("178080", 0),  // Foreground
-    VARIABLE("c70000", 0), // Variable
-    INTEGER("ee6e00", 0), // Number
-    FLOAT("ee6e00", 0), // Number
+    DEFAULT("0072bc", 0), // Function
+    KEYWORD("ff8d43", 1), // Keyword
+    ATOM("4a4543", 0), // Real Foreground
+    MACRO("bb7334", 0), // Class/Operator ?
+    ARROW("0072bc", 1), // Function
+    CHAR("579b57", 0),  // Foreground
+    VARIABLE("db2d20", 0), // Variable
+    INTEGER("11a0e4", 0), // Number
+    FLOAT("11a0e4", 0), // Number
 
-    COMMENT("d13131", 0), // Comment
-    EDOC_TAG("d13131", 1, "EDoc tag (in comments)"), // Comment
-    HTML_TAG("d13131", 2, "HTML tag (in comments)"), // Comment
+    COMMENT("9fa357", 0), // Comment
+    EDOC_TAG("9fa357", 1, "EDoc tag (in comments)"), // Comment
+    HTML_TAG("9fa357", 2, "HTML tag (in comments)"), // Comment
 
-    STRING("475a00", 0), // String
-    ESCAPE_TAG("475a00", 1, "Escaped chars (in strings)"), // String
-    TILDE_TAG("475a00", 1, "Format specifiers (in strings)"); // String
+    STRING("11a0e4", 0), // String
+    ESCAPE_TAG("11a0e4", 1, "Escaped chars (in strings)"), // String
+    TILDE_TAG("11a0e4", 1, "Format specifiers (in strings)"); // String
     //@formatter:on
 
     private final RGB defaultColor;
@@ -111,13 +111,18 @@ public enum TokenHighlight {
     public HighlightStyle getStyle(final IPreferenceStore store) {
         final String colorString = store.getString(getColorKey());
         RGB color;
-        int styles;
+        int styles = store.getInt(getStylesKey());
         try {
             color = getRgbFromCss(colorString);
-            styles = store.getInt(getStylesKey());
         } catch (final Exception e) {
-            color = defaultColor;
-            styles = defaultStyle;
+            try {
+                final String[] rgb = colorString.split(",");
+                color = new RGB(Integer.valueOf(rgb[0]), Integer.valueOf(rgb[1]),
+                        Integer.valueOf(rgb[2]));
+            } catch (final Exception e1) {
+                color = defaultColor;
+                styles = defaultStyle;
+            }
         }
         return new HighlightStyle(color, styles);
     }

@@ -25,7 +25,8 @@ public class RuntimeFinder {
             CollectionLiterals.<String> newArrayList("c:/program files",
                     "c:/program files (x86)", "c:/programs", "c:/", "c:/apps", "/usr",
                     "/usr/lib", "/usr/lib64", "/usr/local", "/usr/local/lib",
-                    "/Library/Frameworks/erlang/Versions"));
+                    "/Library/Frameworks/erlang/Versions",
+                    "/home/" + System.getProperty("user.name") + "/erlang"));
 
     public static Collection<RuntimeInfo> guessRuntimeLocations() {
         final List<RuntimeInfo> result = CollectionLiterals.<RuntimeInfo> newArrayList();

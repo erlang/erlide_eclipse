@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: erlide model Tests Fragment
 Bundle-SymbolicName: org.erlide.model.tests;singleton:=true
-Bundle-Version: 0.55.0.qualifier
+Bundle-Version: 0.59.0.qualifier
 Bundle-Vendor: erlide.org
 Fragment-Host: org.erlide.model
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -13,7 +13,6 @@ Require-Bundle: org.eclipse.core.filesystem;bundle-version="1.3.1",
  org.erlide.testing.libs,
  org.junit;bundle-version="4.12.0",
  com.google.truth;bundle-version="0.28.0"
- 
 Export-Package: org.erlide.engine.model.builder,
  org.erlide.engine.model.erlang,
  org.erlide.engine.model.erlang.configuration,

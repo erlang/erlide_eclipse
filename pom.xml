@@ -7,7 +7,7 @@
 
 	<groupId>org.erlide</groupId>
 	<artifactId>org.erlide.parent</artifactId>
-	<version>1.0.0</version>
+	<version>0.59.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -101,7 +101,7 @@
 			</repositories>
 		</profile>
 
-		<!-- Jenkins by default defines a property BUILD_NUMBER which is used to 
+		<!-- Jenkins by default defines a property BUILD_NUMBER which is used to
 			enable the profile. -->
 		<profile>
 			<id>jenkins</id>
@@ -117,7 +117,7 @@
 						<artifactId>jacoco-maven-plugin</artifactId>
 						<version>${jacoco-maven-version}</version>
 						<executions>
-							<!-- Prepares the property pointing to the JaCoCo runtime agent which 
+							<!-- Prepares the property pointing to the JaCoCo runtime agent which
 								is passed as VM argument when Maven the Surefire plugin is executed. -->
 							<execution>
 								<id>pre-unit-test</id>
@@ -127,12 +127,12 @@
 								<configuration>
 									<!-- Sets the path to the file which contains the execution data. -->
 									<destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
-									<!-- Sets the name of the property containing the settings for JaCoCo 
+									<!-- Sets the name of the property containing the settings for JaCoCo
 										runtime agent. -->
 									<propertyName>surefireArgLine</propertyName>
 								</configuration>
 							</execution>
-							<!-- Ensures that the code coverage report for unit tests is created 
+							<!-- Ensures that the code coverage report for unit tests is created
 								after unit tests have been run. -->
 							<execution>
 								<id>post-unit-test</id>
@@ -206,7 +206,7 @@
 							<artifact>
 								<groupId>org.erlide</groupId>
 								<artifactId>org.erlide.target</artifactId>
-								<version>0.30.0-SNAPSHOT</version>
+								<version>0.59.0-SNAPSHOT</version>
 							</artifact>
 						</target>
 						<environments>
@@ -291,12 +291,12 @@
 						<jgit.ignore>pom.xml</jgit.ignore>
 					</configuration>
 				</plugin>
-				<!--plugin> <groupId>org.eclipse.tycho</groupId> <artifactId>tycho-p2-plugin</artifactId> 
-					<version>${tycho.version}</version> <configuration> <baselineMode>failCommon</baselineMode> 
-					<baselineReplace>none</baselineReplace> <baselineRepositories> <repository> 
-					<url>https://download.erlide.org/update/</url> </repository> </baselineRepositories> 
+				<!--plugin> <groupId>org.eclipse.tycho</groupId> <artifactId>tycho-p2-plugin</artifactId>
+					<version>${tycho.version}</version> <configuration> <baselineMode>failCommon</baselineMode>
+					<baselineReplace>none</baselineReplace> <baselineRepositories> <repository>
+					<url>https://download.erlide.org/update/</url> </repository> </baselineRepositories>
 					</configuration> </plugin -->
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
+				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>

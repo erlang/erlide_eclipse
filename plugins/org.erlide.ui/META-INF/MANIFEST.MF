@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.ui; singleton:=true
-Bundle-Version: 0.58.0.qualifier
+Bundle-Version: 0.59.0.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.erlide.ui.internal.ErlideUIPlugin
 Bundle-Vendor: %providerName
@@ -105,4 +105,3 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.jdt.annotation;resolution:=optional
 Automatic-Module-Name: org.erlide.ui
-

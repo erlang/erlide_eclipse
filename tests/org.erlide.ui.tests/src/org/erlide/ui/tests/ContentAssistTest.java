@@ -99,20 +99,6 @@ public class ContentAssistTest {
     }
 
     @Test
-    public void moduleCompletion2Test() throws Exception {
-        ErlideTestUtils.initProjects();
-        final String name1 = "testproject1";
-        final IErlProject project = ErlideTestUtils.createErlProject(name1);
-        try {
-            completionTest(project, "a.erl", "'CosEventChannelAdmin_A", 23,
-                    Lists.newArrayList("'CosEventChannelAdmin_AlreadyConnected':"),
-                    false);
-        } finally {
-            ErlideTestUtils.deleteProjects();
-        }
-    }
-
-    @Test
     public void recordCompletionLettersTest() throws Exception {
         ErlideTestUtils.initProjects();
         final String name1 = "testproject1";
@@ -160,6 +146,10 @@ public class ContentAssistTest {
             final String initialText2 = "-define(abc,abc).\n-define(aBc, aBc).\nf()->?aB";
             completionTest(project, "w2.erl", initialText2, initialText2.length(),
                     Lists.newArrayList("aBc", "abc"), false);
+        } catch (final Exception e) {
+            System.out.println("!!!!" + e);
+
+            throw e;
         } finally {
             ErlideTestUtils.deleteProjects();
         }
