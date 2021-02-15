@@ -22,6 +22,7 @@ import org.erlide.engine.util.ErlideTestUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.truth.Truth;
@@ -147,6 +148,7 @@ public class BuildersTest {
     }
 
     @Test
+    @Ignore
     public void makeBuilderShouldWork() throws CoreException {
         testBuilder(BuilderTool.MAKE);
     }
@@ -157,6 +159,7 @@ public class BuildersTest {
     }
 
     @Test
+    @Ignore
     public void rebarBuilderShouldWork() throws CoreException {
         testBuilder(BuilderTool.REBAR);
     }

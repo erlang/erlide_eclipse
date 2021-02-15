@@ -24,7 +24,7 @@ jobs:
       with:
         ruby-version: '2.7' 
     - name: Build with Maven
-      run: PATH=$PATH:/home/runner/.gem/ruby/2.7/bin xvfb-run ./mvnw -B -U clean verify -P help -Dmaven.test.failure.ignore=true
+      run: PATH=$PATH:/home/runner/.gem/ruby/2.7/bin xvfb-run ./mvnw -B -U clean verify -P help
     - uses: actions/upload-artifact@v2
       with:
         name: P2 site

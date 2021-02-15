@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.erlide</groupId>
         <artifactId>org.erlide.parent</artifactId>
-        <version>0.59.0</version>
+        <version>0.59.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
@@ -22,6 +22,7 @@
                 <version>${tycho.version}</version>
                 <configuration>
                     <repositoryName>erlide - Erlang development tools</repositoryName>
+                    <finalName>${project.groupId}-${unqualifiedVersion}.${buildQualifier}</finalName>
                 </configuration>
             </plugin>
         </plugins>
