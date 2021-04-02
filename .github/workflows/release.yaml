@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+  # or when creating/publishing a release?
 
 jobs:
   deploy:
+    if: false  # disable for now
     #if: github.repository_owner == 'erlang'
     runs-on: ubuntu-latest
 
@@ -30,5 +32,5 @@ jobs:
       run: >
         mvn deploy
         -Phelp,release-composite
-        -Dgithub-update-repo=https://x-access-token:${{ secrets.ERLIDE_DEPLOY_TOKEN }}@github.com/vladdu/erlide_updates
+        -Dgithub-update-repo=https://x-access-token:${{ secrets.ERLIDE_DEPLOY_TOKEN }}@github.com/erlide/erlide.github.io.git
       working-directory: .

@@ -75,7 +75,7 @@
                     <argument>clone</argument>
                     <argument>--depth=1</argument>
                     <argument>-b</argument>
-                    <argument>main</argument>
+                    <argument>master</argument>
                     <argument>${github-update-repo}</argument>
                     <argument>${github-local-clone}</argument>
                   </arguments>
@@ -124,7 +124,7 @@
                     <argument>${github-local-clone}</argument>
                     <argument>push</argument>
                     <argument>origin</argument>
-                    <argument>main</argument>
+                    <argument>master</argument>
                   </arguments>
                 </configuration>
               </execution>

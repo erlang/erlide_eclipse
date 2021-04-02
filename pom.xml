@@ -19,7 +19,7 @@
     <eclipse-version>2018-09</eclipse-version><!-- 4.9 -->
 
     <!-- Required properties for releasing -->
-    <github-update-repo>git@github.com:vladdu/erlide_updates.git</github-update-repo>
+    <github-update-repo>git@github.com:erlide/erlide.github.io.git</github-update-repo>
     <github-local-clone>${project.build.directory}/checkout</github-local-clone>
     <releases-directory>${github-local-clone}/update/releases</releases-directory>
     <current-release-directory>${releases-directory}/${qualifiedVersion}</current-release-directory>
