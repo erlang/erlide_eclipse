@@ -28,7 +28,7 @@
   </properties>
 
   <repositories>
-     <repository>
+    <repository>
       <id>${eclipse-version}</id>
       <layout>p2</layout>
       <url>https://download.eclipse.org/releases/${eclipse-version}</url>
@@ -114,6 +114,9 @@
     <profile>
       <!-- Activate this profile to perform the release to GitHub Pages -->
       <id>release-composite</id>
+      <properties>
+        <skip.unit.tests>true</skip.unit.tests>
+      </properties>
       <build>
         <pluginManagement>
           <plugins>
@@ -323,8 +326,8 @@
             <format>'v'yyyMMdd'-'HHmm</format>
             <timestampProvider>jgit</timestampProvider>
             <jgit.ignore>
-                pom.xml
-                .polyglot.build.properties
+              pom.xml
+              .polyglot.build.properties
             </jgit.ignore>
           </configuration>
         </plugin>
