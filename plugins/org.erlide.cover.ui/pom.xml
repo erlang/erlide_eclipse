@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.erlide</groupId>
     <artifactId>org.erlide.parent</artifactId>
-        <version>0.60.0-SNAPSHOT</version>
+        <version>0.60.1-SNAPSHOT</version>
     <relativePath>../..</relativePath>
   </parent>
 
   <artifactId>org.erlide.cover.ui</artifactId>
-  <version>0.60.0-SNAPSHOT</version>
+  <version>0.60.1-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 
 </project>
