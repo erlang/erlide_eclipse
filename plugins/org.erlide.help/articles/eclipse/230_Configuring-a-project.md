@@ -1,6 +1,7 @@
 ---
 layout: article_eclipse
 part: Reference
+title: Configurating a project
 ---
 
 # {{ page.title }}

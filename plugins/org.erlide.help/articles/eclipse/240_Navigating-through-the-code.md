@@ -1,6 +1,7 @@
 ---
 layout: article_eclipse
 part: Reference
+title: Navigating through the code
 ---
 
 # {{ page.title }}
