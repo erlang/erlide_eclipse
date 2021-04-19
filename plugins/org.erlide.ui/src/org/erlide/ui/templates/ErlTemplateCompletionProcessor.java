@@ -33,7 +33,7 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
     protected TemplateContextType getContextType(final ITextViewer viewer,
             final IRegion region) {
         return ErlideUIPlugin.getDefault().getContextTypeRegistry()
-                .getContextType(ErlangTemplateContextType.ERLANG_CONTEXT_TYPE_ID);
+                .getContextType(ErlangTemplateContextType.ID);
     }
 
     @Override
@@ -52,7 +52,8 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
             final ErlangTemplateContext etc = new ErlangTemplateContext(type, fDocument,
                     offset, length);
             for (final Template template : templates) {
-                if (etc.canEvaluate(template)) {
+                if (template.getContextTypeId().equals(ErlangTemplateContextType.ID)
+                        && etc.canEvaluate(template)) {
                     result.add(template);
                 }
             }

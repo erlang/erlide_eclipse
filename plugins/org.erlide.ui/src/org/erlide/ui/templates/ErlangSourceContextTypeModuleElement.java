@@ -17,7 +17,7 @@ public class ErlangSourceContextTypeModuleElement extends TemplateContextType {
     private static ErlangSourceContextTypeModuleElement fInstance;
 
     /** This context's id */
-    public static final String ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID = "org.erlide.ui.erlangsource.template.context.module.element"; //$NON-NLS-1$
+    public static final String ID = "org.erlide.ui.erlangsource.template.context.module.element"; //$NON-NLS-1$
 
     public static ErlangSourceContextTypeModuleElement getDefault() {
         if (ErlangSourceContextTypeModuleElement.fInstance == null) {
