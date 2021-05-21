@@ -25,6 +25,8 @@
     <current-release-directory>${releases-directory}/${qualifiedVersion}</current-release-directory>
     <!-- The label for the Composite sites -->
     <site.label>Erlide Composite Site</site.label>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
   <repositories>
@@ -139,7 +141,7 @@
         </pluginManagement>
       </build>
     </profile>
-    <!-- Jenkins by default defines a property BUILD_NUMBER which is used 
+    <!-- Jenkins by default defines a property BUILD_NUMBER which is used
       to enable the profile. -->
     <profile>
       <id>jenkins</id>
@@ -155,7 +157,7 @@
             <artifactId>jacoco-maven-plugin</artifactId>
             <version>${jacoco-maven-version}</version>
             <executions>
-              <!-- Prepares the property pointing to the JaCoCo runtime agent 
+              <!-- Prepares the property pointing to the JaCoCo runtime agent
                 which is passed as VM argument when Maven the Surefire plugin is executed. -->
               <execution>
                 <id>pre-unit-test</id>
@@ -163,15 +165,15 @@
                   <goal>prepare-agent</goal>
                 </goals>
                 <configuration>
-                  <!-- Sets the path to the file which contains the execution 
+                  <!-- Sets the path to the file which contains the execution
                     data. -->
                   <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
-                  <!-- Sets the name of the property containing the settings 
+                  <!-- Sets the name of the property containing the settings
                     for JaCoCo runtime agent. -->
                   <propertyName>surefireArgLine</propertyName>
                 </configuration>
               </execution>
-              <!-- Ensures that the code coverage report for unit tests is 
+              <!-- Ensures that the code coverage report for unit tests is
                 created after unit tests have been run. -->
               <execution>
                 <id>post-unit-test</id>
@@ -180,7 +182,7 @@
                   <goal>report</goal>
                 </goals>
                 <configuration>
-                  <!-- Sets the path to the file which contains the execution 
+                  <!-- Sets the path to the file which contains the execution
                     data. -->
                   <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
                   <!-- Sets the output directory for the code coverage report. -->
@@ -331,12 +333,12 @@
             </jgit.ignore>
           </configuration>
         </plugin>
-        <!--plugin> <groupId>org.eclipse.tycho</groupId> <artifactId>tycho-p2-plugin</artifactId> 
-          <version>${tycho.version}</version> <configuration> <baselineMode>failCommon</baselineMode> 
-          <baselineReplace>none</baselineReplace> <baselineRepositories> <repository> 
-          <url>https://download.erlide.org/update/</url> </repository> </baselineRepositories> 
+        <!--plugin> <groupId>org.eclipse.tycho</groupId> <artifactId>tycho-p2-plugin</artifactId>
+          <version>${tycho.version}</version> <configuration> <baselineMode>failCommon</baselineMode>
+          <baselineReplace>none</baselineReplace> <baselineRepositories> <repository>
+          <url>https://download.erlide.org/update/</url> </repository> </baselineRepositories>
           </configuration> </plugin -->
-        <!--This plugin's configuration is used to store Eclipse m2e settings 
+        <!--This plugin's configuration is used to store Eclipse m2e settings
           only. It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
@@ -414,7 +416,7 @@
             <failIfNoTests>false</failIfNoTests>
             <!-- Sets the VM argument line used when unit tests are run. -->
             <argLine>${surefireArgLine}</argLine>
-            <!-- Skips unit tests if the value of skip.unit.tests property 
+            <!-- Skips unit tests if the value of skip.unit.tests property
               is true -->
             <skipTests>${skip.unit.tests}</skipTests>
           </configuration>
