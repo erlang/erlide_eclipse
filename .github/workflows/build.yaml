@@ -18,6 +18,9 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-m2-
+    - uses: gleam-lang/setup-erlang@v1.1.2
+      with:
+        otp-version: 23.2
     - name: erl
       run: erl -version
     - uses: actions/setup-ruby@v1
