@@ -35,12 +35,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.jface.text.templates.ContextTypeRegistry;
 import org.eclipse.jface.text.templates.persistence.TemplateStore;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.text.templates.ContextTypeRegistry;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -70,7 +70,6 @@ import org.erlide.ui.perspectives.ErlangPerspective;
 import org.erlide.ui.templates.ErlangSourceContextTypeModule;
 import org.erlide.ui.templates.ErlangSourceContextTypeModuleElement;
 import org.erlide.ui.templates.ErlangTemplateContextType;
-import org.erlide.ui.templates.ErlideContributionTemplateStore;
 import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
 import org.erlide.ui.util.ImageDescriptorRegistry;
@@ -108,8 +107,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         try {
             resourceBundle = ResourceBundle
                     .getBundle("org.erlide.ui.ErlideUIPluginResources");
-        } catch (final MissingResourceException x) {
-            x.printStackTrace();
+        } catch (final MissingResourceException ex) {
+            ex.printStackTrace();
             resourceBundle = null;
         }
     }
@@ -504,11 +503,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     private ErlangDebuggerBackendListener erlangDebuggerBackendListener;
 
     public TemplateStore getTemplateStore() {
-        // this is to avoid recursive call when fContextTypeRegistry is null
-        getContextTypeRegistry();
         if (fStore == null) {
-            fStore = new ErlideContributionTemplateStore(getPreferenceStore(),
-                    ErlideUIPlugin.CUSTOM_TEMPLATES_KEY);
+            fStore = new ContributionTemplateStore(getContextTypeRegistry(),
+                    getPreferenceStore(), ErlideUIPlugin.CUSTOM_TEMPLATES_KEY);
             try {
                 fStore.load();
             } catch (final Exception e) {
@@ -524,12 +521,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         if (fContextTypeRegistry == null) {
             // create an configure the contexts available in the template editor
             fContextTypeRegistry = new ContributionContextTypeRegistry();
-            fContextTypeRegistry
-                    .addContextType(ErlangTemplateContextType.ERLANG_CONTEXT_TYPE_ID);
-            fContextTypeRegistry.addContextType(
-                    ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
-            fContextTypeRegistry.addContextType(
-                    ErlangSourceContextTypeModuleElement.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID);
+            fContextTypeRegistry.addContextType(ErlangTemplateContextType.ID);
+            fContextTypeRegistry.addContextType(ErlangSourceContextTypeModule.ID);
+            fContextTypeRegistry.addContextType(ErlangSourceContextTypeModuleElement.ID);
         }
         return fContextTypeRegistry;
     }

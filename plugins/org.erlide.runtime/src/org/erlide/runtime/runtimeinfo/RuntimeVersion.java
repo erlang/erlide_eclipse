@@ -66,7 +66,7 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
             final Pattern p = Pattern.compile("(\\d+)(\\.\\d+)?(\\.\\d+)?([\\._-].+)?");
             final Matcher m = p.matcher(version);
             if (!m.matches()) {
-                return null; // throw?
+                return RuntimeVersion.NO_VERSION; // throw?
             }
 
             major = Integer.parseInt(m.group(1));

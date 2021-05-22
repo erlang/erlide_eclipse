@@ -12,3 +12,4 @@ destination=contents
 rm -rf ${destination}
 
 cp -r _site/articles/eclipse ${destination}
+find ${destination} -name "*.html" -exec sed -i -e 's|"/articles/eclipse/|"|g' {} \;

@@ -1,5 +1,6 @@
 package org.erlide.ui.editors.erl.completion;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -134,18 +135,20 @@ public abstract class AbstractErlContentAssistProcessor
 
                 final CompletionService completionService = ErlangEngine.getInstance()
                         .getCompletionService();
-                List<ICompletionProposal> result = Lists.newArrayList();
+                ArrayList<ICompletionProposal> result = Lists.newArrayList();
                 if (project != null) {
                     final IOtpRpc backend = BackendCore.getBuildBackend(project);
                     final List<CompletionData> resultData = completionService
                             .computeCompletions(backend, project, module, elementBefore,
                                     offset, before, isInString());
-                    result = Lists.transform(resultData, this::toProposal);
+                    result = Lists
+                            .newArrayList(Lists.transform(resultData, this::toProposal));
                 }
                 final ErlTemplateCompletionProcessor t = new ErlTemplateCompletionProcessor(
                         doc, offset - before.length(), before.length());
-                result.addAll(
-                        Arrays.asList(t.computeCompletionProposals(viewer, offset)));
+                final ICompletionProposal[] ress = t.computeCompletionProposals(viewer,
+                        offset);
+                result.addAll(Arrays.asList(ress));
                 oldSuggestions = result.size();
                 if (result.isEmpty()) {
                     ErlLogger.debug("no results");

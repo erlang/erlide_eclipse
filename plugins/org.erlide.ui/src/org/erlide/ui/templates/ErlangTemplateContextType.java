@@ -6,7 +6,7 @@ import org.eclipse.jface.text.templates.TemplateContextType;
 public class ErlangTemplateContextType extends TemplateContextType {
 
     /** This context's id */
-    public static final String ERLANG_CONTEXT_TYPE_ID = "org.erlide.ui.editor.erlang"; //$NON-NLS-1$
+    public static final String ID = "org.erlide.ui.editor.erlang"; //$NON-NLS-1$
 
     /**
      * Creates a new XML context type.

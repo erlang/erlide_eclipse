@@ -1,0 +1,36 @@
+name: Release with Maven
+
+on:
+  push:
+    branches:
+      - main
+  # or when creating/publishing a release?
+
+jobs:
+  deploy:
+    if: false  # disable for now
+    #if: github.repository_owner == 'erlang'
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 8
+    - name: Cache Maven packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-release-${{ hashFiles('**/pom.xml', '**/*.yml') }}
+        restore-keys: ${{ runner.os }}-m2-
+    - name: Configure Git
+      run: |
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'vladdu@users.noreply.github.com'
+    - name: Build with Maven
+      run: >
+        mvn deploy
+        -Phelp,release-composite
+        -Dgithub-update-repo=https://x-access-token:${{ secrets.ERLIDE_DEPLOY_TOKEN }}@github.com/erlide/erlide.github.io.git
+      working-directory: .

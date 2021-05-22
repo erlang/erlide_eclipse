@@ -84,7 +84,7 @@ public class ErlangFileWizardPage extends WizardPage {
         fSelection = selection;
 
         moduleTemplates = ErlideUIPlugin.getDefault().getTemplateStore().getTemplates(
-                ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
+                ErlangSourceContextTypeModule.ID);
         fModifyListener = e -> dialogChanged();
     }
 
@@ -305,7 +305,7 @@ public class ErlangFileWizardPage extends WizardPage {
         if (fContextType == null) {
             fContextType = ErlideUIPlugin.getDefault().getContextTypeRegistry()
                     .getContextType(
-                            ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
+                            ErlangSourceContextTypeModule.ID);
         }
         return fContextType;
     }

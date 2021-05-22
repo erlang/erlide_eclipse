@@ -4,7 +4,7 @@ title: Eclipse client documentation
 part: Erlide documentation
 ---
 
-<img src="https://raw.githubusercontent.com/erlang/erlide_eclipse/master/org.erlide.branding/images/erl-zen-badge-160.png" alt="erlide logo" class="pull-right no-eclipse">
+<img src="https://raw.githubusercontent.com/erlang/erlide_eclipse/master/plugins/org.erlide.branding/images/erl-zen-badge-160.png" alt="erlide logo" class="pull-right no-eclipse">
 
 ## User's guide
 

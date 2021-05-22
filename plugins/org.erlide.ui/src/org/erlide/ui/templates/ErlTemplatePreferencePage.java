@@ -17,6 +17,12 @@ public class ErlTemplatePreferencePage extends TemplatePreferencePage {
 
     private Button fIndentCodeCheckBox;
 
+    public ErlTemplatePreferencePage() {
+        setPreferenceStore(ErlideUIPlugin.getDefault().getPreferenceStore());
+        setTemplateStore(ErlideUIPlugin.getDefault().getTemplateStore());
+        setContextTypeRegistry(ErlideUIPlugin.getDefault().getContextTypeRegistry());
+    }
+
     @Override
     protected Control createContents(final Composite ancestor) {
         final Control contents = super.createContents(ancestor);
@@ -34,12 +40,6 @@ public class ErlTemplatePreferencePage extends TemplatePreferencePage {
         fIndentCodeCheckBox
                 .setSelection(ErlTemplateCompletionPreferences.getIndentCode());
         return contents;
-    }
-
-    public ErlTemplatePreferencePage() {
-        setPreferenceStore(ErlideUIPlugin.getDefault().getPreferenceStore());
-        setTemplateStore(ErlideUIPlugin.getDefault().getTemplateStore());
-        // setContextTypeRegistry(ErlideUIPlugin.getDefault().getContextTypeRegistry());
     }
 
     @Override

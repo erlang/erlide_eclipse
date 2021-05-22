@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="erlide target" sequenceNumber="1611676843">
+<target name="erlide target" sequenceNumber="1618858043">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.eclipse.e4.rcp.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.jdt.annotation" version="0.0.0"/>
       <unit id="org.eclipse.sdk.ide" version="0.0.0"/>
-      <repository location="http://download.eclipse.org/eclipse/updates/4.9/"/>
+      <repository location="http://download.eclipse.org/eclipse/updates/4.10/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="com.abstratt.eclipsegraphviz.feature.feature.group" version="0.0.0"/>

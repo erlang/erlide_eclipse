@@ -19,7 +19,7 @@ public class ErlangSourceContextTypeModule extends TemplateContextType {
     private static ErlangSourceContextTypeModule fInstance;
 
     /** This context's id */
-    public static final String ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID = "org.erlide.ui.erlangsource.template.context.module"; //$NON-NLS-1$
+    public static final String ID = "org.erlide.ui.erlangsource.template.context.module"; //$NON-NLS-1$
 
     /**
      * Creates a new XML context type.
@@ -46,7 +46,7 @@ public class ErlangSourceContextTypeModule extends TemplateContextType {
     public void addElementResolvers() {
         final Template[] templates = ErlideUIPlugin.getDefault().getTemplateStore()
                 .getTemplates(
-                        ErlangSourceContextTypeModuleElement.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID);
+                        ErlangSourceContextTypeModuleElement.ID);
         for (final Template template : templates) {
             addResolver(new ModuleElementVariableResolver(template.getName(), template));
         }

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<toc topic="contents/index.html" label="Erlide documentation">
+    <topic label="Getting started">
+        <topic href="contents/110_Features.html" label="Features">
+            <topic href="contents/110_Features.html#wizards" label="Wizards">
+                <topic href="contents/110_Features.html#new-project-wizard" label="New Project wizard">
+                </topic>
+                <topic href="contents/110_Features.html#new-module-wizard" label="New Module wizard">
+                </topic>
+            </topic>
+            <topic href="contents/110_Features.html#configuration" label="Configuration">
+            </topic>
+            <topic href="contents/110_Features.html#editor" label="Editor">
+            </topic>
+            <topic href="contents/110_Features.html#builder" label="Builder">
+            </topic>
+            <topic href="contents/110_Features.html#outline-view" label="Outline view">
+            </topic>
+            <topic href="contents/110_Features.html#erlang-console" label="Erlang console">
+            </topic>
+            <topic href="contents/110_Features.html#live-expressions-view" label="Live expressions view">
+            </topic>
+            <topic href="contents/110_Features.html#process-list-view" label="Process list view">
+            </topic>
+            <topic href="contents/110_Features.html#edoc-view" label="EDoc view">
+            </topic>
+            <topic href="contents/110_Features.html#debugger" label="Debugger">
+            </topic>
+            <topic href="contents/110_Features.html#problems-view" label="Problems view">
+            </topic>
+            <topic href="contents/110_Features.html#other" label="Other">
+            </topic>
+            <topic href="contents/110_Features.html#a-few-eclipse-tips" label="A few Eclipse tips">
+            </topic>
+        </topic>
+        <topic href="contents/115_Getting-started.html" label="Get started!">
+        </topic>
+        <topic href="contents/120_Installing-and-updating.html" label="Installing and updating">
+            <topic href="contents/120_Installing-and-updating.html#update-sites" label="Update sites">
+            </topic>
+        </topic>
+        <topic href="contents/130_Configuration.html" label="Configuration">
+        </topic>
+        <topic href="contents/140_Tutorial-Quick-Start.html" label="Tutorial: Getting started">
+        </topic>
+        <topic href="contents/150_Tutorial-Hello-World.html" label="Tutorial: Hello, world!">
+            <topic href="contents/150_Tutorial-Hello-World.html#install-erlangotp-if-you-have-not-already" label="Install Erlang/OTP (if you have not already)">
+            </topic>
+            <topic href="contents/150_Tutorial-Hello-World.html#install-eclipse-and-erlide" label="Install Eclipse and ErlIDE">
+            </topic>
+            <topic href="contents/150_Tutorial-Hello-World.html#add-primary-erlang-runtime" label="Add Primary Erlang Runtime">
+            </topic>
+            <topic href="contents/150_Tutorial-Hello-World.html#create-hello-world-project" label="Create Hello World Project">
+            </topic>
+            <topic href="contents/150_Tutorial-Hello-World.html#start-erlang-node-to-run-code" label="Start Erlang Node To Run Code">
+            </topic>
+            <topic href="contents/150_Tutorial-Hello-World.html#write-hello-world-live" label="Write Hello World Live!">
+            </topic>
+        </topic>
+        <topic href="contents/160_Troubleshooting.html" label="Troubleshooting">
+            <topic href="contents/160_Troubleshooting.html#backend-cant-be-contacted" label="Backend can't be contacted">
+                <topic href="contents/160_Troubleshooting.html#the-problem" label="The problem">
+                </topic>
+                <topic href="contents/160_Troubleshooting.html#what-to-do-about-it" label="What to do about it">
+                </topic>
+            </topic>
+        </topic>
+        <topic href="contents/170_FAQ.html" label="FAQ">
+            <topic href="contents/170_FAQ.html#i-cant-write-comments-or-strings-in-chinese-or-other-non-latin-language" label="I can't write comments or strings in Chinese (or other non-latin language)!">
+            </topic>
+            <topic href="contents/170_FAQ.html#erlide-wont-start" label="Erlide won't start!">
+            </topic>
+        </topic>
+    </topic>
+    <topic label="Reference">
+        <topic href="contents/210_Concepts.html" label="Concepts">
+            <topic href="contents/210_Concepts.html#runtimes-and-backends" label="Runtimes and backends">
+                <topic href="contents/210_Concepts.html#runtime" label="Runtime">
+                </topic>
+                <topic href="contents/210_Concepts.html#backend-definition" label="Backend definition">
+                </topic>
+                <topic href="contents/210_Concepts.html#backend" label="Backend">
+                </topic>
+            </topic>
+        </topic>
+        <topic href="contents/220_Creating-a-project.html" label="Create a project">
+        </topic>
+        <topic href="contents/230_Configuring-a-project.html" label="Configure project">
+        </topic>
+        <topic href="contents/240_Navigating-through-the-code.html" label="Navigating code">
+        </topic>
+        <topic href="contents/250_Editor.html" label="Editor">
+        </topic>
+        <topic href="contents/260_Navigator-view.html" label="Navigator view">
+        </topic>
+        <topic href="contents/270_Erlang-search.html" label="Search">
+        </topic>
+        <topic href="contents/280_Running-and-debugging-Erlang-code.html" label="Running and debugging Erlang code">
+            <topic href="contents/280_Running-and-debugging-Erlang-code.html#debugging" label="Debugging">
+            </topic>
+        </topic>
+    </topic>
+    <topic label="Developer's guide">
+        <topic href="contents/developer/310_Tools-and-requirements.html" label="Tools and requirements">
+            <topic href="contents/developer/310_Tools-and-requirements.html#prerequisites" label="Prerequisites">
+            </topic>
+            <topic href="contents/developer/310_Tools-and-requirements.html#tools" label="Tools">
+            </topic>
+            <topic href="contents/developer/310_Tools-and-requirements.html#setup" label="Setup">
+            </topic>
+        </topic>
+        <topic href="contents/developer/320_Accessing-the-code.html" label="Accessing the code">
+            <topic href="contents/developer/320_Accessing-the-code.html#working-on-the-core-erlide" label="Working on the core erlide">
+                <topic href="contents/developer/320_Accessing-the-code.html#project-descriptions" label="Project descriptions">
+                </topic>
+            </topic>
+            <topic href="contents/developer/320_Accessing-the-code.html#working-on-an-erlide-extension" label="Working on an erlide extension">
+            </topic>
+        </topic>
+        <topic href="contents/developer/330_Branches.html" label="Branches">
+            <topic href="contents/developer/330_Branches.html#main-branches" label="Main branches">
+                <topic href="contents/developer/330_Branches.html#master" label="`master`">
+                </topic>
+                <topic href="contents/developer/330_Branches.html#pu" label="`pu`">
+                </topic>
+                <topic href="contents/developer/330_Branches.html#release" label="`release`">
+                </topic>
+            </topic>
+            <topic href="contents/developer/330_Branches.html#local-bugfix-branches" label="Local bugfix branches">
+            </topic>
+            <topic href="contents/developer/330_Branches.html#working-on-erlide" label="Working on erlide">
+            </topic>
+        </topic>
+        <topic href="contents/developer/340_Submitting-patches.html" label="Submitting patches">
+        </topic>
+        <topic href="contents/developer/350_Git-Tools-and-Hacks.html" label="Git tools and hacks">
+            <topic href="contents/developer/350_Git-Tools-and-Hacks.html#windows-checkout-issue" label="Windows checkout issue">
+                <topic href="contents/developer/350_Git-Tools-and-Hacks.html#solutions" label="Solutions">
+                </topic>
+            </topic>
+            <topic href="contents/developer/350_Git-Tools-and-Hacks.html#shell-prompt" label="Shell Prompt">
+            </topic>
+        </topic>
+        <topic href="contents/developer/360_Testing-erlide.html" label="Testing erlide">
+        </topic>
+        <topic href="contents/developer/3a0_Plugins-description.html" label="Plugins descriptions">
+        </topic>
+        <topic href="contents/developer/3b0_Building-and-distributing.html" label="Building and distributing">
+            <topic href="contents/developer/3b0_Building-and-distributing.html#update-sites" label="Update sites">
+            </topic>
+            <topic href="contents/developer/3b0_Building-and-distributing.html#building-erlide" label="Building Erlide">
+                <topic href="contents/developer/3b0_Building-and-distributing.html#build-target" label="Build target">
+                </topic>
+                <topic href="contents/developer/3b0_Building-and-distributing.html#automatic-builds" label="Automatic builds">
+                </topic>
+            </topic>
+        </topic>
+        <topic href="contents/developer/3c0_Development-policies.html" label="Development policies">
+            <topic href="contents/developer/3c0_Development-policies.html#line-endings" label="Line endings">
+            </topic>
+            <topic href="contents/developer/3c0_Development-policies.html#code-formatting-and-cleanup" label="Code formatting and cleanup">
+            </topic>
+            <topic href="contents/developer/3c0_Development-policies.html#commit-policies" label="Commit policies">
+                <topic href="contents/developer/3c0_Development-policies.html#development-codeline-pubranch" label="Development codeline (`pu`branch):">
+                </topic>
+                <topic href="contents/developer/3c0_Development-policies.html#release-codeline-next-branch" label="Release codeline (`next` branch):">
+                </topic>
+                <topic href="contents/developer/3c0_Development-policies.html#mainline-master-branch" label="Mainline (`master` branch):">
+                </topic>
+            </topic>
+            <topic href="contents/developer/3c0_Development-policies.html#versioning" label="Versioning">
+            </topic>
+        </topic>
+        <topic href="contents/developer/3d0_Release-process.html" label="Release process">
+        </topic>
+        <topic href="contents/developer/3e0_Creating-a-release.html" label="Creating a release">
+        </topic>
+    </topic>
+    <topic label="Cover plugin">
+        <topic href="contents/cover/410_Cover-plugin.html" label="Cover Plugin">
+            <topic href="contents/cover/410_Cover-plugin.html#features" label="Features">
+            </topic>
+            <topic href="contents/cover/410_Cover-plugin.html#implementation-details" label="Implementation details">
+            </topic>
+            <topic href="contents/cover/410_Cover-plugin.html#examples" label="Examples">
+            </topic>
+        </topic>
+        <topic href="contents/cover/420_Cover-plugin-example.html" label="Cover plugin example">
+            <topic href="contents/cover/420_Cover-plugin-example.html#cover-plugin-configuration" label="Cover plugin configuration">
+            </topic>
+            <topic href="contents/cover/420_Cover-plugin-example.html#code-coverage-analysis-results" label="Code coverage analysis results.">
+            </topic>
+        </topic>
+        <topic href="contents/cover/430_Cover-plugin-implementation.html" label="Cover plug-in implementation details">
+            <topic href="contents/cover/430_Cover-plugin-implementation.html#projects" label="Projects">
+            </topic>
+            <topic href="contents/cover/430_Cover-plugin-implementation.html#performing-coverage-analysis" label="Performing coverage analysis">
+            </topic>
+        </topic>
+        <topic href="contents/cover/440_Cover-notes.html" label="Cover notes">
+        </topic>
+    </topic>
+    <topic label="Tracing plugin">
+        <topic href="contents/tracing/510_Tracing-plugin.html" label="Tracing plugin">
+            <topic href="contents/tracing/510_Tracing-plugin.html#features" label="Features">
+            </topic>
+            <topic href="contents/tracing/510_Tracing-plugin.html#technical-details" label="Technical details">
+                <topic href="contents/tracing/510_Tracing-plugin.html#ttb" label="Ttb">
+                </topic>
+                <topic href="contents/tracing/510_Tracing-plugin.html#tracing" label="Tracing">
+                </topic>
+                <topic href="contents/tracing/510_Tracing-plugin.html#connection" label="Connection">
+                                </topic>
+            </topic>
+            <topic href="contents/tracing/510_Tracing-plugin.html#implementation-details" label="Implementation details">
+            </topic>
+            <topic href="contents/tracing/510_Tracing-plugin.html#examples" label="Examples">
+            </topic>
+        </topic>
+        <topic href="contents/tracing/530_Tracing-plugin-implementation.html" label="Projects">
+            <topic href="contents/tracing/530_Tracing-plugin-implementation.html#feature-architecture" label="Feature architecture">
+            </topic>
+            <topic href="contents/tracing/530_Tracing-plugin-implementation.html#tree-viewer" label="Tree viewer">
+                <topic href="contents/tracing/530_Tracing-plugin-implementation.html#model" label="Model">
+                </topic>
+                <topic href="contents/tracing/530_Tracing-plugin-implementation.html#view" label="View">
+                </topic>
+                <topic href="contents/tracing/530_Tracing-plugin-implementation.html#controller" label="Controller">
+                </topic>
+            </topic>
+            <topic href="contents/tracing/530_Tracing-plugin-implementation.html#table-viewer" label="Table viewer">
+            </topic>
+            <topic href="contents/tracing/530_Tracing-plugin-implementation.html#displaying-busy-dialogs" label="Displaying busy dialogs">
+            </topic>
+            <topic href="contents/tracing/530_Tracing-plugin-implementation.html#actions" label="Actions">
+                <topic href="contents/tracing/530_Tracing-plugin-implementation.html#starting-tracing" label="Starting tracing">
+                </topic>
+                <topic href="contents/tracing/530_Tracing-plugin-implementation.html#stop-tracing" label="Stop tracing">
+                </topic>
+                <topic href="contents/tracing/530_Tracing-plugin-implementation.html#loading-tracing-results" label="Loading tracing results">
+                </topic>
+                <topic href="contents/tracing/530_Tracing-plugin-implementation.html#activating-tracing-result-to-display-in-tree-viewer" label="Activating tracing result to display in tree viewer">
+                </topic>
+                <topic href="contents/tracing/530_Tracing-plugin-implementation.html#loading-data-from-files-to-display-in-tree-viewer" label="Loading data from files to display in tree viewer">
+                </topic>
+            </topic>
+            <topic href="contents/tracing/530_Tracing-plugin-implementation.html#uml-diagrams" label="UML diagrams">
+            </topic>
+            <topic href="contents/tracing/530_Tracing-plugin-implementation.html#useful-links" label="Useful links">
+            </topic>
+        </topic>
+    </topic>
+</toc>

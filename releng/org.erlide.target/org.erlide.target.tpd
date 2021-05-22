@@ -4,7 +4,7 @@ with source configurePhase requirements
 
 environment JavaSE-1.8
 
-location "http://download.eclipse.org/eclipse/updates/4.9/" {
+location "http://download.eclipse.org/eclipse/updates/4.10/" {
   org.eclipse.e4.rcp.feature.group lazy
   org.eclipse.jdt.annotation lazy
   org.eclipse.sdk.ide lazy

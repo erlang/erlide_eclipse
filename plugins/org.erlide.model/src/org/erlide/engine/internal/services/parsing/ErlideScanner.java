@@ -82,6 +82,7 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
             r1 = backend.call(ErlideScanner.ERLIDE_SCANNER, "get_token_at", "ai", module,
                     offset);
         } catch (final Exception e) {
+            ErlLogger.debug(e);
             return null;
         }
         if (!(r1 instanceof OtpErlangTuple)) {

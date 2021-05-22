@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<project name="project">
+
+	<!--
+    The idea is to have this directory layout:
+    
+    .
+    ├── compositeArtifacts.xml
+    ├── compositeContent.xml
+    ├── p2.index
+    ├── README.md
+    ├── releases
+    │   ├── 1.0.0.v20210307-2037
+    │   │   ├── artifacts.jar
+    │   │   ├── ...
+    │   │   ├── features ...
+    │   │   └── plugins ...
+    │   ├── 1.0.0.v20210307-2046 ...
+    │   ├── 1.1.0.v20210307-2104 ...
+    │   └── 2.0.0.v20210308-1304 ...
+    └── updates
+        ├── 1.x
+        │   ├── 1.0.x
+        │   │   ├── compositeArtifacts.xml
+        │   │   ├── compositeContent.xml
+        │   │   └── p2.index
+        │   ├── 1.1.x
+        │   │   ├── compositeArtifacts.xml
+        │   │   ├── compositeContent.xml
+        │   │   └── p2.index
+        │   ├── compositeArtifacts.xml
+        │   ├── compositeContent.xml
+        │   └── p2.index
+        └── 2.x
+            ├── 2.0.x
+            │   ├── compositeArtifacts.xml
+            │   ├── compositeContent.xml
+            │   └── p2.index
+            ├── compositeArtifacts.xml
+            ├── compositeContent.xml
+            └── p2.index
+    -->
+
+	<!--
+        site.label                      The name/title/label of the created composite site
+        parsedVersion.majorVersion
+        parsedVersion.minorVersion
+                                        are expected to be provided
+                                        (see the POM and the use of build-helper-maven-plugin
+        unqualifiedVersion              The version without any qualifier replacement
+        buildQualifier                  The build qualifier
+        composite.base.dir              The directory of the main composite (default "target")
+        updates.path                    The directory of composite children
+                                        default is "updates"
+        updates.suffix                  The suffix to append to updates versions directories
+                                        (default ".x", e.g., "1.x", "2.1.x")
+        releases.path.prefix            The path prefix to access the actual p2 releases repo from the
+                                        composite updates repo, e.g., if the directory of composite children
+                                        is "updates" and the releases main directory is "releases"
+                                        then this property should be "../../../releases" (the default)
+        child.repo                      An external repository to be added as a child
+    -->
+	<target name="compute.child.repository.data">
+		<property name="full.version" value="${unqualifiedVersion}.${buildQualifier}" />
+
+		<property name="updates.suffix" value=".x" />
+		<property name="main.site.composite.name" value="${site.label} All Versions" />
+		<property name="child1.site.composite.name" value="${site.label} ${parsedVersion.majorVersion}${updates.suffix}" />
+		<property name="child2.site.composite.name" value="${site.label} ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}${updates.suffix}" />
+
+		<!-- composite.base.dir The base directory for the local composite metadata,
+            e.g., from Maven, ${project.build.directory}
+        -->
+		<property name="composite.base.dir" value="target" />
+        <property name="site.root.path" value="update" />
+		<property name="updates.path" value="updates" />
+        <property name="releases.path.prefix" value="../../../releases" />
+
+
+		<property name="main.site.composite.directory" location="${composite.base.dir}/${site.root.path}" />
+		<property name="child1.site.composite.path" value="${updates.path}/${parsedVersion.majorVersion}${updates.suffix}" />
+		<property name="child1.site.composite.directory" location="${composite.base.dir}/${site.root.path}/${child1.site.composite.path}" />
+		<property name="child2.site.composite.path" value="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}${updates.suffix}" />
+		<property name="child2.site.composite.directory" location="${composite.base.dir}/${site.root.path}/${child1.site.composite.path}/${child2.site.composite.path}" />
+
+		<property name="release.repository" value="${releases.path.prefix}/${full.version}" />
+	</target>
+
+	<target name="p2.composite.add" depends="compute.child.repository.data">
+		<add.composite.repository.internal composite.repository.location="${main.site.composite.directory}" composite.repository.name="${main.site.composite.name}" composite.repository.child="${child1.site.composite.path}" />
+		<add.composite.repository.internal composite.repository.location="${child1.site.composite.directory}" composite.repository.name="${child1.site.composite.name}" composite.repository.child="${child2.site.composite.path}" />
+		<add.composite.repository.internal composite.repository.location="${child2.site.composite.directory}" composite.repository.name="${child2.site.composite.name}" composite.repository.child="${release.repository}" />
+	</target>
+
+	<target name="p2.composite.add.external" depends="compute.child.repository.data">
+		<add.external.repository.internal composite.repository.location="${child2.site.composite.directory}" composite.repository.name="${child2.site.composite.name}" composite.repository.child="${child.repo}" />
+	</target>
+
+	<!-- = = = = = = = = = = = = = = = = =
+          macrodef: add.composite.repository.internal          
+         = = = = = = = = = = = = = = = = = -->
+	<macrodef name="add.composite.repository.internal">
+		<attribute name="composite.repository.location" />
+		<attribute name="composite.repository.name" />
+		<attribute name="composite.repository.child" />
+		<sequential>
+
+			<echo message=" " />
+			<echo message="Composite repository       : @{composite.repository.location}" />
+			<echo message="Composite name             : @{composite.repository.name}" />
+			<echo message="Adding child repository    : @{composite.repository.child}" />
+
+			<p2.composite.repository>
+				<repository compressed="false" location="@{composite.repository.location}" name="@{composite.repository.name}" atomic="false" />
+				<add>
+					<repository location="@{composite.repository.child}" />
+				</add>
+			</p2.composite.repository>
+
+			<echo file="@{composite.repository.location}/p2.index">version=1
+metadata.repository.factory.order=compositeContent.xml,\!
+artifact.repository.factory.order=compositeArtifacts.xml,\!
+</echo>
+
+		</sequential>
+	</macrodef>
+
+	<!-- = = = = = = = = = = = = = = = = =
+          macrodef: add.external.repository.internal          
+         = = = = = = = = = = = = = = = = = -->
+	<macrodef name="add.external.repository.internal">
+		<attribute name="composite.repository.location" />
+		<attribute name="composite.repository.name" />
+		<attribute name="composite.repository.child" />
+		<sequential>
+
+			<echo message=" " />
+			<echo message="Composite repository       : @{composite.repository.location}" />
+			<echo message="Composite name             : @{composite.repository.name}" />
+			<echo message="Adding child repository    : @{composite.repository.child}" />
+
+			<p2.composite.repository>
+				<repository compressed="false" location="@{composite.repository.location}" name="@{composite.repository.name}" atomic="false" />
+				<add>
+					<repository location="@{composite.repository.child}" />
+				</add>
+			</p2.composite.repository>
+
+		</sequential>
+	</macrodef>
+
+
+</project>

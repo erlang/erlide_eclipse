@@ -1,6 +1,7 @@
 ---
 layout: article_eclipse
 part: Reference
+title: Erlang search
 ---
 
 # {{ page.title }}

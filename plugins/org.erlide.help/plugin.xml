@@ -1,11 +1,11 @@
 <plugin>
-    <extension point="org.eclipse.help.toc"><toc
-                                                  file="contents/toc.xml"
-                                                  primary="true"></toc></extension>
-<extension point="org.eclipse.help.contexts">
-    <contexts
-         file="erlideContext.xml">
-    </contexts>
+    <extension point="org.eclipse.help.toc">
+    	<toc file="toc.xml" primary="true"></toc>
+    </extension>
+    <extension point="org.eclipse.help.contexts">
+        <contexts
+             file="erlideContext.xml">
+        </contexts>
 </extension>
 <!--extension
       point="org.eclipse.ui.cheatsheets.cheatSheetContent">
