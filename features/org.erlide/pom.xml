@@ -7,12 +7,12 @@
 	<parent>
 		<groupId>org.erlide</groupId>
 		<artifactId>org.erlide.parent</artifactId>
-		<version>0.60.1-SNAPSHOT</version>
+		<version>0.60.2-SNAPSHOT</version>
 		<relativePath>../..</relativePath>
 	</parent>
 
 	<artifactId>org.erlide</artifactId>
-	<version>0.60.1-SNAPSHOT</version>
+	<version>0.60.2-SNAPSHOT</version>
 	<packaging>eclipse-feature</packaging>
 
 </project>
