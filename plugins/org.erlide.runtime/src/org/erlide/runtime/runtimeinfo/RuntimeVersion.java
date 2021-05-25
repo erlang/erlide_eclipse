@@ -174,14 +174,9 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
         if (update_level == null) {
             return true;
         }
-        try {
-            // "-rc1" is unstable, but ".15" is stable
-            // The first character is a separator
-            Integer.parseInt(update_level.substring(1));
-            return true;
-        } catch (final NumberFormatException e) {
-            return false;
-        }
+        // "-rc1" is unstable, but ".15" and ".12.1" is stable
+        // The first character is a separator
+        return !update_level.startsWith("-");
     }
 
     public int getMajor() {
