@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>org.erlide</groupId>
 		<artifactId>org.erlide.parent</artifactId>
-		<version>0.60.3-SNAPSHOT</version>
+		<version>0.60.4-SNAPSHOT</version>
 		<relativePath>../..</relativePath>
 	</parent>
 
 	<artifactId>org.erlide.core.tests</artifactId>
-	<version>0.60.3-SNAPSHOT</version>
+	<version>0.60.4-SNAPSHOT</version>
 	<packaging>eclipse-test-plugin</packaging>
 
 	<build>
