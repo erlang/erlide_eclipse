@@ -7,7 +7,7 @@
 
   <groupId>org.erlide</groupId>
   <artifactId>org.erlide.parent</artifactId>
-  <version>0.60.3-SNAPSHOT</version>
+  <version>0.60.4-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <properties>
@@ -244,7 +244,7 @@
               <artifact>
                 <groupId>org.erlide</groupId>
                 <artifactId>org.erlide.target</artifactId>
-                <version>0.60.3-SNAPSHOT</version>
+                <version>0.60.4-SNAPSHOT</version>
               </artifact>
             </target>
             <environments>
