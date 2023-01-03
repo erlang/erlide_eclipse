@@ -1,17 +1,19 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2016. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2022. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
@@ -20,12 +22,13 @@ package com.ericsson.otp.erlang;
 import java.math.BigInteger;
 
 /**
- * Provides a Java representation of Erlang integral types. Erlang does not distinguish
- * between different integral types, however this class and its subclasses
- * {@link OtpErlangByte}, {@link OtpErlangChar}, {@link OtpErlangInt} , and
- * {@link OtpErlangShort} attempt to map the Erlang types onto the various Java integral
- * types. Two additional classes, {@link OtpErlangUInt} and {@link OtpErlangUShort} are
- * provided for Corba compatibility. See the documentation for IC for more information.
+ * Provides a Java representation of Erlang integral types. Erlang does not
+ * distinguish between different integral types, however this class and its
+ * subclasses {@link OtpErlangByte}, {@link OtpErlangChar}, {@link OtpErlangInt}
+ * , and {@link OtpErlangShort} attempt to map the Erlang types onto the various
+ * Java integral types. Two additional classes, {@link OtpErlangUInt} and
+ * {@link OtpErlangUShort} are provided for Corba compatibility. See the
+ * documentation for IC for more information.
  */
 public class OtpErlangLong extends OtpErlangObject {
     // don't change this!
@@ -62,17 +65,18 @@ public class OtpErlangLong extends OtpErlangObject {
     }
 
     /**
-     * Create an Erlang integer from a stream containing an integer encoded in Erlang
-     * external format.
+     * Create an Erlang integer from a stream containing an integer encoded in
+     * Erlang external format.
      *
      * @param buf
      *            the stream containing the encoded value.
      *
      * @exception OtpErlangDecodeException
-     *                if the buffer does not contain a valid external representation of an
-     *                Erlang integer.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang integer.
      */
-    public OtpErlangLong(final OtpInputStream buf) throws OtpErlangDecodeException {
+    public OtpErlangLong(final OtpInputStream buf)
+            throws OtpErlangDecodeException {
         final byte[] b = buf.read_integer_byte_array();
         try {
             val = OtpInputStream.byte_array_to_long(b, false);
@@ -94,8 +98,9 @@ public class OtpErlangLong extends OtpErlangObject {
     }
 
     /**
-     * Get this number as a long, or rather truncate all but the least significant 64 bits
-     * from the 2's complement representation of this number and return them as a long.
+     * Get this number as a long, or rather truncate all but the least
+     * significant 64 bits from the 2's complement representation of this number
+     * and return them as a long.
      *
      * @return the value of this number, as a long.
      */
@@ -112,7 +117,7 @@ public class OtpErlangLong extends OtpErlangObject {
      * @return true if this value fits in a long, false otherwise.
      */
     public boolean isLong() {
-        // To just chech this.bigVal is a wee bit to simple, since
+        // To just check this.bigVal is a wee bit to simple, since
         // there just might have be a mean bignum that arrived on
         // a stream, and was a long disguised as more than 8 byte integer.
         if (bigVal != null) {
@@ -122,10 +127,12 @@ public class OtpErlangLong extends OtpErlangObject {
     }
 
     /**
-     * Determine if this value can be represented as an unsigned long without truncation,
-     * that is if the value is non-negative and its bit pattern completely fits in a long.
+     * Determine if this value can be represented as an unsigned long without
+     * truncation, that is if the value is non-negative and its bit pattern
+     * completely fits in a long.
      *
-     * @return true if this value is non-negative and fits in a long false otherwise.
+     * @return true if this value is non-negative and fits in a long false
+     *         otherwise.
      */
     public boolean isULong() {
         // Here we have the same problem as for isLong(), plus
@@ -137,11 +144,11 @@ public class OtpErlangLong extends OtpErlangObject {
     }
 
     /**
-     * Returns the number of bits in the minimal two's-complement representation of this
-     * BigInteger, excluding a sign bit.
+     * Returns the number of bits in the minimal two's-complement representation
+     * of this BigInteger, excluding a sign bit.
      *
-     * @return number of bits in the minimal two's-complement representation of this
-     *         BigInteger, excluding a sign bit.
+     * @return number of bits in the minimal two's-complement representation of
+     *         this BigInteger, excluding a sign bit.
      */
     public int bitLength() {
         if (bigVal != null) {
@@ -221,8 +228,8 @@ public class OtpErlangLong extends OtpErlangObject {
      * @return the value of this number, as an int.
      *
      * @exception OtpErlangRangeException
-     *                if the value is too large to be represented as an int, or if the
-     *                value is negative.
+     *                if the value is too large to be represented as an int, or
+     *                if the value is negative.
      */
     public int uIntValue() throws OtpErlangRangeException {
         final long l = longValue();
@@ -250,7 +257,8 @@ public class OtpErlangLong extends OtpErlangObject {
         final short i = (short) l;
 
         if (i != l) {
-            throw new OtpErlangRangeException("Value too large for short: " + val);
+            throw new OtpErlangRangeException("Value too large for short: "
+                    + val);
         }
 
         return i;
@@ -262,15 +270,16 @@ public class OtpErlangLong extends OtpErlangObject {
      * @return the value of this number, as a short.
      *
      * @exception OtpErlangRangeException
-     *                if the value is too large to be represented as a short, or if the
-     *                value is negative.
+     *                if the value is too large to be represented as a short, or
+     *                if the value is negative.
      */
     public short uShortValue() throws OtpErlangRangeException {
         final long l = longValue();
         final short i = (short) l;
 
         if (i != l) {
-            throw new OtpErlangRangeException("Value too large for short: " + val);
+            throw new OtpErlangRangeException("Value too large for short: "
+                    + val);
         } else if (i < 0) {
             throw new OtpErlangRangeException("Value not positive: " + val);
         }
@@ -291,7 +300,8 @@ public class OtpErlangLong extends OtpErlangObject {
         final char i = (char) l;
 
         if (i != l) {
-            throw new OtpErlangRangeException("Value too large for char: " + val);
+            throw new OtpErlangRangeException("Value too large for char: "
+                    + val);
         }
 
         return i;
@@ -310,7 +320,8 @@ public class OtpErlangLong extends OtpErlangObject {
         final byte i = (byte) l;
 
         if (i != l) {
-            throw new OtpErlangRangeException("Value too large for byte: " + val);
+            throw new OtpErlangRangeException("Value too large for byte: "
+                    + val);
         }
 
         return i;
@@ -333,7 +344,8 @@ public class OtpErlangLong extends OtpErlangObject {
      * Convert this number to the equivalent Erlang external representation.
      *
      * @param buf
-     *            an output stream to which the encoded number should be written.
+     *            an output stream to which the encoded number should be
+     *            written.
      */
     @Override
     public void encode(final OtpOutputStream buf) {
@@ -345,8 +357,8 @@ public class OtpErlangLong extends OtpErlangObject {
     }
 
     /**
-     * Determine if two numbers are equal. Numbers are equal if they contain the same
-     * value.
+     * Determine if two numbers are equal. Numbers are equal if they contain the
+     * same value.
      *
      * @param o
      *            the number to compare to.

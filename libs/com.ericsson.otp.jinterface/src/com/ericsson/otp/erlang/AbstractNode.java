@@ -1,17 +1,19 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2016. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2022. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
@@ -30,34 +32,37 @@ import java.net.UnknownHostException;
  * </p>
  *
  * <p>
- * About nodenames: Erlang nodenames consist of two components, an alivename and a
- * hostname separated by '@'. Additionally, there are two nodename formats: short and
- * long. Short names are of the form "alive@hostname", while long names are of the form
- * "alive@host.fully.qualified.domainname". Erlang has special requirements regarding the
- * use of the short and long formats, in particular they cannot be mixed freely in a
- * network of communicating nodes, however Jinterface makes no distinction. See the Erlang
- * documentation for more information about nodenames.
+ * About nodenames: Erlang nodenames consist of two components, an alivename and
+ * a hostname separated by '@'. Additionally, there are two nodename formats:
+ * short and long. Short names are of the form "alive@hostname", while long
+ * names are of the form "alive@host.fully.qualified.domainname". Erlang has
+ * special requirements regarding the use of the short and long formats, in
+ * particular they cannot be mixed freely in a network of communicating nodes,
+ * however Jinterface makes no distinction. See the Erlang documentation for
+ * more information about nodenames.
  * </p>
  *
  * <p>
- * The constructors for the AbstractNode classes will create names exactly as you provide
- * them as long as the name contains '@'. If the string you provide contains no '@', it
- * will be treated as an alivename and the name of the local host will be appended,
- * resulting in a shortname. Nodenames longer than 255 characters will be truncated
- * without warning.
+ * The constructors for the AbstractNode classes will create names exactly as
+ * you provide them as long as the name contains '@'. If the string you provide
+ * contains no '@', it will be treated as an alivename and the name of the local
+ * host will be appended, resulting in a shortname. Nodenames longer than 255
+ * characters will be truncated without warning.
  * </p>
  *
  * <p>
- * Upon initialization, this class attempts to read the file .erlang.cookie in the user's
- * home directory, and uses the trimmed first line of the file as the default cookie by
- * those constructors lacking a cookie argument. If for any reason the file cannot be
- * found or read, the default cookie will be set to the empty string (""). The location of
- * a user's home directory is determined using the system property "user.home", which may
- * not be automatically set on all platforms.
+ * Upon initialization, this class attempts to read the file .erlang.cookie in
+ * the user's home directory, and uses the trimmed first line of the file as the
+ * default cookie by those constructors lacking a cookie argument. If for any
+ * reason the file cannot be found or read, the default cookie will be set to
+ * the empty string (""). The location of a user's home directory is determined
+ * using the system property "user.home", which may not be automatically set on
+ * all platforms.
  * </p>
  *
  * <p>
- * Instances of this class cannot be created directly, use one of the subclasses instead.
+ * Instances of this class cannot be created directly, use one of the subclasses
+ * instead.
  * </p>
  */
 public class AbstractNode implements OtpTransportFactory {
@@ -89,24 +94,44 @@ public class AbstractNode implements OtpTransportFactory {
     static final int dFlagMapTag = 0x20000;
     static final int dFlagBigCreation = 0x40000;
     static final int dFlagHandshake23 = 0x1000000;
+    static final int dFlagUnlinkId = 0x2000000;
+    static final int dFlagMandatory25Digest = 0x4000000;
     static final long dFlagV4PidsRefs = 0x4L << 32;
+
+    /* Mandatory flags in OTP 25. */
+    static final long mandatoryFlags25 = dFlagExtendedReferences
+        | dFlagFunTags
+        | dFlagExtendedPidsPorts
+        | dFlagUtf8Atoms
+        | dflagNewFunTags
+        | dFlagBigCreation
+        | dFlagNewFloats
+        | dFlagMapTag
+        | dFlagExportPtrTag
+        | dFlagBitBinaries
+        | dFlagHandshake23;
+
+    /* Mandatory flags for distribution. Keep them in sync with
+       DFLAG_DIST_MANDATORY in erts/emulator/beam/dist.h. */
+    static final long mandatoryFlags = mandatoryFlags25;
 
     int ntype = NTYPE_R6;
     int proto = 0; // tcp/ip
     int distHigh = 6;
-    int distLow = 5; // Cannot talk to nodes before R6
-    int creation = 0;
-    long flags = dFlagExtendedReferences | dFlagExtendedPidsPorts | dFlagBitBinaries
-            | dFlagNewFloats | dFlagFunTags | dflagNewFunTags | dFlagUtf8Atoms
-            | dFlagMapTag | dFlagExportPtrTag | dFlagBigCreation | dFlagHandshake23
-            | dFlagV4PidsRefs;
+    int distLow = 6; // Cannot talk to nodes before OTP 23
+    private int creation = 0x710000;
+    long flags = mandatoryFlags
+        | dFlagUnlinkId
+        | dFlagV4PidsRefs
+        | dFlagMandatory25Digest;
 
     /* initialize hostname and default cookie */
     static {
         try {
             localHost = InetAddress.getLocalHost().getHostName();
             /*
-             * Make sure it's a short name, i.e. strip of everything after first '.'
+             * Make sure it's a short name, i.e. strip of everything after first
+             * '.'
              */
             final int dot = localHost.indexOf(".");
             if (dot != -1) {
@@ -117,7 +142,8 @@ public class AbstractNode implements OtpTransportFactory {
         }
 
         final String homeDir = getHomeDir();
-        final String dotCookieFilename = homeDir + File.separator + ".erlang.cookie";
+        final String dotCookieFilename = homeDir + File.separator
+                + ".erlang.cookie";
         BufferedReader br = null;
 
         try {
@@ -147,14 +173,16 @@ public class AbstractNode implements OtpTransportFactory {
     }
 
     /**
-     * Create a node with the given name and default cookie and transport factory.
+     * Create a node with the given name and default cookie and transport
+     * factory.
      */
     protected AbstractNode(final String node) {
         this(node, defaultCookie, new OtpSocketTransportFactory());
     }
 
     /**
-     * Create a node with the given name, transport factory and the default cookie.
+     * Create a node with the given name, transport factory and the default
+     * cookie.
      */
     protected AbstractNode(final String node,
             final OtpTransportFactory transportFactory) {
@@ -176,7 +204,7 @@ public class AbstractNode implements OtpTransportFactory {
         this.cookie = cookie;
         this.transportFactory = transportFactory;
 
-        final int i = name.indexOf('@', 0);
+        final int i = name.indexOf('@');
         if (i < 0) {
             alive = name;
             host = localHost;
@@ -202,9 +230,9 @@ public class AbstractNode implements OtpTransportFactory {
     }
 
     /**
-     * Get the hostname part of the nodename. Nodenames are composed of two parts, an
-     * alivename and a hostname, separated by '@'. This method returns the part of the
-     * nodename following the '@'.
+     * Get the hostname part of the nodename. Nodenames are composed of two
+     * parts, an alivename and a hostname, separated by '@'. This method returns
+     * the part of the nodename following the '@'.
      *
      * @return the hostname component of the nodename.
      */
@@ -213,9 +241,9 @@ public class AbstractNode implements OtpTransportFactory {
     }
 
     /**
-     * Get the alivename part of the hostname. Nodenames are composed of two parts, an
-     * alivename and a hostname, separated by '@'. This method returns the part of the
-     * nodename preceding the '@'.
+     * Get the alivename part of the hostname. Nodenames are composed of two
+     * parts, an alivename and a hostname, separated by '@'. This method returns
+     * the part of the nodename preceding the '@'.
      *
      * @return the alivename component of the nodename.
      */
@@ -257,6 +285,13 @@ public class AbstractNode implements OtpTransportFactory {
         return creation;
     }
 
+    void setCreation(int cr) throws OtpErlangDecodeException {
+        if (cr == 0) {
+            throw new OtpErlangDecodeException("Node creation 0 not allowed");
+        }
+        this.creation = cr;
+    }
+
     /**
      * Set the authorization cookie used by this node.
      *
@@ -283,20 +318,58 @@ public class AbstractNode implements OtpTransportFactory {
         return home;
     }
 
-    @Override
     public OtpTransport createTransport(final String addr, final int port)
             throws IOException {
         return transportFactory.createTransport(addr, port);
     }
 
-    @Override
     public OtpTransport createTransport(final InetAddress addr, final int port)
             throws IOException {
         return transportFactory.createTransport(addr, port);
     }
 
-    @Override
-    public OtpServerTransport createServerTransport(final int port) throws IOException {
+    public OtpServerTransport createServerTransport(final int port)
+            throws IOException {
         return transportFactory.createServerTransport(port);
+    }
+
+    /**
+     * Create a client-side transport for alternative distribution protocols
+     * using a transport factory extending the OtpGenericTransportFactory
+     * abstract class. Connect it to the specified server.
+     *
+     * @param peer
+     *            the peer identifying the server to connect to
+     *
+     */
+    public OtpTransport createTransport(final OtpPeer peer)
+            throws IOException {
+        if (transportFactory instanceof OtpGenericTransportFactory) {
+            return ((OtpGenericTransportFactory) transportFactory)
+                .createTransport(peer);
+        }
+        throw new IOException("Method createTransport(OtpPeer) " +
+                              "applicable only for Nodes with a transport " +
+                              "factory instance of OtpGenericTransportFactory");
+    }
+
+    /**
+     * Create a server-side transport for alternative distribution protocols
+     * using a transport factory extending the OtpGenericTransportFactory
+     * abstract class.
+     *
+     * @param node
+     *            the local node identifying the transport to create server-side
+     *
+     */
+    public OtpServerTransport createServerTransport(final OtpLocalNode node)
+            throws IOException {
+        if (transportFactory instanceof OtpGenericTransportFactory) {
+            return ((OtpGenericTransportFactory) transportFactory)
+                .createServerTransport(node);
+        }
+        throw new IOException("Method createServerTransport(OtpLocalNode) " +
+                              "applicable only for Nodes with a transport " +
+                              "factory instance of OtpGenericTransportFactory");
     }
 }

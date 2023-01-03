@@ -3,15 +3,17 @@
  *
  * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
@@ -23,12 +25,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * Provides a Java representation of Erlang maps. Maps are created from one or more
- * arbitrary Erlang terms.
+ * Provides a Java representation of Erlang maps. Maps are created from one or
+ * more arbitrary Erlang terms.
  *
  * <p>
- * The arity of the map is the number of elements it contains. The keys and values can be
- * retrieved as arrays and the value for a key can be queried.
+ * The arity of the map is the number of elements it contains. The keys and
+ * values can be retrieved as arrays and the value for a key can be queried.
  *
  */
 public class OtpErlangMap extends OtpErlangObject {
@@ -37,10 +39,12 @@ public class OtpErlangMap extends OtpErlangObject {
 
     private OtpMap map;
 
-    private static class OtpMap extends LinkedHashMap<OtpErlangObject, OtpErlangObject> {
+    private static class OtpMap
+            extends LinkedHashMap<OtpErlangObject, OtpErlangObject> {
         private static final long serialVersionUID = -2666505810905455082L;
 
         public OtpMap() {
+            super();
         }
     }
 
@@ -62,7 +66,8 @@ public class OtpErlangMap extends OtpErlangObject {
      * @exception java.lang.IllegalArgumentException
      *                if any array is empty (null) or contains null elements.
      */
-    public OtpErlangMap(final OtpErlangObject[] keys, final OtpErlangObject[] values) {
+    public OtpErlangMap(final OtpErlangObject[] keys,
+            final OtpErlangObject[] values) {
         this(keys, 0, keys.length, values, 0, values.length);
     }
 
@@ -87,10 +92,12 @@ public class OtpErlangMap extends OtpErlangObject {
      * @exception java.lang.IllegalArgumentException
      *                if kcount and vcount differ.
      */
-    public OtpErlangMap(final OtpErlangObject[] keys, final int kstart, final int kcount,
-            final OtpErlangObject[] values, final int vstart, final int vcount) {
+    public OtpErlangMap(final OtpErlangObject[] keys, final int kstart,
+            final int kcount, final OtpErlangObject[] values, final int vstart,
+            final int vcount) {
         if (keys == null || values == null) {
-            throw new java.lang.IllegalArgumentException("Map content can't be null");
+            throw new java.lang.IllegalArgumentException(
+                    "Map content can't be null");
         } else if (kcount != vcount) {
             throw new java.lang.IllegalArgumentException(
                     "Map keys and values must have same arity");
@@ -104,23 +111,26 @@ public class OtpErlangMap extends OtpErlangObject {
             }
             if ((val = values[vstart + i]) == null) {
                 throw new java.lang.IllegalArgumentException(
-                        "Map value cannot be null (element" + (vstart + i) + ")");
+                        "Map value cannot be null (element" + (vstart + i)
+                                + ")");
             }
             put(key, val);
         }
     }
 
     /**
-     * Create a map from a stream containing a map encoded in Erlang external format.
+     * Create a map from a stream containing a map encoded in Erlang external
+     * format.
      *
      * @param buf
      *            the stream containing the encoded map.
      *
      * @exception OtpErlangDecodeException
-     *                if the buffer does not contain a valid external representation of an
-     *                Erlang map.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang map.
      */
-    public OtpErlangMap(final OtpInputStream buf) throws OtpErlangDecodeException {
+    public OtpErlangMap(final OtpInputStream buf)
+            throws OtpErlangDecodeException {
         final int arity = buf.read_map_head();
 
         if (arity > 0) {
@@ -146,8 +156,8 @@ public class OtpErlangMap extends OtpErlangObject {
     }
 
     /**
-     * Put value corresponding to key into the map. For detailed behavior description see
-     * {@link Map#put(Object, Object)}.
+     * Put value corresponding to key into the map. For detailed behavior
+     * description see {@link Map#put(Object, Object)}.
      *
      * @param key
      *            key to associate value with
@@ -155,7 +165,8 @@ public class OtpErlangMap extends OtpErlangObject {
      *            value to associate with key
      * @return previous value associated with key or null
      */
-    public OtpErlangObject put(final OtpErlangObject key, final OtpErlangObject value) {
+    public OtpErlangObject put(final OtpErlangObject key,
+            final OtpErlangObject value) {
         return map.put(key, value);
     }
 
@@ -256,13 +267,14 @@ public class OtpErlangMap extends OtpErlangObject {
     }
 
     /**
-     * Determine if two maps are equal. Maps are equal if they have the same arity and all
-     * of the elements are equal.
+     * Determine if two maps are equal. Maps are equal if they have the same
+     * arity and all of the elements are equal.
      *
      * @param o
      *            the map to compare to.
      *
-     * @return true if the maps have the same arity and all the elements are equal.
+     * @return true if the maps have the same arity and all the elements are
+     *         equal.
      */
     @Override
     public boolean equals(final Object o) {

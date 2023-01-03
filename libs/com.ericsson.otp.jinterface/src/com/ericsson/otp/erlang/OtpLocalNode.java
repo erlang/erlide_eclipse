@@ -1,17 +1,19 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2016. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2021. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
@@ -39,7 +41,8 @@ public class OtpLocalNode extends AbstractNode {
     }
 
     /**
-     * Create a node with the given name, transport factory and the default cookie.
+     * Create a node with the given name, transport factory and the default
+     * cookie.
      */
     protected OtpLocalNode(final String node,
             final OtpTransportFactory transportFactory) {
@@ -103,14 +106,15 @@ public class OtpLocalNode extends AbstractNode {
     }
 
     /**
-     * Create an Erlang {@link OtpErlangPid pid}. Erlang pids are based upon some node
-     * specific information; this method creates a pid using the information in this node.
-     * Each call to this method produces a unique pid.
+     * Create an Erlang {@link OtpErlangPid pid}. Erlang pids are based upon
+     * some node specific information; this method creates a pid using the
+     * information in this node. Each call to this method produces a unique pid.
      *
      * @return an Erlang pid.
      */
     public synchronized OtpErlangPid createPid() {
-        final OtpErlangPid p = new OtpErlangPid(node, pidCount, serial, creation);
+        final OtpErlangPid p = new OtpErlangPid(node, pidCount, serial,
+                creation());
 
         pidCount++;
         if (pidCount > 0x7fff) {
@@ -126,16 +130,16 @@ public class OtpLocalNode extends AbstractNode {
     }
 
     /**
-     * Create an Erlang {@link OtpErlangPort port}. Erlang ports are based upon some node
-     * specific information; this method creates a port using the information in this
-     * node. Each call to this method produces a unique port. It may not be meaningful to
-     * create a port in a non-Erlang environment, but this method is provided for
-     * completeness.
+     * Create an Erlang {@link OtpErlangPort port}. Erlang ports are based upon
+     * some node specific information; this method creates a port using the
+     * information in this node. Each call to this method produces a unique
+     * port. It may not be meaningful to create a port in a non-Erlang
+     * environment, but this method is provided for completeness.
      *
      * @return an Erlang port.
      */
     public synchronized OtpErlangPort createPort() {
-        final OtpErlangPort p = new OtpErlangPort(node, portCount, creation);
+        final OtpErlangPort p = new OtpErlangPort(node, portCount, creation());
 
         portCount++;
         if (portCount > 0xfffffff) { /* 28 bits */
@@ -146,14 +150,15 @@ public class OtpLocalNode extends AbstractNode {
     }
 
     /**
-     * Create an Erlang {@link OtpErlangRef reference}. Erlang references are based upon
-     * some node specific information; this method creates a reference using the
-     * information in this node. Each call to this method produces a unique reference.
+     * Create an Erlang {@link OtpErlangRef reference}. Erlang references are
+     * based upon some node specific information; this method creates a
+     * reference using the information in this node. Each call to this method
+     * produces a unique reference.
      *
      * @return an Erlang reference.
      */
     public synchronized OtpErlangRef createRef() {
-        final OtpErlangRef r = new OtpErlangRef(node, refId, creation);
+        final OtpErlangRef r = new OtpErlangRef(node, refId, creation());
 
         // increment ref ids (3 ints: 18 + 32 + 32 bits)
         refId[0]++;

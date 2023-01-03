@@ -1,25 +1,27 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2016. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2021. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
 /**
- * Provides a Java representation of Erlang PIDs. PIDs represent Erlang processes and
- * consist of a nodename and a number of integers.
+ * Provides a Java representation of Erlang PIDs. PIDs represent Erlang
+ * processes and consist of a nodename and a number of integers.
  */
 public class OtpErlangPid extends OtpErlangObject implements Comparable<Object> {
     // don't change this!
@@ -49,17 +51,18 @@ public class OtpErlangPid extends OtpErlangObject implements Comparable<Object> 
     }
 
     /**
-     * Create an Erlang PID from a stream containing a PID encoded in Erlang external
-     * format.
+     * Create an Erlang PID from a stream containing a PID encoded in Erlang
+     * external format.
      *
      * @param buf
      *            the stream containing the encoded PID.
      *
      * @exception OtpErlangDecodeException
-     *                if the buffer does not contain a valid external representation of an
-     *                Erlang PID.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang PID.
      */
-    public OtpErlangPid(final OtpInputStream buf) throws OtpErlangDecodeException {
+    public OtpErlangPid(final OtpInputStream buf)
+            throws OtpErlangDecodeException {
         final OtpErlangPid p = buf.read_pid();
 
         node = p.node();
@@ -78,24 +81,25 @@ public class OtpErlangPid extends OtpErlangObject implements Comparable<Object> 
      *            an arbitrary number. Only the low order 15 bits will be used.
      *
      * @param serial
-     *            another arbitrary number. Only the low order 13 bits will be used.
+     *            another arbitrary number. Only the low order 13 bits will be
+     *            used.
      *
      * @param creation
-     *            yet another arbitrary number. Ony the low order 2 bits will be used.
+	 *  		  node incarnation number. Avoid values 0 to 3.
      */
     public OtpErlangPid(final String node, final int id, final int serial,
-            final int creation) {
-        this(OtpExternal.pidTag, node, id, serial, creation);
+			final int creation) {
+		this(OtpExternal.newPidTag, node, id, serial, creation);
     }
 
     /**
      * Create an Erlang pid from its components.
      *
      * @param tag
-     *            the external format to be compliant with OtpExternal.pidTag where only a
-     *            subset of the bits are significant (see other constructor).
-     *            OtpExternal.newPidTag where all 32 bits of id,serial and creation are
-     *            significant. newPidTag can only be decoded by OTP-19 and newer.
+     *            the external format to be compliant with
+     *            OtpExternal.pidTag where only a subset of the bits are significant (see other constructor).
+     *            OtpExternal.newPidTag where all 32 bits of id,serial and creation are significant.
+     *            newPidTag can only be decoded by OTP-19 and newer.
      * @param node
      *            the nodename.
      *
@@ -109,21 +113,22 @@ public class OtpErlangPid extends OtpErlangObject implements Comparable<Object> 
      *            yet another arbitrary number.
      */
     protected OtpErlangPid(final int tag, final String node, final int id,
-            final int serial, final int creation) {
-        this.node = node;
-        if (tag == OtpExternal.pidTag) {
-            this.id = id & 0x7fff; // 15 bits
-            this.serial = serial & 0x1fff; // 13 bits
-            this.creation = creation & 0x03; // 2 bits
-        } else { // allow all 32 bits for newPidTag
-            this.id = id;
-            this.serial = serial;
-            this.creation = creation;
-        }
+			   final int serial, final int creation) {
+	this.node = node;
+	if (tag == OtpExternal.pidTag) {
+	    this.id = id & 0x7fff; // 15 bits
+	    this.serial = serial & 0x1fff; // 13 bits
+	    this.creation = creation & 0x03; // 2 bits
+	}
+	else {  // allow all 32 bits for newPidTag
+	    this.id = id;
+	    this.serial = serial;
+	    this.creation = creation;
+	}
     }
 
     protected int tag() {
-        return OtpExternal.newPidTag;
+	return OtpExternal.newPidTag;
     }
 
     /**
@@ -185,7 +190,8 @@ public class OtpErlangPid extends OtpErlangObject implements Comparable<Object> 
     }
 
     /**
-     * Determine if two PIDs are equal. PIDs are equal if their components are equal.
+     * Determine if two PIDs are equal. PIDs are equal if their components are
+     * equal.
      *
      * @param o
      *            the other PID to compare to.
@@ -212,7 +218,6 @@ public class OtpErlangPid extends OtpErlangObject implements Comparable<Object> 
         return hash.valueOf();
     }
 
-    @Override
     public int compareTo(final Object o) {
         if (!(o instanceof OtpErlangPid)) {
             return -1;

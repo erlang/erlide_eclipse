@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Erlang OTP JInterface
 Bundle-SymbolicName: com.ericsson.otp.jinterface
 Bundle-ActivationPolicy: lazy
-Bundle-Version: 1.11.0
+Bundle-Version: 1.13.1
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: com.ericsson.otp.erlang

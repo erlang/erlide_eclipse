@@ -1,17 +1,19 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2016. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2021. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
@@ -22,23 +24,24 @@ import java.io.IOException;
 import java.net.InetAddress;
 
 /**
- * Provides methods for registering, unregistering and looking up nodes with the Erlang
- * portmapper daemon (Epmd). For each registered node, Epmd maintains information about
- * the port on which incoming connections are accepted, as well as which versions of the
- * Erlang communication protocol the node supports.
+ * Provides methods for registering, unregistering and looking up nodes with the
+ * Erlang portmapper daemon (Epmd). For each registered node, Epmd maintains
+ * information about the port on which incoming connections are accepted, as
+ * well as which versions of the Erlang communication protocol the node
+ * supports.
  *
  * <p>
- * Nodes wishing to contact other nodes must first request information from Epmd before a
- * connection can be set up, however this is done automatically by
+ * Nodes wishing to contact other nodes must first request information from Epmd
+ * before a connection can be set up, however this is done automatically by
  * {@link OtpSelf#connect(OtpPeer) OtpSelf.connect()} when necessary.
  *
  * <p>
  * The methods {@link #publishPort(OtpLocalNode) publishPort()} and
- * {@link #unPublishPort(OtpLocalNode) unPublishPort()} will fail if an Epmd process is
- * not running on the localhost. Additionally {@link #lookupPort(AbstractNode)
- * lookupPort()} will fail if there is no Epmd process running on the host where the
- * specified node is running. See the Erlang documentation for information about starting
- * Epmd.
+ * {@link #unPublishPort(OtpLocalNode) unPublishPort()} will fail if an Epmd
+ * process is not running on the localhost. Additionally
+ * {@link #lookupPort(AbstractNode) lookupPort()} will fail if there is no Epmd
+ * process running on the host where the specified node is running. See the
+ * Erlang documentation for information about starting Epmd.
  *
  * <p>
  * This class contains only static methods, there are no constructors.
@@ -81,7 +84,8 @@ public class OtpEpmd {
 
     static {
         // debug this connection?
-        final String trace = System.getProperties().getProperty("OtpConnection.trace");
+        final String trace = System.getProperties().getProperty(
+                "OtpConnection.trace");
         try {
             if (trace != null) {
                 traceLevel = Integer.valueOf(trace).intValue();
@@ -97,9 +101,9 @@ public class OtpEpmd {
     }
 
     /**
-     * Set the port number to be used to contact the epmd process. Only needed when the
-     * default port is not desired and system environment variable ERL_EPMD_PORT cannot be
-     * read (applet).
+     * Set the port number to be used to contact the epmd process. Only needed
+     * when the default port is not desired and system environment variable
+     * ERL_EPMD_PORT cannot be read (applet).
      */
     public static void useEpmdPort(final int port) {
         EpmdPort.set(port);
@@ -108,8 +112,8 @@ public class OtpEpmd {
     /**
      * Determine what port a node listens for incoming connections on.
      *
-     * @return the listen port for the specified node, or 0 if the node was not registered
-     *         with Epmd.
+     * @return the listen port for the specified node, or 0 if the node was not
+     *         registered with Epmd.
      *
      * @exception java.io.IOException
      *                if there was no response from the name server.
@@ -119,19 +123,21 @@ public class OtpEpmd {
     }
 
     /**
-     * Register with Epmd, so that other nodes are able to find and connect to it.
+     * Register with Epmd, so that other nodes are able to find and connect to
+     * it.
      *
      * @param node
      *            the server node that should be registered with Epmd.
      *
-     * @return true if the operation was successful. False if the node was already
-     *         registered.
+     * @return true if the operation was successful. False if the node was
+     *         already registered.
      *
      * @exception java.io.IOException
      *                if there was no response from the name server.
      */
-    public static boolean publishPort(final OtpLocalNode node) throws IOException {
-        OtpTransport s;
+    public static boolean publishPort(final OtpLocalNode node)
+            throws IOException {
+        OtpTransport s = null;
 
         s = r4_publish(node);
 
@@ -144,7 +150,8 @@ public class OtpEpmd {
     // Caller should close his epmd socket as well.
     // This method is pretty forgiving...
     /**
-     * Unregister from Epmd. Other nodes wishing to connect will no longer be able to.
+     * Unregister from Epmd. Other nodes wishing to connect will no longer be
+     * able to.
      *
      * <p>
      * This method does not report any failures.
@@ -162,7 +169,8 @@ public class OtpEpmd {
             obuf.writeToAndFlush(s.getOutputStream());
             // don't even wait for a response (is there one?)
             if (traceLevel >= traceThreshold) {
-                System.out.println("-> UNPUBLISH " + node + " port=" + node.port());
+                System.out.println("-> UNPUBLISH " + node + " port="
+                        + node.port());
                 System.out.println("<- OK (assumed)");
             }
         } catch (final Exception e) {/* ignore all failures */
@@ -177,7 +185,8 @@ public class OtpEpmd {
         }
     }
 
-    private static int r4_lookupPort(final AbstractNode node) throws IOException {
+    private static int r4_lookupPort(final AbstractNode node)
+            throws IOException {
         int port = 0;
         OtpTransport s = null;
 
@@ -209,8 +218,8 @@ public class OtpEpmd {
 
             if (n < 0) {
                 s.close();
-                throw new IOException("Nameserver not responding on " + node.host()
-                        + " when looking up " + node.alive());
+                throw new IOException("Nameserver not responding on "
+                        + node.host() + " when looking up " + node.alive());
             }
 
             @SuppressWarnings("resource")
@@ -262,13 +271,14 @@ public class OtpEpmd {
     }
 
     /*
-     * this function will get an exception if it tries to talk to a very old epmd, or if
-     * something else happens that it cannot forsee. In both cases we return an exception.
-     * We no longer support r3, so the exception is fatal. If we manage to successfully
-     * communicate with an r4 epmd, we return either the socket, or null, depending on the
-     * result.
+     * this function will get an exception if it tries to talk to a very old
+     * epmd, or if something else happens that it cannot forsee. In both cases
+     * we return an exception. We no longer support r3, so the exception is
+     * fatal. If we manage to successfully communicate with an r4 epmd, we
+     * return either the socket, or null, depending on the result.
      */
-    private static OtpTransport r4_publish(final OtpLocalNode node) throws IOException {
+    private static OtpTransport r4_publish(final OtpLocalNode node)
+            throws IOException {
         OtpTransport s = null;
 
         try {
@@ -295,7 +305,8 @@ public class OtpEpmd {
             obuf.writeToAndFlush(s.getOutputStream());
 
             if (traceLevel >= traceThreshold) {
-                System.out.println("-> PUBLISH (r4) " + node + " port=" + node.port());
+                System.out.println("-> PUBLISH (r4) " + node + " port="
+                        + node.port());
             }
 
             // get reply
@@ -304,8 +315,8 @@ public class OtpEpmd {
 
             if (n < 0) {
                 s.close();
-                throw new IOException("Nameserver not responding on " + node.host()
-                        + " when publishing " + node.alive());
+                throw new IOException("Nameserver not responding on "
+                        + node.host() + " when publishing " + node.alive());
             }
 
             @SuppressWarnings("resource")
@@ -315,8 +326,8 @@ public class OtpEpmd {
             if (response == ALIVE2_RESP || response == ALIVE2_X_RESP) {
                 final int result = ibuf.read1();
                 if (result == 0) {
-                    node.creation = response == ALIVE2_RESP ? ibuf.read2BE()
-                            : ibuf.read4BE();
+                    node.setCreation(response == ALIVE2_RESP
+                                     ? ibuf.read2BE() : ibuf.read4BE());
                     if (traceLevel >= traceThreshold) {
                         System.out.println("<- OK");
                     }
@@ -347,15 +358,17 @@ public class OtpEpmd {
     }
 
     public static String[] lookupNames() throws IOException {
-        return lookupNames(InetAddress.getByName(null), new OtpSocketTransportFactory());
+        return lookupNames(InetAddress.getByName(null),
+                new OtpSocketTransportFactory());
     }
 
-    public static String[] lookupNames(final OtpTransportFactory transportFactory)
-            throws IOException {
+    public static String[] lookupNames(
+            final OtpTransportFactory transportFactory) throws IOException {
         return lookupNames(InetAddress.getByName(null), transportFactory);
     }
 
-    public static String[] lookupNames(final InetAddress address) throws IOException {
+    public static String[] lookupNames(final InetAddress address)
+            throws IOException {
         return lookupNames(address, new OtpSocketTransportFactory());
     }
 
@@ -410,12 +423,14 @@ public class OtpEpmd {
             if (traceLevel >= traceThreshold) {
                 System.out.println("<- (no response)");
             }
-            throw new IOException("Nameserver not responding when requesting names");
+            throw new IOException(
+                    "Nameserver not responding when requesting names");
         } catch (final OtpErlangDecodeException e) {
             if (traceLevel >= traceThreshold) {
                 System.out.println("<- (invalid response)");
             }
-            throw new IOException("Nameserver not responding when requesting names");
+            throw new IOException(
+                    "Nameserver not responding when requesting names");
         }
     }
 

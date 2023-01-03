@@ -3,15 +3,17 @@
  *
  * Copyright Ericsson AB 2009-2016. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
@@ -32,7 +34,8 @@ public class OtpErlangFun extends OtpErlangObject {
     private final int arity;
     private final byte[] md5;
 
-    public OtpErlangFun(final OtpInputStream buf) throws OtpErlangDecodeException {
+    public OtpErlangFun(final OtpInputStream buf)
+            throws OtpErlangDecodeException {
         final OtpErlangFun f = buf.read_fun();
         pid = f.pid;
         module = f.module;
@@ -44,8 +47,8 @@ public class OtpErlangFun extends OtpErlangObject {
         freeVars = f.freeVars;
     }
 
-    public OtpErlangFun(final OtpErlangPid pid, final String module, final long index,
-            final long uniq, final OtpErlangObject[] freeVars) {
+    public OtpErlangFun(final OtpErlangPid pid, final String module,
+            final long index, final long uniq, final OtpErlangObject[] freeVars) {
         this.pid = pid;
         this.module = module;
         arity = -1;
@@ -56,8 +59,9 @@ public class OtpErlangFun extends OtpErlangObject {
         this.freeVars = freeVars;
     }
 
-    public OtpErlangFun(final OtpErlangPid pid, final String module, final int arity,
-            final byte[] md5, final int index, final long old_index, final long uniq,
+    public OtpErlangFun(final OtpErlangPid pid, final String module,
+            final int arity, final byte[] md5, final int index,
+            final long old_index, final long uniq,
             final OtpErlangObject[] freeVars) {
         this.pid = pid;
         this.module = module;
@@ -87,8 +91,10 @@ public class OtpErlangFun extends OtpErlangObject {
             if (f.md5 != null) {
                 return false;
             }
-        } else if (!Arrays.equals(md5, f.md5)) {
-            return false;
+        } else {
+            if (!Arrays.equals(md5, f.md5)) {
+                return false;
+            }
         }
         if (index != f.index || uniq != f.uniq) {
             return false;

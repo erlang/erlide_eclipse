@@ -3,15 +3,17 @@
  *
  * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
@@ -44,7 +46,8 @@ class OtpMD5 {
      * Has to be this large to avoid sign problems
      */
 
-    private final long state[] = { 0x67452301L, 0xefcdab89L, 0x98badcfeL, 0x10325476L };
+    private final long state[] = { 0x67452301L, 0xefcdab89L, 0x98badcfeL,
+            0x10325476L };
     private final long count[] = { 0L, 0L };
     private final int buffer[];
 
@@ -97,8 +100,8 @@ class OtpMD5 {
         return ~x & 0xFFFFFFFFL;
     }
 
-    private void to_buffer(final int to_start, final int[] from, final int from_start,
-            final int num) {
+    private void to_buffer(final int to_start, final int[] from,
+            final int from_start, final int num) {
         int ix = num;
         int to_ix = to_start;
         int from_ix = from_start;
@@ -147,8 +150,8 @@ class OtpMD5 {
 
     @SuppressWarnings("unused")
     private void dumpstate() {
-        System.out.println("state = {" + state[0] + ", " + state[1] + ", " + state[2]
-                + ", " + state[3] + "}");
+        System.out.println("state = {" + state[0] + ", " + state[1] + ", "
+                + state[2] + ", " + state[3] + "}");
         System.out.println("count = {" + count[0] + ", " + count[1] + "}");
         System.out.print("buffer = {");
         int i;
@@ -185,41 +188,42 @@ class OtpMD5 {
         return shl(x, (int) n) | shr(x, (int) (32 - n));
     }
 
-    private long FF(final long a, final long b, final long c, final long d, final long x,
-            final long s, final long ac) {
+    private long FF(final long a, final long b, final long c, final long d,
+            final long x, final long s, final long ac) {
         long tmp = plus(a, plus(plus(F(b, c, d), x), ac));
         tmp = ROTATE_LEFT(tmp, s);
         return plus(tmp, b);
     }
 
-    private long GG(final long a, final long b, final long c, final long d, final long x,
-            final long s, final long ac) {
+    private long GG(final long a, final long b, final long c, final long d,
+            final long x, final long s, final long ac) {
         long tmp = plus(a, plus(plus(G(b, c, d), x), ac));
         tmp = ROTATE_LEFT(tmp, s);
         return plus(tmp, b);
     }
 
-    private long HH(final long a, final long b, final long c, final long d, final long x,
-            final long s, final long ac) {
+    private long HH(final long a, final long b, final long c, final long d,
+            final long x, final long s, final long ac) {
         long tmp = plus(a, plus(plus(H(b, c, d), x), ac));
         tmp = ROTATE_LEFT(tmp, s);
         return plus(tmp, b);
     }
 
-    private long II(final long a, final long b, final long c, final long d, final long x,
-            final long s, final long ac) {
+    private long II(final long a, final long b, final long c, final long d,
+            final long x, final long s, final long ac) {
         long tmp = plus(a, plus(plus(I(b, c, d), x), ac));
         tmp = ROTATE_LEFT(tmp, s);
         return plus(tmp, b);
     }
 
-    private void decode(final long output[], final int input[], final int in_from,
-            final int len) {
+    private void decode(final long output[], final int input[],
+            final int in_from, final int len) {
         int i, j;
 
         for (i = 0, j = 0; j < len; i++, j += 4) {
             output[i] = input[j + in_from] | shl(input[j + in_from + 1], 8)
-                    | shl(input[j + in_from + 2], 16) | shl(input[j + in_from + 3], 24);
+                    | shl(input[j + in_from + 2], 16)
+                    | shl(input[j + in_from + 3], 24);
         }
     }
 
