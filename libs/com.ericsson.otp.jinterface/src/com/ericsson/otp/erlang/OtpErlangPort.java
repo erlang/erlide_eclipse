@@ -1,17 +1,19 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2016. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2021. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
@@ -29,8 +31,8 @@ public class OtpErlangPort extends OtpErlangObject {
     private final int creation;
 
     /*
-     * Create a unique Erlang port belonging to the local node. Since it isn't meaninful
-     * to do so, this constructor is private...
+     * Create a unique Erlang port belonging to the local node. Since it isn't
+     * meaningful to do so, this constructor is private...
      *
      * @param self the local node.
      *
@@ -46,17 +48,18 @@ public class OtpErlangPort extends OtpErlangObject {
     }
 
     /**
-     * Create an Erlang port from a stream containing a port encoded in Erlang external
-     * format.
+     * Create an Erlang port from a stream containing a port encoded in Erlang
+     * external format.
      *
      * @param buf
      *            the stream containing the encoded port.
      *
      * @exception OtpErlangDecodeException
-     *                if the buffer does not contain a valid external representation of an
-     *                Erlang port.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang port.
      */
-    public OtpErlangPort(final OtpInputStream buf) throws OtpErlangDecodeException {
+    public OtpErlangPort(final OtpInputStream buf)
+            throws OtpErlangDecodeException {
         final OtpErlangPort p = buf.read_port();
 
         node = p.node();
@@ -74,20 +77,20 @@ public class OtpErlangPort extends OtpErlangObject {
      *            an arbitrary number. Only the low order 28 bits will be used.
      *
      * @param creation
-     *            another arbitrary number. Only the low order 2 bits will be used.
+	 *  		  node incarnation number. Avoid values 0 to 3.
      */
     public OtpErlangPort(final String node, final long id, final int creation) {
-        this(OtpExternal.portTag, node, id, creation);
+		this(OtpExternal.newPortTag, node, id, creation);
     }
 
     /**
      * Create an Erlang port from its components.
      *
      * @param tag
-     *            the external format to be compliant with. OtpExternal.portTag where only
-     *            a subset of the bits are used (see other constructor)
-     *            OtpExternal.newPortTag where all 32 bits of id and creation are
-     *            significant. newPortTag can only be decoded by OTP-19 and newer.
+     *            the external format to be compliant with.
+     *            OtpExternal.portTag where only a subset of the bits are used (see other constructor)
+     *            OtpExternal.newPortTag where all 32 bits of id and creation are significant.
+     *            newPortTag can only be decoded by OTP-19 and newer.
      * @param node
      *            the nodename.
      *
@@ -98,15 +101,16 @@ public class OtpErlangPort extends OtpErlangObject {
      *            another arbitrary number.
      */
     public OtpErlangPort(final int tag, final String node, final long id,
-            final int creation) {
-        this.node = node;
-        if (tag == OtpExternal.portTag) {
-            this.id = id & 0xfffffff; // 28 bits
-            this.creation = creation & 0x3; // 2 bits
-        } else {
-            this.id = id;
-            this.creation = creation;
-        }
+			 final int creation) {
+	this.node = node;
+	if (tag == OtpExternal.portTag) {
+	    this.id = id & 0xfffffff; // 28 bits
+	    this.creation = creation & 0x3; // 2 bits
+	}
+	else {
+	    this.id = id;
+	    this.creation = creation;
+	}
     }
 
     protected int tag() {
@@ -163,7 +167,8 @@ public class OtpErlangPort extends OtpErlangObject {
     }
 
     /**
-     * Determine if two ports are equal. Ports are equal if their components are equal.
+     * Determine if two ports are equal. Ports are equal if their components are
+     * equal.
      *
      * @param o
      *            the other port to compare to.

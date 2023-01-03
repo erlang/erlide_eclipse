@@ -3,27 +3,30 @@
  *
  * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
 /**
- * Provides a Java representation of Erlang tuples. Tuples are created from one or more
- * arbitrary Erlang terms.
+ * Provides a Java representation of Erlang tuples. Tuples are created from one
+ * or more arbitrary Erlang terms.
  *
  * <p>
- * The arity of the tuple is the number of elements it contains. Elements are indexed from
- * 0 to (arity-1) and can be retrieved individually by using the appropriate index.
+ * The arity of the tuple is the number of elements it contains. Elements are
+ * indexed from 0 to (arity-1) and can be retrieved individually by using the
+ * appropriate index.
  */
 public class OtpErlangTuple extends OtpErlangObject {
     // don't change this!
@@ -44,7 +47,8 @@ public class OtpErlangTuple extends OtpErlangObject {
      */
     public OtpErlangTuple(final OtpErlangObject elem) {
         if (elem == null) {
-            throw new java.lang.IllegalArgumentException("Tuple element cannot be null");
+            throw new java.lang.IllegalArgumentException(
+                    "Tuple element cannot be null");
         }
         elems = new OtpErlangObject[] { elem };
     }
@@ -78,7 +82,8 @@ public class OtpErlangTuple extends OtpErlangObject {
     public OtpErlangTuple(final OtpErlangObject[] elems, final int start,
             final int count) {
         if (elems == null) {
-            throw new java.lang.IllegalArgumentException("Tuple content can't be null");
+            throw new java.lang.IllegalArgumentException(
+                    "Tuple content can't be null");
         } else if (count < 1) {
             this.elems = NO_ELEMENTS;
         } else {
@@ -88,23 +93,26 @@ public class OtpErlangTuple extends OtpErlangObject {
                     this.elems[i] = elems[start + i];
                 } else {
                     throw new java.lang.IllegalArgumentException(
-                            "Tuple element cannot be null (element" + (start + i) + ")");
+                            "Tuple element cannot be null (element"
+                                    + (start + i) + ")");
                 }
             }
         }
     }
 
     /**
-     * Create a tuple from a stream containing an tuple encoded in Erlang external format.
+     * Create a tuple from a stream containing an tuple encoded in Erlang
+     * external format.
      *
      * @param buf
      *            the stream containing the encoded tuple.
      *
      * @exception OtpErlangDecodeException
-     *                if the buffer does not contain a valid external representation of an
-     *                Erlang tuple.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang tuple.
      */
-    public OtpErlangTuple(final OtpInputStream buf) throws OtpErlangDecodeException {
+    public OtpErlangTuple(final OtpInputStream buf)
+            throws OtpErlangDecodeException {
         final int arity = buf.read_tuple_head();
 
         if (arity > 0) {
@@ -131,8 +139,8 @@ public class OtpErlangTuple extends OtpErlangObject {
      * Get the specified element from the tuple.
      *
      * @param i
-     *            the index of the requested element. Tuple elements are numbered as array
-     *            elements, starting at 0.
+     *            the index of the requested element. Tuple elements are
+     *            numbered as array elements, starting at 0.
      *
      * @return the requested element, of null if i is not a valid element index.
      */
@@ -197,13 +205,14 @@ public class OtpErlangTuple extends OtpErlangObject {
     }
 
     /**
-     * Determine if two tuples are equal. Tuples are equal if they have the same arity and
-     * all of the elements are equal.
+     * Determine if two tuples are equal. Tuples are equal if they have the same
+     * arity and all of the elements are equal.
      *
      * @param o
      *            the tuple to compare to.
      *
-     * @return true if the tuples have the same arity and all the elements are equal.
+     * @return true if the tuples have the same arity and all the elements are
+     *         equal.
      */
     @Override
     public boolean equals(final Object o) {
@@ -247,7 +256,7 @@ public class OtpErlangTuple extends OtpErlangObject {
 
     @Override
     public <T> OtpErlangObject bind(final T binds) throws OtpErlangException {
-        final OtpErlangTuple tuple = (OtpErlangTuple) clone();
+        final OtpErlangTuple tuple = (OtpErlangTuple) this.clone();
         final int a = tuple.elems.length;
         for (int i = 0; i < a; i++) {
             final OtpErlangObject e = tuple.elems[i];

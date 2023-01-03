@@ -3,15 +3,17 @@
  *
  * Copyright Ericsson AB 2007-2016. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
@@ -21,9 +23,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * Provides a Java representation of Erlang bitstrs. An Erlang bitstr is an Erlang binary
- * with a length not an integral number of bytes (8-bit). Anything can be represented as a
- * sequence of bytes can be made into an Erlang bitstr.
+ * Provides a Java representation of Erlang bitstrs. An Erlang bitstr is an
+ * Erlang binary with a length not an integral number of bytes (8-bit). Anything
+ * can be represented as a sequence of bytes can be made into an Erlang bitstr.
  */
 public class OtpErlangBitstr extends OtpErlangObject {
     // don't change this!
@@ -62,10 +64,12 @@ public class OtpErlangBitstr extends OtpErlangObject {
 
     private void check_bitstr(final byte[] abin, final int a_pad_bits) {
         if (a_pad_bits < 0 || 7 < a_pad_bits) {
-            throw new java.lang.IllegalArgumentException("Padding must be in range 0..7");
+            throw new java.lang.IllegalArgumentException(
+                    "Padding must be in range 0..7");
         }
         if (a_pad_bits != 0 && abin.length == 0) {
-            throw new java.lang.IllegalArgumentException("Padding on zero length bitstr");
+            throw new java.lang.IllegalArgumentException(
+                    "Padding on zero length bitstr");
         }
         if (abin.length != 0) {
             // Make sure padding is zero
@@ -74,17 +78,18 @@ public class OtpErlangBitstr extends OtpErlangObject {
     }
 
     /**
-     * Create a bitstr from a stream containing a bitstr encoded in Erlang external
-     * format.
+     * Create a bitstr from a stream containing a bitstr encoded in Erlang
+     * external format.
      *
      * @param buf
      *            the stream containing the encoded bitstr.
      *
      * @exception OtpErlangDecodeException
-     *                if the buffer does not contain a valid external representation of an
-     *                Erlang bitstr.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang bitstr.
      */
-    public OtpErlangBitstr(final OtpInputStream buf) throws OtpErlangDecodeException {
+    public OtpErlangBitstr(final OtpInputStream buf)
+            throws OtpErlangDecodeException {
         final int pbs[] = { 0 }; // This is ugly just to get a value-result
         // parameter
         bin = buf.read_bitstr(pbs);
@@ -110,7 +115,8 @@ public class OtpErlangBitstr extends OtpErlangObject {
         }
     }
 
-    private static byte[] toByteArray(final Object o) throws java.io.IOException {
+    private static byte[] toByteArray(final Object o)
+            throws java.io.IOException {
 
         if (o == null) {
             return null;
@@ -118,7 +124,8 @@ public class OtpErlangBitstr extends OtpErlangObject {
 
         /* need to synchronize use of the shared baos */
         final java.io.ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(baos);
+        final java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(
+                baos);
 
         oos.writeObject(o);
         oos.flush();
@@ -134,7 +141,8 @@ public class OtpErlangBitstr extends OtpErlangObject {
         try {
             final java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(
                     buf);
-            final java.io.ObjectInputStream ois = new java.io.ObjectInputStream(bais);
+            final java.io.ObjectInputStream ois = new java.io.ObjectInputStream(
+                    bais);
             return ois.readObject();
         } catch (final java.lang.ClassNotFoundException e) {
         } catch (final java.io.IOException e) {
@@ -144,8 +152,8 @@ public class OtpErlangBitstr extends OtpErlangObject {
     }
 
     /**
-     * Get the byte array from a bitstr, padded with zero bits in the little end of the
-     * last byte.
+     * Get the byte array from a bitstr, padded with zero bits in the little end
+     * of the last byte.
      *
      * @return the byte array containing the bytes for this bitstr.
      */
@@ -154,7 +162,8 @@ public class OtpErlangBitstr extends OtpErlangObject {
     }
 
     /**
-     * Get the size in whole bytes of the bitstr, rest bits in the last byte not counted.
+     * Get the size in whole bytes of the bitstr, rest bits in the last byte not
+     * counted.
      *
      * @return the number of bytes contained in the bintstr.
      */
@@ -169,8 +178,8 @@ public class OtpErlangBitstr extends OtpErlangObject {
     }
 
     /**
-     * Get the number of pad bits in the last byte of the bitstr. The pad bits are zero
-     * and in the little end.
+     * Get the number of pad bits in the last byte of the bitstr. The pad bits
+     * are zero and in the little end.
      *
      * @return the number of pad bits in the bitstr.
      */
@@ -179,12 +188,12 @@ public class OtpErlangBitstr extends OtpErlangObject {
     }
 
     /**
-     * Get the java Object from the bitstr. If the bitstr contains a serialized Java
-     * object, then this method will recreate the object.
+     * Get the java Object from the bitstr. If the bitstr contains a serialized
+     * Java object, then this method will recreate the object.
      *
      *
-     * @return the java Object represented by this bitstr, or null if the bitstr does not
-     *         represent a Java Object.
+     * @return the java Object represented by this bitstr, or null if the bitstr
+     *         does not represent a Java Object.
      */
     public Object getObject() {
         if (pad_bits != 0) {
@@ -194,9 +203,9 @@ public class OtpErlangBitstr extends OtpErlangObject {
     }
 
     /**
-     * Get the string representation of this bitstr object. A bitstr is printed as
-     * #Bin&lt;N&gt;, where N is the number of bytes contained in the object or
-     * #bin&lt;N-M&gt; if there are M pad bits.
+     * Get the string representation of this bitstr object. A bitstr is printed
+     * as #Bin&lt;N&gt;, where N is the number of bytes contained in the object
+     * or #bin&lt;N-M&gt; if there are M pad bits.
      *
      * @return the Erlang string representation of this bitstr.
      */
@@ -215,7 +224,8 @@ public class OtpErlangBitstr extends OtpErlangObject {
      * Convert this bitstr to the equivalent Erlang external representation.
      *
      * @param buf
-     *            an output stream to which the encoded bitstr should be written.
+     *            an output stream to which the encoded bitstr should be
+     *            written.
      */
     @Override
     public void encode(final OtpOutputStream buf) {
@@ -223,8 +233,8 @@ public class OtpErlangBitstr extends OtpErlangObject {
     }
 
     /**
-     * Determine if two bitstrs are equal. Bitstrs are equal if they have the same byte
-     * length and tail length, and the array of bytes is identical.
+     * Determine if two bitstrs are equal. Bitstrs are equal if they have the
+     * same byte length and tail length, and the array of bytes is identical.
      *
      * @param o
      *            the bitstr to compare to.

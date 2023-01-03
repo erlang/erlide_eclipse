@@ -3,23 +3,25 @@
  *
  * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
 /**
- * This class implements a generic FIFO queue. There is no upper bound on the length of
- * the queue, items are linked.
+ * This class implements a generic FIFO queue. There is no upper bound on the
+ * length of the queue, items are linked.
  */
 
 public class GenericQueue {
@@ -76,7 +78,8 @@ public class GenericQueue {
     }
 
     /**
-     * Retrieve an object from the head of the queue, or block until one arrives.
+     * Retrieve an object from the head of the queue, or block until one
+     * arrives.
      *
      * @return The object at the head of the queue.
      */
@@ -93,18 +96,21 @@ public class GenericQueue {
     }
 
     /**
-     * Retrieve an object from the head of the queue, blocking until one arrives or until
-     * timeout occurs.
+     * Retrieve an object from the head of the queue, blocking until one arrives
+     * or until timeout occurs.
      *
      * @param timeout
-     *            Maximum time to block on queue, in ms. Use 0 to poll the queue.
+     *            Maximum time to block on queue, in ms. Use 0 to poll the
+     *            queue.
      *
      * @exception InterruptedException
      *                if the operation times out.
      *
-     * @return The object at the head of the queue, or null if none arrived in time.
+     * @return The object at the head of the queue, or null if none arrived in
+     *         time.
      */
-    public synchronized Object get(final long timeout) throws InterruptedException {
+    public synchronized Object get(final long timeout)
+            throws InterruptedException {
         if (status == closed) {
             return null;
         }
@@ -154,8 +160,8 @@ public class GenericQueue {
     }
 
     /*
-     * The Bucket class. The queue is implemented as a linked list of Buckets. The
-     * container holds the queued object and a reference to the next Bucket.
+     * The Bucket class. The queue is implemented as a linked list of Buckets.
+     * The container holds the queued object and a reference to the next Bucket.
      */
     class Bucket {
         private Bucket next;

@@ -1,26 +1,29 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2016. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2021. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
 /**
- * Provides a Java representation of Erlang floats and doubles. Erlang defines only one
- * floating point numeric type, however this class and its subclass {@link OtpErlangFloat}
- * are used to provide representations corresponding to the Java types Double and Float.
+ * Provides a Java representation of Erlang floats and doubles. Erlang defines
+ * only one floating point numeric type, however this class and its subclass
+ * {@link OtpErlangFloat} are used to provide representations corresponding to
+ * the Java types Double and Float.
  */
 public class OtpErlangDouble extends OtpErlangObject {
     // don't change this!
@@ -36,17 +39,18 @@ public class OtpErlangDouble extends OtpErlangObject {
     }
 
     /**
-     * Create an Erlang float from a stream containing a double encoded in Erlang external
-     * format.
+     * Create an Erlang float from a stream containing a double encoded in
+     * Erlang external format.
      *
      * @param buf
      *            the stream containing the encoded value.
      *
      * @exception OtpErlangDecodeException
-     *                if the buffer does not contain a valid external representation of an
-     *                Erlang float.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang float.
      */
-    public OtpErlangDouble(final OtpInputStream buf) throws OtpErlangDecodeException {
+    public OtpErlangDouble(final OtpInputStream buf)
+            throws OtpErlangDecodeException {
         d = buf.read_double();
     }
 
@@ -99,7 +103,8 @@ public class OtpErlangDouble extends OtpErlangObject {
     }
 
     /**
-     * Determine if two floats are equal. Floats are equal if they contain the same value.
+     * Determine if two floats are equal. Floats are equal if they contain the
+     * same value.
      *
      * @param o
      *            the float to compare to.
@@ -118,7 +123,7 @@ public class OtpErlangDouble extends OtpErlangObject {
 
     @Override
     protected int doHashCode() {
-        final Double v = new Double(d);
+        final Double v = Double.valueOf(d);
         return v.hashCode();
     }
 }

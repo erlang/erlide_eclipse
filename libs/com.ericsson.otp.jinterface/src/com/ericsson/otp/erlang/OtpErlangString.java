@@ -3,15 +3,17 @@
  *
  * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
@@ -41,8 +43,8 @@ public class OtpErlangString extends OtpErlangObject {
      * @throws OtpErlangException
      *             for non-proper and non-integer lists.
      * @throws OtpErlangRangeException
-     *             if an integer in the list is not a valid Unicode code point according
-     *             to Erlang.
+     *             if an integer in the list is not a valid Unicode code point
+     *             according to Erlang.
      */
     public OtpErlangString(final OtpErlangList list) throws OtpErlangException {
         final String s = list.stringValue();
@@ -57,25 +59,26 @@ public class OtpErlangString extends OtpErlangObject {
     }
 
     /**
-     * Create an Erlang string from a stream containing a string encoded in Erlang
-     * external format.
+     * Create an Erlang string from a stream containing a string encoded in
+     * Erlang external format.
      *
      * @param buf
      *            the stream containing the encoded string.
      *
      * @exception OtpErlangDecodeException
-     *                if the buffer does not contain a valid external representation of an
-     *                Erlang string.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang string.
      */
-    public OtpErlangString(final OtpInputStream buf) throws OtpErlangDecodeException {
+    public OtpErlangString(final OtpInputStream buf)
+            throws OtpErlangDecodeException {
         str = buf.read_string();
     }
 
     /**
      * Get the actual string contained in this object.
      *
-     * @return the raw string contained in this object, without regard to Erlang quoting
-     *         rules.
+     * @return the raw string contained in this object, without regard to Erlang
+     *         quoting rules.
      *
      * @see #toString
      */
@@ -100,7 +103,8 @@ public class OtpErlangString extends OtpErlangObject {
      * Convert this string to the equivalent Erlang external representation.
      *
      * @param buf
-     *            an output stream to which the encoded string should be written.
+     *            an output stream to which the encoded string should be
+     *            written.
      */
 
     @Override
@@ -109,15 +113,15 @@ public class OtpErlangString extends OtpErlangObject {
     }
 
     /**
-     * Determine if two strings are equal. They are equal if they represent the same
-     * sequence of characters. This method can be used to compare OtpErlangStrings with
-     * each other and with Strings.
+     * Determine if two strings are equal. They are equal if they represent the
+     * same sequence of characters. This method can be used to compare
+     * OtpErlangStrings with each other and with Strings.
      *
      * @param o
      *            the OtpErlangString or String to compare to.
      *
-     * @return true if the strings consist of the same sequence of characters, false
-     *         otherwise.
+     * @return true if the strings consist of the same sequence of characters,
+     *         false otherwise.
      */
 
     @Override
@@ -142,7 +146,8 @@ public class OtpErlangString extends OtpErlangObject {
      * @param s
      *            a String to convert to an Unicode code point array
      *
-     * @return the corresponding array of integers representing Unicode code points
+     * @return the corresponding array of integers representing Unicode code
+     *         points
      */
 
     public static int[] stringToCodePoints(final String s) {
@@ -158,8 +163,9 @@ public class OtpErlangString extends OtpErlangObject {
     }
 
     /**
-     * Validate a code point according to Erlang definition; Unicode 3.0. That is; valid
-     * in the range U+0..U+10FFFF, but not in the range U+D800..U+DFFF (surrogat pairs).
+     * Validate a code point according to Erlang definition; Unicode 3.0. That
+     * is; valid in the range U+0..U+10FFFF, but not in the range U+D800..U+DFFF
+     * (surrogat pairs).
      *
      * @param cp
      *            the code point value to validate
@@ -176,8 +182,8 @@ public class OtpErlangString extends OtpErlangObject {
     }
 
     /**
-     * Construct a String from a Latin-1 (ISO-8859-1) encoded byte array, if Latin-1 is
-     * available, otherwise use the default encoding.
+     * Construct a String from a Latin-1 (ISO-8859-1) encoded byte array, if
+     * Latin-1 is available, otherwise use the default encoding.
      *
      */
     public static String newString(final byte[] bytes) {

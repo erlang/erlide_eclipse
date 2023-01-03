@@ -1,17 +1,19 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2017. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2021. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
@@ -19,57 +21,60 @@ package com.ericsson.otp.erlang;
 
 /**
  * <p>
- * Provides a simple mechanism for exchanging messages with Erlang processes or other
- * instances of this class.
+ * Provides a simple mechanism for exchanging messages with Erlang processes or
+ * other instances of this class.
  * </p>
  *
  * <p>
- * Each mailbox is associated with a unique {@link OtpErlangPid pid} that contains
- * information necessary for delivery of messages. When sending messages to named
- * processes or mailboxes, the sender pid is made available to the recipient of the
- * message. When sending messages to other mailboxes, the recipient can only respond if
- * the sender includes the pid as part of the message contents. The sender can determine
- * his own pid by calling {@link #self() self()}.
+ * Each mailbox is associated with a unique {@link OtpErlangPid pid} that
+ * contains information necessary for delivery of messages. When sending
+ * messages to named processes or mailboxes, the sender pid is made available to
+ * the recipient of the message. When sending messages to other mailboxes, the
+ * recipient can only respond if the sender includes the pid as part of the
+ * message contents. The sender can determine his own pid by calling
+ * {@link #self() self()}.
  * </p>
  *
  * <p>
- * Mailboxes can be named, either at creation or later. Messages can be sent to named
- * mailboxes and named Erlang processes without knowing the {@link OtpErlangPid pid} that
- * identifies the mailbox. This is necessary in order to set up initial communication
- * between parts of an application. Each mailbox can have at most one name.
+ * Mailboxes can be named, either at creation or later. Messages can be sent to
+ * named mailboxes and named Erlang processes without knowing the
+ * {@link OtpErlangPid pid} that identifies the mailbox. This is necessary in
+ * order to set up initial communication between parts of an application. Each
+ * mailbox can have at most one name.
  * </p>
  *
  * <p>
- * Since this class was intended for communication with Erlang, all of the send methods
- * take {@link OtpErlangObject OtpErlangObject} arguments. However this class can also be
- * used to transmit arbitrary Java objects (as long as they implement one of
- * java.io.Serializable or java.io.Externalizable) by encapsulating the object in a
- * {@link OtpErlangBinary OtpErlangBinary}.
+ * Since this class was intended for communication with Erlang, all of the send
+ * methods take {@link OtpErlangObject OtpErlangObject} arguments. However this
+ * class can also be used to transmit arbitrary Java objects (as long as they
+ * implement one of java.io.Serializable or java.io.Externalizable) by
+ * encapsulating the object in a {@link OtpErlangBinary OtpErlangBinary}.
  * </p>
  *
  * <p>
- * Messages to remote nodes are externalized for transmission, and as a result the
- * recipient receives a <b>copy</b> of the original Java object. To ensure consistent
- * behaviour when messages are sent between local mailboxes, such messages are cloned
- * before delivery.
+ * Messages to remote nodes are externalized for transmission, and as a result
+ * the recipient receives a <b>copy</b> of the original Java object. To ensure
+ * consistent behaviour when messages are sent between local mailboxes, such
+ * messages are cloned before delivery.
  * </p>
  *
  * <p>
- * Additionally, mailboxes can be linked in much the same way as Erlang processes. If a
- * link is active when a mailbox is {@link #close closed}, any linked Erlang processes or
- * OtpMboxes will be sent an exit signal. As well, exit signals will be (eventually) sent
- * if a mailbox goes out of scope and its {@link #finalize finalize()} method called.
- * However due to the nature of finalization (i.e. Java makes no guarantees about when
- * {@link #finalize finalize()} will be called) it is recommended that you always
- * explicitly close mailboxes if you are using links instead of relying on finalization to
+ * Additionally, mailboxes can be linked in much the same way as Erlang
+ * processes. If a link is active when a mailbox is {@link #close closed}, any
+ * linked Erlang processes or OtpMboxes will be sent an exit signal. As well,
+ * exit signals will be (eventually) sent if a mailbox goes out of scope and its
+ * {@link #finalize finalize()} method called. However due to the nature of
+ * finalization (i.e. Java makes no guarantees about when {@link #finalize
+ * finalize()} will be called) it is recommended that you always explicitly
+ * close mailboxes if you are using links instead of relying on finalization to
  * notify other parties in a timely manner.
  * </p>
  *
  * <p>
  * When retrieving messages from a mailbox that has received an exit signal, an
- * {@link OtpErlangExit OtpErlangExit} exception will be raised. Note that the exception
- * is queued in the mailbox along with other messages, and will not be raised until it
- * reaches the head of the queue and is about to be retrieved.
+ * {@link OtpErlangExit OtpErlangExit} exception will be raised. Note that the
+ * exception is queued in the mailbox along with other messages, and will not be
+ * raised until it reaches the head of the queue and is about to be retrieved.
  * </p>
  *
  */
@@ -79,6 +84,7 @@ public class OtpMbox {
     GenericQueue queue;
     String name;
     Links links;
+    private long unlink_id;
 
     // package constructor: called by OtpNode:createMbox(name)
     // to create a named mbox
@@ -86,6 +92,7 @@ public class OtpMbox {
         this.self = self;
         this.home = home;
         this.name = name;
+        this.unlink_id = 1;
         queue = new GenericQueue();
         links = new Links(10);
     }
@@ -98,14 +105,15 @@ public class OtpMbox {
 
     /**
      * <p>
-     * Get the identifying {@link OtpErlangPid pid} associated with this mailbox.
+     * Get the identifying {@link OtpErlangPid pid} associated with this
+     * mailbox.
      * </p>
      *
      * <p>
-     * The {@link OtpErlangPid pid} associated with this mailbox uniquely identifies the
-     * mailbox and can be used to address the mailbox. You can send the
-     * {@link OtpErlangPid pid} to a remote communicating part so that he can know where
-     * to send his response.
+     * The {@link OtpErlangPid pid} associated with this mailbox uniquely
+     * identifies the mailbox and can be used to address the mailbox. You can
+     * send the {@link OtpErlangPid pid} to a remote communicating part so that
+     * he can know where to send his response.
      * </p>
      *
      * @return the self pid for this mailbox.
@@ -116,15 +124,16 @@ public class OtpMbox {
 
     /**
      * <p>
-     * Register or remove a name for this mailbox. Registering a name for a mailbox
-     * enables others to send messages without knowing the {@link OtpErlangPid pid} of the
-     * mailbox. A mailbox can have at most one name; if the mailbox already had a name,
-     * calling this method will supercede that name.
+     * Register or remove a name for this mailbox. Registering a name for a
+     * mailbox enables others to send messages without knowing the
+     * {@link OtpErlangPid pid} of the mailbox. A mailbox can have at most one
+     * name; if the mailbox already had a name, calling this method will
+     * supersede that name.
      * </p>
      *
      * @param aname
-     *            the name to register for the mailbox. Specify null to unregister the
-     *            existing name from this mailbox.
+     *            the name to register for the mailbox. Specify null to
+     *            unregister the existing name from this mailbox.
      *
      * @return true if the name was available, or false otherwise.
      */
@@ -135,8 +144,8 @@ public class OtpMbox {
     /**
      * Get the registered name of this mailbox.
      *
-     * @return the registered name of this mailbox, or null if the mailbox had no
-     *         registered name.
+     * @return the registered name of this mailbox, or null if the mailbox had
+     *         no registered name.
      */
     public String getName() {
         return name;
@@ -145,17 +154,18 @@ public class OtpMbox {
     /**
      * Block until a message arrives for this mailbox.
      *
-     * @return an {@link OtpErlangObject OtpErlangObject} representing the body of the
-     *         next message waiting in this mailbox.
+     * @return an {@link OtpErlangObject OtpErlangObject} representing the body
+     *         of the next message waiting in this mailbox.
      *
      * @exception OtpErlangDecodeException
      *                if the message cannot be decoded.
      *
      * @exception OtpErlangExit
-     *                if a linked {@link OtpErlangPid pid} has exited or has sent an exit
-     *                signal to this mailbox.
+     *                if a linked {@link OtpErlangPid pid} has exited or has
+     *                sent an exit signal to this mailbox.
      */
-    public OtpErlangObject receive() throws OtpErlangExit, OtpErlangDecodeException {
+    public OtpErlangObject receive() throws OtpErlangExit,
+            OtpErlangDecodeException {
         try {
             return receiveMsg().getMsg();
         } catch (final OtpErlangExit e) {
@@ -169,20 +179,21 @@ public class OtpMbox {
      * Wait for a message to arrive for this mailbox.
      *
      * @param timeout
-     *            the time, in milliseconds, to wait for a message before returning null.
+     *            the time, in milliseconds, to wait for a message before
+     *            returning null.
      *
-     * @return an {@link OtpErlangObject OtpErlangObject} representing the body of the
-     *         next message waiting in this mailbox.
+     * @return an {@link OtpErlangObject OtpErlangObject} representing the body
+     *         of the next message waiting in this mailbox.
      *
      * @exception OtpErlangDecodeException
      *                if the message cannot be decoded.
      *
      * @exception OtpErlangExit
-     *                if a linked {@link OtpErlangPid pid} has exited or has sent an exit
-     *                signal to this mailbox.
+     *                if a linked {@link OtpErlangPid pid} has exited or has
+     *                sent an exit signal to this mailbox.
      */
-    public OtpErlangObject receive(final long timeout)
-            throws OtpErlangExit, OtpErlangDecodeException {
+    public OtpErlangObject receive(final long timeout) throws OtpErlangExit,
+            OtpErlangDecodeException {
         try {
             final OtpMsg m = receiveMsg(timeout);
             if (m != null) {
@@ -200,12 +211,12 @@ public class OtpMbox {
     /**
      * Block until a message arrives for this mailbox.
      *
-     * @return a byte array representing the still-encoded body of the next message
-     *         waiting in this mailbox.
+     * @return a byte array representing the still-encoded body of the next
+     *         message waiting in this mailbox.
      *
      * @exception OtpErlangExit
-     *                if a linked {@link OtpErlangPid pid} has exited or has sent an exit
-     *                signal to this mailbox.
+     *                if a linked {@link OtpErlangPid pid} has exited or has
+     *                sent an exit signal to this mailbox.
      *
      */
     public OtpInputStream receiveBuf() throws OtpErlangExit {
@@ -216,18 +227,19 @@ public class OtpMbox {
      * Wait for a message to arrive for this mailbox.
      *
      * @param timeout
-     *            the time, in milliseconds, to wait for a message before returning null.
+     *            the time, in milliseconds, to wait for a message before
+     *            returning null.
      *
-     * @return a byte array representing the still-encoded body of the next message
-     *         waiting in this mailbox.
+     * @return a byte array representing the still-encoded body of the next
+     *         message waiting in this mailbox.
      *
      * @exception OtpErlangExit
-     *                if a linked {@link OtpErlangPid pid} has exited or has sent an exit
-     *                signal to this mailbox.
+     *                if a linked {@link OtpErlangPid pid} has exited or has
+     *                sent an exit signal to this mailbox.
      *
      * @exception InterruptedException
-     *                if no message if the method times out before a message becomes
-     *                available.
+     *                if no message if the method times out before a message
+     *                becomes available.
      */
     public OtpInputStream receiveBuf(final long timeout)
             throws InterruptedException, OtpErlangExit {
@@ -242,12 +254,12 @@ public class OtpMbox {
     /**
      * Block until a message arrives for this mailbox.
      *
-     * @return an {@link OtpMsg OtpMsg} containing the header information as well as the
-     *         body of the next message waiting in this mailbox.
+     * @return an {@link OtpMsg OtpMsg} containing the header information as
+     *         well as the body of the next message waiting in this mailbox.
      *
      * @exception OtpErlangExit
-     *                if a linked {@link OtpErlangPid pid} has exited or has sent an exit
-     *                signal to this mailbox.
+     *                if a linked {@link OtpErlangPid pid} has exited or has
+     *                sent an exit signal to this mailbox.
      *
      */
     public OtpMsg receiveMsg() throws OtpErlangExit {
@@ -275,19 +287,19 @@ public class OtpMbox {
      * @param timeout
      *            the time, in milliseconds, to wait for a message.
      *
-     * @return an {@link OtpMsg OtpMsg} containing the header information as well as the
-     *         body of the next message waiting in this mailbox.
+     * @return an {@link OtpMsg OtpMsg} containing the header information as
+     *         well as the body of the next message waiting in this mailbox.
      *
      * @exception OtpErlangExit
-     *                if a linked {@link OtpErlangPid pid} has exited or has sent an exit
-     *                signal to this mailbox.
+     *                if a linked {@link OtpErlangPid pid} has exited or has
+     *                sent an exit signal to this mailbox.
      *
      * @exception InterruptedException
-     *                if no message if the method times out before a message becomes
-     *                available.
+     *                if no message if the method times out before a message
+     *                becomes available.
      */
-    public OtpMsg receiveMsg(final long timeout)
-            throws InterruptedException, OtpErlangExit {
+    public OtpMsg receiveMsg(final long timeout) throws InterruptedException,
+            OtpErlangExit {
         final OtpMsg m = (OtpMsg) queue.get(timeout);
 
         if (m == null) {
@@ -310,12 +322,12 @@ public class OtpMbox {
     }
 
     /**
-     * Send a message to a remote {@link OtpErlangPid pid}, representing either another
-     * {@link OtpMbox mailbox} or an Erlang process.
+     * Send a message to a remote {@link OtpErlangPid pid}, representing either
+     * another {@link OtpMbox mailbox} or an Erlang process.
      *
      * @param to
-     *            the {@link OtpErlangPid pid} identifying the intended recipient of the
-     *            message.
+     *            the {@link OtpErlangPid pid} identifying the intended
+     *            recipient of the message.
      *
      * @param msg
      *            the body of the message to send.
@@ -338,7 +350,8 @@ public class OtpMbox {
     }
 
     /**
-     * Send a message to a named mailbox created from the same node as this mailbox.
+     * Send a message to a named mailbox created from the same node as this
+     * mailbox.
      *
      * @param aname
      *            the registered name of recipient mailbox.
@@ -358,19 +371,22 @@ public class OtpMbox {
      *            the registered name of recipient mailbox.
      *
      * @param node
-     *            the name of the remote node where the recipient mailbox is registered.
+     *            the name of the remote node where the recipient mailbox is
+     *            registered.
      *
      * @param msg
      *            the body of the message to send.
      *
      */
-    public void send(final String aname, final String node, final OtpErlangObject msg) {
+    public void send(final String aname, final String node,
+            final OtpErlangObject msg) {
         try {
             final String currentNode = home.node();
             if (node.equals(currentNode)) {
                 send(aname, msg);
-            } else if (node.indexOf('@', 0) < 0 && node
-                    .equals(currentNode.substring(0, currentNode.indexOf('@', 0)))) {
+            } else if (node.indexOf('@', 0) < 0
+                    && node.equals(currentNode.substring(0,
+                            currentNode.indexOf('@', 0)))) {
                 send(aname, msg);
             } else {
                 // other node
@@ -388,13 +404,15 @@ public class OtpMbox {
      * Close this mailbox with the given reason.
      *
      * <p>
-     * After this operation, the mailbox will no longer be able to receive messages. Any
-     * delivered but as yet unretrieved messages can still be retrieved however.
+     * After this operation, the mailbox will no longer be able to receive
+     * messages. Any delivered but as yet unretrieved messages can still be
+     * retrieved however.
      * </p>
      *
      * <p>
-     * If there are links from this mailbox to other {@link OtpErlangPid pids}, they will
-     * be broken when this method is called and exit signals will be sent.
+     * If there are links from this mailbox to other {@link OtpErlangPid pids},
+     * they will be broken when this method is called and exit signals will be
+     * sent.
      * </p>
      *
      * @param reason
@@ -415,13 +433,14 @@ public class OtpMbox {
 
     /**
      * <p>
-     * Send an exit signal to a remote {@link OtpErlangPid pid}. This method does not
-     * cause any links to be broken, except indirectly if the remote {@link OtpErlangPid
-     * pid} exits as a result of this exit signal.
+     * Send an exit signal to a remote {@link OtpErlangPid pid}. This method
+     * does not cause any links to be broken, except indirectly if the remote
+     * {@link OtpErlangPid pid} exits as a result of this exit signal.
      * </p>
      *
      * @param to
-     *            the {@link OtpErlangPid pid} to which the exit signal should be sent.
+     *            the {@link OtpErlangPid pid} to which the exit signal should
+     *            be sent.
      *
      * @param reason
      *            an Erlang term indicating the reason for the exit.
@@ -472,32 +491,37 @@ public class OtpMbox {
 
     /**
      * <p>
-     * Link to a remote mailbox or Erlang process. Links are idempotent, calling this
-     * method multiple times will not result in more than one link being created.
+     * Link to a remote mailbox or Erlang process. Links are idempotent, calling
+     * this method multiple times will not result in more than one link being
+     * created.
      * </p>
      *
      * <p>
-     * If the remote process subsequently exits or the mailbox is closed, a subsequent
-     * attempt to retrieve a message through this mailbox will cause an
-     * {@link OtpErlangExit OtpErlangExit} exception to be raised. Similarly, if the
-     * sending mailbox is closed, the linked mailbox or process will receive an exit
-     * signal.
+     * If the remote process subsequently exits or the mailbox is closed, a
+     * subsequent attempt to retrieve a message through this mailbox will cause
+     * an {@link OtpErlangExit OtpErlangExit} exception to be raised. Similarly,
+     * if the sending mailbox is closed, the linked mailbox or process will
+     * receive an exit signal.
      * </p>
      *
      * <p>
-     * If the remote process cannot be reached in order to set the link, the exception is
-     * raised immediately.
+     * If the remote process cannot be reached in order to set the link, the
+     * exception is raised immediately.
      * </p>
      *
      * @param to
-     *            the {@link OtpErlangPid pid} representing the object to link to.
+     *            the {@link OtpErlangPid pid} representing the object to link
+     *            to.
      *
      * @exception OtpErlangExit
-     *                if the {@link OtpErlangPid pid} referred to does not exist or could
-     *                not be reached.
+     *                if the {@link OtpErlangPid pid} referred to does not exist
+     *                or could not be reached.
      *
      */
-    public void link(final OtpErlangPid to) throws OtpErlangExit {
+    public synchronized void link(final OtpErlangPid to) throws OtpErlangExit {
+        if (!links.addLink(self, to, true))
+            return; /* Already linked... */
+
         try {
             final String node = to.node();
             if (node.equals(home.node())) {
@@ -507,45 +531,64 @@ public class OtpMbox {
             } else {
                 final OtpCookedConnection conn = home.getConnection(node);
                 if (conn != null) {
-                    conn.link(self, to);
+                    conn.link(self, to); // may throw 'noproc'
+                    conn.node_link(self, to, true);
                 } else {
                     throw new OtpErlangExit("noproc", to);
                 }
             }
         } catch (final OtpErlangExit e) {
+            links.removeLink(self, to);
             throw e;
         } catch (final Exception e) {
         }
 
-        links.addLink(self, to);
     }
 
     /**
      * <p>
-     * Remove a link to a remote mailbox or Erlang process. This method removes a link
-     * created with {@link #link link()}. Links are idempotent; calling this method once
-     * will remove all links between this mailbox and the remote {@link OtpErlangPid pid}.
+     * Remove a link to a remote mailbox or Erlang process. This method removes
+     * a link created with {@link #link link()}. Links are idempotent; calling
+     * this method once will remove all links between this mailbox and the
+     * remote {@link OtpErlangPid pid}.
      * </p>
      *
      * @param to
-     *            the {@link OtpErlangPid pid} representing the object to unlink from.
+     *            the {@link OtpErlangPid pid} representing the object to unlink
+     *            from.
      *
      */
-    public void unlink(final OtpErlangPid to) {
-        links.removeLink(self, to);
-
-        try {
-            final String node = to.node();
-            if (node.equals(home.node())) {
-                home.deliver(new OtpMsg(OtpMsg.unlinkTag, self, to));
-            } else {
-                final OtpCookedConnection conn = home.getConnection(node);
-                if (conn != null) {
-                    conn.unlink(self, to);
+    public synchronized void unlink(final OtpErlangPid to) {
+        long unlink_id = this.unlink_id++;
+        if (unlink_id == 0)
+            unlink_id = this.unlink_id++;
+        if (links.setUnlinking(self, to, unlink_id)) {
+            try {
+                final String node = to.node();
+                if (node.equals(home.node())) {
+                    home.deliver(new OtpMsg(OtpMsg.unlinkTag, self, to));
+                } else {
+                    final OtpCookedConnection conn = home.getConnection(node);
+                    if (conn != null) {
+                        conn.unlink(self, to, unlink_id);
+                    }
                 }
+            } catch (final Exception e) {
             }
-        } catch (final Exception e) {
         }
+    }
+
+    /**
+     * <p>
+     * Get information about all processes and/or mail boxes currently
+     * linked to this mail box.
+     * </p>
+     *
+     * @return an array of all pids currently linked to this mail box.
+     *
+     */
+    public synchronized OtpErlangPid[] linked() {
+        return links.remotePids();
     }
 
     /**
@@ -554,19 +597,19 @@ public class OtpMbox {
      * </p>
      *
      * <p>
-     * Strictly speaking, this method is not necessary simply to set up a connection,
-     * since connections are created automatically first time a message is sent to a
-     * {@link OtpErlangPid pid} on the remote node.
+     * Strictly speaking, this method is not necessary simply to set up a
+     * connection, since connections are created automatically first time a
+     * message is sent to a {@link OtpErlangPid pid} on the remote node.
      * </p>
      *
      * <p>
-     * This method makes it possible to wait for a node to come up, however, or check that
-     * a node is still alive.
+     * This method makes it possible to wait for a node to come up, however, or
+     * check that a node is still alive.
      * </p>
      *
      * <p>
-     * This method calls a method with the same name in {@link OtpNode#ping Otpnode} but
-     * is provided here for convenience.
+     * This method calls a method with the same name in {@link OtpNode#ping
+     * Otpnode} but is provided here for convenience.
      * </p>
      *
      * @param node
@@ -581,33 +624,33 @@ public class OtpMbox {
 
     /**
      * <p>
-     * Get a list of all known registered names on the same {@link OtpNode node} as this
-     * mailbox.
+     * Get a list of all known registered names on the same {@link OtpNode node}
+     * as this mailbox.
      * </p>
      *
      * <p>
-     * This method calls a method with the same name in {@link OtpNode#getNames Otpnode}
-     * but is provided here for convenience.
+     * This method calls a method with the same name in {@link OtpNode#getNames
+     * Otpnode} but is provided here for convenience.
      * </p>
      *
-     * @return an array of Strings containing all registered names on this {@link OtpNode
-     *         node}.
+     * @return an array of Strings containing all registered names on this
+     *         {@link OtpNode node}.
      */
     public String[] getNames() {
         return home.getNames();
     }
 
     /**
-     * Determine the {@link OtpErlangPid pid} corresponding to a registered name on this
-     * {@link OtpNode node}.
+     * Determine the {@link OtpErlangPid pid} corresponding to a registered name
+     * on this {@link OtpNode node}.
      *
      * <p>
-     * This method calls a method with the same name in {@link OtpNode#whereis Otpnode}
-     * but is provided here for convenience.
+     * This method calls a method with the same name in {@link OtpNode#whereis
+     * Otpnode} but is provided here for convenience.
      * </p>
      *
-     * @return the {@link OtpErlangPid pid} corresponding to the registered name, or null
-     *         if the name is not known on this node.
+     * @return the {@link OtpErlangPid pid} corresponding to the registered
+     *         name, or null if the name is not known on this node.
      */
     public OtpErlangPid whereis(final String aname) {
         return home.whereis(aname);
@@ -617,14 +660,15 @@ public class OtpMbox {
      * Close this mailbox.
      *
      * <p>
-     * After this operation, the mailbox will no longer be able to receive messages. Any
-     * delivered but as yet unretrieved messages can still be retrieved however.
+     * After this operation, the mailbox will no longer be able to receive
+     * messages. Any delivered but as yet unretrieved messages can still be
+     * retrieved however.
      * </p>
      *
      * <p>
-     * If there are links from this mailbox to other {@link OtpErlangPid pids}, they will
-     * be broken when this method is called and exit signals with reason 'normal' will be
-     * sent.
+     * If there are links from this mailbox to other {@link OtpErlangPid pids},
+     * they will be broken when this method is called and exit signals with
+     * reason 'normal' will be sent.
      * </p>
      *
      * <p>
@@ -665,41 +709,93 @@ public class OtpMbox {
     /*
      * called by OtpNode to deliver message to this mailbox.
      *
-     * About exit and exit2: both cause exception to be raised upon receive(). However
-     * exit (not 2) causes any link to be removed as well, while exit2 leaves any links
-     * intact.
+     * About exit and exit2: both cause exception to be raised upon receive().
+     * However exit (not 2) only has an effect if there exist a link.
      */
     void deliver(final OtpMsg m) {
         switch (m.type()) {
-        case OtpMsg.linkTag:
-            links.addLink(self, m.getSenderPid());
-            break;
-
-        case OtpMsg.unlinkTag:
-            links.removeLink(self, m.getSenderPid());
-            break;
-
         case OtpMsg.exitTag:
-            links.removeLink(self, m.getSenderPid());
-            queue.put(m);
+        case OtpMsg.linkTag:
+        case OtpMsg.unlinkTag:
+        case AbstractConnection.unlinkIdTag:
+        case AbstractConnection.unlinkIdAckTag:
+            handle_link_operation(m);
             break;
-
-        case OtpMsg.exit2Tag:
         default:
             queue.put(m);
             break;
         }
     }
 
+    private synchronized void handle_link_operation(final OtpMsg m) {
+        final OtpErlangPid remote = m.getSenderPid();
+        final String node = remote.node();
+        final boolean is_local = node.equals(home.node());
+        final OtpCookedConnection conn = is_local ? null : home.getConnection(node);
+
+        switch (m.type()) {
+        case OtpMsg.linkTag:
+            if (links.addLink(self, remote, false)) {
+                if (!is_local) {
+                    if (conn != null)
+                        conn.node_link(self, remote, true);
+                    else {
+                        links.removeLink(self, remote);
+                        queue.put(new OtpMsg(OtpMsg.exitTag, remote, self,
+                                             new OtpErlangAtom("noconnection")));
+                    }
+                }
+            }
+            break;
+
+        case OtpMsg.unlinkTag:
+        case AbstractConnection.unlinkIdTag: {
+            final long unlink_id = m.getUnlinkId();
+            final boolean removed = links.removeActiveLink(self, remote);
+            try {
+                if (is_local) {
+                    home.deliver(new OtpMsg(AbstractConnection.unlinkIdAckTag,
+                                            self, remote, unlink_id));
+                } else if (conn != null) {
+                    if (removed)
+                        conn.node_link(self, remote, false);
+                    conn.unlink_ack(self, remote, unlink_id);
+                }
+            } catch (final Exception e) {
+            }
+            break;
+        }
+
+        case AbstractConnection.unlinkIdAckTag:
+            links.removeUnlinkingLink(self, m.getSenderPid(), m.getUnlinkId());
+            break;
+
+        case OtpMsg.exitTag:
+            if (links.removeActiveLink(self, m.getSenderPid())) {
+                queue.put(m);
+            }
+            break;
+        }
+    }
+
     // used to break all known links to this mbox
-    void breakLinks(final OtpErlangObject reason) {
+    synchronized void breakLinks(final OtpErlangObject reason) {
         final Link[] l = links.clearLinks();
 
         if (l != null) {
             final int len = l.length;
 
             for (int i = 0; i < len; i++) {
-                exit(1, l[i].remote(), reason);
+                if (l[i].getUnlinking() == 0) {
+                    OtpErlangPid remote = l[i].remote();
+                    final String node = remote.node();
+                    if (!node.equals(home.node())) {
+                        final OtpCookedConnection conn = home.getConnection(node);
+                        if (conn != null)
+                            conn.node_link(self, remote, false);
+                    }
+                    exit(1, remote, reason);
+                }
             }
         }
     }

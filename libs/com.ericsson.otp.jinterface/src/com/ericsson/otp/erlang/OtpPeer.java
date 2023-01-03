@@ -3,15 +3,17 @@
  *
  * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
@@ -21,13 +23,14 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 
 /**
- * Represents a remote OTP node. It acts only as a container for the nodename and other
- * node-specific information that is needed by the {@link OtpConnection} class.
+ * Represents a remote OTP node. It acts only as a container for the nodename
+ * and other node-specific information that is needed by the
+ * {@link OtpConnection} class.
  */
 public class OtpPeer extends AbstractNode {
     int distChoose = 0; /*
-                         * this is set by OtpConnection and is the highest common protocol
-                         * version we both support
+                         * this is set by OtpConnection and is the highest
+                         * common protocol version we both support
                          */
 
     OtpPeer(final OtpTransportFactory transportFactory) {
@@ -52,7 +55,8 @@ public class OtpPeer extends AbstractNode {
      * @param transportFactory
      *            custom transport factory
      */
-    public OtpPeer(final String node, final OtpTransportFactory transportFactory) {
+    public OtpPeer(final String node, final OtpTransportFactory
+            transportFactory) {
         super(node, transportFactory);
     }
 
@@ -76,8 +80,8 @@ public class OtpPeer extends AbstractNode {
      * @deprecated Use the corresponding method in {@link OtpSelf} instead.
      */
     @Deprecated
-    public OtpConnection connect(final OtpSelf self)
-            throws IOException, UnknownHostException, OtpAuthException {
+    public OtpConnection connect(final OtpSelf self) throws IOException,
+            UnknownHostException, OtpAuthException {
         return new OtpConnection(self, this);
     }
 

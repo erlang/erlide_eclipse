@@ -1,25 +1,28 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2016. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2021. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
 /**
- * Provides a Java representation of Erlang refs. There are two styles of Erlang refs, old
- * style (one id value) and new style (array of id values). This class manages both types.
+ * Provides a Java representation of Erlang refs. There are two styles of Erlang
+ * refs, old style (one id value) and new style (array of id values). This class
+ * manages both types.
  */
 public class OtpErlangRef extends OtpErlangObject {
     // don't change this!
@@ -51,17 +54,18 @@ public class OtpErlangRef extends OtpErlangObject {
     }
 
     /**
-     * Create an Erlang ref from a stream containing a ref encoded in Erlang external
-     * format.
+     * Create an Erlang ref from a stream containing a ref encoded in Erlang
+     * external format.
      *
      * @param buf
      *            the stream containing the encoded ref.
      *
      * @exception OtpErlangDecodeException
-     *                if the buffer does not contain a valid external representation of an
-     *                Erlang ref.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang ref.
      */
-    public OtpErlangRef(final OtpInputStream buf) throws OtpErlangDecodeException {
+    public OtpErlangRef(final OtpInputStream buf)
+            throws OtpErlangDecodeException {
         final OtpErlangRef r = buf.read_ref();
 
         node = r.node();
@@ -96,24 +100,24 @@ public class OtpErlangRef extends OtpErlangObject {
      *            the nodename.
      *
      * @param ids
-     *            an array of arbitrary numbers. Only the low order 18 bits of the first
-     *            number will be used. If the array contains only one number, an old style
-     *            ref will be written instead. At most three numbers will be read from the
-     *            array.
+     *            an array of arbitrary numbers. Only the low order 18 bits of
+     *            the first number will be used. If the array contains only one
+     *            number, an old style ref will be written instead. At most
+     *            three numbers will be read from the array.
      *
      * @param creation
-     *            another arbitrary number. Only the low order 2 bits will be used.
+	 *  		  node incarnation number. Avoid values 0 to 3.
      */
     public OtpErlangRef(final String node, final int[] ids, final int creation) {
-        this(OtpExternal.newRefTag, node, ids, creation);
-    }
+		this(OtpExternal.newerRefTag, node, ids, creation);
+	}
 
     /**
      * Create a new(er) style Erlang ref from its components.
      *
      * @param tag
-     *            the external format to be compliant with. OtpExternal.newRefTag where
-     *            only a subset of the bits are used (see other constructor)
+     *            the external format to be compliant with.
+     *            OtpExternal.newRefTag where only a subset of the bits are used (see other constructor)
      *            OtpExternal.newerRefTag where all bits of ids and creation are used.
      *            newerPortTag can only be decoded by OTP-19 and newer.
      *
@@ -121,14 +125,14 @@ public class OtpErlangRef extends OtpErlangObject {
      *            the nodename.
      *
      * @param ids
-     *            an array of arbitrary numbers. At most three numbers will be read from
-     *            the array.
+     *            an array of arbitrary numbers. At most three numbers
+     *            will be read from the array.
      *
      * @param creation
      *            another arbitrary number.
      */
     public OtpErlangRef(final int tag, final String node, final int[] ids,
-            final int creation) {
+			final int creation) {
         this.node = node;
 
         // use at most 5 words
@@ -138,19 +142,22 @@ public class OtpErlangRef extends OtpErlangObject {
             this.ids[0] = 0;
             this.ids[1] = 0;
             this.ids[2] = 0;
-        } else if (len <= 5) {
+        }
+        else if (len <= 5) {
             this.ids = new int[len];
-        } else {
+        }
+        else {
             this.ids = new int[5];
             len = 5;
         }
         System.arraycopy(ids, 0, this.ids, 0, len);
-        if (tag == OtpExternal.newRefTag) {
-            this.creation = creation & 0x3;
-            this.ids[0] &= 0x3ffff; // only 18 significant bits in first number
-        } else {
-            this.creation = creation;
-        }
+	if (tag == OtpExternal.newRefTag) {
+	    this.creation = creation & 0x3;
+	    this.ids[0] &= 0x3ffff; // only 18 significant bits in first number
+	}
+	else {
+	    this.creation = creation;
+	}
     }
 
     protected int tag() {
@@ -158,8 +165,8 @@ public class OtpErlangRef extends OtpErlangObject {
     }
 
     /**
-     * Get the id number from the ref. Old style refs have only one id number. If this is
-     * a new style ref, the first id number is returned.
+     * Get the id number from the ref. Old style refs have only one id number.
+     * If this is a new style ref, the first id number is returned.
      *
      * @return the id number from the ref.
      */
@@ -168,8 +175,9 @@ public class OtpErlangRef extends OtpErlangObject {
     }
 
     /**
-     * Get the array of id numbers from the ref. If this is an old style ref, the array is
-     * of length 1. If this is a new style ref, the array has length 3-5.
+     * Get the array of id numbers from the ref. If this is an old style ref,
+     * the array is of length 1. If this is a new style ref, the array has
+     * length 3-5.
      *
      * @return the array of id numbers from the ref.
      */
@@ -214,8 +222,8 @@ public class OtpErlangRef extends OtpErlangObject {
     public String toString() {
         String s = "#Ref<" + node;
 
-        for (final int id : ids) {
-            s += "." + id;
+        for (int i = 0; i < ids.length; i++) {
+            s += "." + ids[i];
         }
 
         s += ">";
@@ -235,9 +243,9 @@ public class OtpErlangRef extends OtpErlangObject {
     }
 
     /**
-     * Determine if two refs are equal. Refs are equal if their components are equal. New
-     * refs and old refs are considered equal if the node, creation and first id numnber
-     * are equal.
+     * Determine if two refs are equal. Refs are equal if their components are
+     * equal. New refs and old refs are considered equal if the node, creation
+     * and first id number are equal.
      *
      * @param o
      *            the other ref to compare to.
@@ -252,7 +260,7 @@ public class OtpErlangRef extends OtpErlangObject {
 
         final OtpErlangRef ref = (OtpErlangRef) o;
 
-        if ((!node.equals(ref.node()) || (creation != ref.creation()))) {
+        if (!(node.equals(ref.node()) && creation == ref.creation())) {
             return false;
         }
 
@@ -263,7 +271,8 @@ public class OtpErlangRef extends OtpErlangObject {
                         return false;
                     }
                 }
-            } else {
+            }
+            else {
                 for (int i = ids.length; i < ref.ids.length; i++) {
                     if (ref.ids[i] != 0) {
                         return false;
@@ -280,7 +289,8 @@ public class OtpErlangRef extends OtpErlangObject {
     }
 
     /**
-     * Compute the hashCode value for a given ref. This function is compatible with equal.
+     * Compute the hashCode value for a given ref. This function is compatible
+     * with equal.
      *
      * @return the hashCode of the node.
      **/

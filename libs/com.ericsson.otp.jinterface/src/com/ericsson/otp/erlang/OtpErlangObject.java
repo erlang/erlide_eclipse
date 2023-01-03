@@ -3,15 +3,17 @@
  *
  * Copyright Ericsson AB 2000-2016. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
@@ -20,8 +22,8 @@ package com.ericsson.otp.erlang;
 import java.io.Serializable;
 
 /**
- * Base class of the Erlang data type classes. This class is used to represent an
- * arbitrary Erlang term.
+ * Base class of the Erlang data type classes. This class is used to represent
+ * an arbitrary Erlang term.
  */
 public abstract class OtpErlangObject implements Serializable, Cloneable {
     protected int hashCodeValue = 0;
@@ -30,16 +32,17 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
     static final long serialVersionUID = -8435938572339430044L;
 
     /**
-     * @return the printable representation of the object. This is usually similar to the
-     *         representation used by Erlang for the same type of object.
+     * @return the printable representation of the object. This is usually
+     *         similar to the representation used by Erlang for the same type of
+     *         object.
      */
     @Override
     public abstract String toString();
 
     /**
-     * Convert the object according to the rules of the Erlang external format. This is
-     * mainly used for sending Erlang terms in messages, however it can also be used for
-     * storing terms to disk.
+     * Convert the object according to the rules of the Erlang external format.
+     * This is mainly used for sending Erlang terms in messages, however it can
+     * also be used for storing terms to disk.
      *
      * @param buf
      *            an output stream to which the encoded term should be written.
@@ -47,9 +50,10 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
     public abstract void encode(OtpOutputStream buf);
 
     /**
-     * Read binary data in the Erlang external format, and produce a corresponding Erlang
-     * data type object. This method is normally used when Erlang terms are received in
-     * messages, however it can also be used for reading terms from disk.
+     * Read binary data in the Erlang external format, and produce a
+     * corresponding Erlang data type object. This method is normally used when
+     * Erlang terms are received in messages, however it can also be used for
+     * reading terms from disk.
      *
      * @param buf
      *            an input stream containing one or more encoded Erlang terms.
@@ -57,8 +61,8 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
      * @return an object representing one of the Erlang data types.
      *
      * @exception OtpErlangDecodeException
-     *                if the stream does not contain a valid representation of an Erlang
-     *                term.
+     *                if the stream does not contain a valid representation of
+     *                an Erlang term.
      */
     public static OtpErlangObject decode(final OtpInputStream buf)
             throws OtpErlangDecodeException {
@@ -66,8 +70,8 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
     }
 
     /**
-     * Determine if two Erlang objects are equal. In general, Erlang objects are equal if
-     * the components they consist of are equal.
+     * Determine if two Erlang objects are equal. In general, Erlang objects are
+     * equal if the components they consist of are equal.
      *
      * @param o
      *            the object to compare to.
@@ -91,8 +95,8 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
     }
 
     /**
-     * Make new Erlang term replacing variables with the respective values from bindings
-     * argument(s).
+     * Make new Erlang term replacing variables with the respective values from
+     * bindings argument(s).
      *
      * @param binds
      *            variable bindings
@@ -129,8 +133,8 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
         int abc[] = { 0, 0, 0 };
 
         /*
-         * Hash function suggested by Bob Jenkins. The same as in the Erlang VM (beam);
-         * utils.c.
+         * Hash function suggested by Bob Jenkins. The same as in the Erlang VM
+         * (beam); utils.c.
          */
 
         private final static int HASH_CONST[] = { 0, // not used

@@ -1,17 +1,19 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2016. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2021. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * %CopyrightEnd%
  */
@@ -23,30 +25,31 @@ package com.ericsson.otp.erlang;
  * </p>
  *
  * <p>
- * Instances of this class are created to package header and payload information in
- * received Erlang messages so that the recipient can obtain both parts with a single call
- * to {@link OtpMbox#receiveMsg receiveMsg()}.
+ * Instances of this class are created to package header and payload information
+ * in received Erlang messages so that the recipient can obtain both parts with
+ * a single call to {@link OtpMbox#receiveMsg receiveMsg()}.
  * </p>
  *
  * <p>
  * The header information that is available is as follows:
  * <ul>
  * <li>a tag indicating the type of message
- * <li>the intended recipient of the message, either as a {@link OtpErlangPid pid} or as a
- * String, but never both.
- * <li>(sometimes) the sender of the message. Due to some eccentric characteristics of the
- * Erlang distribution protocol, not all messages have information about the sending
- * process. In particular, only messages whose tag is {@link OtpMsg#regSendTag regSendTag}
- * contain sender information.
+ * <li>the intended recipient of the message, either as a {@link OtpErlangPid
+ * pid} or as a String, but never both.
+ * <li>(sometimes) the sender of the message. Due to some eccentric
+ * characteristics of the Erlang distribution protocol, not all messages have
+ * information about the sending process. In particular, only messages whose tag
+ * is {@link OtpMsg#regSendTag regSendTag} contain sender information.
  * </ul>
  *
  * <p>
- * Message are sent using the Erlang external format (see separate documentation). When a
- * message is received and delivered to the recipient {@link OtpMbox mailbox}, the body of
- * the message is still in this external representation until {@link #getMsg getMsg()} is
- * called, at which point the message is decoded. A copy of the decoded message is stored
- * in the OtpMsg so that subsequent calls to {@link #getMsg getMsg()} do not require that
- * the message be decoded a second time.
+ * Message are sent using the Erlang external format (see separate
+ * documentation). When a message is received and delivered to the recipient
+ * {@link OtpMbox mailbox}, the body of the message is still in this external
+ * representation until {@link #getMsg getMsg()} is called, at which point the
+ * message is decoded. A copy of the decoded message is stored in the OtpMsg so
+ * that subsequent calls to {@link #getMsg getMsg()} do not require that the
+ * message be decoded a second time.
  * </p>
  */
 public class OtpMsg {
@@ -65,6 +68,7 @@ public class OtpMsg {
     protected OtpErlangPid from;
     protected OtpErlangPid to;
     protected String toName;
+    protected long unlink_id;
 
     // send has receiver pid but no sender information
     OtpMsg(final OtpErlangPid to, final OtpInputStream paybuf) {
@@ -74,6 +78,7 @@ public class OtpMsg {
         toName = null;
         this.paybuf = paybuf;
         payload = null;
+        this.unlink_id = 0;
     }
 
     // send has receiver pid but no sender information
@@ -84,26 +89,31 @@ public class OtpMsg {
         toName = null;
         paybuf = null;
         this.payload = payload;
+        this.unlink_id = 0;
     }
 
     // send_reg has sender pid and receiver name
-    OtpMsg(final OtpErlangPid from, final String toName, final OtpInputStream paybuf) {
+    OtpMsg(final OtpErlangPid from, final String toName,
+            final OtpInputStream paybuf) {
         tag = regSendTag;
         this.from = from;
         this.toName = toName;
         to = null;
         this.paybuf = paybuf;
         payload = null;
+        this.unlink_id = 0;
     }
 
     // send_reg has sender pid and receiver name
-    OtpMsg(final OtpErlangPid from, final String toName, final OtpErlangObject payload) {
+    OtpMsg(final OtpErlangPid from, final String toName,
+            final OtpErlangObject payload) {
         tag = regSendTag;
         this.from = from;
         this.toName = toName;
         to = null;
         paybuf = null;
         this.payload = payload;
+        this.unlink_id = 0;
     }
 
     // exit (etc) has from, to, reason
@@ -112,8 +122,10 @@ public class OtpMsg {
         this.tag = tag;
         this.from = from;
         this.to = to;
+        this.unlink_id = 0;
         paybuf = null;
         payload = reason;
+        this.unlink_id = 0;
     }
 
     // special case when reason is an atom (i.e. most of the time)
@@ -124,19 +136,52 @@ public class OtpMsg {
         this.to = to;
         paybuf = null;
         payload = new OtpErlangAtom(reason);
+        this.unlink_id = 0;
     }
 
-    // other message types (link, unlink)
+    // other message types (link and old unlink)
     OtpMsg(final int tag, final OtpErlangPid from, final OtpErlangPid to) {
         // convert TT-tags to equiv non-TT versions
-        int atag = tag;
-        if (tag > 10) {
-            atag -= 10;
-        }
-
-        this.tag = atag;
+        this.tag = drop_tt_tag(tag);
         this.from = from;
         this.to = to;
+        this.unlink_id = 0;
+    }
+
+    // unlink
+    OtpMsg(final int tag, final OtpErlangPid from, final OtpErlangPid to,
+           final long unlink_id) {
+        // convert TT-tags to equiv non-TT versions
+        this.tag = drop_tt_tag(tag);
+        this.from = from;
+        this.to = to;
+        this.unlink_id = unlink_id;
+    }
+
+    private int drop_tt_tag(final int tag) {
+        switch (tag) {
+        case AbstractConnection.sendTTTag:
+            return OtpMsg.sendTag;
+        case AbstractConnection.exitTTTag:
+            return OtpMsg.exitTag;
+        case AbstractConnection.regSendTTTag:
+            return OtpMsg.regSendTag;
+        case AbstractConnection.exit2TTTag:
+            return OtpMsg.exit2Tag;
+        default:
+            return tag;
+        }
+    }
+
+    /**
+     * Get unlink identifier of an unlink or unlink acknowledgment
+     * message. For package internal use only.
+     *
+     * @return the serialized Erlang term contained in this message.
+     *
+     */
+    long getUnlinkId() {
+        return this.unlink_id;
     }
 
     /**
@@ -151,32 +196,37 @@ public class OtpMsg {
 
     /**
      * <p>
-     * Get the type marker from this message. The type marker identifies the type of
-     * message. Valid values are the ``tag'' constants defined in this class.
+     * Get the type marker from this message. The type marker identifies the
+     * type of message. Valid values are the ``tag'' constants defined in this
+     * class.
      * </p>
      *
      * <p>
-     * The tab identifies not only the type of message but also the content of the OtpMsg
-     * object, since different messages have different components, as follows:
+     * The tab identifies not only the type of message but also the content of
+     * the OtpMsg object, since different messages have different components, as
+     * follows:
      * </p>
      *
      * <ul>
-     * <li>sendTag identifies a "normal" message. The recipient is a {@link OtpErlangPid
-     * Pid} and it is available through {@link #getRecipientPid getRecipientPid()}. Sender
-     * information is not available. The message body can be retrieved with {@link #getMsg
+     * <li>sendTag identifies a "normal" message. The recipient is a
+     * {@link OtpErlangPid Pid} and it is available through
+     * {@link #getRecipientPid getRecipientPid()}. Sender information is not
+     * available. The message body can be retrieved with {@link #getMsg
      * getMsg()}.</li>
      *
-     * <li>regSendTag also identifies a "normal" message. The recipient here is a String
-     * and it is available through {@link #getRecipientName getRecipientName()}. Sender
-     * information is available through #getSenderPid getSenderPid()}. The message body
-     * can be retrieved with {@link #getMsg getMsg()}.</li>
+     * <li>regSendTag also identifies a "normal" message. The recipient here is
+     * a String and it is available through {@link #getRecipientName
+     * getRecipientName()}. Sender information is available through
+     * #getSenderPid getSenderPid()}. The message body can be retrieved with
+     * {@link #getMsg getMsg()}.</li>
      *
-     * <li>linkTag identifies a link request. The Pid of the sender is available, as well
-     * as the Pid to which the link should be made.</li>
+     * <li>linkTag identifies a link request. The Pid of the sender is
+     * available, as well as the Pid to which the link should be made.</li>
      *
-     * <li>exitTag and exit2Tag messages are sent as a result of broken links. Both sender
-     * and recipient Pids and are available through the corresponding methods, and the
-     * "reason" is available through {@link #getMsg getMsg()}.</li>
+     * <li>exitTag and exit2Tag messages are sent as a result of broken links.
+     * Both sender and recipient Pids and are available through the
+     * corresponding methods, and the "reason" is available through
+     * {@link #getMsg getMsg()}.</li>
      * </ul>
      */
     public int type() {
@@ -185,14 +235,15 @@ public class OtpMsg {
 
     /**
      * <p>
-     * Deserialize and return a new copy of the message contained in this OtpMsg.
+     * Deserialize and return a new copy of the message contained in this
+     * OtpMsg.
      * </p>
      *
      * <p>
-     * The first time this method is called the actual payload is deserialized and the
-     * Erlang term is created. Calling this method subsequent times will not cuase the
-     * message to be deserialized additional times, instead the same Erlang term object
-     * will be returned.
+     * The first time this method is called the actual payload is deserialized
+     * and the Erlang term is created. Calling this method subsequent times will
+     * not cause the message to be deserialized additional times, instead the
+     * same Erlang term object will be returned.
      * </p>
      *
      * @return an Erlang term.
@@ -214,11 +265,12 @@ public class OtpMsg {
      * </p>
      *
      * <p>
-     * Messages are sent to Pids or names. If this message was sent to a name then the
-     * name is returned by this method.
+     * Messages are sent to Pids or names. If this message was sent to a name
+     * then the name is returned by this method.
      * </p>
      *
-     * @return the name of the recipient, or null if the recipient was in fact a Pid.
+     * @return the name of the recipient, or null if the recipient was in fact a
+     *         Pid.
      */
     public String getRecipientName() {
         return toName;
@@ -226,16 +278,18 @@ public class OtpMsg {
 
     /**
      * <p>
-     * Get the Pid of the recipient for this message, if it is a sendTag message.
+     * Get the Pid of the recipient for this message, if it is a sendTag
+     * message.
      * </p>
      *
      * <p>
-     * Messages are sent to Pids or names. If this message was sent to a Pid then the Pid
-     * is returned by this method. The recipient Pid is also available for link, unlink
-     * and exit messages.
+     * Messages are sent to Pids or names. If this message was sent to a Pid
+     * then the Pid is returned by this method. The recipient Pid is also
+     * available for link, unlink and exit messages.
      * </p>
      *
-     * @return the Pid of the recipient, or null if the recipient was in fact a name.
+     * @return the Pid of the recipient, or null if the recipient was in fact a
+     *         name.
      */
     public OtpErlangPid getRecipientPid() {
         return to;
@@ -243,15 +297,17 @@ public class OtpMsg {
 
     /**
      * <p>
-     * Get the name of the recipient for this message, if it is a regSendTag message.
+     * Get the name of the recipient for this message, if it is a regSendTag
+     * message.
      * </p>
      *
      * <p>
-     * Messages are sent to Pids or names. If this message was sent to a name then the
-     * name is returned by this method.
+     * Messages are sent to Pids or names. If this message was sent to a name
+     * then the name is returned by this method.
      * </p>
      *
-     * @return the Pid of the recipient, or null if the recipient was in fact a name.
+     * @return the Pid of the recipient, or null if the recipient was in fact a
+     *         name.
      */
     public Object getRecipient() {
         if (toName != null) {
@@ -266,9 +322,9 @@ public class OtpMsg {
      * </p>
      *
      * <p>
-     * For messages sent to names, the Pid of the sender is included with the message. The
-     * sender Pid is also available for link, unlink and exit messages. It is not
-     * available for sendTag messages sent to Pids.
+     * For messages sent to names, the Pid of the sender is included with the
+     * message. The sender Pid is also available for link, unlink and exit
+     * messages. It is not available for sendTag messages sent to Pids.
      * </p>
      *
      * @return the Pid of the sender, or null if it was not available.
