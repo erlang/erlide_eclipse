@@ -123,7 +123,7 @@ public class BuildersTest {
         prj.refreshLocal(IResource.DEPTH_INFINITE, null);
         final IErlProject erlPrj = ErlideTestUtils.createErlProject(prj);
         final ErlangProjectProperties properties = erlPrj.getProperties();
-        final RuntimeVersion _runtimeVersion = new RuntimeVersion(18);
+        final RuntimeVersion _runtimeVersion = new RuntimeVersion(23);
         properties.setRequiredRuntimeVersion(_runtimeVersion);
         erlPrj.setProperties(properties);
         ExternalBuilder.DEBUG = true;
