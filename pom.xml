@@ -43,7 +43,7 @@
     <repository>
       <id>erlide libs</id>
       <layout>p2</layout>
-      <url>https://download.erlide.org/update/libs</url>
+      <url>https://erlide.org/update/libs</url>
     </repository>
     <repository>
       <id>orbit neon</id>
@@ -58,7 +58,7 @@
     <repository>
       <id>kernel</id>
       <layout>p2</layout>
-      <url>https://download.erlide.org/update/kernel/0.115.3</url>
+      <url>https://erlide.org/update/kernel/0.116.0</url>
     </repository>
   </repositories>
 
@@ -336,7 +336,7 @@
         <!--plugin> <groupId>org.eclipse.tycho</groupId> <artifactId>tycho-p2-plugin</artifactId>
           <version>${tycho.version}</version> <configuration> <baselineMode>failCommon</baselineMode>
           <baselineReplace>none</baselineReplace> <baselineRepositories> <repository>
-          <url>https://download.erlide.org/update/</url> </repository> </baselineRepositories>
+          <url>https://erlide.org/update/</url> </repository> </baselineRepositories>
           </configuration> </plugin -->
         <!--This plugin's configuration is used to store Eclipse m2e settings
           only. It has no influence on the Maven build itself. -->
