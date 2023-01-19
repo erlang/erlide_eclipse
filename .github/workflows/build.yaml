@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
@@ -18,14 +18,14 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-m2-
-    - uses: gleam-lang/setup-erlang@v1.1.2
+    - uses: erlef/setup-beam@v1
       with:
-        otp-version: 23.2
+        otp-version: '23'
     - name: erl
       run: erl -version
     - uses: actions/setup-ruby@v1
       with:
-        ruby-version: '2.7' 
+        ruby-version: '2.7'
     - name: Build with Maven
       run: PATH=$PATH:/home/runner/.gem/ruby/2.7/bin xvfb-run ./mvnw -B -U clean verify -P help
     - uses: actions/upload-artifact@v2
