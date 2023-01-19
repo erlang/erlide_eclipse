@@ -9,7 +9,7 @@ location "http://download.eclipse.org/eclipse/updates/4.10/" {
   org.eclipse.jdt.annotation lazy
   org.eclipse.sdk.ide lazy
 }
-location "https://download.erlide.org/update/libs" {
+location "https://erlide.org/update/libs" {
   com.abstratt.eclipsegraphviz.feature.feature.group lazy //[2.2.0, 3.0.0)
 }
 
@@ -17,7 +17,7 @@ location "http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.19.0
   org.eclipse.xtext.xbase.lib lazy
 }
 
-location "https://download.erlide.org/update/kernel/0.115.3" {
+location "https://erlide.org/update/kernel/0.116.0" {
   org.erlide.kernel.feature.feature.group lazy
 }
 

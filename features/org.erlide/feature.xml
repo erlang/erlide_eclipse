@@ -32,7 +32,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
    </license>
 
    <url>
-      <update label="Erlide main update site" url="https://download.erlide.org/update/"/>
+      <update label="Erlide main update site" url="https://erlide.org/update/"/>
    </url>
 
    <includes
