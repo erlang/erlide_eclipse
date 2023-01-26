@@ -58,11 +58,4 @@ public class ErlideDialyze {
         return backend.call(ErlideDialyze.UPDATE_TIMEOUT, ErlideDialyze.ERLIDE_DIALYZE,
                 "update_plt_with_additional_paths", "sls", plt, ebinDirs);
     }
-
-    public static void startCheckPlt(final IOtpRpc backend, final String plt,
-            final List<String> ebinDirs, final IRpcResultCallback callback)
-            throws RpcException {
-        backend.async_call_result(callback, ErlideDialyze.ERLIDE_DIALYZE,
-                "start_update_plt_with_additional_paths", "xsls", plt, ebinDirs);
-    }
 }
