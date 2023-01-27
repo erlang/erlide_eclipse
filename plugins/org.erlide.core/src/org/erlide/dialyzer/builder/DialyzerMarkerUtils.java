@@ -38,7 +38,7 @@ public class DialyzerMarkerUtils {
             final OtpErlangTuple t = (OtpErlangTuple) result.elementAt(i);
             final OtpErlangTuple fileLine = (OtpErlangTuple) t.elementAt(1);
             final String filename = Util.stringValue(fileLine.elementAt(0));
-            final OtpErlangLong lineL = (OtpErlangLong) fileLine.elementAt(1);
+            final OtpErlangLong lineL = getWarningLocationLine(fileLine.elementAt(1));
             if (!filename.isEmpty()) {
                 int line = 1;
                 try {
@@ -59,6 +59,16 @@ public class DialyzerMarkerUtils {
                 DialyzerMarkerUtils.addDialyzerWarningMarker(model, filename, line, msg);
             }
         }
+    }
+
+    // Get the warning line independent of OTP used.
+    private static OtpErlangLong getWarningLocationLine(final Object location) {
+        if (location instanceof OtpErlangTuple) {
+            // '{Line, Column}' is default from OTP 24 (see OTP: PR-2664/OTP-16824)
+            OtpErlangTuple lineColumn = (OtpErlangTuple)location;
+            return (OtpErlangLong) lineColumn.elementAt(0);
+        }
+        return (OtpErlangLong) location;
     }
 
     public static void addDialyzerWarningMarker(final IErlElementLocator model,
