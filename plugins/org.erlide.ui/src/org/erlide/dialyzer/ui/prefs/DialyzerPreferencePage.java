@@ -259,7 +259,7 @@ public class DialyzerPreferencePage extends PropertyPage
         gd.horizontalSpan = 2;
         composite.setLayoutData(gd);
         final Label l = new Label(composite, SWT.NONE);
-        l.setText("PLT files (multiple PLTs require Erlang/OTP R14B01 or later)");
+        l.setText("PLT files");
         gd = new GridData();
         gd.horizontalSpan = 2;
         l.setLayoutData(gd);
