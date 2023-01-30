@@ -2148,7 +2148,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.erlide.ui.preferences.compiler"
+            category="org.erlide.ui.preferences"
             class="org.erlide.dialyzer.ui.prefs.DialyzerPreferencePage"
             id="org.erlide.dialyzer.ui.builder"
             name="Dialyzer">
