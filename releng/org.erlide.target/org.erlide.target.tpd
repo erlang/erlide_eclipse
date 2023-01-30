@@ -17,7 +17,7 @@ location "http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.19.0
   org.eclipse.xtext.xbase.lib lazy
 }
 
-location "https://erlide.org/update/kernel/0.116.0" {
+location "https://erlide.org/update/kernel/0.117.0" {
   org.erlide.kernel.feature.feature.group lazy
 }
 
