@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.runtime.rpc.IOtpRpc;
-import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.util.ErlLogger;
@@ -18,10 +17,6 @@ import com.google.common.collect.Lists;
 public class ErlideDialyze {
 
     private static final String ERLIDE_DIALYZE = "erlide_dialyze";
-    private static final int LONG_TIMEOUT = 60000;
-    // private static final int FILE_TIMEOUT = 20000;
-    // private static final int INCLUDE_TIMEOUT = 40000;
-    private static final int UPDATE_TIMEOUT = ErlideDialyze.LONG_TIMEOUT * 10;
 
     public static RpcFuture dialyze(final IOtpRpc backend, final Collection<String> files,
             final Collection<String> pltPaths, final Collection<IPath> includeDirs,
@@ -47,15 +42,5 @@ public class ErlideDialyze {
             ErlLogger.error(e);
         }
         return result;
-    }
-
-    public static OtpErlangObject checkPlt(final IOtpRpc backend, final String plt,
-            final List<String> ebinDirs) throws RpcException {
-        if (ebinDirs == null) {
-            return backend.call(ErlideDialyze.UPDATE_TIMEOUT,
-                    ErlideDialyze.ERLIDE_DIALYZE, "check_plt", "s", plt);
-        }
-        return backend.call(ErlideDialyze.UPDATE_TIMEOUT, ErlideDialyze.ERLIDE_DIALYZE,
-                "update_plt_with_additional_paths", "sls", plt, ebinDirs);
     }
 }
