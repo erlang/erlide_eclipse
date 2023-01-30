@@ -9,7 +9,6 @@
 package org.erlide.dialyzer.ui.prefs;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -18,13 +17,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.jface.dialogs.ControlEnableState;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
@@ -32,7 +25,6 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -55,27 +47,16 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.erlide.backend.BackendCore;
-import org.erlide.core.ErlangCore;
 import org.erlide.dialyzer.builder.DialyzerPreferences;
-import org.erlide.dialyzer.builder.DialyzerUtils;
-import org.erlide.dialyzer.builder.DialyzerUtils.DialyzerErrorException;
-import org.erlide.dialyzer.builder.ErlideDialyze;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.ErlElementKind;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.IErlElement;
 import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.rpc.IOtpRpc;
-import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.prefs.ProjectSelectionDialog;
 import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
-import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 
 public class DialyzerPreferencePage extends PropertyPage
         implements IWorkbenchPreferencePage {
@@ -140,7 +121,6 @@ public class DialyzerPreferencePage extends PropertyPage
     private Button fUseProjectSettings;
     private Link fChangeWorkspaceSettings;
     protected ControlEnableState fBlockEnableState;
-    // private final Text pltEdit = null;
     private Combo fromCombo;
     private Button dialyzeCheckbox;
     private Composite prefsComposite;
@@ -148,7 +128,6 @@ public class DialyzerPreferencePage extends PropertyPage
     private Button fAddButton;
     private Button fEditButton;
     private Button fRemoveButton;
-    private Button fUpdatePLTButton;
     private Button noCheckPLTCheckbox;
     private Button removeWarningsOnCleanCheckbox;
     private final List<String> shownPLTFiles;
@@ -171,7 +150,6 @@ public class DialyzerPreferencePage extends PropertyPage
         group.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
         createDialyzeCheckbox(group);
         createPltSelection(group);
-        createPltCheck(group);
         createFromSelection(group);
         createPltNoCheckbox(group);
         createRemoveWarningsOnCleanCheckbox(group);
@@ -203,22 +181,6 @@ public class DialyzerPreferencePage extends PropertyPage
         noCheckPLTCheckbox = new Button(comp, SWT.CHECK);
         noCheckPLTCheckbox.setText("Do not check PLT on dialyzer run");
         new Label(comp, SWT.NONE);
-    }
-
-    private void createPltCheck(final Composite group) {
-        final Composite comp = new Composite(group, SWT.NONE);
-        comp.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-        comp.setLayout(new GridLayout(2, false));
-        fUpdatePLTButton = new Button(comp, SWT.PUSH);
-        fUpdatePLTButton.setText("Update PLT");
-        fUpdatePLTButton.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(final SelectionEvent e) {
-                checkSelectedPltFiles();
-            }
-        });
-        final Label l = new Label(comp, SWT.NONE);
-        l.setText("Warning: this can take some time");
     }
 
     private void createDialyzeCheckbox(final Composite group) {
@@ -445,7 +407,6 @@ public class DialyzerPreferencePage extends PropertyPage
         final int selectionCount = selection.size();
         fEditButton.setEnabled(selectionCount == 1);
         fRemoveButton.setEnabled(selectionCount > 0);
-        fUpdatePLTButton.setEnabled(selectionCount > 0);
         fAddButton
                 .setEnabled(shownPLTFiles.size() < DialyzerPreferencePage.MAX_PLT_FILES);
     }
@@ -601,148 +562,12 @@ public class DialyzerPreferencePage extends PropertyPage
         fPLTTableViewer.refresh();
     }
 
-    protected void checkSelectedPltFiles() {
-        final Job job = new UpdateDialyzerPLTFileOperation("Checking PLT file",
-                getSelectedPltFiles(), getCheckedPltFiles());
-        final ISchedulingRule rule = fProject;
-        job.setRule(rule);
-        job.setUser(true);
-        job.setSystem(false);
-        job.schedule();
-    }
-
     private List<String> getCheckedPltFiles() {
         final List<String> l = Lists.newArrayList();
         for (final Object o : fPLTTableViewer.getCheckedElements()) {
             l.add((String) o);
         }
         return l;
-    }
-
-    private List<String> getSelectedPltFiles() {
-        final IStructuredSelection selection = (IStructuredSelection) fPLTTableViewer
-                .getSelection();
-        final List<String> result = Lists.newArrayListWithCapacity(selection.size());
-        for (final Object o : selection.toList()) {
-            final String s = (String) o;
-            result.add(s);
-        }
-        return result;
-    }
-
-    private final class UpdateDialyzerPLTFileOperation extends Job {
-
-        private final List<String> selectedPLTPaths;
-        private final List<String> checkedPltPaths;
-
-        public UpdateDialyzerPLTFileOperation(final String name,
-                final List<String> selectedPLTPaths, final List<String> checkedPltPaths) {
-            super(name);
-            this.selectedPLTPaths = selectedPLTPaths;
-            this.checkedPltPaths = checkedPltPaths;
-        }
-
-        IStatus newErrorStatus(final Throwable throwable) {
-            return new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
-                    throwable.getMessage());
-        }
-
-        @Override
-        protected IStatus run(final IProgressMonitor monitor) {
-            final IProject project = fProject;
-            if (project != null) {
-                try {
-                    final String alternatePltFileDirectory = DialyzerPreferences
-                            .getAlternatePLTFileDirectoryFromPreferences();
-                    checkIfPltFilesShouldBeCopied(alternatePltFileDirectory);
-                    final IErlProject eproject = ErlangEngine.getInstance().getModel()
-                            .findProject(project);
-                    if (eproject != null) {
-                        final IOtpRpc backend = BackendCore.getBuildBackend(eproject);
-                        for (final String pltPath : selectedPLTPaths) {
-                            checkPlt(pltPath, alternatePltFileDirectory, monitor,
-                                    backend);
-                        }
-                    }
-                } catch (final Exception e) {
-                    return newErrorStatus(e);
-                } finally {
-                    monitor.done();
-                }
-            }
-            return Status.OK_STATUS;
-        }
-
-        private void checkIfPltFilesShouldBeCopied(final String alternatePltFileDirectory)
-                throws IOException {
-            if (alternatePltFileDirectory == null) {
-                return;
-            }
-            final List<String> selected = Lists.newArrayList(selectedPLTPaths);
-            boolean changed = false;
-            for (final String pltPath : selected) {
-                final File f = new File(pltPath);
-                if (!f.canWrite()) {
-                    final String newPath = copyPltFile(pltPath,
-                            alternatePltFileDirectory);
-                    selectedPLTPaths.remove(pltPath);
-                    selectedPLTPaths.remove(newPath);
-                    shownPLTFiles.remove(newPath);
-                    shownPLTFiles.add(newPath);
-                    selectedPLTPaths.add(newPath);
-                    checkedPltPaths.remove(newPath);
-                    if (checkedPltPaths.remove(pltPath)) {
-                        checkedPltPaths.add(newPath);
-                    }
-                    changed = true;
-                }
-            }
-            if (changed) {
-                getControl().getDisplay().asyncExec(() -> {
-                    if (!fPLTTableViewer.getControl().isDisposed()) {
-                        fPLTTableViewer.refresh();
-                        fPLTTableViewer
-                                .setSelection(new StructuredSelection(selectedPLTPaths));
-                        fPLTTableViewer.setCheckedElements(checkedPltPaths.toArray());
-                    }
-                });
-            }
-        }
-
-        private String copyPltFile(final String pltPath,
-                final String alternatePltFileDirectory) throws IOException {
-            IPath path = new Path(pltPath);
-            final String name = path.lastSegment();
-            path = new Path(alternatePltFileDirectory).append(name);
-            Files.copy(new File(pltPath), new File(path.toOSString()));
-            return path.toPortableString();
-        }
-
-        private void checkPlt(final String pltPath,
-                final String alternatePltFileDirectory, final IProgressMonitor monitor,
-                final IOtpRpc backend)
-                throws DialyzerErrorException, ErlModelException, RpcException {
-            try {
-                monitor.subTask("Checking PLT file " + pltPath);
-                List<String> ebinDirs = null;
-                if (alternatePltFileDirectory != null) {
-                    ebinDirs = Lists.newArrayList();
-                    for (final IErlElement i : ErlangEngine.getInstance().getModel()
-                            .getChildrenOfKind(ErlElementKind.PROJECT)) {
-                        final IErlProject project = (IErlProject) i;
-                        final String ebinDir = project.getWorkspaceProject()
-                                .getFolder(project.getProperties().getOutputDir())
-                                .getLocation().toString();
-                        ebinDirs.add(ebinDir);
-                    }
-                }
-                final OtpErlangObject result = ErlideDialyze.checkPlt(backend, pltPath,
-                        ebinDirs);
-                DialyzerUtils.checkDialyzeError(result);
-            } finally {
-                monitor.worked(1);
-            }
-        }
     }
 
     public ISchedulingRule createRule(final Set<IProject> projects) {
