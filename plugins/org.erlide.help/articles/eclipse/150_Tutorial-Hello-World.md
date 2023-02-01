@@ -11,12 +11,16 @@ title: "Tutorial: Hello, world!"
 ## Install Erlang/OTP (if you have not already)
 
 * _Ubuntu Linux_: run the following in Terminal:
-        sudo apt-get update
-        sudo apt-get install erlang
+  ```shell
+  sudo apt-get update
+  sudo apt-get install erlang
+  ```
 * _Windows_: run the Windows Installer for Erlang
 * _Mac OS X_: install MacPorts and then run the following in Terminal:
-        sudo port selfupdate
-        sudo port install erlang
+  ```shell
+  sudo port selfupdate
+  sudo port install erlang
+  ```
 
 ## Install Eclipse and ErlIDE
 
@@ -26,9 +30,9 @@ title: "Tutorial: Hello, world!"
 or Eclipse (Mac) in the eclipse folder
   4. Select Help (menu) -> Software Updates... (a dialog will appear)
   5. Click Add Site...(another dialog will appear)
-  6. Enter http://erlide.erlide.org/update into the Location field, then
+  6. Enter `https://erlide.org/update` into the Location field, then
 click OK (dialog will close)
-  7. Select the checkbox by `http://erlide.org/update` and click
+  7. Select the checkbox by `https://erlide.org/update` and click
 Install... (another dialog will appear)
   8. Select Next
   9. Select I accept ... radio button and click Finish (a progress dialog will

@@ -37,7 +37,7 @@ glad to guide you around the code.
 * [Running and debugging Erlang code](280_Running-and-debugging-Erlang-code.html)
 * Plug-ins
   - [Tracing plugin](tracing/510_Tracing-plugin.html)
-  - [Cover Plugin](cover/410_Cover-Plugin.html)
+  - [Cover plugin](cover/410_Cover-plugin.html)
 
 ## <a name="dev-guide"></a>Developer's guide
 
@@ -49,7 +49,6 @@ If you know your way around it, read the following
 
 - [Tools and requirements](developer/310_Tools-and-requirements.html)
 - [Accessing the code](developer/320_Accessing-the-code.html)
-
 - [Branches](developer/330_Branches.html)
 - [Submitting patches](developer/340_Submitting-patches.html)
 - [Git Tools and Hacks](developer/350_Git-Tools-and-Hacks.html)
