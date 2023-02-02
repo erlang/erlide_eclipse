@@ -23,10 +23,6 @@ Create a new branch starting from `master`. Each branch should contain
 logically related commits (for example the implementation of a single
 feature), not a mixed bag of random changes.
 
-If your change is depending on some other fix or feature that is not in
-`master` yet, you may start from `next`, but be aware that there is a
-small risk that the branch will be rebased.
-
 Committing the patch
 --------------------
 
@@ -77,7 +73,7 @@ When we receive your patch, we will do one of the following:
     providing more information in the commit message instead of in the
     email), we may ask you to do that.
 -   Otherwise, if your patch is not obviously wrong or inappropriate, we
-    will merge it to the `pu` (“proposed updates”) branch.
+    will merge it.
 -   Otherwise, if it is obviously wrong or inappropriate, we will tell
     you so. Reasons for immediate rejections include (but are not
     limited to):
@@ -88,26 +84,6 @@ When we receive your patch, we will do one of the following:
     re-indentation of code that is not changed. We will ask you to
     separate the changes into separate commits and/or branches and not
     change indentation of unchanged code.
-
-You should **not** base any branches on `pu` branch, as it will be
-rewinded (rebuilt from scratch) frequently.
-
-Cooking
--------
-
-Patches will “cook” in the `pu` branch until they graduate or are
-dropped.
-
-The following may happen to a patch (one or more times):
-
--   If build problems are found or there are many failing test cases not
-    found before it was been included in `pu`, it may be removed from
-    `pu` until the problems have been fixed.
--   Anyone can criticize, suggest improvements, or report that a patch
-    breaks existing applications. If the serious problems remain, and no
-    good way of fixing them can be found, the patch may be dropped.
--   Patches with known issues that have been inactive for a long time
-    (several months) will be dropped.
 
 > This page is adapted from the similar page from the erlang/otp wiki,
 > but any errors are entirely ours.

@@ -9,9 +9,9 @@ Well, if you made it to this wiki, you probably know how to fork the code reposi
 
 > **Important note:** There is no stable API yet, this is the reason why the version number is still starting with a zero. We are currently working at creating an API, but we prioritize regular development (unless you, the would-be extenders, will start asking for the API)
 
-## Working on the core erlide 
+## Working on the core erlide
 
-The "core erlide" is the basic erlide functionality. There are two eclipse feature projects for it, `org.erlide.headless` and `org.erlide`. The headless part is needed so that we can use erlide to compiler Erlang projects in Eclipse without having to start the UI (with Buckminster, we use it to build erlide itself).
+The "core erlide" is the basic erlide functionality. There are two eclipse feature projects for it, `org.erlide.headless` and `org.erlide`. The headless part is needed so that we can use erlide to compile Erlang projects in Eclipse without having to start the UI.
 
 ### Project descriptions
 

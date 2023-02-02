@@ -16,12 +16,12 @@ title: Tools and requirements
 
 ## Tools
 
-* Download and install Eclipse 4.4, which will serve as a target for development.
+* Download and install Eclipse 4.4 or later, which will serve as a target for development.
 * You can use Eclipse 4.4 for development too, but the newer Java tools are much better. I always the latest Eclipse for developing.
-* The debugger support code has different projects for R15, R16, 17 and 18, due to changes to the compiler and/or runtime. You need all these versions installed if you make changes to the debugger.
+* The debugger support code has different projects for each supported OTP version. When building erlide the tool `kerl` will be downloaded and install required OTP versions to `~/erlide_tools/`.
 * In your development Eclipse, install a Java 1.8 JDK and the _EGit_, _Erlide_ and _Xtend_ plugins.
 * Other recommended plugins: AnyEdit.
-* A note about using more recent versions of Java/Eclipse/Erlang: they should work, but if the target is not 1.8/4.4/R16B, then you might use things that are not available in the base configuration or have changed since and then there will be errors (at compile-time or run-time).
+* A note about using more recent versions of Java/Eclipse/Erlang: they should work, but if the target is not 1.8/4.4/23, then you might use things that are not available in the base configuration or have changed since and then there will be errors (at compile-time or run-time).
 
 ## Setup
 

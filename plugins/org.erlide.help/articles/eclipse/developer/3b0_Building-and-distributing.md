@@ -6,7 +6,7 @@ part: Developer's guide
 
 ## Update sites
 
-There are three update sites:
+There are two update sites:
 
 -   `https://erlide.org/update` : contains all stable releases
 -   `https://erlide.org/update/prerelease` : contains the release that will be
@@ -15,53 +15,81 @@ There are three update sites:
 
 ## Building Erlide
 
-Building is done using [Buckminster](http://eclipse.org/buckminster).
-This has the great advantage that the build is done inside a regular
-Eclipse workspace, with the regular builders for that project, and we
-don’t have to bother to add custom build scripts for Erlang code (that
-also has to use the same config as in the IDE).
+Since Erlide consists of two separate parts, in two separate repos, we need to build and release in two steps:
 
-For headless builds, the `org.erlide.releng` project contains all the
-necessary scripts and more detailed information. To drive the builds,
-there are is a `Rakefile` script (so you need to have jruby and rake
-installed) which more or less calls Ant with `build.ant`.
+### 1. Build erlide_kernel
 
-The Ant script can install Buckminster and there is also a
-`setup_tools.sh` script that will install java, ant, otp R15 and jruby
-in your home directory. (JRuby is used because it had seamless integration with Ant)
+The Erlang part of the plugin is located in the [erlide_kernel]( https://github.com/erlang/erlide_kernel) repo.
 
-For building the update site from inside Eclipse, right-click on the
-`org.erlide.site` project and choose `Buckminster&rarr;Invoke action`. In the
-dialog, specify org.erlide.site/buckminster.properties as properties
-file and select `site.p2` as action. 
+First build and generate a plugin archive for erlide_kernel:
 
-### Build target
+```
+cd <path to erlide_kernel repo>
 
-The target is installed automatically by the scripts, if it’s not
-already there. It will be put in `~/erlide_tools/target.platform` so
-that it can be reused.
+# Build and test the Erlang modules
+./build
+./build test
 
-### Automatic builds
+# Generate the plugin archive
+cd eclipse
+./build
+```
 
-We have a [Jenkins](http://jenkins-ci.org) server set up to do automatic
-builds, at `http://ci.erlide.org`. Here we will run automated tests and
-stable releases can be published to the official update sites from here
-too.
+The result can be found at:
+`<repo root>/eclipse/org.erlide.kernel.site-X.XXX.X.zip`
 
-#### Jenkins jobs
+#### Publish
 
-There are a number of jobs that roughly correspond to the different
-build tasks.
+We use the project update site to also publish the build dependencies.
+The project update site `https://erlide.org/update` is deployed by the [erlide.github.io](https://github.com/erlide/erlide.github.io) repo.
 
--   **build_pu**, **build_beta**, **build_master**: these are running the test suite on
-    the respective branches from the repo (pu, release, master)
--   **p2\_site**: if the tests are successful, a p2 update site is
-    created
--   **publish\_site**: picks a p2 update site and makes it available on
-    the web. `pu` is published automatically to `nightly`, while `beta`
-    and `master` are published manually by promoting the respective
-    builds
--   **publish\_product**: puts together an Eclipse-based erlide product
-    and publishes it. Only from `master` and is manually started after
-    acceptance tests. 
+To publish a new version of erlide_kernel the built archive needs to be extracted
+to the [erlide.github.io](https://github.com/erlide/erlide.github.io) repo
+at the path `<root>/update/kernel/<VERSION>` like this:
 
+```
+git clone git@github.com:erlide/erlide.github.io.git
+cd erlide.github.io/update/kernel/
+mkdir -p <VERSION>
+unzip <erlide_kernel repo>/eclipse/org.erlide.kernel.site-X.XXX.X.zip -d <VERSION>/
+git add <VERSION>
+git commit -a -m 'Publish erlide_kernel X.XXX.X' && git push origin master
+```
+
+
+### 2. Build erlide_eclipse
+
+The Eclipse GUI part is located in the [erlide_eclipse]( https://github.com/erlang/erlide_eclipse) repo.
+
+#### Update erlide_kernel version
+
+The following files needs to be updated to use a new published `erlide_kernel`:
+
+```
+pom.xml
+releng/org.erlide.site/category.xml
+releng/org.erlide.target/org.erlide.target.target
+releng/org.erlide.target/org.erlide.target.tpd
+```
+
+Update the version and the feature name.
+
+#### Build and test
+
+The makefile provides a default target to build and run all unit tests:
+
+`make`
+
+This target also creates a zip archive with the plugin (includes dependencies) at:
+`releng/org.erlide.site/target/org.erlide-X.XX.X.vXXXXXXXX-XXXX.zip`
+
+which can be used to install the plugin in Eclipse.
+
+#### Publish
+
+To publish the plugin to the update site run:
+
+`make deploy`
+
+This adds a commit to the update site `https://github.com/erlide/erlide.github.io`
+which makes the release available from `https://erlide.org/update`
