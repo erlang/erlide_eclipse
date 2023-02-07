@@ -6,7 +6,7 @@ part: Getting started
 
 # Installing and updating
 
-* Install Erlang __Erlang/OTP 23__ or later, if it isn't already present on your system. On Windows systems, use a path with no spaces in it.
+* Install a supported Erlang version like __Erlang/OTP 23__, if it isn't already present on your system. On Windows systems, use a path with no spaces in it.
 * Install Eclipse. __Java 8__ is required.
 * If your network uses a proxy to connect to the internet, fill in the appropriate data in `Window -> Preferences -> Install/Update -> Proxy settings`
 * Install Erlide by going to `Help -> Software Updates -> Find` and `Install... -> Search for new features to install`.

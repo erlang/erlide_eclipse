@@ -85,11 +85,20 @@ This target also creates a zip archive with the plugin (includes dependencies) a
 
 which can be used to install the plugin in Eclipse.
 
-#### Publish
+#### Publish release
 
 To publish the plugin to the update site run:
 
-`make deploy`
+`make publish`
 
 This adds a commit to the update site `https://github.com/erlide/erlide.github.io`
-which makes the release available from `https://erlide.org/update`
+which makes the release available from `https://erlide.org/update`.
+
+#### Publish documentation
+
+To publish the documentation from `plugins/org.erlide.help/articles/*` run:
+
+`make publish-docs`
+
+This adds a commit to the repo `https://github.com/erlide/erlide.github.io`
+which updates the documentation available at `https://erlide.org/articles/eclipse/`.
