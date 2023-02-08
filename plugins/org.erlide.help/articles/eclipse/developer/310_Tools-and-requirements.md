@@ -11,8 +11,8 @@ title: Tools and requirements
 * The issue manager is at <https://github.com/erlang/erlide_eclipse/issues>.
 * It would be highly recommended to have some background with Java and Eclipse development, the learning curve can be quite steep. You probably won't start by implementing a new plug-in from scratch, but it helps to know how things are working and where to look. Some suggestions for tutorials/articles/books:
   * the eclipse documentation, of course
-  * <http://www.vogella.com/articles/EclipsePlugIn/article.html>
-  * <http://www.amazon.com/Eclipse-Plug-ins-Edition-Eric-Clayberg/dp/0321553462>
+  * <https://www.vogella.com/articles/EclipsePlugIn/article.html>
+  * <https://www.amazon.com/Eclipse-Plug-ins-Edition-Eric-Clayberg/dp/0321553462>
 
 ## Tools
 
