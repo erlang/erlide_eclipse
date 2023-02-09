@@ -43,18 +43,17 @@ The result can be found at:
 We use the project update site to also publish the build dependencies.
 The project update site `https://erlide.org/update` is deployed by the [erlide.github.io](https://github.com/erlide/erlide.github.io) repo.
 
-To publish a new version of erlide_kernel the built archive needs to be extracted
-to the [erlide.github.io](https://github.com/erlide/erlide.github.io) repo
-at the path `<root>/update/kernel/<VERSION>` like this:
+To publish a new version of erlide_kernel:
 
 ```
-git clone git@github.com:erlide/erlide.github.io.git
-cd erlide.github.io/update/kernel/
-mkdir -p <VERSION>
-unzip <erlide_kernel repo>/eclipse/org.erlide.kernel.site-X.XXX.X.zip -d <VERSION>/
-git add <VERSION>
-git commit -a -m 'Publish erlide_kernel X.XXX.X' && git push origin master
+cd <path to erlide_kernel repo>
+
+cd eclipse
+./publish
 ```
+
+This adds a commit to the update site `https://github.com/erlide/erlide.github.io`
+which makes the release available from `https://erlide.org/update/kernel/<VERSION>/`.
 
 
 ### 2. Build erlide_eclipse
