@@ -4,7 +4,7 @@ title: Features
 part: Getting started
 ---
 
-# Features 
+# Features
 
 ## Wizards
 
@@ -40,7 +40,7 @@ function call
 * Automatic completion of erlang modules, functions and records:
 **Ctrl+Space**. The list with proposals is also shown when entering **:**
 (colon).
-* Go to declaration of function, macro or record: F3 when the cursor is
+* Go to declaration of function, macro or record: **F3** when the cursor is
 inside that element's name.
 * Show declaration of macros and records as a hover window
 * Bracket matching: the peer of the bracket at the cursor is highlighted.
@@ -50,8 +50,8 @@ inside that element's name.
 ## Builder
 
 
-Building is automatic whenever a file is saved (if `Project -> Build`
-automatically is enabled) and the modified module is also reloaded in any
+Building is automatic whenever a file is saved (if `Project -> Build
+automatically` is enabled) and the modified module is also reloaded in any
 Erlang backend that is linked to that project.
 
 ## Outline view
@@ -103,7 +103,7 @@ shown in a hover window, when the mouse cursor is above a function call.
 
 The OTP documentation is shown, if installed on your system. Also, if the
 project contains HTML documentation that is located in an OTP-like location
-(i.e. in a `doc/html` directory in the project ), then this documentation is
+(i.e. in a `doc/html` directory in the project), then this documentation is
 also shown.
 
 ## Debugger

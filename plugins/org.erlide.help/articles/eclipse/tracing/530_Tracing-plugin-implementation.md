@@ -41,8 +41,8 @@ _Erlang trace browser_ and _Erlang tracing tree viewer_ views use _JFace TreeVie
 
 You can find good example of creating tree viewer here:
 
-* [http://www.eclipse.org/articles/Article-TreeViewer/TreeViewerArticle.htm](http://www.eclipse.org/articles/Article-TreeViewer/TreeViewerArticle.htm)
-* [http://www.eclipse.org/articles/Article-Table-viewer/table_viewer.html](http://www.eclipse.org/articles/Article-Table-viewer/table_viewer.html)
+* [https://www.eclipse.org/articles/Article-TreeViewer/TreeViewerArticle.htm](https://www.eclipse.org/articles/Article-TreeViewer/TreeViewerArticle.htm)
+* [https://www.eclipse.org/articles/Article-Table-viewer/table_viewer.html](https://www.eclipse.org/articles/Article-Table-viewer/table_viewer.html)
 
 ### Model
 
@@ -70,7 +70,7 @@ _TableViewer_ is a _JFace_ class that provides mvc architecture to raw _SWT_ _Ta
 
 ## Displaying busy dialogs
 
-To show busy dialog you can use following code (from [wikipedia](http://wiki.eclipse.org/FAQ_How_do_I_switch_from_using_a_Progress_dialog_to_the_Progress_view%3F)):
+To show busy dialog you can use following code (from [wikipedia](https://wiki.eclipse.org/FAQ_How_do_I_switch_from_using_a_Progress_dialog_to_the_Progress_view%3F)):
 
 ```
    IRunnableWithProgress op = new IRunnableWithProgress() {
@@ -154,12 +154,12 @@ All UML diagrams were created using _Eclipse UMLet plugin_. Sources of diagrams 
 
 ## Useful links
 
-* Ttb documentation: [http://www.erlang.org/doc/man/ttb.html, http://www.erlang.org/doc/apps/observer/ttb_ug.html](http://www.erlang.org/doc/man/ttb.html, http://www.erlang.org/doc/apps/observer/ttb_ug.html)
-* Dbg: [http://www.erlang.org/doc/man/dbg.html](http://www.erlang.org/doc/man/dbg.html)
-* Match specs: [http://www.erlang.org/doc/apps/erts/match_spec.html](http://www.erlang.org/doc/apps/erts/match_spec.html)
-* Eclipse Helios SDK: [http://help.eclipse.org/helios/index.jsp](http://help.eclipse.org/helios/index.jsp)
-* Eclipse plugin development (tutorial): [http://www.eclipsepluginsite.com](http://www.eclipsepluginsite.com)
-* JFace TableViewer: [http://www.eclipse.org/articles/Article-Table-viewer/table_viewer.html](http://www.eclipse.org/articles/Article-Table-viewer/table_viewer.html), [http://www.eclipse.org/articles/Article-TreeViewer/TreeViewerArticle.htm](http://www.eclipse.org/articles/Article-TreeViewer/TreeViewerArticle.htm), [http://www.eclipse.org/articles/Article-SWT-Virtual/Virtual-in-SWT.html](http://www.eclipse.org/articles/Article-SWT-Virtual/Virtual-in-SWT.html)
-* Error handling in Eclipse: [http://rtsys.informatik.uni-kiel.de/trac/kieler/wiki/Help/EclipseCookbook/ErrorHandling](http://rtsys.informatik.uni-kiel.de/trac/kieler/wiki/Help/EclipseCookbook/ErrorHandling)
-* Displaying progress in Eclipse: [http://wiki.eclipse.org/FAQ_Why_should_I_use_the_new_progress_service%3F](http://wiki.eclipse.org/FAQ_Why_should_I_use_the_new_progress_service%3F), [http://wiki.eclipse.org/FAQ_How_do_I_switch_from_using_a_Progress_dialog_to_the_Progress_view%3F](http://wiki.eclipse.org/FAQ_How_do_I_switch_from_using_a_Progress_dialog_to_the_Progress_view%3F)
-* Version numbering for Eclipse plugins: [http://wiki.eclipse.org/index.php/Version_Numbering](http://wiki.eclipse.org/index.php/Version_Numbering)
+* Ttb documentation: [https://www.erlang.org/doc/man/ttb.html, https://www.erlang.org/doc/apps/observer/ttb_ug.html](https://www.erlang.org/doc/man/ttb.html, https://www.erlang.org/doc/apps/observer/ttb_ug.html)
+* Dbg: [https://www.erlang.org/doc/man/dbg.html](https://www.erlang.org/doc/man/dbg.html)
+* Match specs: [https://www.erlang.org/doc/apps/erts/match_spec.html](https://www.erlang.org/doc/apps/erts/match_spec.html)
+* Eclipse Helios SDK: [https://help.eclipse.org/helios/index.jsp](https://help.eclipse.org/helios/index.jsp)
+* Eclipse plugin development (tutorial): [https://www.eclipsepluginsite.com](https://www.eclipsepluginsite.com)
+* JFace TableViewer: [https://www.eclipse.org/articles/Article-Table-viewer/table_viewer.html](https://www.eclipse.org/articles/Article-Table-viewer/table_viewer.html), [https://www.eclipse.org/articles/Article-TreeViewer/TreeViewerArticle.htm](https://www.eclipse.org/articles/Article-TreeViewer/TreeViewerArticle.htm), [https://www.eclipse.org/articles/Article-SWT-Virtual/Virtual-in-SWT.html](https://www.eclipse.org/articles/Article-SWT-Virtual/Virtual-in-SWT.html)
+* Error handling in Eclipse: [https://rtsys.informatik.uni-kiel.de/trac/kieler/wiki/Help/EclipseCookbook/ErrorHandling](https://rtsys.informatik.uni-kiel.de/trac/kieler/wiki/Help/EclipseCookbook/ErrorHandling)
+* Displaying progress in Eclipse: [https://wiki.eclipse.org/FAQ_Why_should_I_use_the_new_progress_service%3F](https://wiki.eclipse.org/FAQ_Why_should_I_use_the_new_progress_service%3F), [https://wiki.eclipse.org/FAQ_How_do_I_switch_from_using_a_Progress_dialog_to_the_Progress_view%3F](https://wiki.eclipse.org/FAQ_How_do_I_switch_from_using_a_Progress_dialog_to_the_Progress_view%3F)
+* Version numbering for Eclipse plugins: [https://wiki.eclipse.org/index.php/Version_Numbering](https://wiki.eclipse.org/index.php/Version_Numbering)

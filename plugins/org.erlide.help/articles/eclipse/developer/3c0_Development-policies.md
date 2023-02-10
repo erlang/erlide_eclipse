@@ -42,14 +42,6 @@ and SaveActions, please use
 The rules are not set in stone (yet), we’ll change them as we
 gather more experience.
 
-### Development codeline (`pu`branch):
-- interim code changes may be checked in;
-- affected components must be buildable.
-
-### Release codeline (`next` branch):
-- software must build and pass regression tests before check-in;
-
-### Mainline (`master` branch):
 - all components must compile and link, and pass regression tests;
 
 These policies are for the official repository, of course. You can work

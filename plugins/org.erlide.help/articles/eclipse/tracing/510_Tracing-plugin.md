@@ -6,7 +6,7 @@ part: Tracing plugin
 # Tracing plugin
 
 > _In software engineering, tracing is a specialized use of logging to record information about a program's execution. This information is typically used by programmers for debugging purposes, and additionally, depending on the type and detail of information contained in a trace log, by experienced system administrators or technical support personnel to diagnose common problems with software_.  
-[Wikipedia](http://en.wikipedia.org/wiki/Tracing_(software\))
+[Wikipedia](https://en.wikipedia.org/wiki/Tracing_(software\))
 
 ## Features
 * New eclipse perspective and views
@@ -24,7 +24,7 @@ part: Tracing plugin
 ## Technical details
 
 ### Ttb
-This feature uses ttb (Trace Tool Builder, http://www.erlang.org/doc/man/ttb.html ) for tracing purposes. 
+This feature uses ttb (Trace Tool Builder, https://www.erlang.org/doc/man/ttb.html ) for tracing purposes. 
 Ttb is a tool included in OTP which is is built on top of dbg. Tracing plugin provides graphical user interface to ttb what makes using it more user friendly. 
 Ttb module is currently included in this plugin. That's because original ttb module had some bugs. Module used by this plugin contains many improvements and fixes which haven't been yet included into OTP (ttb version which is used by this plugin has been already sent to OTP team so it should be included in future release).
 

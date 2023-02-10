@@ -18,7 +18,7 @@ part: Erlide documentation
   - [Hello world](150_Tutorial-Hello-World.html) by Alain O’Dea
 * [Troubleshooting](160_Troubleshooting.html)
 * [FAQ](170_FAQ.html) - check this out first.
-* Bugs? Suggestions? [Write a support ticket!](http://github.com/erlang/erlide_eclipse/issues)
+* Bugs? Suggestions? [Write a support ticket!](https://github.com/erlang/erlide_eclipse/issues)
   Please attach (or email) logs retrieved with
   `Window -> Preferences -> Erlang -> Report problem`.
 
@@ -37,19 +37,18 @@ glad to guide you around the code.
 * [Running and debugging Erlang code](280_Running-and-debugging-Erlang-code.html)
 * Plug-ins
   - [Tracing plugin](tracing/510_Tracing-plugin.html)
-  - [Cover Plugin](cover/410_Cover-Plugin.html)
+  - [Cover plugin](cover/410_Cover-plugin.html)
 
 ## <a name="dev-guide"></a>Developer's guide
 
 ### Contributing to erlide
 
-So you want to get hacking on erlide? If you’re new to Git, please read [New to Git](New-to-Git.html). 
+So you want to get hacking on erlide? If you’re new to Git, please read [New to Git](New-to-Git.html).
 If you know your way around it, read the following
 (parts shamelessly adapted from the pages at [erlang/otp](https://github.com/erlang/otp/wiki)):
 
 - [Tools and requirements](developer/310_Tools-and-requirements.html)
 - [Accessing the code](developer/320_Accessing-the-code.html)
-
 - [Branches](developer/330_Branches.html)
 - [Submitting patches](developer/340_Submitting-patches.html)
 - [Git Tools and Hacks](developer/350_Git-Tools-and-Hacks.html)
@@ -62,4 +61,3 @@ If you know your way around it, read the following
 - [Development policies](developer/3c0_Development-policies.html)
 - [Release process](developer/3d0_Release-process.html)
 - [Creating a release](developer/3e0_Creating-a-release.html)
-

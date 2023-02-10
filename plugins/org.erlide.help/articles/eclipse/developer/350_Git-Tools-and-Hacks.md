@@ -24,5 +24,5 @@ Which means if you have this version of git or newer when you checkout, all of t
 
 ## Shell Prompt
 
-See this [guide](http://github.com/guides/put-your-git-branch-name-in-your-shell-prompt) to make git repo information show in your shell prompt.
+See this [guide](https://github.com/guides/put-your-git-branch-name-in-your-shell-prompt) to make git repo information show in your shell prompt.
 
