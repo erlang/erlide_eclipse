@@ -11,7 +11,9 @@ import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.truth.Truth;
@@ -159,6 +161,16 @@ public class ModuleLocatorTest {
             return _builder.toString();
         }
     }.apply();
+
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        ErlideTestUtils.initProjects();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        ErlideTestUtils.deleteProjects();
+    }
 
     @Before
     public void setup() throws CoreException {
