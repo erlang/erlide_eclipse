@@ -4,7 +4,7 @@ DOCS_REPO?=erlide/erlide.github.io
 DOCS_DIR=plugins/org.erlide.help/target/$(DOCS_REPO)
 
 build:
-	./mvnw -B -U enforcer:display-info clean verify -Phelp
+	./mvnw -B -U enforcer:display-info clean verify -Phelp --fail-at-end
 
 # Publish a release to update site https://erlide.org/update/
 publish:
