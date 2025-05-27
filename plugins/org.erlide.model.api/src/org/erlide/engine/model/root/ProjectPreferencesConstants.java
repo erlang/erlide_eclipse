@@ -33,9 +33,9 @@ public final class ProjectPreferencesConstants {
     public static final String DEFAULT_EXTERNAL_INCLUDES = "";
 
     public static final String RUNTIME_VERSION = "backend_version";
-    public static final RuntimeVersion DEFAULT_RUNTIME_VERSION = new RuntimeVersion(23);
-    public static final RuntimeVersion[] SUPPORTED_VERSIONS = { new RuntimeVersion(23),
-            new RuntimeVersion(24), new RuntimeVersion(25) };
+    public static final RuntimeVersion DEFAULT_RUNTIME_VERSION = new RuntimeVersion(25);
+    public static final RuntimeVersion[] SUPPORTED_VERSIONS = { new RuntimeVersion(25),
+            new RuntimeVersion(26), new RuntimeVersion(27) };
     public static final RuntimeVersion FALLBACK_RUNTIME_VERSION = ProjectPreferencesConstants.SUPPORTED_VERSIONS[0];
 
     public static final String PROJECT_EXTERNAL_MODULES = "external_modules";
