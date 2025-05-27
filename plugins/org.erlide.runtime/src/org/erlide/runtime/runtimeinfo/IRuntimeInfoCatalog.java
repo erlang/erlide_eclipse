@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface IRuntimeInfoCatalog {
 
-    RuntimeVersion OLDEST_SUPPORTED_VERSION = new RuntimeVersion(23);
+    RuntimeVersion OLDEST_SUPPORTED_VERSION = new RuntimeVersion(25);
 
     Collection<RuntimeInfo> getRuntimes();
 
