@@ -6,7 +6,7 @@ part: Getting started
 
 # Installing and updating
 
-* Install a supported Erlang version like __Erlang/OTP 23__, if it isn't already present on your system. On Windows systems, use a path with no spaces in it.
+* Install a supported Erlang version like __Erlang/OTP 25__, if it isn't already present on your system. On Windows systems, use a path with no spaces in it.
 * Java 8 is required.
 * Install Eclipse. ErlIDE is confirmed to be compatible with `Eclipse 2024-06` and earlier.
 * If your network uses a proxy to connect to the internet, fill in the appropriate data in `Window -> Preferences -> General -> Network connections`
