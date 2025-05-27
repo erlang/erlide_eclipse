@@ -7,7 +7,7 @@
       <category name="extras"/>
    </feature>
    <feature url="features/com.abstratt.eclipsegraphviz.feature_2.2.201606.201701211537.jar" id="com.abstratt.eclipsegraphviz.feature" version="2.2.201606.201701211537"/>
-   <feature url="features/org.erlide.kernel.feature_0.117.0.202301301452.jar" id="org.erlide.kernel.feature" version="0.117.0.202301301452">
+   <feature url="features/org.erlide.kernel.feature_0.118.0.202505270947.jar" id="org.erlide.kernel.feature" version="0.118.0.202505270947">
       <category name="erlide"/>
    </feature>
    <bundle id="com.google.guava"/>
