@@ -4,8 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
-
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 1.8
@@ -21,14 +20,18 @@ jobs:
           ${{ runner.os }}-m2-
     - uses: erlef/setup-beam@v1
       with:
-        otp-version: '23'
-    - name: erl
-      run: erl -version
+        otp-version: '25'
+    # Since erlef/setup-beam installs OTP in a unique directory we need
+    # to create a symlink so that erlide can find the installation.
+    # The environment variable INSTALL_DIR_FOR_OTP is set by erlef/setup-beam
+    # and erlide will only search for a runtime in commonly used directories.
+    - name: Create OTP symlink
+      run: sudo -E ln -s $INSTALL_DIR_FOR_OTP /usr/local/lib/erlang
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: '2.7'
     - name: Build with Maven
-      run: xvfb-run ./mvnw -B -U clean verify -P help
+      run: xvfb-run ./mvnw -B -U clean verify -P help --fail-at-end
     - uses: actions/upload-artifact@v4
       with:
         name: P2 site
